@@ -672,3 +672,61 @@ may consider it more useful to permit linking proprietary applications with
 the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 <https://www.gnu.org/licenses/why-not-lgpl.html>.
+
+===========================================================================
+
+Arrow Cloud — Additional Terms pursuant to Section 7 of the GNU GPL v3
+
+Copyright (C) 2025-2026 Arrow Cloud contributors.
+
+This program is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version, supplemented by the following additional
+terms:
+
+1. TRADEMARK NOTICE
+
+   "Arrow Cloud" and associated logos, icons, and visual branding
+   (collectively, the "Arrow Cloud Marks") are trademarks of the Arrow
+   Cloud project and its contributors. The Arrow Cloud Marks are NOT
+   licensed under the GNU General Public License and are subject to the
+   restrictions below.
+
+2. RESTRICTIONS ON USE OF THE ARROW CLOUD MARKS
+
+   In accordance with Section 7(e) of the GNU General Public License
+   v3, the following additional term applies:
+
+   a. You may NOT use the Arrow Cloud Marks (including the name
+      "Arrow Cloud," associated logos, or branding) in any way that
+      suggests or implies that a derivative work, modified version, or
+      fork is endorsed by, affiliated with, or part of the official
+      Arrow Cloud project, unless you have received explicit prior
+      written permission from the Arrow Cloud project maintainers.
+
+   b. If you redistribute modified versions of this software, you MUST
+      clearly indicate that your version is a modified, unofficial
+      derivative and is not "Arrow Cloud." This includes, but is not
+      limited to:
+        - Changing the name of the project to something other than
+          "Arrow Cloud" (or any confusingly similar name);
+        - Removing or replacing Arrow Cloud logos and branding; and
+        - Including a prominent notice stating that the software is
+          based on Arrow Cloud but is not the official Arrow Cloud
+          project.
+
+3. NO MISREPRESENTATION
+
+   You may not misrepresent the origin of this software or any
+   derivative work. You may not claim that you or your derivative work
+   is the official Arrow Cloud project, or that it is endorsed by the
+   Arrow Cloud project, without explicit written permission.
+
+4. SCOPE
+
+   These additional terms apply solely to trademark and branding
+   matters. All other rights, obligations, and freedoms granted by the
+   GNU General Public License v3 remain fully in effect. Nothing in
+   these additional terms limits your rights to use, modify, and
+   redistribute the source code under the GPL v3.
