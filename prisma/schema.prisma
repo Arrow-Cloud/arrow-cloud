@@ -1,0 +1,422 @@
+generator client {
+  provider      = "prisma-client-js"
+  output        = "../api/prisma/generated"
+  binaryTargets = ["native", "debian-openssl-3.0.x", "linux-arm64-openssl-3.0.x", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Country {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  code      String   @unique // ISO 3166-1 alpha-2 country code
+  users     User[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  id                           String              @id @default(uuid())
+  email                        String              @unique
+  passwordHash                 String?
+  passwordSalt                 String?
+  alias                        String              @unique
+  profileImageUrl              String?
+  timezone                     String?             // IANA timezone identifier (e.g., "America/New_York")
+  emailVerifiedAt              DateTime?
+  emailVerificationToken       String?
+  emailVerificationTokenExpiry DateTime?
+  passwordResetToken           String?
+  passwordResetTokenExpiry     DateTime?
+  banned                       Boolean             @default(false)
+  shadowBanned                 Boolean             @default(false)
+  countryId                    Int?
+  country                      Country?            @relation(fields: [countryId], references: [id])
+  stats                        Json?               // User profile statistics (totalPlays, etc.)
+  plays                        Play[]
+  eventRegistrations           EventRegistration[]
+  apiKeys                      ApiKey[]
+  passkeys                     Passkey[]
+  preferredLeaderboards        UserPreferredLeaderboard[]
+  trophies                     UserTrophy[]
+  createdAt                    DateTime            @default(now())
+  updatedAt                    DateTime            @updatedAt
+  // Rivals feature relations
+  rivals                       UserRival[]         @relation("UserRivals")   // Users this user has marked as rivals
+  rivaledBy                    UserRival[]         @relation("RivalUsers")   // Users who have marked this user as a rival
+  // Authz relations
+  roles                        UserRole[]
+  permissions                  UserPermission[]
+  // Session tracking
+  sessions                     UserSession[]
+}
+
+model Passkey {
+  id           String    @id @default(uuid())
+  userId       String
+  credentialId String    @unique
+  publicKey    String
+  counter      BigInt    @default(0)
+  transports   String[]
+  deviceType   String
+  backedUp     Boolean   @default(false)
+  name         String?
+  lastUsedAt   DateTime?
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model WebAuthnChallenge {
+  id         String   @id @default(uuid())
+  userId     String?  // For registration challenges (user-specific)
+  challenge  String   @unique
+  type       String   // 'registration' or 'authentication'
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+
+  @@index([challenge])
+  @@index([expiresAt])
+}
+
+model ApiKey {
+  keyHash   String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  lastUsedAt DateTime?
+}
+
+model Event {
+  id            Int                 @id @default(autoincrement())
+  name          String
+  date          DateTime
+  registrations EventRegistration[]
+  leaderboards  Leaderboard[]       @relation("EventLeaderboard")
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+}
+
+model EventRegistration {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  eventId   Int
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Leaderboard {
+  id               Int                @id @default(autoincrement())
+  type             String // e.g., EX, ITG, etc.
+  events           Event[]            @relation("EventLeaderboard")
+  charts           Chart[]            @relation("ChartLeaderboard")
+  plays            Play[]             @relation("PlayLeaderboard")
+  preferredBy      UserPreferredLeaderboard[]
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  PlayLeaderboard  PlayLeaderboard[]
+  ChartLeaderboard ChartLeaderboard[]
+
+  @@index([type, id], map: "Leaderboard_type_idx")
+}
+
+// todo: Assuming that computing the leaderboard on every GET request is too slow, we need 
+// some kind of caching mechanism, such as another table here
+// GS allegedly calculates the leaderboard on write, but this approach leads to really slow
+// POST requests, probably async compute the new leaderboard, and splice the submitted play
+// into the leaderboard client side somehow?
+
+model ChartLeaderboard {
+  id            Int         @id @default(autoincrement())
+  chartHash     String
+  leaderboardId Int
+  chart         Chart       @relation(fields: [chartHash], references: [hash])
+  leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id])
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model Pack {
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  bannerUrl String?
+  mdBannerUrl String?
+  smBannerUrl String?
+  bannerVariants Json?
+  popularity Float?   @default(0.0) // Calculated popularity score based on recent activity
+  popularityUpdatedAt DateTime? // Last time popularity was calculated
+  simfiles  Simfile[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+
+model Simfile {
+  id            String         @id @default(uuid())
+  hash          String?        @unique
+  packId        Int
+  title         String
+  subtitle      String?
+  artist        String
+  genre         String?
+  credit        String?
+  music         String?
+  banner        String?
+  background    String?
+  offset        Float?
+  bpms          String
+  stops         String?
+  version       String?
+  bannerUrl     String?
+  mdBannerUrl   String?
+  smBannerUrl   String?
+  bannerVariants Json?
+  backgroundUrl String?
+  jacketUrl     String?
+  pack          Pack           @relation(fields: [packId], references: [id], onDelete: Cascade)
+  charts        SimfileChart[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([packId])
+  @@index([hash])
+}
+
+model SimfileChart {
+  id          Int      @id @default(autoincrement())
+  simfileId   String
+  chartHash   String
+  chartName   String?
+  stepsType   String?  // dance-single, dance-double, etc.
+  description String?
+  difficulty   String?  // beginner, easy, medium, hard, challenge, edit
+  meter       Int?     // difficulty rating from simfile
+  credit      String?  // stepartist from simfile
+  simfile     Simfile  @relation(fields: [simfileId], references: [id], onDelete: Cascade)
+  chart       Chart    @relation(fields: [chartHash], references: [hash], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([simfileId, chartHash])
+  @@index([simfileId])
+  @@index([chartHash])
+}
+
+model Chart {
+  hash             String             @id
+  simfileId        String?
+  // Chart metadata (for standalone charts or fallback when no simfile)
+  songName         String?
+  artist           String?
+  rating           Int?               // difficulty rating (for backwards compatibility)
+  length           String?
+  stepartist       String?
+  // StepMania-specific metadata (when chart comes from simfile)
+  stepsType        String?            // dance-single, dance-double, etc.
+  difficulty       String?            // beginner, easy, medium, hard, challenge, edit
+  description      String?
+  meter            Int?               // difficulty rating (from simfile)
+  chartName        String?
+  credit           String?            // stepartist (from simfile)
+  radarValues      String?
+  chartBpms        String?            // chart-specific BPMs (overrides simfile BPMs)
+  noteData         String?            // raw note data for chart parsing
+  simfiles         SimfileChart[]
+  plays            Play[]
+  leaderboards     Leaderboard[]      @relation("ChartLeaderboard")
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  ChartLeaderboard ChartLeaderboard[]
+
+  @@index([simfileId])
+  @@index([stepsType, difficulty])
+}
+
+model PlayLeaderboard {
+  playId        Int
+  leaderboardId Int
+  play          Play        @relation(fields: [playId], references: [id])
+  leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id])
+  // Leaderboard-specific computed data (scores, grades, judgements, etc.)
+  data          Json?
+  sortKey       String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@id([playId, leaderboardId])
+  @@index([leaderboardId, sortKey]) // keep leaderboard queries fast
+}
+
+model Play {
+  id               Int               @id @default(autoincrement())
+  userId           String
+  chartHash        String
+  leaderboards     Leaderboard[]     @relation("PlayLeaderboard")
+  user             User              @relation(fields: [userId], references: [id])
+  chart            Chart             @relation(fields: [chartHash], references: [hash])
+  lifebars         Lifebar[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  rawTimingDataUrl String // S3
+  modifiers        Json?             // Play modifiers (speed, turn, appearance, etc.)
+  PlayLeaderboard  PlayLeaderboard[]
+
+  @@index([chartHash])
+  @@index([chartHash, userId, createdAt(sort: Desc), id(sort: Desc)], map: "Play_chartHash_userId_createdAt_id_idx")
+}
+
+model Lifebar {
+  id        Int      @id @default(autoincrement())
+  name      String
+  playId    Int
+  play      Play     @relation(fields: [playId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model UserPreferredLeaderboard {
+  userId        String
+  leaderboardId Int
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
+  createdAt     DateTime    @default(now())
+
+  @@id([userId, leaderboardId])
+  @@index([userId])
+  @@index([leaderboardId])
+}
+
+// Directed rivals relationship (userId -> rivalUserId)
+model UserRival {
+  userId      String
+  rivalUserId String
+  user        User      @relation("UserRivals", fields: [userId], references: [id], onDelete: Cascade)
+  rival       User      @relation("RivalUsers", fields: [rivalUserId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+
+  @@id([userId, rivalUserId])
+  @@index([userId])
+  @@index([rivalUserId])
+}
+
+// ----- Authorization models -----
+
+model Role {
+  id              Int               @id @default(autoincrement())
+  name            String            @unique
+  description     String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  users           UserRole[]
+  rolePermissions RolePermission[]
+}
+
+model Permission {
+  id          Int               @id @default(autoincrement())
+  key         String            @unique
+  description String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  userPermissions UserPermission[]
+  rolePermissions RolePermission[]
+}
+
+model UserRole {
+  userId String
+  roleId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@index([userId])
+  @@index([roleId])
+}
+
+model RolePermission {
+  roleId       Int
+  permissionId Int
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@index([roleId])
+  @@index([permissionId])
+}
+
+model UserPermission {
+  userId       String
+  permissionId Int
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([userId, permissionId])
+  @@index([userId])
+  @@index([permissionId])
+}
+
+// ----- Trophy models -----
+
+model Trophy {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  description String       // Supports interpolation, e.g., "Achieved {rank} place in {eventName}"
+  tier        String       // common, rare, epic, legendary
+  imageUrl    String?      // URL to the trophy image asset
+  users       UserTrophy[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model UserTrophy {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  trophyId     Int
+  displayOrder Int?     // User-defined order for trophy display (null = not displayed)
+  metadata     Json?    // Data for description interpolation, e.g., { "rank": 1, "eventName": "Blue Shift 2025" }
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  trophy       Trophy   @relation(fields: [trophyId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([userId, trophyId])
+  @@index([userId])
+  @@index([trophyId])
+  @@index([userId, displayOrder])
+}
+
+// ----- User Session models -----
+
+// A session represents a period of play activity for a user,
+// bounded by 2+ hours of inactivity before and after.
+// Sessions are maintained incrementally by the user-stats lambda.
+model UserSession {
+  id             Int      @id @default(autoincrement())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Session timing
+  startedAt      DateTime // Timestamp of first play in session
+  endedAt        DateTime // Timestamp of last play in session (updated as plays come in)
+  
+  // Aggregated session stats (updated incrementally)
+  playCount      Int      @default(0) // Number of plays in the session
+  distinctCharts Int      @default(0) // Number of unique charts played
+  stepsHit       Int      @default(0) // Total steps hit (non-Miss judgments)
+  
+  // Difficulty distribution: { [meter]: count } e.g. { "10": 5, "12": 3 }
+  difficultyDistribution Json?
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, startedAt]) // For querying user's sessions chronologically
+  @@index([startedAt])         // For global session queries/feeds
+}

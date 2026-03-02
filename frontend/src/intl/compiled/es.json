@@ -1,0 +1,4230 @@
+{
+  "+0hbIW": [
+    {
+      "type": 0,
+      "value": "Por ejemplo: Móvil, portátil de trabajo, dispositivo personal"
+    }
+  ],
+  "+9eRWt": [
+    {
+      "type": 0,
+      "value": "Cada nota contribuye a su peso en la ventana de timing en base al tiempo en que presionas dicha nota."
+    }
+  ],
+  "+FgcFw": [
+    {
+      "type": 0,
+      "value": "País"
+    }
+  ],
+  "+a1gOU": [
+    {
+      "type": 0,
+      "value": "Logo de Blue Shift"
+    }
+  ],
+  "+gIWnk": [
+    {
+      "type": 0,
+      "value": "Aún no hay puntuaciones en esta categoría."
+    }
+  ],
+  "+h2LEI": [
+    {
+      "type": 0,
+      "value": "Por favor, espere mientras obtenemos los datos del pack"
+    }
+  ],
+  "+pLe/x": [
+    {
+      "type": 0,
+      "value": "Récord personal"
+    }
+  ],
+  "+tpXd6": [
+    {
+      "type": 0,
+      "value": "Regístrate en el sitio (Registrarse) y verifica tu email. Esto asociará futuras puntuaciones a tu perfil."
+    }
+  ],
+  "/1csZt": [
+    {
+      "type": 0,
+      "value": "Registro fallido. Por favor, inténtelo de nuevo."
+    }
+  ],
+  "/CnYKe": [
+    {
+      "type": 0,
+      "value": "Formato del evento"
+    }
+  ],
+  "/Cz20N": [
+    {
+      "type": 0,
+      "value": "Guardar cambios"
+    }
+  ],
+  "/GvRCG": [
+    {
+      "type": 0,
+      "value": "No hay cambios para guardar"
+    }
+  ],
+  "/L5Ek3": [
+    {
+      "type": 0,
+      "value": "Este usuario no ha participado aún en el evento Beta de Blue Shift."
+    }
+  ],
+  "/MH50s": [
+    {
+      "type": 0,
+      "value": "Std.Dev.^3"
+    }
+  ],
+  "/UnDQ8": [
+    {
+      "type": 1,
+      "value": "loadingSpinner"
+    },
+    {
+      "type": 0,
+      "value": " Enviando link de reinicio..."
+    }
+  ],
+  "/c0R5m": [
+    {
+      "type": 0,
+      "value": "Política de privacidad"
+    }
+  ],
+  "/eiyYH": [
+    {
+      "type": 0,
+      "value": "Fecha"
+    }
+  ],
+  "/yrXf9": [
+    {
+      "type": 0,
+      "value": "Respuestas rápidas / información miscelánea"
+    }
+  ],
+  "01/J8T": [
+    {
+      "type": 0,
+      "value": "Ocultar su perfil a otros usuarios"
+    }
+  ],
+  "0273Op": [
+    {
+      "type": 0,
+      "value": "Canciones"
+    }
+  ],
+  "05hmF9": [
+    {
+      "type": 0,
+      "value": "Tamaño máximo de archivo: 5MB"
+    }
+  ],
+  "0CcN1Y": [
+    {
+      "type": 0,
+      "value": "Introduzca una nueva contraseña"
+    }
+  ],
+  "0IbXta": [
+    {
+      "type": 0,
+      "value": "Ir a la página del chart"
+    }
+  ],
+  "0OpKH3": [
+    {
+      "type": 0,
+      "value": "Hash: "
+    },
+    {
+      "type": 1,
+      "value": "hash"
+    }
+  ],
+  "0POvio": [
+    {
+      "type": 0,
+      "value": "Blue Shift se compone de tres fases distintas, cada una de las cuales dura tres semanas. Los jugadores compiten a través de tres distintas tablas de clasificación, cada una diseñada para poner a prueba distintas habilidades de ITG. Puntos serán dados en base a tu clasificación en cada tabla."
+    }
+  ],
+  "0Susv7": [
+    {
+      "type": 0,
+      "value": "Charts del evento"
+    }
+  ],
+  "0UKMwf": [
+    {
+      "type": 0,
+      "value": "Iniciar sesión en tu cuenta de Arrow Cloud"
+    }
+  ],
+  "0ZhmWz": [
+    {
+      "type": 0,
+      "value": "Si has tardado (+) o te has adelantado (-)"
+    }
+  ],
+  "0k4n4s": [
+    {
+      "type": 0,
+      "value": "Peso en EX"
+    }
+  ],
+  "11eEsx": [
+    {
+      "type": 0,
+      "value": "Ventana (±ms)"
+    }
+  ],
+  "13SZgT": [
+    {
+      "type": 0,
+      "value": "Alias"
+    }
+  ],
+  "1CBPXl": [
+    {
+      "type": 0,
+      "value": "Última vez actualizado: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "lastUpdated"
+    }
+  ],
+  "1Ig/74": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Comienza el 5 de diciembre de 2025"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "12:00 PM UTC"
+        }
+      ],
+      "type": 8,
+      "value": "small"
+    }
+  ],
+  "1IiFi6": [
+    {
+      "type": 0,
+      "value": "Añadido"
+    }
+  ],
+  "1My/zA": [
+    {
+      "type": 0,
+      "value": "No hay"
+    }
+  ],
+  "1Y0sic": [
+    {
+      "type": 0,
+      "value": "Email"
+    }
+  ],
+  "1cI8ug": [
+    {
+      "type": 0,
+      "value": "Cómo configurar"
+    }
+  ],
+  "1nKpRW": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Preferencias:"
+        }
+      ],
+      "type": 8,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "prefsPath"
+    }
+  ],
+  "1nrTvx": [
+    {
+      "type": 0,
+      "value": "¿Olvidaste tu contraseña?"
+    }
+  ],
+  "1qm9M9": [
+    {
+      "type": 0,
+      "value": "Single"
+    }
+  ],
+  "1t8tZ+": [
+    {
+      "type": 0,
+      "value": "Subir imagen"
+    }
+  ],
+  "1y8iSP": [
+    {
+      "type": 0,
+      "value": "Simfiles"
+    }
+  ],
+  "21hFSa": [
+    {
+      "type": 0,
+      "value": "Hemos enviado un correo electrónico de verificación a "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "email"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": ". Has clic en su link en algún momento más tarde, ¡o no tendrás forma de recuperar tu cuenta!"
+    }
+  ],
+  "2BwvtG": [
+    {
+      "type": 0,
+      "value": "Algunos grados superiores (Sext / Quint) evalúan usando un sistema de puntuación más estricto (HardEX/EX)."
+    }
+  ],
+  "2FRvLL": [
+    {
+      "type": 0,
+      "value": "Cada 3 semanas subirás tus mejores puntajes en 20 charts elegidos. ¡Juega lo que más te guste!"
+    }
+  ],
+  "2IPNlq": [
+    {
+      "type": 0,
+      "value": "API keys"
+    }
+  ],
+  "2Q+Z2n": [
+    {
+      "type": 0,
+      "value": "EX (15ms)"
+    }
+  ],
+  "2RNR4i": [
+    {
+      "type": 0,
+      "value": "Toma puntos de tus competidores - a medida que rebases a otros jugadores en la tabla de clasificación, los puntos que ganes serán \"robados\" de ellos."
+    }
+  ],
+  "2TD5hu": [
+    {
+      "type": 0,
+      "value": "¿Qué es Arrow Cloud?"
+    }
+  ],
+  "2XL1fo": [
+    {
+      "type": 0,
+      "value": "Logo de Arrow Cloud Blue Shift"
+    }
+  ],
+  "2d72YH": [
+    {
+      "type": 0,
+      "value": "URL del widget"
+    }
+  ],
+  "2hFzLG": [
+    {
+      "type": 0,
+      "value": "Tu correo electrónico se utiliza solo para acciones de seguridad de la cuenta (como restablecer la contraseña) y anuncios ocasionales."
+    }
+  ],
+  "2sYnkh": [
+    {
+      "type": 0,
+      "value": "Copia ArrowCloud.ini a la carpeta de tu perfil (ejemplo: "
+    },
+    {
+      "type": 1,
+      "value": "profileExample"
+    },
+    {
+      "type": 0,
+      "value": ")."
+    }
+  ],
+  "2uZtKR": [
+    {
+      "type": 0,
+      "value": "Ayuda"
+    }
+  ],
+  "2ywg8y": [
+    {
+      "type": 0,
+      "value": "Activar inicio de sesión sin contraseña"
+    }
+  ],
+  "30056/": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Base:"
+        }
+      ],
+      "type": 8,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "basePath"
+    }
+  ],
+  "34xrFN": [
+    {
+      "type": 0,
+      "value": "Widget de streamer"
+    }
+  ],
+  "3N6cLw": [
+    {
+      "type": 0,
+      "value": "Compite a través de"
+    }
+  ],
+  "3bG3Pw": [
+    {
+      "type": 0,
+      "value": "Introduce tu nueva contraseña"
+    }
+  ],
+  "3gll2h": [
+    {
+      "type": 0,
+      "value": "Crear una contraseña"
+    }
+  ],
+  "3oeumn": [
+    {
+      "type": 0,
+      "value": "Soporte"
+    }
+  ],
+  "3pJaQC": [
+    {
+      "type": 0,
+      "value": "Verificando mail..."
+    }
+  ],
+  "3rGlbG": [
+    {
+      "type": 0,
+      "value": "Confirmar contraseña"
+    }
+  ],
+  "41VgXE": [
+    {
+      "type": 0,
+      "value": "Volver a Iniciar sesión"
+    }
+  ],
+  "43jzOu": [
+    {
+      "type": 1,
+      "value": "userIcon"
+    },
+    {
+      "type": 0,
+      "value": " Tú"
+    }
+  ],
+  "4TmIV5": [
+    {
+      "type": 0,
+      "value": "Algunos navegadores pueden marcar la descarga de ArrowCloud.ini como sospechosa dado que es un archivo de configuración que solo contiene texto. Esto es normal y el archivo es seguro; puedes continuar con la descarga."
+    }
+  ],
+  "4XbcYZ": [
+    {
+      "type": 0,
+      "value": "pts"
+    }
+  ],
+  "4cGAA6": [
+    {
+      "type": 0,
+      "value": "Administrar tus tokens de acceso API"
+    }
+  ],
+  "4cud4C": [
+    {
+      "type": 0,
+      "value": "Confirmar contraseña"
+    }
+  ],
+  "4lKz1r": [
+    {
+      "type": 0,
+      "value": "¡La foto de perfil se ha actualizado correctamente!"
+    }
+  ],
+  "5Bb8X7": [
+    {
+      "type": 0,
+      "value": "Cancelar"
+    }
+  ],
+  "5K/3lA": [
+    {
+      "type": 0,
+      "value": "Claves de acceso"
+    }
+  ],
+  "5UgsH1": [
+    {
+      "type": 0,
+      "value": "Los puntos se distribuyen en función de tu posición en cada tabla de clasificación. Cada chart tiene 3 tablas de clasificación, cada fase tiene 3 tablas de clasificación, y los puntos que acumules en cada fase determinarán tu posición final en Blue Shift."
+    }
+  ],
+  "5WyHgs": [
+    {
+      "type": 0,
+      "value": "¡Inicio de sesión exitoso!"
+    }
+  ],
+  "5X2Z64": [
+    {
+      "type": 0,
+      "value": "Tu peor judgment/error"
+    }
+  ],
+  "5XAAaa": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "no está afiliado"
+        }
+      ],
+      "type": 8,
+      "value": "semibold"
+    },
+    {
+      "type": 0,
+      "value": " con GrooveStats, BoogieStats, ITC, ITGDB, SMO, u otros servicios. No colecciona, toma ni hace uso de tablas de clasificación o puntajes de plataformas externas."
+    }
+  ],
+  "5ghtCO": [
+    {
+      "type": 0,
+      "value": "La suma de tu puntaje = peso de los taps + (helds terminados * peso de los held) + (rolls terminados * peso de los held) + (presiones de mina * penalización por mina)."
+    }
+  ],
+  "5jGvbu": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "5leU4H": [
+    {
+      "type": 0,
+      "value": "Añadir rivales"
+    }
+  ],
+  "5mntyH": [
+    {
+      "type": 0,
+      "value": "No has añadido rivales aún"
+    }
+  ],
+  "5nutZC": [
+    {
+      "type": 0,
+      "value": "Por qué existe"
+    }
+  ],
+  "628Yaq": [
+    {
+      "type": 0,
+      "value": "Cargando tablas de clasificación..."
+    }
+  ],
+  "66nTwC": [
+    {
+      "type": 0,
+      "value": "Cargando pack..."
+    }
+  ],
+  "68hzlT": [
+    {
+      "type": 0,
+      "value": "Stepartist"
+    }
+  ],
+  "6A/18S": [
+    {
+      "type": 0,
+      "value": "Cancelar"
+    }
+  ],
+  "6HwZWG": [
+    {
+      "type": 0,
+      "value": "Centro de ayuda "
+    },
+    {
+      "type": 1,
+      "value": "bookIcon"
+    }
+  ],
+  "6e+rCB": [
+    {
+      "type": 0,
+      "value": "No hay charts disponibles"
+    }
+  ],
+  "6ey983": [
+    {
+      "type": 0,
+      "value": "Introduce tu contraseña actual"
+    }
+  ],
+  "6mzOc6": [
+    {
+      "type": 0,
+      "value": "No hay canciones disponibles en este pack"
+    }
+  ],
+  "6oesOv": [
+    {
+      "type": 0,
+      "value": "Introduce tu email"
+    }
+  ],
+  "6t1Xf+": [
+    {
+      "type": 0,
+      "value": "Ingresa tu alias"
+    }
+  ],
+  "7/VMkx": [
+    {
+      "type": 0,
+      "value": "¿Puedo subir puntuaciones de teclado?"
+    }
+  ],
+  "7/fQHG": [
+    {
+      "type": 0,
+      "value": "Seleccionar tema"
+    }
+  ],
+  "71hxBe": [
+    {
+      "type": 0,
+      "value": "Nota: OBS Studio versión 31 o superior es requerido para una visualización adecuada."
+    }
+  ],
+  "77/s9/": [
+    {
+      "type": 0,
+      "value": "Crear cuenta"
+    }
+  ],
+  "7JspJu": [
+    {
+      "type": 0,
+      "value": "Editar perfil"
+    }
+  ],
+  "7N0/GV": [
+    {
+      "type": 0,
+      "value": "Cargando..."
+    }
+  ],
+  "7Y3qMa": [
+    {
+      "type": 0,
+      "value": "Omitir"
+    }
+  ],
+  "7eDt6d": [
+    {
+      "type": 0,
+      "value": "Charts jugados"
+    }
+  ],
+  "7ovwIG": [
+    {
+      "type": 0,
+      "value": "de 3 semanas cada una"
+    }
+  ],
+  "8+OFcD": [
+    {
+      "type": 0,
+      "value": "Puntaje"
+    }
+  ],
+  "80Vzt6": [
+    {
+      "type": 0,
+      "value": "Reintentar"
+    }
+  ],
+  "82xftT": [
+    {
+      "type": 1,
+      "value": "title"
+    },
+    {
+      "type": 0,
+      "value": " banner"
+    }
+  ],
+  "85Sq9G": [
+    {
+      "type": 0,
+      "value": "Way Off y Miss son fuertemente castigados"
+    }
+  ],
+  "86A6Pn": [
+    {
+      "type": 0,
+      "value": "Clasificación general"
+    }
+  ],
+  "89o0ZA": [
+    {
+      "type": 0,
+      "value": "Error al adquirir datos del usuario."
+    }
+  ],
+  "8OA9Ae": [
+    {
+      "type": 0,
+      "value": "Registrarse"
+    }
+  ],
+  "8ZispS": [
+    {
+      "type": 0,
+      "value": "Error al iniciar sesión. Inténtalo de nuevo."
+    }
+  ],
+  "8bdZjb": [
+    {
+      "type": 0,
+      "value": "Todos los tipos"
+    }
+  ],
+  "8i+1ZL": [
+    {
+      "type": 0,
+      "value": "Mínimo"
+    }
+  ],
+  "8x/8+a": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "No."
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " Debes estar pensando en Etterna, en ese caso. Si subiste una puntuación de teclado por error es tu responsabilidad eliminarla. Si notamos que algún usuario tiene muchas puntuaciones de teclado, sus puntuaciones podrían ser borradas por un administrador sin aviso."
+    }
+  ],
+  "94Mbq6": [
+    {
+      "type": 0,
+      "value": "Charts"
+    }
+  ],
+  "9F+o+P": [
+    {
+      "type": 0,
+      "value": "Volver a Iniciar sesión"
+    }
+  ],
+  "9HRRf6": [
+    {
+      "type": 0,
+      "value": "Peso del HardEX"
+    }
+  ],
+  "9K8zUV": [
+    {
+      "type": 0,
+      "value": "Grind"
+    }
+  ],
+  "9KiYOr": [
+    {
+      "type": 0,
+      "value": "De momento, no utilizamos ninguna publicidad ni scripts de seguimiento de terceros, ni servicios de rastreo de terceros."
+    }
+  ],
+  "9KyB94": [
+    {
+      "type": 0,
+      "value": "Subir packs"
+    }
+  ],
+  "9PwMKb": [
+    {
+      "type": 0,
+      "value": "Introduce tu contraseña actual"
+    }
+  ],
+  "9gCla1": [
+    {
+      "type": 0,
+      "value": "Mi puntuación no se pudo enviar, ¿qué hago?"
+    }
+  ],
+  "9hrAn3": [
+    {
+      "type": 0,
+      "value": "Tipo de steps"
+    }
+  ],
+  "9kMeyR": [
+    {
+      "type": 0,
+      "value": "Artista del chart"
+    }
+  ],
+  "9pRwtR": [
+    {
+      "type": 0,
+      "value": "Registrarse"
+    }
+  ],
+  "9tw8mS": [
+    {
+      "type": 0,
+      "value": "Tablas de clasificación"
+    }
+  ],
+  "A02a/L": [
+    {
+      "type": 0,
+      "value": "Tenemos soporte de rivales, para que puedas competir y ver el progreso de tus amigos."
+    }
+  ],
+  "A5yRgM": [
+    {
+      "type": 0,
+      "value": "Usar colores alternativos para versiones más antiguas de OBS (desactiva selección de tema)"
+    }
+  ],
+  "A8mipM": [
+    {
+      "type": 0,
+      "value": "¡Contraseña actualizada con éxito!"
+    }
+  ],
+  "AD4Gnq": [
+    {
+      "type": 0,
+      "value": "Configurar inicio de sesión sin contraseña"
+    }
+  ],
+  "AGRuvQ": [
+    {
+      "type": 0,
+      "value": "Añadir rival"
+    }
+  ],
+  "AKJw1n": [
+    {
+      "type": 0,
+      "value": "Email"
+    }
+  ],
+  "AL/as5": [
+    {
+      "type": 0,
+      "value": "Error al cargar simfiles: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "ANUZlc": [
+    {
+      "type": 0,
+      "value": "No tienes permiso para acceder a esta página. El evento Blue Shift está actualmente en vista previa."
+    }
+  ],
+  "AOeHCB": [
+    {
+      "type": 0,
+      "value": "No disponible"
+    }
+  ],
+  "AgADp0": [
+    {
+      "type": 0,
+      "value": "Perfil"
+    }
+  ],
+  "AhjRKO": [
+    {
+      "type": 0,
+      "value": "Añadido el: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "added"
+    }
+  ],
+  "Amu9qR": [
+    {
+      "type": 0,
+      "value": "Aviso:"
+    }
+  ],
+  "AqLiqA": [
+    {
+      "type": 0,
+      "value": "Reenviar en "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "seconds"
+    },
+    {
+      "type": 0,
+      "value": "s"
+    }
+  ],
+  "AxjkbD": [
+    {
+      "type": 0,
+      "value": "Buscar por canción, artista o jugador..."
+    }
+  ],
+  "B067A3": [
+    {
+      "type": 0,
+      "value": "Sigue este selector guiado para ver las instrucciones específicas de la plataforma."
+    }
+  ],
+  "BAchyT": [
+    {
+      "type": 0,
+      "value": "Copiar URL"
+    }
+  ],
+  "BFIMJG": [
+    {
+      "type": 0,
+      "value": "Recordarme"
+    }
+  ],
+  "BHuTSI": [
+    {
+      "type": 0,
+      "value": "Cada grado tiene un umbral mínimo de %."
+    }
+  ],
+  "BSsFlc": [
+    {
+      "type": 0,
+      "value": "Ver completo"
+    }
+  ],
+  "BgdjiI": [
+    {
+      "type": 0,
+      "value": "Nueva contraseña"
+    }
+  ],
+  "BkGM9i": [
+    {
+      "type": 0,
+      "value": "Ayuda"
+    }
+  ],
+  "Bs3fyg": [
+    {
+      "type": 0,
+      "value": "Eliminar preferencias"
+    }
+  ],
+  "Bt+/uG": [
+    {
+      "type": 0,
+      "value": "Clasificación"
+    }
+  ],
+  "BvJ1Nn": [
+    {
+      "type": 0,
+      "value": "Error al guardar las preferencias"
+    }
+  ],
+  "By9s2f": [
+    {
+      "type": 0,
+      "value": "Sin puntajes aún"
+    }
+  ],
+  "ByVSO+": [
+    {
+      "type": 0,
+      "value": "basado en tu posición en la tabla de clasificación"
+    }
+  ],
+  "C22vWu": [
+    {
+      "type": 0,
+      "value": "Packs"
+    }
+  ],
+  "C4dqyM": [
+    {
+      "type": 0,
+      "value": "Grado"
+    }
+  ],
+  "C5CpiW": [
+    {
+      "type": 0,
+      "value": "Las imágenes se recortarán automáticamente a un cuadrado y se redimensionarán en 400x400"
+    }
+  ],
+  "C6tISW": [
+    {
+      "type": 0,
+      "value": "Bienvenido a Arrow Cloud"
+    }
+  ],
+  "C9Lob8": [
+    {
+      "type": 0,
+      "value": "Elige que información mostrar en el widget"
+    }
+  ],
+  "CVXRUi": [
+    {
+      "type": 0,
+      "value": "El 99,7% de tus pasos estaban por debajo de este valor máximo"
+    }
+  ],
+  "CbHUxa": [
+    {
+      "type": 0,
+      "value": "Únete a nuestro Discord (se abre en una nueva pestaña)"
+    }
+  ],
+  "CcMJR2": [
+    {
+      "type": 0,
+      "value": "Selecciona que tablas de clasificación utilizaras (al menos una es requerida)"
+    }
+  ],
+  "CgzUvb": [
+    {
+      "type": 0,
+      "value": "Tablas de clasificación"
+    }
+  ],
+  "CnmIBg": [
+    {
+      "type": 0,
+      "value": "El archivo de imagen debe ser menor a 5MB"
+    }
+  ],
+  "CqHJWf": [
+    {
+      "type": 0,
+      "value": "Stepartist: "
+    },
+    {
+      "type": 1,
+      "value": "stepartist"
+    }
+  ],
+  "Cqcs8A": [
+    {
+      "type": 0,
+      "value": "Pie de página"
+    }
+  ],
+  "CtB3h2": [
+    {
+      "type": 0,
+      "value": "¿Te gustaría configurar la autenticación sin contraseña para inicios de sesión futuros más rápidos?"
+    }
+  ],
+  "Cy/UbI": [
+    {
+      "type": 0,
+      "value": "Buscar packs..."
+    }
+  ],
+  "D43bLy": [
+    {
+      "type": 0,
+      "value": "Administra tu nickname y país"
+    }
+  ],
+  "DI/ILQ": [
+    {
+      "type": 0,
+      "value": "Descargar ArrowCloud.ini"
+    }
+  ],
+  "DNaobF": [
+    {
+      "type": 0,
+      "value": "Buscar canciones..."
+    }
+  ],
+  "DOXSYq": [
+    {
+      "type": 0,
+      "value": "Grado"
+    }
+  ],
+  "DPOFoY": [
+    {
+      "type": 0,
+      "value": "Nunca ha sido usado"
+    }
+  ],
+  "DUbBkQ": [
+    {
+      "type": 0,
+      "value": "Puntaje"
+    }
+  ],
+  "DUif3G": [
+    {
+      "type": 0,
+      "value": "Eliminar puntaje"
+    }
+  ],
+  "DVNpb1": [
+    {
+      "type": 0,
+      "value": "Cargando países..."
+    }
+  ],
+  "DYk76o": [
+    {
+      "type": 0,
+      "value": "puntos"
+    }
+  ],
+  "DdEvZe": [
+    {
+      "type": 0,
+      "value": "¡Foto de perfil eliminada con éxito!"
+    }
+  ],
+  "DdfLk1": [
+    {
+      "type": 0,
+      "value": "Error al actualizar la contraseña"
+    }
+  ],
+  "DpZVFd": [
+    {
+      "type": 0,
+      "value": "Si Arrow Cloud está caído, significa que probablemente ocurrió una de estas dos cosas: o AWS está teniendo un corte en nuestra región, o alguno de nuestros desarrolladores sacó una mala versión. Si esto sucede, puede que extendamos el tiempo en que finaliza el evento para dar comodidad a los jugadores afectados. De nuevo, haremos nuestro mejor esfuerzo en hacer un build de nuestro módulo y tema en el que se puedan resubir puntajes que no se pudieron subir, automáticamente."
+    }
+  ],
+  "Duq0nQ": [
+    {
+      "type": 0,
+      "value": "Una plataforma moderna de ITG con integración de seguimiento de puntajes, tablas de clasificación, eventos, rivalidades y más."
+    }
+  ],
+  "Dya6QR": [
+    {
+      "type": 0,
+      "value": "Cómo usar en OBS:"
+    }
+  ],
+  "E2Q8Ev": [
+    {
+      "type": 0,
+      "value": "Contraseña actual"
+    }
+  ],
+  "E2VFjz": [
+    {
+      "type": 0,
+      "value": "Descartar"
+    }
+  ],
+  "EaTIYv": [
+    {
+      "type": 0,
+      "value": "Packs"
+    }
+  ],
+  "Eb0JQV": [
+    {
+      "type": 0,
+      "value": "Error al borrar las preferencias"
+    }
+  ],
+  "EgWcdC": [
+    {
+      "type": 0,
+      "value": "Contraseña"
+    }
+  ],
+  "Ejaumd": [
+    {
+      "type": 0,
+      "value": "Borrando..."
+    }
+  ],
+  "EnMoBC": [
+    {
+      "type": 0,
+      "value": "Añadido"
+    }
+  ],
+  "FBQiEB": [
+    {
+      "type": 0,
+      "value": "Cargando API keys..."
+    }
+  ],
+  "FBujCk": [
+    {
+      "type": 0,
+      "value": "Sesión iniciada como "
+    },
+    {
+      "type": 1,
+      "value": "userInfo"
+    },
+    {
+      "type": 0,
+      "value": ". Este paso ha sido completado."
+    }
+  ],
+  "FEaNa1": [
+    {
+      "type": 0,
+      "value": "Si tu puntuación no ha podido enviarse, por favor comprueba tu conexión a internet. No aceptamos subidas de puntuaciones manuales. Trabajaremos para asegurarnos de que nuestro tema y las integraciones de módulos se encarguen de reintentar subidas fallidas, pero esta característica aún no está disponible."
+    }
+  ],
+  "FXXCXg": [
+    {
+      "type": 0,
+      "value": "Artista del chart"
+    }
+  ],
+  "FaknjP": [
+    {
+      "type": 0,
+      "value": "Mostrando "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "shown"
+    },
+    {
+      "type": 0,
+      "value": " de "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " canciones"
+    }
+  ],
+  "FdrJbE": [
+    {
+      "type": 0,
+      "value": "Mostrando "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "recentScores"
+    },
+    {
+      "type": 0,
+      "value": " de "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " partidas"
+    }
+  ],
+  "FfCFxS": [
+    {
+      "type": 0,
+      "value": "Blue Shift es nuestro evento inaugural de 9 semanas, que comienza a principios de diciembre."
+    }
+  ],
+  "FkqFg3": [
+    {
+      "type": 0,
+      "value": "Offset medio"
+    }
+  ],
+  "FrimqV": [
+    {
+      "type": 0,
+      "value": "No hay datos de timing disponibles para esta partida."
+    }
+  ],
+  "G5D4zt": [
+    {
+      "type": 0,
+      "value": "A partir del 5 de diciembre de 2025, Blue Shift es nuestro evento competitivo inaugural - un torneo multi-fase remoto/en línea donde puedes competir con jugadores de todo el mundo a través de múltiples categorías de habilidades y tablas de clasificación!"
+    }
+  ],
+  "G8u4NE": [
+    {
+      "type": 0,
+      "value": "Procesando..."
+    }
+  ],
+  "G9kRa2": [
+    {
+      "type": 0,
+      "value": "Miembro desde"
+    }
+  ],
+  "GDC8y1": [
+    {
+      "type": 0,
+      "value": "H.EX (10ms), EX e ITG"
+    }
+  ],
+  "GHqL4U": [
+    {
+      "type": 0,
+      "value": "Las claves de acceso no son compatibles con este dispositivo o navegador."
+    }
+  ],
+  "GNP6fs": [
+    {
+      "type": 0,
+      "value": "Subiendo... "
+    },
+    {
+      "style": {
+        "parsedOptions": {
+          "style": "percent"
+        },
+        "tokens": [
+          {
+            "options": [
+            ],
+            "stem": "percent"
+          }
+        ],
+        "type": 0
+      },
+      "type": 2,
+      "value": "progress"
+    }
+  ],
+  "GRui4y": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "GVb3Zo": [
+    {
+      "type": 0,
+      "value": "Error al cargar puntuaciones recientes: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "GXkfPe": [
+    {
+      "type": 0,
+      "value": "No se encontraron charts."
+    }
+  ],
+  "GYz+Yc": [
+    {
+      "type": 0,
+      "value": "Tabla de clasificación general"
+    }
+  ],
+  "GamScG": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud es un servicio en línea moderno de ITGMania con la intención de mantener seguimiento de puntuaciones, alojar tablas de clasificación y hacer eventos remotos en línea. Construido con una infraestructura fundamentalmente escalable, será de código abierto en 2026."
+    }
+  ],
+  "GgX2r2": [
+    {
+      "type": 0,
+      "value": "Los Greats aún conservan menor peso"
+    }
+  ],
+  "GrJ6PI": [
+    {
+      "type": 0,
+      "value": "Siguiente"
+    }
+  ],
+  "GrQeWz": [
+    {
+      "type": 0,
+      "value": "Reenviar en "
+    },
+    {
+      "type": 1,
+      "value": "resendCooldown"
+    },
+    {
+      "type": 0,
+      "value": "s"
+    }
+  ],
+  "Gxtt3v": [
+    {
+      "type": 0,
+      "value": "Por favor verifica tu dirección de email para proteger tu cuenta."
+    }
+  ],
+  "H/xdSH": [
+    {
+      "type": 0,
+      "value": "Lo que Arrow Cloud sí es"
+    }
+  ],
+  "HFZ2Dx": [
+    {
+      "type": 0,
+      "value": "Sistemas de puntuación y grado"
+    }
+  ],
+  "HGJlNc": [
+    {
+      "type": 0,
+      "value": "Autenticando..."
+    }
+  ],
+  "HIvR8W": [
+    {
+      "type": 0,
+      "value": "Restablecer"
+    }
+  ],
+  "HO0K0o": [
+    {
+      "type": 0,
+      "value": "Clasificación"
+    }
+  ],
+  "HlcJcp": [
+    {
+      "type": 0,
+      "value": "Tema"
+    }
+  ],
+  "HmniJw": [
+    {
+      "type": 0,
+      "value": "¿Estás seguro de que quieres eliminar tu foto de perfil?"
+    }
+  ],
+  "I/+lYe": [
+    {
+      "type": 0,
+      "value": "Confirmar ban del usuario"
+    }
+  ],
+  "ID1Yfr": [
+    {
+      "type": 0,
+      "value": "Error al procesar la imagen"
+    }
+  ],
+  "IFnUpt": [
+    {
+      "type": 0,
+      "value": "Iniciar sesión"
+    }
+  ],
+  "IJIw7r": [
+    {
+      "type": 0,
+      "value": "Regístrate ahora"
+    }
+  ],
+  "ITq0p4": [
+    {
+      "type": 0,
+      "value": "Política de privacidad"
+    }
+  ],
+  "J8Xk3g": [
+    {
+      "type": 0,
+      "value": "Restablecer contraseña"
+    }
+  ],
+  "JEZQFw": [
+    {
+      "type": 0,
+      "value": "Clasificación"
+    }
+  ],
+  "JKKkzS": [
+    {
+      "type": 0,
+      "value": "Cambiar contraseña"
+    }
+  ],
+  "JTD1xr": [
+    {
+      "type": 0,
+      "value": "Preparando clave de acceso..."
+    }
+  ],
+  "JTnbHZ": [
+    {
+      "type": 0,
+      "value": "Añadir clave de acceso"
+    }
+  ],
+  "JVuqsu": [
+    {
+      "type": 0,
+      "value": "Abre "
+    },
+    {
+      "type": 1,
+      "value": "prefsPath"
+    },
+    {
+      "type": 0,
+      "value": " mientras el juego está cerrado y añade el host a la lista de permitidos. Si ya tienes otras líneas en el archivo, simplemente añade "
+    },
+    {
+      "type": 1,
+      "value": "appendHost"
+    },
+    {
+      "type": 0,
+      "value": " al final de tu lista existente."
+    }
+  ],
+  "Jf70Ja": [
+    {
+      "type": 0,
+      "value": "Administra los ajustes de tu cuenta y preferencias"
+    }
+  ],
+  "Jic09P": [
+    {
+      "type": 0,
+      "value": "¿Estás seguro de que quieres banear a "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "userAlias"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "? Esto hará lo siguiente:"
+    }
+  ],
+  "Jy5dn1": [
+    {
+      "type": 0,
+      "value": "Puntos"
+    }
+  ],
+  "Jyhkfl": [
+    {
+      "type": 0,
+      "value": "Perfil de usuario"
+    }
+  ],
+  "KBUN0h": [
+    {
+      "type": 0,
+      "value": "Añadido el"
+    }
+  ],
+  "KCXDwp": [
+    {
+      "type": 0,
+      "value": "Artista"
+    }
+  ],
+  "KV+29l": [
+    {
+      "type": 0,
+      "value": "Si no se cumple la condición: se retrocede al grado mínimo de pass (D)."
+    }
+  ],
+  "Kc/AbT": [
+    {
+      "type": 0,
+      "value": "Introduce tu email"
+    }
+  ],
+  "KfBAeQ": [
+    {
+      "type": 0,
+      "value": "3 fases"
+    }
+  ],
+  "KpJJ7D": [
+    {
+      "type": 0,
+      "value": "¡Email verificado!"
+    }
+  ],
+  "Kz3cvi": [
+    {
+      "type": 0,
+      "value": "Preparando..."
+    }
+  ],
+  "L4UkwF": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Perfiles:"
+        }
+      ],
+      "type": 8,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "profilesPath"
+    }
+  ],
+  "LGRXTs": [
+    {
+      "type": 0,
+      "value": "Elige el nombre con el que te verán"
+    }
+  ],
+  "LHEIOI": [
+    {
+      "type": 0,
+      "value": "Cómo se calcula el porcentaje"
+    }
+  ],
+  "LO3Rbr": [
+    {
+      "type": 0,
+      "value": "Eliminar imagen"
+    }
+  ],
+  "LPsP/k": [
+    {
+      "type": 0,
+      "value": "Cambiar contraseña"
+    }
+  ],
+  "Lgs0xB": [
+    {
+      "type": 0,
+      "value": "Error al cargar puntuaciones recientes"
+    }
+  ],
+  "LhgF30": [
+    {
+      "type": 0,
+      "value": "Editar perfil"
+    }
+  ],
+  "Lk4UgA": [
+    {
+      "type": 0,
+      "value": "Buscar charts o artistas..."
+    }
+  ],
+  "LoJ0Ee": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "ITG:"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " Ventana de timing clásica para jugadores tradicionales."
+    }
+  ],
+  "M/hUW7": [
+    {
+      "type": 0,
+      "value": "Blue Shift"
+    }
+  ],
+  "M3DX4L": [
+    {
+      "type": 0,
+      "value": "Error al cargar los packs: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "M4B3y1": [
+    {
+      "type": 0,
+      "value": "Packs"
+    }
+  ],
+  "M7sGOe": [
+    {
+      "type": 0,
+      "value": "Gestión de claves de acceso"
+    }
+  ],
+  "MAcEmn": [
+    {
+      "type": 0,
+      "value": "Rivales"
+    }
+  ],
+  "MJfqi+": [
+    {
+      "type": 0,
+      "value": "Banear usuario"
+    }
+  ],
+  "MO8tb+": [
+    {
+      "type": 0,
+      "value": "Foto de perfil"
+    }
+  ],
+  "MOf0nY": [
+    {
+      "type": 0,
+      "value": "Anterior"
+    }
+  ],
+  "MQb09O": [
+    {
+      "type": 0,
+      "value": "Puntos totales"
+    }
+  ],
+  "MW8glP": [
+    {
+      "type": 0,
+      "value": "Tu lugar para entender Arrow Cloud — qué es, por qué existe, y cómo configurarlo en tu setup."
+    }
+  ],
+  "MZJzFb": [
+    {
+      "type": 0,
+      "value": "Retardo de la rotación"
+    }
+  ],
+  "MZaQAv": [
+    {
+      "type": 0,
+      "value": "Última vez usado: "
+    },
+    {
+      "type": 1,
+      "value": "lastUsed"
+    }
+  ],
+  "MjDpNZ": [
+    {
+      "type": 0,
+      "value": "Borrar puntuaje"
+    }
+  ],
+  "MoIA9d": [
+    {
+      "type": 0,
+      "value": "Selecciona qué tablas de clasificación quieres ver por defecto"
+    }
+  ],
+  "MrInI2": [
+    {
+      "type": 0,
+      "value": "Chart de timing"
+    }
+  ],
+  "NIMaHT": [
+    {
+      "type": 0,
+      "value": "Piso de pass"
+    }
+  ],
+  "NZZiZb": [
+    {
+      "type": 0,
+      "value": "Título desconocido"
+    }
+  ],
+  "NbqIsv": [
+    {
+      "type": 0,
+      "value": "Una solicitud de eliminación de cuenta requiere pruebas acerca del control sobre el email asociado a la cuenta (por ejemplo, respondiendo desde aquella cuenta de mail o completando un paso de verificación). Habiendose hecho la verificación y eliminación, tus datos personales serán borrados o irreversiblemente anonimizados sujeto a cualquier salvaguarda de integración de sistema o de anti-abuso. Si lo necesitas, puedes solicitar la eliminacion de tu cuenta mandando un email a support (arroba) arrowcloud (punto) dance, o contactando a alguno de nuestros administradores en nuestro server de Discord."
+    }
+  ],
+  "NcqsCp": [
+    {
+      "type": 0,
+      "value": "Elegir imagen"
+    }
+  ],
+  "NgOmb9": [
+    {
+      "type": 0,
+      "value": "Administrador"
+    }
+  ],
+  "No2aRz": [
+    {
+      "type": 0,
+      "value": "Fecha"
+    }
+  ],
+  "NvFvI1": [
+    {
+      "type": 0,
+      "value": "Beta"
+    }
+  ],
+  "NvXgF1": [
+    {
+      "type": 0,
+      "value": "Restablecer contraseña"
+    }
+  ],
+  "Nx1LTA": [
+    {
+      "type": 0,
+      "value": "Guardando..."
+    }
+  ],
+  "O6jEye": [
+    {
+      "type": 0,
+      "value": "Seleccionado: "
+    },
+    {
+      "type": 1,
+      "value": "fileName"
+    },
+    {
+      "type": 0,
+      "value": " ("
+    },
+    {
+      "style": {
+        "parsedOptions": {
+          "style": "unit",
+          "unit": "kilobyte"
+        },
+        "tokens": [
+          {
+            "options": [
+              "kilobyte"
+            ],
+            "stem": "unit"
+          }
+        ],
+        "type": 0
+      },
+      "type": 2,
+      "value": "fileSize"
+    },
+    {
+      "type": 0,
+      "value": ") - 400x400 listo para su subida"
+    }
+  ],
+  "O7TzM9": [
+    {
+      "type": 0,
+      "value": "Participantes: "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    }
+  ],
+  "O93xq6": [
+    {
+      "type": 0,
+      "value": "Serás redirigido a tu panel de control a la brevedad..."
+    }
+  ],
+  "OWbRXA": [
+    {
+      "type": 0,
+      "value": "Borrar filtros"
+    }
+  ],
+  "OfekCx": [
+    {
+      "type": 0,
+      "value": "¿Ya posees una cuenta? "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Inicia sesión aquí"
+        }
+      ],
+      "type": 8,
+      "value": "button"
+    }
+  ],
+  "OrEocL": [
+    {
+      "type": 0,
+      "value": "Notificaciones acerca de actualizaciones a esta política de privacidad serán enviadas vía email, anunciadas en Discord, y publicadas en nuestro sitio web."
+    }
+  ],
+  "P+Gj+q": [
+    {
+      "type": 0,
+      "value": "Error al actualizar el perfil"
+    }
+  ],
+  "P+UCmK": [
+    {
+      "type": 0,
+      "value": "Usa el sistema de seguridad integrado en tu dispositivo para iniciar sesión instantáneamente"
+    }
+  ],
+  "P/vx2w": [
+    {
+      "type": 1,
+      "value": "swordIcon"
+    },
+    {
+      "type": 0,
+      "value": " Rival"
+    }
+  ],
+  "PGAlRw": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "PP8AC8": [
+    {
+      "type": 0,
+      "value": "Quitar rival"
+    }
+  ],
+  "PPXCI8": [
+    {
+      "type": 0,
+      "value": "Falló la verificación del email. Por favor, inténtalo de nuevo o solicita un nuevo mail de verificación."
+    }
+  ],
+  "PTMqr0": [
+    {
+      "type": 0,
+      "value": "Condiciones de grado e insignias (ITG base + extensiones)"
+    }
+  ],
+  "PttiTj": [
+    {
+      "type": 0,
+      "value": "Editar perfil"
+    }
+  ],
+  "Q0d0pT": [
+    {
+      "type": 0,
+      "value": "Generar key"
+    }
+  ],
+  "QF7nqo": [
+    {
+      "type": 0,
+      "value": "Se le enviará un correo de notificación de suspensión"
+    }
+  ],
+  "QGutVM": [
+    {
+      "type": 0,
+      "value": "Recompensa la precisión extrema"
+    }
+  ],
+  "QIi1Qb": [
+    {
+      "type": 0,
+      "value": "#"
+    },
+    {
+      "type": 1,
+      "value": "rank"
+    }
+  ],
+  "QJ79vt": [
+    {
+      "type": 0,
+      "value": "No vendemos ni rentamos datos personales. Las contraseñas se almacenan utilizando el hashing estándar de la industria. El acceso directo a la base de datos está restringido sólo a los administradores autorizados del sitio. De tanto en tanto, exportaciones de bases de datos anónimas (con identificadores directos eliminados) podrían ser publicadas o distribuidas con fines de copia de seguridad, archivo, análisis o restauración."
+    }
+  ],
+  "QOAp4b": [
+    {
+      "type": 0,
+      "value": "Fantastic primario a ±15ms"
+    }
+  ],
+  "QTkpuD": [
+    {
+      "type": 0,
+      "value": "Jugador"
+    }
+  ],
+  "QYJaeC": [
+    {
+      "type": 0,
+      "value": "Dale click a 'Apagar fuente cuando no sea visible' y 'Actualizar el navegador cuando la escena se active'"
+    }
+  ],
+  "Qo+oY5": [
+    {
+      "type": 0,
+      "value": "Error máximo"
+    }
+  ],
+  "Qpj9Z+": [
+    {
+      "type": 0,
+      "value": "Buscar alias de usuario (min 2 caracteres)"
+    }
+  ],
+  "QreD4A": [
+    {
+      "type": 0,
+      "value": "Porcentaje = suma de puntaje / máximo."
+    }
+  ],
+  "RAgpSZ": [
+    {
+      "type": 0,
+      "value": "Puntaje"
+    }
+  ],
+  "RDLRdD": [
+    {
+      "type": 0,
+      "value": "Registrarse"
+    }
+  ],
+  "RHzXYw": [
+    {
+      "type": 0,
+      "value": "Error al reenviar el correo electrónico de verificación. Por favor, inténtalo de nuevo."
+    }
+  ],
+  "RNhXT1": [
+    {
+      "type": 0,
+      "value": "Estructura del evento"
+    }
+  ],
+  "RWchvs": [
+    {
+      "type": 0,
+      "value": "Error al cargar la información de la clave de acceso"
+    }
+  ],
+  "Rfndrb": [
+    {
+      "type": 0,
+      "value": "Copiar"
+    }
+  ],
+  "RoZdO3": [
+    {
+      "type": 0,
+      "value": "Bienvenido a Arrow Cloud"
+    }
+  ],
+  "Rp8OF+": [
+    {
+      "type": 0,
+      "value": "No hay puntuaciones recientes disponibles"
+    }
+  ],
+  "S5AGlo": [
+    {
+      "type": 0,
+      "value": "Error al registrar la clave de acceso"
+    }
+  ],
+  "SF7mNm": [
+    {
+      "type": 0,
+      "value": "Fantastic interior más ajustado: ventana ±10ms"
+    }
+  ],
+  "SI6+yb": [
+    {
+      "type": 0,
+      "value": "Peso en ITG"
+    }
+  ],
+  "SSi3N2": [
+    {
+      "type": 0,
+      "value": "Descargar pack"
+    }
+  ],
+  "STVQpe": [
+    {
+      "type": 0,
+      "value": "Acceso denegado"
+    }
+  ],
+  "SZ1Xar": [
+    {
+      "type": 0,
+      "value": "Iniciar sesión"
+    }
+  ],
+  "Sgtmaw": [
+    {
+      "type": 0,
+      "value": "Elige tus tablas de clasificación"
+    }
+  ],
+  "SjGrX2": [
+    {
+      "type": 0,
+      "value": "reenviar en "
+    },
+    {
+      "type": 1,
+      "value": "resendCooldown"
+    },
+    {
+      "type": 0,
+      "value": "s"
+    }
+  ],
+  "SpD64Q": [
+    {
+      "type": 0,
+      "value": "EX"
+    }
+  ],
+  "SsHyj8": [
+    {
+      "type": 0,
+      "value": "Confirma tu nueva contraseña"
+    }
+  ],
+  "SsRETH": [
+    {
+      "type": 0,
+      "value": "Establece ancho: "
+    },
+    {
+      "type": 1,
+      "value": "width"
+    },
+    {
+      "type": 0,
+      "value": ", altura: "
+    },
+    {
+      "type": 1,
+      "value": "height"
+    }
+  ],
+  "T3ze71": [
+    {
+      "type": 0,
+      "value": "H.EX"
+    }
+  ],
+  "THr3aV": [
+    {
+      "type": 0,
+      "value": "Modo de compatibilidad"
+    }
+  ],
+  "TSz5Re": [
+    {
+      "type": 0,
+      "value": "Dificultad"
+    }
+  ],
+  "TV0vc/": [
+    {
+      "type": 0,
+      "value": "Simfiles asociados"
+    }
+  ],
+  "TZbl8m": [
+    {
+      "type": 0,
+      "value": "Guardando..."
+    }
+  ],
+  "TdWa2s": [
+    {
+      "type": 0,
+      "value": "Añadir"
+    }
+  ],
+  "TeiEDu": [
+    {
+      "type": 0,
+      "value": "Añadido el: "
+    },
+    {
+      "type": 1,
+      "value": "date"
+    }
+  ],
+  "TiJDoq": [
+    {
+      "type": 0,
+      "value": "Borrar puntaje"
+    }
+  ],
+  "TiVT6w": [
+    {
+      "type": 0,
+      "value": "Utilice una clave de seguridad para una autenticación segura"
+    }
+  ],
+  "TtSTfd": [
+    {
+      "type": 0,
+      "value": "Error al eliminar el puntaje"
+    }
+  ],
+  "TzNn9X": [
+    {
+      "type": 0,
+      "value": "Sube una foto de perfil que se mostrará en tu perfil público y en las tablas de clasificación."
+    }
+  ],
+  "U0/54Q": [
+    {
+      "type": 0,
+      "value": "Cerrar sesión"
+    }
+  ],
+  "UCtdeR": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud es una plataforma moderna diseñada para la comunidad ITG. Proporcionamos seguimiento de puntajes, tablas de clasificación, rivales y capacidad de alojamiento de eventos con un enfoque en la estabilidad, experiencia de usuario y juego competitivo."
+    }
+  ],
+  "UTD+LX": [
+    {
+      "type": 0,
+      "value": "Puntuaciones en los charts"
+    }
+  ],
+  "UcNrFr": [
+    {
+      "type": 0,
+      "value": "Configurar y administrar tus claves de acceso"
+    }
+  ],
+  "UekZ7j": [
+    {
+      "type": 0,
+      "value": "Por favor, espera mientras verificamos tu dirección de email..."
+    }
+  ],
+  "UhnD7Q": [
+    {
+      "type": 0,
+      "value": "ITG"
+    }
+  ],
+  "UoUeqp": [
+    {
+      "type": 0,
+      "value": "Por favor, selecciona un archivo de imagen válido (JPEG, PNG, GIF o WebP)"
+    }
+  ],
+  "VARle9": [
+    {
+      "type": 0,
+      "value": "Charts"
+    }
+  ],
+  "VDiUbH": [
+    {
+      "type": 0,
+      "value": "Grado"
+    }
+  ],
+  "VOJppc": [
+    {
+      "type": 0,
+      "value": "Sin puntajes aún"
+    }
+  ],
+  "VWSTaJ": [
+    {
+      "type": 0,
+      "value": "Error al subir la foto de perfil"
+    }
+  ],
+  "VxHwC7": [
+    {
+      "type": 0,
+      "value": "ITGMania debe cerrarse antes de continuar. Si ITGMania está abierto, podría sobrescribir algunos cambios en los archivos de preferencia que editaremos."
+    }
+  ],
+  "VyKUu+": [
+    {
+      "type": 0,
+      "value": "Puntuaciones recientes"
+    }
+  ],
+  "WBlsh8": [
+    {
+      "type": 0,
+      "value": "Dale un nombre memorable a esta clave de acceso para identificar el dispositivo o el autenticador."
+    }
+  ],
+  "WF72pO": [
+    {
+      "type": 0,
+      "value": "Contraseña"
+    }
+  ],
+  "WFfotC": [
+    {
+      "type": 0,
+      "value": "El enlace de restablecimiento caducó. Por favor, solicite uno nuevo."
+    }
+  ],
+  "WJFQ54": [
+    {
+      "type": 0,
+      "value": "Confirma tu nueva contraseña"
+    }
+  ],
+  "WV6MM4": [
+    {
+      "type": 0,
+      "value": "He leído y acepto la "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Política de privacidad"
+        }
+      ],
+      "type": 8,
+      "value": "privacyLink"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "Wc2PQF": [
+    {
+      "type": 0,
+      "value": "Charts"
+    }
+  ],
+  "X/dxmZ": [
+    {
+      "type": 0,
+      "value": "Sube y administra tu foto de perfil"
+    }
+  ],
+  "X1K1PE": [
+    {
+      "type": 0,
+      "value": "Ajustes"
+    }
+  ],
+  "X2YpwH": [
+    {
+      "type": 0,
+      "value": "Dimensiones del widget: "
+    },
+    {
+      "type": 1,
+      "value": "width"
+    },
+    {
+      "type": 0,
+      "value": "×"
+    },
+    {
+      "type": 1,
+      "value": "height"
+    },
+    {
+      "type": 0,
+      "value": "px"
+    }
+  ],
+  "X6xwCH": [
+    {
+      "type": 0,
+      "value": "Copiar"
+    }
+  ],
+  "XBomKO": [
+    {
+      "type": 0,
+      "value": "Canción"
+    }
+  ],
+  "XNTeAR": [
+    {
+      "type": 0,
+      "value": "Iniciar sesión"
+    }
+  ],
+  "XNdbAr": [
+    {
+      "type": 0,
+      "value": "Introduce tu nueva contraseña abajo"
+    }
+  ],
+  "XPK5q6": [
+    {
+      "type": 0,
+      "value": "Seleccionar idioma"
+    }
+  ],
+  "XRHhsa": [
+    {
+      "type": 0,
+      "value": "Idioma"
+    }
+  ],
+  "Xdhai4": [
+    {
+      "type": 0,
+      "value": "Eliminar este puntaje"
+    }
+  ],
+  "XgH7/X": [
+    {
+      "type": 0,
+      "value": "Banear usuario"
+    }
+  ],
+  "XrZn/3": [
+    {
+      "type": 0,
+      "value": "Descargar módulo"
+    }
+  ],
+  "Y0Wd0B": [
+    {
+      "type": 0,
+      "value": "Nota: Este dispositivo no soporta la autenticación integrada. De todas formas, aún puedes utilizar claves de seguridad externas."
+    }
+  ],
+  "YDRVsO": [
+    {
+      "type": 0,
+      "value": "No hay puntuaciones recientes"
+    }
+  ],
+  "YEQ3/1": [
+    {
+      "type": 0,
+      "value": "Error al cargar la tabla de clasificación"
+    }
+  ],
+  "YM+ci9": [
+    {
+      "type": 0,
+      "value": "País"
+    }
+  ],
+  "YOS6+m": [
+    {
+      "type": 0,
+      "value": "Creando cuenta..."
+    }
+  ],
+  "YhyBsx": [
+    {
+      "type": 0,
+      "value": "Título"
+    }
+  ],
+  "YoJaPu": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "YrqEwQ": [
+    {
+      "type": 0,
+      "value": "Error al cargar los charts: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "Z7jjH4": [
+    {
+      "type": 0,
+      "value": "Última vez generado: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "date"
+    }
+  ],
+  "ZCWT6R": [
+    {
+      "type": 0,
+      "value": "Revisa tu bandeja de entrada para continuar. El link caducará en "
+    },
+    {
+      "type": 1,
+      "value": "mmssTime"
+    }
+  ],
+  "ZReS1Z": [
+    {
+      "type": 0,
+      "value": "Por ahora no"
+    }
+  ],
+  "ZVs5zf": [
+    {
+      "type": 0,
+      "value": "Crea tu cuenta y empieza a hacer seguimiento de tus puntuaciones"
+    }
+  ],
+  "ZWQXbX": [
+    {
+      "type": 0,
+      "value": "Introduce tu contraseña"
+    }
+  ],
+  "ZeU0+7": [
+    {
+      "type": 0,
+      "value": "Se requiere ID de partida"
+    }
+  ],
+  "ZlE4+d": [
+    {
+      "type": 0,
+      "value": "Características del widget"
+    }
+  ],
+  "ZqM/Oi": [
+    {
+      "type": 0,
+      "value": "Cargando perfil de usuario..."
+    }
+  ],
+  "ZqrnQ+": [
+    {
+      "type": 0,
+      "value": "Double"
+    }
+  ],
+  "Zs0LJZ": [
+    {
+      "type": 0,
+      "value": "¡Sé el primero en subir una puntuación en este chart!"
+    }
+  ],
+  "ZxiG3y": [
+    {
+      "type": 0,
+      "value": "Nunca antes usado"
+    }
+  ],
+  "Zz+mxb": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "EX:"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " Ventana de timing estándar para juego competitivo."
+    }
+  ],
+  "a4zEIi": [
+    {
+      "type": 0,
+      "value": "Máximo total = (cantidad de taps * peso de los perfects) + (holds + rolls)*peso de los held."
+    }
+  ],
+  "a89Mq1": [
+    {
+      "type": 0,
+      "value": "Cuenta lista"
+    }
+  ],
+  "aCiQRg": [
+    {
+      "type": 0,
+      "value": "Nueva contraseña"
+    }
+  ],
+  "aS/YuY": [
+    {
+      "type": 0,
+      "value": "¡Copiado!"
+    }
+  ],
+  "acWNy9": [
+    {
+      "type": 0,
+      "value": "No se han encontrado packs que coincidan con \""
+    },
+    {
+      "type": 1,
+      "value": "search"
+    },
+    {
+      "type": 0,
+      "value": "\""
+    }
+  ],
+  "acZVz2": [
+    {
+      "type": 0,
+      "value": "Añadir rival"
+    }
+  ],
+  "adIw3h": [
+    {
+      "type": 0,
+      "value": "Baneando..."
+    }
+  ],
+  "afF6i8": [
+    {
+      "type": 0,
+      "value": "Incluir charts no registrados"
+    }
+  ],
+  "aiXGAN": [
+    {
+      "type": 0,
+      "value": "Peso estilo ITG clásico"
+    }
+  ],
+  "anoRJU": [
+    {
+      "type": 0,
+      "value": "Buscar por jugador..."
+    }
+  ],
+  "aq13An": [
+    {
+      "type": 0,
+      "value": "Tipo de steps"
+    }
+  ],
+  "arUn+B": [
+    {
+      "type": 0,
+      "value": "Restableciendo contraseña..."
+    }
+  ],
+  "b497id": [
+    {
+      "type": 0,
+      "value": "Reinicia ITGMania para asegurarte de que la configuración está completa, luego juega cualquier chart."
+    }
+  ],
+  "bH4nBJ": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "bXo9VG": [
+    {
+      "type": 0,
+      "value": "pronto"
+    }
+  ],
+  "bb7dGv": [
+    {
+      "type": 0,
+      "value": "Tablas de clasificación"
+    }
+  ],
+  "bmQJci": [
+    {
+      "type": 0,
+      "value": "Cambiar la contraseña de tu cuenta"
+    }
+  ],
+  "bxd/mE": [
+    {
+      "type": 0,
+      "value": "Cargando rivales..."
+    }
+  ],
+  "by4q9+": [
+    {
+      "type": 0,
+      "value": "Enviar enlace de restablecimiento "
+    },
+    {
+      "type": 1,
+      "value": "mailIcon"
+    }
+  ],
+  "byTjHq": [
+    {
+      "type": 0,
+      "value": "Puntos"
+    }
+  ],
+  "byn6nd": [
+    {
+      "type": 0,
+      "value": "Fecha"
+    }
+  ],
+  "c5lA7h": [
+    {
+      "type": 0,
+      "value": "HardEX (10ms)"
+    }
+  ],
+  "cEZoTR": [
+    {
+      "type": 0,
+      "value": "Creando..."
+    }
+  ],
+  "cNcvUb": [
+    {
+      "type": 0,
+      "value": "Tu perfil de Arrow Cloud debería mostrar una nueva puntuación a la brevedad."
+    }
+  ],
+  "cVRF/J": [
+    {
+      "type": 0,
+      "value": "¡Contraseña restablecida con éxito!"
+    }
+  ],
+  "cViiIu": [
+    {
+      "type": 0,
+      "value": "o"
+    }
+  ],
+  "cetLzw": [
+    {
+      "type": 0,
+      "value": "Unirse a Arrow Cloud"
+    }
+  ],
+  "ck1B/I": [
+    {
+      "type": 0,
+      "value": "Reenviar"
+    }
+  ],
+  "cyaeNo": [
+    {
+      "type": 0,
+      "value": "Mostrando "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "shown"
+    },
+    {
+      "type": 0,
+      "value": " de "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " charts"
+    }
+  ],
+  "czOkfs": [
+    {
+      "type": 0,
+      "value": "Grado"
+    }
+  ],
+  "dDM60o": [
+    {
+      "type": 0,
+      "value": "Apariencia del widget"
+    }
+  ],
+  "dI5InQ": [
+    {
+      "type": 0,
+      "value": "Navegación de Ayuda"
+    }
+  ],
+  "dIRIMP": [
+    {
+      "type": 0,
+      "value": "¿Necesitas ayuda?"
+    }
+  ],
+  "dIunyv": [
+    {
+      "type": 0,
+      "value": "No alojamos archivos de audio ni descargas de packs. Los packs y sus artes son sacados de lanzamientos públicos y no están sujetos a derechos de autor de Arrow Cloud."
+    }
+  ],
+  "dPQaz6": [
+    {
+      "type": 0,
+      "value": "Tablas de clasificaciones a mostrar"
+    }
+  ],
+  "dQfrc/": [
+    {
+      "type": 0,
+      "value": "#"
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "rank"
+    }
+  ],
+  "dhBX9c": [
+    {
+      "type": 0,
+      "value": "Anuncios"
+    }
+  ],
+  "di9f3h": [
+    {
+      "type": 0,
+      "value": "Cuánto tiempo quieres ver cada tabla de clasificación antes de cambiarla por otra (10-120 segundos)"
+    }
+  ],
+  "dlu2Wl": [
+    {
+      "type": 0,
+      "value": "Menú"
+    }
+  ],
+  "dpHkxV": [
+    {
+      "type": 0,
+      "value": "..."
+    }
+  ],
+  "dsUKTu": [
+    {
+      "type": 0,
+      "value": "Nueva API key"
+    }
+  ],
+  "e39ysx": [
+    {
+      "type": 0,
+      "value": "Iniciando sesión..."
+    }
+  ],
+  "e3DPEo": [
+    {
+      "type": 0,
+      "value": "Creado el: "
+    },
+    {
+      "type": 1,
+      "value": "createdAt"
+    }
+  ],
+  "e8mHcE": [
+    {
+      "type": 0,
+      "value": "Fecha"
+    }
+  ],
+  "e9nfYa": [
+    {
+      "type": 0,
+      "value": "o"
+    }
+  ],
+  "eBxpab": [
+    {
+      "type": 0,
+      "value": "Artista desconocido"
+    }
+  ],
+  "eE6UfK": [
+    {
+      "type": 0,
+      "value": "No hay división interna por Fantastic"
+    }
+  ],
+  "ePYk5e": [
+    {
+      "type": 0,
+      "value": "Error al eliminar clave de acceso"
+    }
+  ],
+  "eRpp8o": [
+    {
+      "type": 0,
+      "value": "Vista previa"
+    }
+  ],
+  "eT8bPV": [
+    {
+      "type": 0,
+      "value": "Packs"
+    }
+  ],
+  "eXmrrH": [
+    {
+      "type": 0,
+      "value": "Cargando información de clave de acceso..."
+    }
+  ],
+  "ebM7x5": [
+    {
+      "type": 0,
+      "value": "¡Tu email ha sido verificado con éxito! Cuenta activada por completo."
+    }
+  ],
+  "ebpbUs": [
+    {
+      "type": 0,
+      "value": "Usa esta URL en OBS como una fuente de navegador"
+    }
+  ],
+  "eeAYHv": [
+    {
+      "type": 0,
+      "value": "Error al actualizar perfil. Vuelve a intentarlo."
+    }
+  ],
+  "eezXdB": [
+    {
+      "type": 0,
+      "value": "Puedes competir en 10ms (HardEX), 15ms (EX), o con el sistema de puntuación de ITG."
+    }
+  ],
+  "egg6+H": [
+    {
+      "type": 0,
+      "value": "Puntaje"
+    }
+  ],
+  "ejPmny": [
+    {
+      "type": 0,
+      "value": "Configura y previsualiza tu widget de streaming"
+    }
+  ],
+  "ejXDAu": [
+    {
+      "type": 0,
+      "value": "Promedio general de timing"
+    }
+  ],
+  "eksVJn": [
+    {
+      "type": 0,
+      "value": "Administra tus rivales"
+    }
+  ],
+  "eoVXEp": [
+    {
+      "type": 0,
+      "value": "¡Revisa tu email!"
+    }
+  ],
+  "euAGju": [
+    {
+      "type": 0,
+      "value": "Preguntas frecuentes"
+    }
+  ],
+  "eubUWO": [
+    {
+      "type": 0,
+      "value": "Siempre puedes configurar esto más adelante en la configuración de tu perfil."
+    }
+  ],
+  "f0wAIn": [
+    {
+      "type": 0,
+      "value": "¡Perfil actualizado con éxito!"
+    }
+  ],
+  "f5pGyU": [
+    {
+      "type": 0,
+      "value": "Artista desconocido"
+    }
+  ],
+  "f70c15": [
+    {
+      "type": 0,
+      "value": "Guardar preferencias"
+    }
+  ],
+  "f78WCS": [
+    {
+      "type": 0,
+      "value": "Bienvenido de vuelta"
+    }
+  ],
+  "fB9pUP": [
+    {
+      "type": 0,
+      "value": "Descargar ZIP del tema"
+    }
+  ],
+  "fDZSZm": [
+    {
+      "type": 0,
+      "value": "Error al eliminar foto de perfil"
+    }
+  ],
+  "fhz3KS": [
+    {
+      "type": 0,
+      "value": "No hay datos de tabla de clasificación disponibles"
+    }
+  ],
+  "fjW29i": [
+    {
+      "type": 0,
+      "value": "Alias"
+    }
+  ],
+  "fpEyF4": [
+    {
+      "type": 0,
+      "value": "Chart no encontrado"
+    }
+  ],
+  "frfVZq": [
+    {
+      "type": 0,
+      "value": "Subir packs"
+    }
+  ],
+  "g/VjGs": [
+    {
+      "type": 0,
+      "value": "Requerimientos de contraseña:"
+    }
+  ],
+  "g0JMrv": [
+    {
+      "type": 0,
+      "value": "Aún no hay API keys creadas"
+    }
+  ],
+  "gJs2Fl": [
+    {
+      "type": 0,
+      "value": "Solo recolectamos: tu dirección de email, el alias que has elegido (nombre que se muestra a los demás), y tu país, si es que has decidido proveerlo."
+    }
+  ],
+  "gKcS+F": [
+    {
+      "type": 0,
+      "value": "Unirse a nuestro Discord"
+    }
+  ],
+  "gW2PUA": [
+    {
+      "type": 0,
+      "value": "GrooveStats introdujo tablas de clasificación en línea a la comunidad ITG hace más de 20 años y ha sido una herramienta extremadamente valiosa a lo largo de la historia del juego. El objetivo de este proyecto es ofrecer una plataforma alternativa con un diseño modernizado, flexible, y una tabla de clasificación con un diseño abierto."
+    }
+  ],
+  "gpHicE": [
+    {
+      "type": 0,
+      "value": "Ver chart"
+    }
+  ],
+  "gpep2X": [
+    {
+      "type": 0,
+      "value": "Blue Shift es el único sistema que acepta puntajes fallidos (puntajes que no terminaron el chart completo) y les asigna un "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "grado F"
+        }
+      ],
+      "type": 8,
+      "value": "semibold"
+    },
+    {
+      "type": 0,
+      "value": ". Tu puntaje de cualquier manera, seguirá representando el progreso que hiciste antes de fallar el chart, permitiendote competir incluso con intentos en los que no terminaste. Esto, te ayuda a poder hacer un seguimiento de tu progreso y te da crédito por ir progresando parcialmente."
+    }
+  ],
+  "guUuZ7": [
+    {
+      "type": 0,
+      "value": "¿Estás seguro/a de que quieres borrar este puntaje? Esta acción no se puede deshacer."
+    }
+  ],
+  "gyhSf+": [
+    {
+      "type": 0,
+      "value": "Copiado"
+    }
+  ],
+  "h1j+Ft": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud (el 'servicio') procesa mínima información personal. Los únicos datos personales que se conservan son: (1) dirección de email, (2) el alias seleccionado por el usuario, y (3) el país asignado por el usuario (opcional). Los mails son usados exclusivamente para propósitos de seguridad y ciclos de vida de cuenta, incluyendo los flujos de trabajo que conllevan el reinicio de contraseñas y verificación. Los alias son mostrados públicamente en las interfaces del sitio web y dentro del juego en las tablas de clasificación. La información sobre el país, si es que ha sido proveída, se muestra únicamente en la página de perfil del usuario y en ninguna otra parte más."
+    }
+  ],
+  "hFlOxo": [
+    {
+      "type": 0,
+      "value": "Mostrando "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "shown"
+    },
+    {
+      "type": 0,
+      "value": " de "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " packs"
+    }
+  ],
+  "hHNj31": [
+    {
+      "type": 0,
+      "value": "Cancelar"
+    }
+  ],
+  "hQi+5B": [
+    {
+      "type": 0,
+      "value": "Error al cargar países: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "haBkmP": [
+    {
+      "type": 0,
+      "value": "Filtros"
+    }
+  ],
+  "hc2MNy": [
+    {
+      "type": 0,
+      "value": "Evento Blue Shift"
+    }
+  ],
+  "hdelcO": [
+    {
+      "type": 0,
+      "value": "Sin un email verificado tu cuenta no es recuperable."
+    }
+  ],
+  "hfv1JL": [
+    {
+      "type": 0,
+      "value": "Descartar alerta"
+    }
+  ],
+  "hllRnT": [
+    {
+      "style": {
+        "parsedOptions": {
+          "maximumFractionDigits": 2,
+          "minimumFractionDigits": 2
+        },
+        "tokens": [
+          {
+            "options": [
+            ],
+            "stem": ".00"
+          }
+        ],
+        "type": 0
+      },
+      "type": 2,
+      "value": "value"
+    },
+    {
+      "type": 0,
+      "value": " ms"
+    }
+  ],
+  "hxETKG": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "H.EX (10ms):"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " Para jugadores que usan modificadores de alta precisión, enfocados en timing preciso."
+    }
+  ],
+  "i+E6a3": [
+    {
+      "type": 0,
+      "value": "Navegación de pie de página"
+    }
+  ],
+  "i3ORY6": [
+    {
+      "type": 0,
+      "value": "Gana puntos"
+    }
+  ],
+  "iN/fQj": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud soporta tres interpretaciones de puntuación paralelas. Los raw judgments (secuencia de offsets y misses) son inmutables; los sistemas de puntuación solo cambian la forma en que esos eventos en bruto se ponderan en un porcentaje y se añaden a un grado."
+    }
+  ],
+  "iQ5NMV": [
+    {
+      "type": 0,
+      "value": "Resumen e instrucciones"
+    }
+  ],
+  "iXITn8": [
+    {
+      "type": 0,
+      "value": "¿No has recibido el mail?"
+    },
+    {
+      "type": 1,
+      "value": "linebreak"
+    },
+    {
+      "type": 0,
+      "value": "Revisa tu carpeta de spam o "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "haz clic aquí para reenviar"
+        }
+      ],
+      "type": 8,
+      "value": "button"
+    }
+  ],
+  "iYUlUC": [
+    {
+      "type": 0,
+      "value": "Puntajes recientes"
+    }
+  ],
+  "iYr7vn": [
+    {
+      "type": 0,
+      "value": "Instrucciones de configuración"
+    }
+  ],
+  "iZ8ydz": [
+    {
+      "type": 0,
+      "value": "Jugador"
+    }
+  ],
+  "iaN1LS": [
+    {
+      "type": 0,
+      "value": "Última vez usado: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "lastUsed"
+    }
+  ],
+  "iaPSEH": [
+    {
+      "type": 0,
+      "value": "Tablas de clasificación"
+    }
+  ],
+  "ibF5yl": [
+    {
+      "type": 0,
+      "value": "Pega la URL del widget arriba"
+    }
+  ],
+  "ieFeXy": [
+    {
+      "type": 0,
+      "value": "Error al cargar datos del pack"
+    }
+  ],
+  "if82ki": [
+    {
+      "type": 0,
+      "value": "Cerrar sesión"
+    }
+  ],
+  "ioJOJl": [
+    {
+      "type": 0,
+      "value": "Contraseña actual"
+    }
+  ],
+  "iqbsz+": [
+    {
+      "type": 0,
+      "value": "No por ahora"
+    }
+  ],
+  "it89I1": [
+    {
+      "type": 0,
+      "value": "Key • "
+    },
+    {
+      "type": 1,
+      "value": "fingerprint"
+    }
+  ],
+  "j6SWIB": [
+    {
+      "type": 0,
+      "value": "Visualizar tablas"
+    }
+  ],
+  "jFD+sg": [
+    {
+      "type": 0,
+      "value": "¡Perfil actualizado con éxito!"
+    }
+  ],
+  "jIZqAg": [
+    {
+      "type": 0,
+      "value": "Esta clave solo será mostrada una vez. Cópiala y guárdala en un lugar seguro."
+    }
+  ],
+  "jMoAT4": [
+    {
+      "type": 0,
+      "value": "Confirmar nueva contraseña"
+    }
+  ],
+  "js1oVo": [
+    {
+      "type": 0,
+      "value": "Lo que Arrow Cloud NO es"
+    }
+  ],
+  "jsxVw/": [
+    {
+      "type": 0,
+      "value": "Ofrecemos una integración completa con ITGMania a través de nuestro tema personalizado, o una alternativa ligera en el módulo Simply Love."
+    }
+  ],
+  "kYDZI0": [
+    {
+      "type": 0,
+      "value": "Volver a Inicio"
+    }
+  ],
+  "kYKyoa": [
+    {
+      "type": 0,
+      "value": "Recompensa precisión ligeramente más amplia"
+    }
+  ],
+  "kebfPM": [
+    {
+      "type": 0,
+      "value": "Error medio absoluto"
+    }
+  ],
+  "kgCmwz": [
+    {
+      "type": 0,
+      "value": "Configurar tu clave de acceso"
+    }
+  ],
+  "kjF7Lj": [
+    {
+      "type": 0,
+      "value": "Creado el: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "created"
+    }
+  ],
+  "kuM6D7": [
+    {
+      "type": 0,
+      "value": "Partida no encontrada"
+    }
+  ],
+  "l8uwY9": [
+    {
+      "type": 0,
+      "value": "Rating"
+    }
+  ],
+  "lcVOiv": [
+    {
+      "type": 0,
+      "value": "Ayuda y preguntas frecuentes"
+    }
+  ],
+  "lmpJF6": [
+    {
+      "type": 0,
+      "value": "Guardando..."
+    }
+  ],
+  "lzqhT9": [
+    {
+      "type": 0,
+      "value": "Los rivales son otros jugadores a quienes les quieres mantener puesto un ojo, y/o competir con ellos. Los rivales serán destacados y priorizados cuando estés viendo las varias tablas de clasificación."
+    }
+  ],
+  "m4RRvP": [
+    {
+      "type": 0,
+      "value": "Añadir a AllowedHosts / HttpAllowHosts"
+    }
+  ],
+  "m4U7BZ": [
+    {
+      "type": 0,
+      "value": "Error al cargar imagen"
+    }
+  ],
+  "mFXNP+": [
+    {
+      "type": 0,
+      "value": "Añade una nueva fuente de navegador en OBS"
+    }
+  ],
+  "mOHkCr": [
+    {
+      "type": 0,
+      "value": "Longitud de al menos 6 caracteres"
+    }
+  ],
+  "mVwWst": [
+    {
+      "type": 0,
+      "value": "Configura una clave de acceso para inicios de sesión más rápidos y seguros"
+    }
+  ],
+  "meazlj": [
+    {
+      "type": 0,
+      "value": "Confirma tu nueva contraseña"
+    }
+  ],
+  "mmiM0/": [
+    {
+      "type": 0,
+      "value": "Formatos soportados: JPEG, PNG, GIF, WebP"
+    }
+  ],
+  "mtGCKz": [
+    {
+      "type": 0,
+      "value": "Cada fase contendrá ~25 charts, abarcando una variedad de dificultades entre 7 y 14. Ten fe en que cada fase te desafiará de distintas maneras a medida que compites en las tablas de clasificación."
+    }
+  ],
+  "mvXRqN": [
+    {
+      "type": 0,
+      "value": "¡Juega algunas canciones para comenzar!"
+    }
+  ],
+  "n46TSr": [
+    {
+      "type": 0,
+      "value": "3 tableros"
+    }
+  ],
+  "n4o4oJ": [
+    {
+      "type": 0,
+      "value": "Jugador"
+    }
+  ],
+  "nEmRDi": [
+    {
+      "type": 0,
+      "value": "Puntos totales"
+    }
+  ],
+  "nTaq/y": [
+    {
+      "type": 0,
+      "value": "Las partidas fallidas son bienvenidas"
+    }
+  ],
+  "nWbnaE": [
+    {
+      "type": 0,
+      "value": "No hay puntuaciones recientes"
+    }
+  ],
+  "o2nv5R": [
+    {
+      "type": 0,
+      "value": "Dinámicas de la tabla de clasificación"
+    }
+  ],
+  "o7+BG1": [
+    {
+      "type": 0,
+      "value": "Puntaje eliminado con éxito"
+    }
+  ],
+  "oGL1Ha": [
+    {
+      "type": 0,
+      "value": "Puntaje"
+    }
+  ],
+  "oeCoFG": [
+    {
+      "type": 0,
+      "value": "Guía de configuración"
+    }
+  ],
+  "oiaphe": [
+    {
+      "type": 0,
+      "value": "Los Greats son equivalentes a un miss"
+    }
+  ],
+  "oid8be": [
+    {
+      "type": 0,
+      "value": "Tabla de clasificación general"
+    }
+  ],
+  "olipRr": [
+    {
+      "type": 0,
+      "value": "Borrar todos sus datos (partidas, API keys, etc.)"
+    }
+  ],
+  "on6x6P": [
+    {
+      "type": 0,
+      "value": "Alias"
+    }
+  ],
+  "opIE4F": [
+    {
+      "type": 0,
+      "value": "Utiliza los botones de abajo para descargar los archivos necesarios para tu setup."
+    }
+  ],
+  "oueHUv": [
+    {
+      "type": 0,
+      "value": "Crear cuenta"
+    }
+  ],
+  "p4n4Yc": [
+    {
+      "type": 0,
+      "value": "Reenviar email de verificación"
+    }
+  ],
+  "pB9pg4": [
+    {
+      "type": 0,
+      "value": "Últimas canciones jugadas"
+    }
+  ],
+  "pdMp3j": [
+    {
+      "type": 0,
+      "value": "Cada chart vale el mismo número de puntos en general - tu posición en el contenido más fácil en las tablas de clasificación es tan importante como tu posición en el más difícil."
+    }
+  ],
+  "pdQ9u+": [
+    {
+      "type": 0,
+      "value": "¿Estás listo para participar en la competencia? ¡Prepara todo ahora para estar listo para el evento del 5 de diciembre!"
+    }
+  ],
+  "pfIZz9": [
+    {
+      "type": 0,
+      "value": "Puntaje"
+    }
+  ],
+  "pveInw": [
+    {
+      "type": 0,
+      "value": "Los API keys son usados para conectar tu cliente de juego a nuestros servidores y poder subir puntuaciones."
+    }
+  ],
+  "q0JHzH": [
+    {
+      "type": 0,
+      "value": "Charts"
+    }
+  ],
+  "qC1meP": [
+    {
+      "type": 0,
+      "value": "Crear cuenta"
+    }
+  ],
+  "qMbYfC": [
+    {
+      "type": 0,
+      "value": "Nombre del pack"
+    }
+  ],
+  "qORdj/": [
+    {
+      "type": 0,
+      "value": "Nueva contraseña"
+    }
+  ],
+  "qYK6Ec": [
+    {
+      "type": 0,
+      "value": "No usamos cookies para hacer seguimiento ni tecnologías similares."
+    }
+  ],
+  "qYn7lJ": [
+    {
+      "type": 0,
+      "value": "Guardar perfil"
+    }
+  ],
+  "qbwjLM": [
+    {
+      "type": 0,
+      "value": "Cancelar"
+    }
+  ],
+  "qh8IGh": [
+    {
+      "type": 0,
+      "value": "Clasificación"
+    }
+  ],
+  "qkpyHk": [
+    {
+      "type": 0,
+      "value": "Sistema de puntos"
+    }
+  ],
+  "qoCB1e": [
+    {
+      "type": 0,
+      "value": "Enviando..."
+    }
+  ],
+  "qpvO54": [
+    {
+      "type": 0,
+      "value": "Rutas de configuración"
+    }
+  ],
+  "qyoslL": [
+    {
+      "type": 0,
+      "value": "Tu contraseña ha sido restablecida y has iniciado sesión automáticamente."
+    }
+  ],
+  "r2gihF": [
+    {
+      "type": 0,
+      "value": "Blue Shift"
+    }
+  ],
+  "r3HlFt": [
+    {
+      "type": 0,
+      "value": "Menú"
+    }
+  ],
+  "rBoPpa": [
+    {
+      "type": 0,
+      "value": "No hay packs disponibles"
+    }
+  ],
+  "rHQoq4": [
+    {
+      "type": 0,
+      "value": "No hay charts disponibles."
+    }
+  ],
+  "rPy5Tt": [
+    {
+      "type": 0,
+      "value": "Desconocido"
+    }
+  ],
+  "rYdDW0": [
+    {
+      "type": 0,
+      "value": "Dirección de email"
+    }
+  ],
+  "rbGD0/": [
+    {
+      "type": 0,
+      "value": "Fecha"
+    }
+  ],
+  "ruTh1W": [
+    {
+      "type": 0,
+      "value": "enviando..."
+    }
+  ],
+  "ryU59V": [
+    {
+      "type": 0,
+      "value": "Partida fallida"
+    }
+  ],
+  "s4GvEu": [
+    {
+      "type": 0,
+      "value": "Terminar la configuración y subir una puntuación"
+    }
+  ],
+  "s5gLzo": [
+    {
+      "type": 0,
+      "value": "Evitar que puedan iniciar sesión"
+    }
+  ],
+  "sCaEgz": [
+    {
+      "type": 0,
+      "value": "Atado al umbral resuelto por el sistema de prioridad de precisión: HardEX > EX > ITG."
+    }
+  ],
+  "sL/xaE": [
+    {
+      "type": 0,
+      "value": "Pack no encontrado"
+    }
+  ],
+  "sU24/r": [
+    {
+      "type": 0,
+      "value": "Desconocido"
+    }
+  ],
+  "sWELJA": [
+    {
+      "type": 0,
+      "value": "Iniciar sesión"
+    }
+  ],
+  "siD2Ie": [
+    {
+      "type": 0,
+      "value": "Falló la verificación del correo. Por favor, inténtalo de nuevo."
+    }
+  ],
+  "stf0NS": [
+    {
+      "type": 0,
+      "value": "Jugador"
+    }
+  ],
+  "suj+gY": [
+    {
+      "type": 0,
+      "value": "Elige tu método de instalación"
+    }
+  ],
+  "sxhZC7": [
+    {
+      "type": 0,
+      "value": "Popularidad"
+    }
+  ],
+  "tApE2N": [
+    {
+      "type": 0,
+      "value": "Añadido el: "
+    },
+    {
+      "type": 1,
+      "value": "date"
+    }
+  ],
+  "tJZWpJ": [
+    {
+      "type": 0,
+      "value": "Comprobando estado de inicio de sesión…"
+    }
+  ],
+  "tmuyhy": [
+    {
+      "type": 0,
+      "value": "Perfil de "
+    },
+    {
+      "type": 1,
+      "value": "alias"
+    }
+  ],
+  "tn3SH1": [
+    {
+      "type": 0,
+      "value": "#"
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "rank"
+    }
+  ],
+  "uC7RSq": [
+    {
+      "type": 0,
+      "value": "Usuario no encontrado"
+    }
+  ],
+  "uLqMrt": [
+    {
+      "type": 0,
+      "value": "Introduzca una nueva contraseña"
+    }
+  ],
+  "uQSgr8": [
+    {
+      "type": 0,
+      "value": "Compite"
+    }
+  ],
+  "uUa2U9": [
+    {
+      "type": 0,
+      "value": "Por favor, introduce un nombre para tu clave de acceso"
+    }
+  ],
+  "uc7Ibp": [
+    {
+      "type": 0,
+      "value": "Comienza el 5 de diciembre"
+    }
+  ],
+  "upYb9D": [
+    {
+      "type": 0,
+      "value": "Máximo"
+    }
+  ],
+  "v0nWNk": [
+    {
+      "type": 0,
+      "value": "Guardando..."
+    }
+  ],
+  "v9EcKC": [
+    {
+      "type": 0,
+      "value": "Artista desconocido"
+    }
+  ],
+  "vQNNhl": [
+    {
+      "type": 0,
+      "value": "de "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    }
+  ],
+  "ve/RaJ": [
+    {
+      "type": 0,
+      "value": "Ingresa tu alias"
+    }
+  ],
+  "vgnvnd": [
+    {
+      "type": 0,
+      "value": "Error al cargar la partida"
+    }
+  ],
+  "viVXqx": [
+    {
+      "type": 0,
+      "value": "Logo de Arrow Cloud"
+    }
+  ],
+  "vpARAu": [
+    {
+      "type": 0,
+      "value": "¿Estás seguro de que deseas eliminar esta clave de acceso? Esta acción no se puede deshacer."
+    }
+  ],
+  "vwT2r7": [
+    {
+      "type": 0,
+      "value": "Desconocido"
+    }
+  ],
+  "vzcP0o": [
+    {
+      "type": 0,
+      "value": "Ambas contraseñas deben coincidir"
+    }
+  ],
+  "w2zB1o": [
+    {
+      "type": 0,
+      "value": "Revisa tu email"
+    }
+  ],
+  "w69Aiw": [
+    {
+      "type": 0,
+      "value": "Subiendo..."
+    }
+  ],
+  "wK4IU8": [
+    {
+      "type": 0,
+      "value": "¿No tienes una cuenta? "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Crea una aquí"
+        }
+      ],
+      "type": 8,
+      "value": "createLink"
+    }
+  ],
+  "wMXZJe": [
+    {
+      "type": 0,
+      "value": "Cómo se calculan los grados"
+    }
+  ],
+  "wMsd+n": [
+    {
+      "type": 0,
+      "value": "Elige qué estilo de tabla de clasificación preferirías ver en el juego. Las tablas del evento siempre serán mostradas."
+    }
+  ],
+  "wVs4V5": [
+    {
+      "type": 0,
+      "value": "No hay datos de tabla de clasificación disponibles"
+    }
+  ],
+  "wgc2MU": [
+    {
+      "type": 0,
+      "value": "Volver a Iniciar sesión"
+    }
+  ],
+  "wkKwRk": [
+    {
+      "type": 0,
+      "value": "Contraseña"
+    }
+  ],
+  "wun7o3": [
+    {
+      "type": 0,
+      "value": "¿Olvidaste tu contraseña?"
+    }
+  ],
+  "wuzSwY": [
+    {
+      "type": 0,
+      "value": "Elige tu sistema operativo"
+    }
+  ],
+  "wvZ6ln": [
+    {
+      "type": 0,
+      "value": "Buscar charts..."
+    }
+  ],
+  "wzpW2W": [
+    {
+      "type": 0,
+      "value": "Compite en tres tablas de clasificación separadas diseñadas para probar diferentes aspectos de habilidad:"
+    }
+  ],
+  "x8tDS+": [
+    {
+      "type": 0,
+      "value": "Selecciona un país"
+    }
+  ],
+  "xJhO/K": [
+    {
+      "type": 0,
+      "value": "Ayuda"
+    }
+  ],
+  "xM1sJc": [
+    {
+      "type": 0,
+      "value": "Judgments"
+    }
+  ],
+  "xe01xK": [
+    {
+      "type": 0,
+      "value": "Verificación fallida"
+    }
+  ],
+  "xfRlae": [
+    {
+      "type": 0,
+      "value": "Fecha"
+    }
+  ],
+  "xl7GRC": [
+    {
+      "type": 0,
+      "value": "No se han encontrado canciones"
+    }
+  ],
+  "xqsuVH": [
+    {
+      "type": 0,
+      "value": "No hay estadísticas de timing disponibles."
+    }
+  ],
+  "y3KL2j": [
+    {
+      "type": 0,
+      "value": "No ha participado"
+    }
+  ],
+  "y8RU5Y": [
+    {
+      "type": 0,
+      "value": "ITG (Money)"
+    }
+  ],
+  "yBJ1AB": [
+    {
+      "type": 0,
+      "value": "Añadir nueva clave de acceso"
+    }
+  ],
+  "yBsO+y": [
+    {
+      "type": 0,
+      "value": "Desde la tabla de clasificación seleccionada"
+    }
+  ],
+  "yM3blP": [
+    {
+      "type": 0,
+      "value": "Menú"
+    }
+  ],
+  "yMAjYZ": [
+    {
+      "type": 0,
+      "value": "Error al cargar preferencias"
+    }
+  ],
+  "yMETLb": [
+    {
+      "type": 0,
+      "value": "Imagen"
+    }
+  ],
+  "ybp4xd": [
+    {
+      "type": 0,
+      "value": "Grado "
+    },
+    {
+      "type": 1,
+      "value": "grade"
+    }
+  ],
+  "yqWLeE": [
+    {
+      "type": 0,
+      "value": "Blue Shift"
+    }
+  ],
+  "z+1C0a": [
+    {
+      "type": 0,
+      "value": "Ir a Inicio"
+    }
+  ],
+  "zhxMFg": [
+    {
+      "type": 0,
+      "value": "Línea completa de ejemplo"
+    }
+  ]
+}

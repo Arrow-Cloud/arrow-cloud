@@ -1,0 +1,16 @@
+{
+  "acknowledged-issue-numbers": [],
+  "cloudFrontCertArn": "",
+  "shareCertArn": "",
+  "apiCertArn": "",
+  "sharpLayerArn": "",
+  "dbAccessCidrs": [
+    {
+      "cidr": "YOUR IP/32",
+      "description": "YOUR NAME"
+    }
+  ],
+  "corsAllowedOrigins": [
+    "http://localhost:5173"
+  ]
+}

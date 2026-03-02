@@ -1,0 +1,53 @@
+{
+  "name": "frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run intl:compile && vite build",
+    "intl:extract": "formatjs extract 'src/**/*.{ts,tsx}' --out-file src/intl/raw/en.json --format crowdin",
+    "intl:compile": "formatjs compile-folder --format crowdin --ast src/intl/raw/ src/intl/compiled/",
+    "lint": "eslint 'src/**/*.{ts,tsx}' --fix",
+    "preview": "vite preview",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@simplewebauthn/browser": "^13.1.2",
+    "@tailwindcss/vite": "^4.1.11",
+    "axios": "^1.10.0",
+    "chart.js": "^4.4.4",
+    "daisyui": "^5.2.3",
+    "framer-motion": "^12.23.24",
+    "jszip": "^3.10.1",
+    "lucide-react": "^0.525.0",
+    "react": "^19.1.0",
+    "react-chartjs-2": "^5.2.0",
+    "react-dom": "^19.1.0",
+    "react-intl": "7.1.11",
+    "react-router-dom": "^7.6.3",
+    "tailwindcss": "^4.1.11",
+    "zod": "^4.0.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.29.0",
+    "@formatjs/cli": "^6.7.4",
+    "@testing-library/jest-dom": "^6.4.2",
+    "@testing-library/react": "^16.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.2",
+    "eslint": "^9.29.0",
+    "eslint-plugin-formatjs": "^5.4.2",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.2.0",
+    "jest": "^30.0.3",
+    "ts-jest": "^29.4.0",
+    "ts-node": "^10.9.2",
+    "vite": "^7.0.0"
+  },
+  "fund": "false",
+  "audit": "false"
+}

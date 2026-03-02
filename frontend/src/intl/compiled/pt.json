@@ -1,0 +1,4230 @@
+{
+  "+0hbIW": [
+    {
+      "type": 0,
+      "value": "e.g., Mobile, Work Laptop, Personal Device"
+    }
+  ],
+  "+9eRWt": [
+    {
+      "type": 0,
+      "value": "Each tap note contributes its window weight based on the offset of when you hit the tap note."
+    }
+  ],
+  "+FgcFw": [
+    {
+      "type": 0,
+      "value": "Country"
+    }
+  ],
+  "+a1gOU": [
+    {
+      "type": 0,
+      "value": "Blue Shift Logo"
+    }
+  ],
+  "+gIWnk": [
+    {
+      "type": 0,
+      "value": "No scores in this leaderboard category yet."
+    }
+  ],
+  "+h2LEI": [
+    {
+      "type": 0,
+      "value": "Please wait while we fetch the pack data"
+    }
+  ],
+  "+pLe/x": [
+    {
+      "type": 0,
+      "value": "Personal Best"
+    }
+  ],
+  "+tpXd6": [
+    {
+      "type": 0,
+      "value": "Sign up on the site (Register) and verify your email. This will associate future score submissions with your profile."
+    }
+  ],
+  "/1csZt": [
+    {
+      "type": 0,
+      "value": "Registration failed. Please try again."
+    }
+  ],
+  "/CnYKe": [
+    {
+      "type": 0,
+      "value": "Event Format"
+    }
+  ],
+  "/Cz20N": [
+    {
+      "type": 0,
+      "value": "Save Changes"
+    }
+  ],
+  "/GvRCG": [
+    {
+      "type": 0,
+      "value": "No changes to save"
+    }
+  ],
+  "/L5Ek3": [
+    {
+      "type": 0,
+      "value": "This user hasn't participated in the Blue Shift Beta event yet."
+    }
+  ],
+  "/MH50s": [
+    {
+      "type": 0,
+      "value": "Std.Dev.^3"
+    }
+  ],
+  "/UnDQ8": [
+    {
+      "type": 1,
+      "value": "loadingSpinner"
+    },
+    {
+      "type": 0,
+      "value": " Sending Reset Link..."
+    }
+  ],
+  "/c0R5m": [
+    {
+      "type": 0,
+      "value": "Privacy Policy"
+    }
+  ],
+  "/eiyYH": [
+    {
+      "type": 0,
+      "value": "Date"
+    }
+  ],
+  "/yrXf9": [
+    {
+      "type": 0,
+      "value": "Common quick answers/miscellaneous information"
+    }
+  ],
+  "01/J8T": [
+    {
+      "type": 0,
+      "value": "Hide their profile from other users"
+    }
+  ],
+  "0273Op": [
+    {
+      "type": 0,
+      "value": "Songs"
+    }
+  ],
+  "05hmF9": [
+    {
+      "type": 0,
+      "value": "Maximum file size: 5MB"
+    }
+  ],
+  "0CcN1Y": [
+    {
+      "type": 0,
+      "value": "Enter new password"
+    }
+  ],
+  "0IbXta": [
+    {
+      "type": 0,
+      "value": "Go to chart page"
+    }
+  ],
+  "0OpKH3": [
+    {
+      "type": 0,
+      "value": "Hash: "
+    },
+    {
+      "type": 1,
+      "value": "hash"
+    }
+  ],
+  "0POvio": [
+    {
+      "type": 0,
+      "value": "Blue Shift consists of three distinct phases, each lasting three weeks. Players compete across three different leaderboards, each designed to test different aspects of ITG skill. Points are awarded based on your leaderboard position."
+    }
+  ],
+  "0Susv7": [
+    {
+      "type": 0,
+      "value": "Event Charts"
+    }
+  ],
+  "0UKMwf": [
+    {
+      "type": 0,
+      "value": "Sign in to your Arrow Cloud account"
+    }
+  ],
+  "0ZhmWz": [
+    {
+      "type": 0,
+      "value": "Did you avg. late (+) or early (-)"
+    }
+  ],
+  "0k4n4s": [
+    {
+      "type": 0,
+      "value": "EX Weight"
+    }
+  ],
+  "11eEsx": [
+    {
+      "type": 0,
+      "value": "Window (±ms)"
+    }
+  ],
+  "13SZgT": [
+    {
+      "type": 0,
+      "value": "Alias"
+    }
+  ],
+  "1CBPXl": [
+    {
+      "type": 0,
+      "value": "Last updated: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "lastUpdated"
+    }
+  ],
+  "1Ig/74": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Starts on December 5th, 2025"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "12:00 PM UTC"
+        }
+      ],
+      "type": 8,
+      "value": "small"
+    }
+  ],
+  "1IiFi6": [
+    {
+      "type": 0,
+      "value": "Added"
+    }
+  ],
+  "1My/zA": [
+    {
+      "type": 0,
+      "value": "N/A"
+    }
+  ],
+  "1Y0sic": [
+    {
+      "type": 0,
+      "value": "Email"
+    }
+  ],
+  "1cI8ug": [
+    {
+      "type": 0,
+      "value": "Get Set Up"
+    }
+  ],
+  "1nKpRW": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Preferences:"
+        }
+      ],
+      "type": 8,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "prefsPath"
+    }
+  ],
+  "1nrTvx": [
+    {
+      "type": 0,
+      "value": "Forgot Password?"
+    }
+  ],
+  "1qm9M9": [
+    {
+      "type": 0,
+      "value": "Single"
+    }
+  ],
+  "1t8tZ+": [
+    {
+      "type": 0,
+      "value": "Upload Image"
+    }
+  ],
+  "1y8iSP": [
+    {
+      "type": 0,
+      "value": "Simfiles"
+    }
+  ],
+  "21hFSa": [
+    {
+      "type": 0,
+      "value": "We've sent a verification email to "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "email"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": ". Click that link sometime later, or else you'll have no way to recover your account!"
+    }
+  ],
+  "2BwvtG": [
+    {
+      "type": 0,
+      "value": "Some top grades (Sext / Quint) evaluate using a stricter scoring system override (HardEX/EX)."
+    }
+  ],
+  "2FRvLL": [
+    {
+      "type": 0,
+      "value": "Every 3 weeks you will put up your best scores on 20 curated charts. Grind to your heart's content!"
+    }
+  ],
+  "2IPNlq": [
+    {
+      "type": 0,
+      "value": "API Keys"
+    }
+  ],
+  "2Q+Z2n": [
+    {
+      "type": 0,
+      "value": "EX (15ms)"
+    }
+  ],
+  "2RNR4i": [
+    {
+      "type": 0,
+      "value": "Take points from your competitors - as you pass players on the leaderboards, the points you gain are \"stolen\" from other players."
+    }
+  ],
+  "2TD5hu": [
+    {
+      "type": 0,
+      "value": "What Is Arrow Cloud?"
+    }
+  ],
+  "2XL1fo": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud Blue Shift Logo"
+    }
+  ],
+  "2d72YH": [
+    {
+      "type": 0,
+      "value": "Widget URL"
+    }
+  ],
+  "2hFzLG": [
+    {
+      "type": 0,
+      "value": "Your email is used only for account security actions (such as password resets), and occasional announcements."
+    }
+  ],
+  "2sYnkh": [
+    {
+      "type": 0,
+      "value": "Copy ArrowCloud.ini into your active profile folder (for example: "
+    },
+    {
+      "type": 1,
+      "value": "profileExample"
+    },
+    {
+      "type": 0,
+      "value": ")."
+    }
+  ],
+  "2uZtKR": [
+    {
+      "type": 0,
+      "value": "Help"
+    }
+  ],
+  "2ywg8y": [
+    {
+      "type": 0,
+      "value": "Enable Passwordless Login"
+    }
+  ],
+  "30056/": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Base:"
+        }
+      ],
+      "type": 8,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "basePath"
+    }
+  ],
+  "34xrFN": [
+    {
+      "type": 0,
+      "value": "Streamer Widget"
+    }
+  ],
+  "3N6cLw": [
+    {
+      "type": 0,
+      "value": "Compete Across"
+    }
+  ],
+  "3bG3Pw": [
+    {
+      "type": 0,
+      "value": "Enter your new password"
+    }
+  ],
+  "3gll2h": [
+    {
+      "type": 0,
+      "value": "Create a password"
+    }
+  ],
+  "3oeumn": [
+    {
+      "type": 0,
+      "value": "Support"
+    }
+  ],
+  "3pJaQC": [
+    {
+      "type": 0,
+      "value": "Verifying Email..."
+    }
+  ],
+  "3rGlbG": [
+    {
+      "type": 0,
+      "value": "Confirm Password"
+    }
+  ],
+  "41VgXE": [
+    {
+      "type": 0,
+      "value": "Back to Sign In"
+    }
+  ],
+  "43jzOu": [
+    {
+      "type": 1,
+      "value": "userIcon"
+    },
+    {
+      "type": 0,
+      "value": " You"
+    }
+  ],
+  "4TmIV5": [
+    {
+      "type": 0,
+      "value": "Some browsers may flag the ArrowCloud.ini download as suspicious because it is a plain-text configuration file. This is expected and the file is safe—you can proceed with the download."
+    }
+  ],
+  "4XbcYZ": [
+    {
+      "type": 0,
+      "value": "pts"
+    }
+  ],
+  "4cGAA6": [
+    {
+      "type": 0,
+      "value": "Manage your API access tokens"
+    }
+  ],
+  "4cud4C": [
+    {
+      "type": 0,
+      "value": "Confirm Password"
+    }
+  ],
+  "4lKz1r": [
+    {
+      "type": 0,
+      "value": "Profile image updated successfully!"
+    }
+  ],
+  "5Bb8X7": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "5K/3lA": [
+    {
+      "type": 0,
+      "value": "Passkeys"
+    }
+  ],
+  "5UgsH1": [
+    {
+      "type": 0,
+      "value": "Points are distributed based on your ranking position on each leaderboard. Each chart has 3 leaderboards, each phase has 3 leaderboards, and your cumulative points across all phases determine your final standing in the Blue Shift competition."
+    }
+  ],
+  "5WyHgs": [
+    {
+      "type": 0,
+      "value": "Successfully Signed In!"
+    }
+  ],
+  "5X2Z64": [
+    {
+      "type": 0,
+      "value": "Your worst judgment/outlier"
+    }
+  ],
+  "5XAAaa": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud is "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "not affiliated"
+        }
+      ],
+      "type": 8,
+      "value": "semibold"
+    },
+    {
+      "type": 0,
+      "value": " with GrooveStats, BoogieStats, ITC, ITGDB, SMO, or other services. It does not scrape, proxy, or passthrough leaderboards or scores from external platforms."
+    }
+  ],
+  "5ghtCO": [
+    {
+      "type": 0,
+      "value": "Score sum = tap weights + (held completions * heldWeight) + (roll completions * heldWeight) + (mine hits * minePenalty)."
+    }
+  ],
+  "5jGvbu": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "5leU4H": [
+    {
+      "type": 0,
+      "value": "Add Rivals"
+    }
+  ],
+  "5mntyH": [
+    {
+      "type": 0,
+      "value": "No rivals added yet"
+    }
+  ],
+  "5nutZC": [
+    {
+      "type": 0,
+      "value": "Why It Exists"
+    }
+  ],
+  "628Yaq": [
+    {
+      "type": 0,
+      "value": "Loading leaderboards..."
+    }
+  ],
+  "66nTwC": [
+    {
+      "type": 0,
+      "value": "Loading pack..."
+    }
+  ],
+  "68hzlT": [
+    {
+      "type": 0,
+      "value": "Stepartist"
+    }
+  ],
+  "6A/18S": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "6HwZWG": [
+    {
+      "type": 1,
+      "value": "bookIcon"
+    },
+    {
+      "type": 0,
+      "value": " Help Center"
+    }
+  ],
+  "6e+rCB": [
+    {
+      "type": 0,
+      "value": "No charts available"
+    }
+  ],
+  "6ey983": [
+    {
+      "type": 0,
+      "value": "Enter current password"
+    }
+  ],
+  "6mzOc6": [
+    {
+      "type": 0,
+      "value": "No songs available in this pack"
+    }
+  ],
+  "6oesOv": [
+    {
+      "type": 0,
+      "value": "Enter your email"
+    }
+  ],
+  "6t1Xf+": [
+    {
+      "type": 0,
+      "value": "Enter your alias"
+    }
+  ],
+  "7/VMkx": [
+    {
+      "type": 0,
+      "value": "Can I submit keyboard scores?"
+    }
+  ],
+  "7/fQHG": [
+    {
+      "type": 0,
+      "value": "Select Theme"
+    }
+  ],
+  "71hxBe": [
+    {
+      "type": 0,
+      "value": "Note: OBS Studio version 31 or higher is required for proper display."
+    }
+  ],
+  "77/s9/": [
+    {
+      "type": 0,
+      "value": "Create Your Account"
+    }
+  ],
+  "7JspJu": [
+    {
+      "type": 0,
+      "value": "Edit Profile"
+    }
+  ],
+  "7N0/GV": [
+    {
+      "type": 0,
+      "value": "Loading..."
+    }
+  ],
+  "7Y3qMa": [
+    {
+      "type": 0,
+      "value": "Skip"
+    }
+  ],
+  "7eDt6d": [
+    {
+      "type": 0,
+      "value": "Charts Played"
+    }
+  ],
+  "7ovwIG": [
+    {
+      "type": 0,
+      "value": "3 weeks each"
+    }
+  ],
+  "8+OFcD": [
+    {
+      "type": 0,
+      "value": "Score"
+    }
+  ],
+  "80Vzt6": [
+    {
+      "type": 0,
+      "value": "Retry"
+    }
+  ],
+  "82xftT": [
+    {
+      "type": 1,
+      "value": "title"
+    },
+    {
+      "type": 0,
+      "value": " banner"
+    }
+  ],
+  "85Sq9G": [
+    {
+      "type": 0,
+      "value": "Way Off & Miss heavily punished"
+    }
+  ],
+  "86A6Pn": [
+    {
+      "type": 0,
+      "value": "Overall Rank"
+    }
+  ],
+  "89o0ZA": [
+    {
+      "type": 0,
+      "value": "Failed to fetch user data."
+    }
+  ],
+  "8OA9Ae": [
+    {
+      "type": 0,
+      "value": "Register"
+    }
+  ],
+  "8ZispS": [
+    {
+      "type": 0,
+      "value": "Login failed. Please try again."
+    }
+  ],
+  "8bdZjb": [
+    {
+      "type": 0,
+      "value": "All Types"
+    }
+  ],
+  "8i+1ZL": [
+    {
+      "type": 0,
+      "value": "Min"
+    }
+  ],
+  "8x/8+a": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "No."
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " You're looking for Etterna instead. If you submitted a keyboard score by mistake it is your responsibility to delete it. If we notice users with too many keyboard scores, your scores may be wiped at an administrator's discretion."
+    }
+  ],
+  "94Mbq6": [
+    {
+      "type": 0,
+      "value": "Charts"
+    }
+  ],
+  "9F+o+P": [
+    {
+      "type": 0,
+      "value": "Back to Sign In"
+    }
+  ],
+  "9HRRf6": [
+    {
+      "type": 0,
+      "value": "HardEX Weight"
+    }
+  ],
+  "9K8zUV": [
+    {
+      "type": 0,
+      "value": "Grind"
+    }
+  ],
+  "9KiYOr": [
+    {
+      "type": 0,
+      "value": "We currently use no advertising or third-party tracking scripts, or third-party tracking services."
+    }
+  ],
+  "9KyB94": [
+    {
+      "type": 0,
+      "value": "Pack Uploader"
+    }
+  ],
+  "9PwMKb": [
+    {
+      "type": 0,
+      "value": "Enter current password"
+    }
+  ],
+  "9gCla1": [
+    {
+      "type": 0,
+      "value": "My score failed to submit, what do I do?"
+    }
+  ],
+  "9hrAn3": [
+    {
+      "type": 0,
+      "value": "Steps Type"
+    }
+  ],
+  "9kMeyR": [
+    {
+      "type": 0,
+      "value": "Chart Artist"
+    }
+  ],
+  "9pRwtR": [
+    {
+      "type": 0,
+      "value": "Register"
+    }
+  ],
+  "9tw8mS": [
+    {
+      "type": 0,
+      "value": "Leaderboards"
+    }
+  ],
+  "A02a/L": [
+    {
+      "type": 0,
+      "value": "We support rivals, so you can compete with and keep track of your friends."
+    }
+  ],
+  "A5yRgM": [
+    {
+      "type": 0,
+      "value": "Use fallback colors for older OBS versions (disables theme selection)"
+    }
+  ],
+  "A8mipM": [
+    {
+      "type": 0,
+      "value": "Password updated successfully!"
+    }
+  ],
+  "AD4Gnq": [
+    {
+      "type": 0,
+      "value": "Set up Passwordless Login"
+    }
+  ],
+  "AGRuvQ": [
+    {
+      "type": 0,
+      "value": "Add Rival"
+    }
+  ],
+  "AKJw1n": [
+    {
+      "type": 0,
+      "value": "Email"
+    }
+  ],
+  "AL/as5": [
+    {
+      "type": 0,
+      "value": "Error loading simfiles: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "ANUZlc": [
+    {
+      "type": 0,
+      "value": "You do not have permission to access this page. The Blue Shift event is currently in preview."
+    }
+  ],
+  "AOeHCB": [
+    {
+      "type": 0,
+      "value": "n/a"
+    }
+  ],
+  "AgADp0": [
+    {
+      "type": 0,
+      "value": "Profile"
+    }
+  ],
+  "AhjRKO": [
+    {
+      "type": 0,
+      "value": "Added: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "added"
+    }
+  ],
+  "Amu9qR": [
+    {
+      "type": 0,
+      "value": "Heads up:"
+    }
+  ],
+  "AqLiqA": [
+    {
+      "type": 0,
+      "value": "Resend in "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "seconds"
+    },
+    {
+      "type": 0,
+      "value": "s"
+    }
+  ],
+  "AxjkbD": [
+    {
+      "type": 0,
+      "value": "Search by song, artist, or player..."
+    }
+  ],
+  "B067A3": [
+    {
+      "type": 0,
+      "value": "Follow this guided selector to view platform-specific instructions."
+    }
+  ],
+  "BAchyT": [
+    {
+      "type": 0,
+      "value": "Copy URL"
+    }
+  ],
+  "BFIMJG": [
+    {
+      "type": 0,
+      "value": "Remember me"
+    }
+  ],
+  "BHuTSI": [
+    {
+      "type": 0,
+      "value": "Each grade has a minimum % threshold."
+    }
+  ],
+  "BSsFlc": [
+    {
+      "type": 0,
+      "value": "View full"
+    }
+  ],
+  "BgdjiI": [
+    {
+      "type": 0,
+      "value": "New Password"
+    }
+  ],
+  "BkGM9i": [
+    {
+      "type": 0,
+      "value": "Help"
+    }
+  ],
+  "Bs3fyg": [
+    {
+      "type": 0,
+      "value": "Remove Preferences"
+    }
+  ],
+  "Bt+/uG": [
+    {
+      "type": 0,
+      "value": "Rank"
+    }
+  ],
+  "BvJ1Nn": [
+    {
+      "type": 0,
+      "value": "Failed to save preferences"
+    }
+  ],
+  "By9s2f": [
+    {
+      "type": 0,
+      "value": "No scores yet"
+    }
+  ],
+  "ByVSO+": [
+    {
+      "type": 0,
+      "value": "based on your leaderboard position"
+    }
+  ],
+  "C22vWu": [
+    {
+      "type": 0,
+      "value": "Packs"
+    }
+  ],
+  "C4dqyM": [
+    {
+      "type": 0,
+      "value": "Grade"
+    }
+  ],
+  "C5CpiW": [
+    {
+      "type": 0,
+      "value": "Images will be automatically cropped to square and resized to 400x400"
+    }
+  ],
+  "C6tISW": [
+    {
+      "type": 0,
+      "value": "Welcome to Arrow Cloud"
+    }
+  ],
+  "C9Lob8": [
+    {
+      "type": 0,
+      "value": "Choose what information to display in the widget"
+    }
+  ],
+  "CVXRUi": [
+    {
+      "type": 0,
+      "value": "99.7% of your steps were under this max. value"
+    }
+  ],
+  "CbHUxa": [
+    {
+      "type": 0,
+      "value": "Join our Discord (opens in new tab)"
+    }
+  ],
+  "CcMJR2": [
+    {
+      "type": 0,
+      "value": "Select which leaderboards to cycle through (at least one required)"
+    }
+  ],
+  "CgzUvb": [
+    {
+      "type": 0,
+      "value": "Leaderboards"
+    }
+  ],
+  "CnmIBg": [
+    {
+      "type": 0,
+      "value": "Image file must be smaller than 5MB"
+    }
+  ],
+  "CqHJWf": [
+    {
+      "type": 0,
+      "value": "Stepartist: "
+    },
+    {
+      "type": 1,
+      "value": "stepartist"
+    }
+  ],
+  "Cqcs8A": [
+    {
+      "type": 0,
+      "value": "Footer"
+    }
+  ],
+  "CtB3h2": [
+    {
+      "type": 0,
+      "value": "Would you like to set up passwordless authentication for faster future sign-ins?"
+    }
+  ],
+  "Cy/UbI": [
+    {
+      "type": 0,
+      "value": "Search packs..."
+    }
+  ],
+  "D43bLy": [
+    {
+      "type": 0,
+      "value": "Manage your display name and country"
+    }
+  ],
+  "DI/ILQ": [
+    {
+      "type": 0,
+      "value": "Download ArrowCloud.ini"
+    }
+  ],
+  "DNaobF": [
+    {
+      "type": 0,
+      "value": "Search songs..."
+    }
+  ],
+  "DOXSYq": [
+    {
+      "type": 0,
+      "value": "Grade"
+    }
+  ],
+  "DPOFoY": [
+    {
+      "type": 0,
+      "value": "Never"
+    }
+  ],
+  "DUbBkQ": [
+    {
+      "type": 0,
+      "value": "Score"
+    }
+  ],
+  "DUif3G": [
+    {
+      "type": 0,
+      "value": "Delete Score"
+    }
+  ],
+  "DVNpb1": [
+    {
+      "type": 0,
+      "value": "Loading countries..."
+    }
+  ],
+  "DYk76o": [
+    {
+      "type": 0,
+      "value": "points"
+    }
+  ],
+  "DdEvZe": [
+    {
+      "type": 0,
+      "value": "Profile image removed successfully!"
+    }
+  ],
+  "DdfLk1": [
+    {
+      "type": 0,
+      "value": "Failed to update password"
+    }
+  ],
+  "DpZVFd": [
+    {
+      "type": 0,
+      "value": "If Arrow Cloud is actually down, it means one of two things probably happened: either AWS is having an outage in our region, or a developer pushed a bad release. If this happens we may extend event deadlines to accommodate affected players. Again, we'll do our best to build our module and theme to handle resubmitting your scores automatically."
+    }
+  ],
+  "Duq0nQ": [
+    {
+      "type": 0,
+      "value": "A modern ITG platform for score tracking, leaderboards, events, rivalries, and more."
+    }
+  ],
+  "Dya6QR": [
+    {
+      "type": 0,
+      "value": "How to use in OBS:"
+    }
+  ],
+  "E2Q8Ev": [
+    {
+      "type": 0,
+      "value": "Current Password"
+    }
+  ],
+  "E2VFjz": [
+    {
+      "type": 0,
+      "value": "Dismiss"
+    }
+  ],
+  "EaTIYv": [
+    {
+      "type": 0,
+      "value": "Packs"
+    }
+  ],
+  "Eb0JQV": [
+    {
+      "type": 0,
+      "value": "Failed to clear preferences"
+    }
+  ],
+  "EgWcdC": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "Ejaumd": [
+    {
+      "type": 0,
+      "value": "Deleting..."
+    }
+  ],
+  "EnMoBC": [
+    {
+      "type": 0,
+      "value": "Added"
+    }
+  ],
+  "FBQiEB": [
+    {
+      "type": 0,
+      "value": "Loading API keys..."
+    }
+  ],
+  "FBujCk": [
+    {
+      "type": 0,
+      "value": "Logged in as "
+    },
+    {
+      "type": 1,
+      "value": "userInfo"
+    },
+    {
+      "type": 0,
+      "value": ". This step is complete."
+    }
+  ],
+  "FEaNa1": [
+    {
+      "type": 0,
+      "value": "If your score failed to submit, please check your internet connection. We do not accept manual score submissions. We will work to make sure our theme and module integrations handle retrying failed submissions, but that feature is currently not available."
+    }
+  ],
+  "FXXCXg": [
+    {
+      "type": 0,
+      "value": "Chart Artist"
+    }
+  ],
+  "FaknjP": [
+    {
+      "type": 0,
+      "value": "Showing "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "shown"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " songs"
+    }
+  ],
+  "FdrJbE": [
+    {
+      "type": 0,
+      "value": "Showing "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "recentScores"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " plays"
+    }
+  ],
+  "FfCFxS": [
+    {
+      "type": 0,
+      "value": "Blue Shift is our inaugural 9‑week launch event, beginning early December."
+    }
+  ],
+  "FkqFg3": [
+    {
+      "type": 0,
+      "value": "Mean Offset"
+    }
+  ],
+  "FrimqV": [
+    {
+      "type": 0,
+      "value": "No timing data available for this play."
+    }
+  ],
+  "G5D4zt": [
+    {
+      "type": 0,
+      "value": "Starting on Dec. 5th 2025, Blue Shift is our inaugural competitive event - a multi-phase remote/online tournament where you can compete with players from around the world across multiple skill categories and leaderboards!"
+    }
+  ],
+  "G8u4NE": [
+    {
+      "type": 0,
+      "value": "Processing..."
+    }
+  ],
+  "G9kRa2": [
+    {
+      "type": 0,
+      "value": "Member Since"
+    }
+  ],
+  "GDC8y1": [
+    {
+      "type": 0,
+      "value": "H.EX (10ms), EX, and ITG"
+    }
+  ],
+  "GHqL4U": [
+    {
+      "type": 0,
+      "value": "Passkeys are not supported on this device or browser."
+    }
+  ],
+  "GNP6fs": [
+    {
+      "type": 0,
+      "value": "Uploading... "
+    },
+    {
+      "style": {
+        "parsedOptions": {
+          "style": "percent"
+        },
+        "tokens": [
+          {
+            "options": [
+            ],
+            "stem": "percent"
+          }
+        ],
+        "type": 0
+      },
+      "type": 2,
+      "value": "progress"
+    }
+  ],
+  "GRui4y": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "GVb3Zo": [
+    {
+      "type": 0,
+      "value": "Error loading recent scores: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "GXkfPe": [
+    {
+      "type": 0,
+      "value": "No charts found."
+    }
+  ],
+  "GYz+Yc": [
+    {
+      "type": 0,
+      "value": "Overall Leaderboard"
+    }
+  ],
+  "GamScG": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud is a modern online service for ITGMania for tracking scores, hosting leaderboards, and running remote online events. Built with fundamentally scalable infrastructure, and will be open sourced in 2026."
+    }
+  ],
+  "GgX2r2": [
+    {
+      "type": 0,
+      "value": "Greats still retain minor weight"
+    }
+  ],
+  "GrJ6PI": [
+    {
+      "type": 0,
+      "value": "Next"
+    }
+  ],
+  "GrQeWz": [
+    {
+      "type": 0,
+      "value": "Resend in "
+    },
+    {
+      "type": 1,
+      "value": "resendCooldown"
+    },
+    {
+      "type": 0,
+      "value": "s"
+    }
+  ],
+  "Gxtt3v": [
+    {
+      "type": 0,
+      "value": "Please verify your email address to secure your account."
+    }
+  ],
+  "H/xdSH": [
+    {
+      "type": 0,
+      "value": "What Arrow Cloud Is"
+    }
+  ],
+  "HFZ2Dx": [
+    {
+      "type": 0,
+      "value": "Scoring & Grading Systems"
+    }
+  ],
+  "HGJlNc": [
+    {
+      "type": 0,
+      "value": "Authenticating..."
+    }
+  ],
+  "HIvR8W": [
+    {
+      "type": 0,
+      "value": "Reset"
+    }
+  ],
+  "HO0K0o": [
+    {
+      "type": 0,
+      "value": "Rank"
+    }
+  ],
+  "HlcJcp": [
+    {
+      "type": 0,
+      "value": "Theme"
+    }
+  ],
+  "HmniJw": [
+    {
+      "type": 0,
+      "value": "Are you sure you want to remove your profile image?"
+    }
+  ],
+  "I/+lYe": [
+    {
+      "type": 0,
+      "value": "Confirm Ban User"
+    }
+  ],
+  "ID1Yfr": [
+    {
+      "type": 0,
+      "value": "Failed to process image"
+    }
+  ],
+  "IFnUpt": [
+    {
+      "type": 0,
+      "value": "Log In"
+    }
+  ],
+  "IJIw7r": [
+    {
+      "type": 0,
+      "value": "Sign Up Now"
+    }
+  ],
+  "ITq0p4": [
+    {
+      "type": 0,
+      "value": "Privacy Policy"
+    }
+  ],
+  "J8Xk3g": [
+    {
+      "type": 0,
+      "value": "Reset Password"
+    }
+  ],
+  "JEZQFw": [
+    {
+      "type": 0,
+      "value": "Rank"
+    }
+  ],
+  "JKKkzS": [
+    {
+      "type": 0,
+      "value": "Change Password"
+    }
+  ],
+  "JTD1xr": [
+    {
+      "type": 0,
+      "value": "Setting up passkey..."
+    }
+  ],
+  "JTnbHZ": [
+    {
+      "type": 0,
+      "value": "Add Passkey"
+    }
+  ],
+  "JVuqsu": [
+    {
+      "type": 0,
+      "value": "Open "
+    },
+    {
+      "type": 1,
+      "value": "prefsPath"
+    },
+    {
+      "type": 0,
+      "value": " while the game is closed and append the host to the allowed list. If you already have entries, simply add "
+    },
+    {
+      "type": 1,
+      "value": "appendHost"
+    },
+    {
+      "type": 0,
+      "value": " to the end of your existing list."
+    }
+  ],
+  "Jf70Ja": [
+    {
+      "type": 0,
+      "value": "Manage your account settings and preferences"
+    }
+  ],
+  "Jic09P": [
+    {
+      "type": 0,
+      "value": "Are you sure you want to ban "
+    },
+    {
+      "children": [
+        {
+          "type": 1,
+          "value": "userAlias"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": "? This will:"
+    }
+  ],
+  "Jy5dn1": [
+    {
+      "type": 0,
+      "value": "Points"
+    }
+  ],
+  "Jyhkfl": [
+    {
+      "type": 0,
+      "value": "User Profile"
+    }
+  ],
+  "KBUN0h": [
+    {
+      "type": 0,
+      "value": "Added"
+    }
+  ],
+  "KCXDwp": [
+    {
+      "type": 0,
+      "value": "Artist"
+    }
+  ],
+  "KV+29l": [
+    {
+      "type": 0,
+      "value": "If no thresholds met: fallback to minimum pass grade (D)."
+    }
+  ],
+  "Kc/AbT": [
+    {
+      "type": 0,
+      "value": "Enter your email"
+    }
+  ],
+  "KfBAeQ": [
+    {
+      "type": 0,
+      "value": "3 Phases"
+    }
+  ],
+  "KpJJ7D": [
+    {
+      "type": 0,
+      "value": "Email Verified!"
+    }
+  ],
+  "Kz3cvi": [
+    {
+      "type": 0,
+      "value": "Setting up..."
+    }
+  ],
+  "L4UkwF": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Profiles:"
+        }
+      ],
+      "type": 8,
+      "value": "label"
+    },
+    {
+      "type": 0,
+      "value": " "
+    },
+    {
+      "type": 1,
+      "value": "profilesPath"
+    }
+  ],
+  "LGRXTs": [
+    {
+      "type": 0,
+      "value": "Choose your display name"
+    }
+  ],
+  "LHEIOI": [
+    {
+      "type": 0,
+      "value": "How Percentage Is Computed"
+    }
+  ],
+  "LO3Rbr": [
+    {
+      "type": 0,
+      "value": "Remove Image"
+    }
+  ],
+  "LPsP/k": [
+    {
+      "type": 0,
+      "value": "Change Password"
+    }
+  ],
+  "Lgs0xB": [
+    {
+      "type": 0,
+      "value": "Failed to load recent scores"
+    }
+  ],
+  "LhgF30": [
+    {
+      "type": 0,
+      "value": "Edit Profile"
+    }
+  ],
+  "Lk4UgA": [
+    {
+      "type": 0,
+      "value": "Search charts or artists..."
+    }
+  ],
+  "LoJ0Ee": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "ITG:"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " The classic ITG timing window for traditionalists."
+    }
+  ],
+  "M/hUW7": [
+    {
+      "type": 0,
+      "value": "Blue Shift"
+    }
+  ],
+  "M3DX4L": [
+    {
+      "type": 0,
+      "value": "Error loading packs: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "M4B3y1": [
+    {
+      "type": 0,
+      "value": "Packs"
+    }
+  ],
+  "M7sGOe": [
+    {
+      "type": 0,
+      "value": "Passkey Management"
+    }
+  ],
+  "MAcEmn": [
+    {
+      "type": 0,
+      "value": "Rivals"
+    }
+  ],
+  "MJfqi+": [
+    {
+      "type": 0,
+      "value": "Ban User"
+    }
+  ],
+  "MO8tb+": [
+    {
+      "type": 0,
+      "value": "Profile image"
+    }
+  ],
+  "MOf0nY": [
+    {
+      "type": 0,
+      "value": "Previous"
+    }
+  ],
+  "MQb09O": [
+    {
+      "type": 0,
+      "value": "Total Points"
+    }
+  ],
+  "MW8glP": [
+    {
+      "type": 0,
+      "value": "Your hub for understanding Arrow Cloud — what it is, why it exists, and how to prepare your setup."
+    }
+  ],
+  "MZJzFb": [
+    {
+      "type": 0,
+      "value": "Rotation Delay"
+    }
+  ],
+  "MZaQAv": [
+    {
+      "type": 0,
+      "value": "Last used: "
+    },
+    {
+      "type": 1,
+      "value": "lastUsed"
+    }
+  ],
+  "MjDpNZ": [
+    {
+      "type": 0,
+      "value": "Delete Score"
+    }
+  ],
+  "MoIA9d": [
+    {
+      "type": 0,
+      "value": "Select which leaderboards you want to see by default"
+    }
+  ],
+  "MrInI2": [
+    {
+      "type": 0,
+      "value": "Timing Chart"
+    }
+  ],
+  "NIMaHT": [
+    {
+      "type": 0,
+      "value": "Pass Floor"
+    }
+  ],
+  "NZZiZb": [
+    {
+      "type": 0,
+      "value": "Unknown Title"
+    }
+  ],
+  "NbqIsv": [
+    {
+      "type": 0,
+      "value": "An account deletion request requires proof of control over the email associated with the account (for example, responding from that address or completing a verification step). Upon verified deletion request, personal data will be removed or irreversibly anonymized subject to any system integrity or anti-abuse safeguards. You may request account deletion by emailing support (at) arrowcloud (dot) dance, or reaching out to an administrator on our Discord Server."
+    }
+  ],
+  "NcqsCp": [
+    {
+      "type": 0,
+      "value": "Choose Image"
+    }
+  ],
+  "NgOmb9": [
+    {
+      "type": 0,
+      "value": "Admin"
+    }
+  ],
+  "No2aRz": [
+    {
+      "type": 0,
+      "value": "Time"
+    }
+  ],
+  "NvFvI1": [
+    {
+      "type": 0,
+      "value": "Beta"
+    }
+  ],
+  "NvXgF1": [
+    {
+      "type": 0,
+      "value": "Reset Password"
+    }
+  ],
+  "Nx1LTA": [
+    {
+      "type": 0,
+      "value": "Saving..."
+    }
+  ],
+  "O6jEye": [
+    {
+      "type": 0,
+      "value": "Selected: "
+    },
+    {
+      "type": 1,
+      "value": "fileName"
+    },
+    {
+      "type": 0,
+      "value": " ("
+    },
+    {
+      "style": {
+        "parsedOptions": {
+          "style": "unit",
+          "unit": "kilobyte"
+        },
+        "tokens": [
+          {
+            "options": [
+              "kilobyte"
+            ],
+            "stem": "unit"
+          }
+        ],
+        "type": 0
+      },
+      "type": 2,
+      "value": "fileSize"
+    },
+    {
+      "type": 0,
+      "value": ") - 400x400 ready for upload"
+    }
+  ],
+  "O7TzM9": [
+    {
+      "type": 0,
+      "value": "Participants: "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "count"
+    }
+  ],
+  "O93xq6": [
+    {
+      "type": 0,
+      "value": "You'll be redirected to your dashboard momentarily..."
+    }
+  ],
+  "OWbRXA": [
+    {
+      "type": 0,
+      "value": "Clear Filters"
+    }
+  ],
+  "OfekCx": [
+    {
+      "type": 0,
+      "value": "Already have an account? "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Sign in here"
+        }
+      ],
+      "type": 8,
+      "value": "button"
+    }
+  ],
+  "OrEocL": [
+    {
+      "type": 0,
+      "value": "Notifications of updates to this privacy policy will be sent via email, announced on Discord, and posted on our website."
+    }
+  ],
+  "P+Gj+q": [
+    {
+      "type": 0,
+      "value": "Failed to update profile"
+    }
+  ],
+  "P+UCmK": [
+    {
+      "type": 0,
+      "value": "Use your device's built-in security to sign in instantly"
+    }
+  ],
+  "P/vx2w": [
+    {
+      "type": 1,
+      "value": "swordIcon"
+    },
+    {
+      "type": 0,
+      "value": " Rival"
+    }
+  ],
+  "PGAlRw": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "PP8AC8": [
+    {
+      "type": 0,
+      "value": "Remove Rival"
+    }
+  ],
+  "PPXCI8": [
+    {
+      "type": 0,
+      "value": "Email verification failed. Please try again or request a new verification email."
+    }
+  ],
+  "PTMqr0": [
+    {
+      "type": 0,
+      "value": "Grade Thresholds & Badges (ITG base + extensions)"
+    }
+  ],
+  "PttiTj": [
+    {
+      "type": 0,
+      "value": "Edit Profile"
+    }
+  ],
+  "Q0d0pT": [
+    {
+      "type": 0,
+      "value": "Create Key"
+    }
+  ],
+  "QF7nqo": [
+    {
+      "type": 0,
+      "value": "Send them a suspension notification email"
+    }
+  ],
+  "QGutVM": [
+    {
+      "type": 0,
+      "value": "Rewards extreme precision"
+    }
+  ],
+  "QIi1Qb": [
+    {
+      "type": 0,
+      "value": "#"
+    },
+    {
+      "type": 1,
+      "value": "rank"
+    }
+  ],
+  "QJ79vt": [
+    {
+      "type": 0,
+      "value": "We do not sell or rent personal data. Passwords are stored using industry-standard salted hashing. Direct database access is restricted to authorized site administrators. From time to time, anonymized database exports (with direct identifiers removed) may be published or distributed for backup, archival, analytical, or restoration purposes."
+    }
+  ],
+  "QOAp4b": [
+    {
+      "type": 0,
+      "value": "Primary Fantastic at ±15ms"
+    }
+  ],
+  "QTkpuD": [
+    {
+      "type": 0,
+      "value": "Player"
+    }
+  ],
+  "QYJaeC": [
+    {
+      "type": 0,
+      "value": "Check 'Shutdown source when not visible' and 'Refresh browser when scene becomes active'"
+    }
+  ],
+  "Qo+oY5": [
+    {
+      "type": 0,
+      "value": "Max Error"
+    }
+  ],
+  "Qpj9Z+": [
+    {
+      "type": 0,
+      "value": "Search user alias (min 2 chars)"
+    }
+  ],
+  "QreD4A": [
+    {
+      "type": 0,
+      "value": "Percent = score sum / max."
+    }
+  ],
+  "RAgpSZ": [
+    {
+      "type": 0,
+      "value": "Score"
+    }
+  ],
+  "RDLRdD": [
+    {
+      "type": 0,
+      "value": "Register"
+    }
+  ],
+  "RHzXYw": [
+    {
+      "type": 0,
+      "value": "Failed to resend verification email. Please try again."
+    }
+  ],
+  "RNhXT1": [
+    {
+      "type": 0,
+      "value": "Event Structure"
+    }
+  ],
+  "RWchvs": [
+    {
+      "type": 0,
+      "value": "Failed to load passkey information"
+    }
+  ],
+  "Rfndrb": [
+    {
+      "type": 0,
+      "value": "Copy"
+    }
+  ],
+  "RoZdO3": [
+    {
+      "type": 0,
+      "value": "Welcome to Arrow Cloud"
+    }
+  ],
+  "Rp8OF+": [
+    {
+      "type": 0,
+      "value": "No recent scores available"
+    }
+  ],
+  "S5AGlo": [
+    {
+      "type": 0,
+      "value": "Failed to register passkey"
+    }
+  ],
+  "SF7mNm": [
+    {
+      "type": 0,
+      "value": "Tight inner Fantastic: ±10ms window"
+    }
+  ],
+  "SI6+yb": [
+    {
+      "type": 0,
+      "value": "ITG Weight"
+    }
+  ],
+  "SSi3N2": [
+    {
+      "type": 0,
+      "value": "Download Pack"
+    }
+  ],
+  "STVQpe": [
+    {
+      "type": 0,
+      "value": "Access Denied"
+    }
+  ],
+  "SZ1Xar": [
+    {
+      "type": 0,
+      "value": "Login"
+    }
+  ],
+  "Sgtmaw": [
+    {
+      "type": 0,
+      "value": "Choose Your Leaderboards"
+    }
+  ],
+  "SjGrX2": [
+    {
+      "type": 0,
+      "value": "resend in "
+    },
+    {
+      "type": 1,
+      "value": "resendCooldown"
+    },
+    {
+      "type": 0,
+      "value": "s"
+    }
+  ],
+  "SpD64Q": [
+    {
+      "type": 0,
+      "value": "EX"
+    }
+  ],
+  "SsHyj8": [
+    {
+      "type": 0,
+      "value": "Confirm new password"
+    }
+  ],
+  "SsRETH": [
+    {
+      "type": 0,
+      "value": "Set Width: "
+    },
+    {
+      "type": 1,
+      "value": "width"
+    },
+    {
+      "type": 0,
+      "value": ", Height: "
+    },
+    {
+      "type": 1,
+      "value": "height"
+    }
+  ],
+  "T3ze71": [
+    {
+      "type": 0,
+      "value": "H.EX"
+    }
+  ],
+  "THr3aV": [
+    {
+      "type": 0,
+      "value": "Compatibility Mode"
+    }
+  ],
+  "TSz5Re": [
+    {
+      "type": 0,
+      "value": "Difficulty"
+    }
+  ],
+  "TV0vc/": [
+    {
+      "type": 0,
+      "value": "Associated Simfiles"
+    }
+  ],
+  "TZbl8m": [
+    {
+      "type": 0,
+      "value": "Saving..."
+    }
+  ],
+  "TdWa2s": [
+    {
+      "type": 0,
+      "value": "Add"
+    }
+  ],
+  "TeiEDu": [
+    {
+      "type": 0,
+      "value": "Added: "
+    },
+    {
+      "type": 1,
+      "value": "date"
+    }
+  ],
+  "TiJDoq": [
+    {
+      "type": 0,
+      "value": "Delete Score"
+    }
+  ],
+  "TiVT6w": [
+    {
+      "type": 0,
+      "value": "Use a security key for secure authentication"
+    }
+  ],
+  "TtSTfd": [
+    {
+      "type": 0,
+      "value": "Failed to delete score"
+    }
+  ],
+  "TzNn9X": [
+    {
+      "type": 0,
+      "value": "Upload a profile image that will be displayed on your public profile and in leaderboards."
+    }
+  ],
+  "U0/54Q": [
+    {
+      "type": 0,
+      "value": "Logout"
+    }
+  ],
+  "UCtdeR": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud is a modern platform designed for the ITG community. We provide score tracking, leaderboards, rivalries, and event hosting capabilities with a focus on stability, user experience, and competitive play."
+    }
+  ],
+  "UTD+LX": [
+    {
+      "type": 0,
+      "value": "Chart Scores"
+    }
+  ],
+  "UcNrFr": [
+    {
+      "type": 0,
+      "value": "Set up and manage your passkeys"
+    }
+  ],
+  "UekZ7j": [
+    {
+      "type": 0,
+      "value": "Please wait while we verify your email address..."
+    }
+  ],
+  "UhnD7Q": [
+    {
+      "type": 0,
+      "value": "ITG"
+    }
+  ],
+  "UoUeqp": [
+    {
+      "type": 0,
+      "value": "Please select a valid image file (JPEG, PNG, GIF, or WebP)"
+    }
+  ],
+  "VARle9": [
+    {
+      "type": 0,
+      "value": "Charts"
+    }
+  ],
+  "VDiUbH": [
+    {
+      "type": 0,
+      "value": "Grade"
+    }
+  ],
+  "VOJppc": [
+    {
+      "type": 0,
+      "value": "No scores yet"
+    }
+  ],
+  "VWSTaJ": [
+    {
+      "type": 0,
+      "value": "Failed to upload profile image"
+    }
+  ],
+  "VxHwC7": [
+    {
+      "type": 0,
+      "value": "ITGMania must be closed before continuing. If ITGMania is open it may overwrite some changes to preferences files we will be editing."
+    }
+  ],
+  "VyKUu+": [
+    {
+      "type": 0,
+      "value": "Recent Scores"
+    }
+  ],
+  "WBlsh8": [
+    {
+      "type": 0,
+      "value": "Give this passkey a memorable name to identify the device or authenticator."
+    }
+  ],
+  "WF72pO": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "WFfotC": [
+    {
+      "type": 0,
+      "value": "The reset link has expired. Please request a new one."
+    }
+  ],
+  "WJFQ54": [
+    {
+      "type": 0,
+      "value": "Confirm new password"
+    }
+  ],
+  "WV6MM4": [
+    {
+      "type": 0,
+      "value": "I have read and agree to the "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Privacy Policy"
+        }
+      ],
+      "type": 8,
+      "value": "privacyLink"
+    },
+    {
+      "type": 0,
+      "value": "."
+    }
+  ],
+  "Wc2PQF": [
+    {
+      "type": 0,
+      "value": "Charts"
+    }
+  ],
+  "X/dxmZ": [
+    {
+      "type": 0,
+      "value": "Upload and manage your profile picture"
+    }
+  ],
+  "X1K1PE": [
+    {
+      "type": 0,
+      "value": "Settings"
+    }
+  ],
+  "X2YpwH": [
+    {
+      "type": 0,
+      "value": "Widget dimensions: "
+    },
+    {
+      "type": 1,
+      "value": "width"
+    },
+    {
+      "type": 0,
+      "value": "×"
+    },
+    {
+      "type": 1,
+      "value": "height"
+    },
+    {
+      "type": 0,
+      "value": "px"
+    }
+  ],
+  "X6xwCH": [
+    {
+      "type": 0,
+      "value": "Copy"
+    }
+  ],
+  "XBomKO": [
+    {
+      "type": 0,
+      "value": "Song"
+    }
+  ],
+  "XNTeAR": [
+    {
+      "type": 0,
+      "value": "Login"
+    }
+  ],
+  "XNdbAr": [
+    {
+      "type": 0,
+      "value": "Enter your new password below"
+    }
+  ],
+  "XPK5q6": [
+    {
+      "type": 0,
+      "value": "Select Language"
+    }
+  ],
+  "XRHhsa": [
+    {
+      "type": 0,
+      "value": "Language"
+    }
+  ],
+  "Xdhai4": [
+    {
+      "type": 0,
+      "value": "Delete this score"
+    }
+  ],
+  "XgH7/X": [
+    {
+      "type": 0,
+      "value": "Ban User"
+    }
+  ],
+  "XrZn/3": [
+    {
+      "type": 0,
+      "value": "Download Module"
+    }
+  ],
+  "Y0Wd0B": [
+    {
+      "type": 0,
+      "value": "Note: This device doesn't support built-in authentication. You can still use external security keys."
+    }
+  ],
+  "YDRVsO": [
+    {
+      "type": 0,
+      "value": "No recent scores"
+    }
+  ],
+  "YEQ3/1": [
+    {
+      "type": 0,
+      "value": "Failed to load leaderboard"
+    }
+  ],
+  "YM+ci9": [
+    {
+      "type": 0,
+      "value": "Country"
+    }
+  ],
+  "YOS6+m": [
+    {
+      "type": 0,
+      "value": "Creating Account..."
+    }
+  ],
+  "YhyBsx": [
+    {
+      "type": 0,
+      "value": "Title"
+    }
+  ],
+  "YoJaPu": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "YrqEwQ": [
+    {
+      "type": 0,
+      "value": "Error loading charts: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "Z7jjH4": [
+    {
+      "type": 0,
+      "value": "Last generated: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "date"
+    }
+  ],
+  "ZCWT6R": [
+    {
+      "type": 0,
+      "value": "Check your inbox to continue. The link will expire in "
+    },
+    {
+      "type": 1,
+      "value": "mmssTime"
+    }
+  ],
+  "ZReS1Z": [
+    {
+      "type": 0,
+      "value": "Not now"
+    }
+  ],
+  "ZVs5zf": [
+    {
+      "type": 0,
+      "value": "Create your account and start tracking scores"
+    }
+  ],
+  "ZWQXbX": [
+    {
+      "type": 0,
+      "value": "Enter your password"
+    }
+  ],
+  "ZeU0+7": [
+    {
+      "type": 0,
+      "value": "Play ID is required"
+    }
+  ],
+  "ZlE4+d": [
+    {
+      "type": 0,
+      "value": "Widget Features"
+    }
+  ],
+  "ZqM/Oi": [
+    {
+      "type": 0,
+      "value": "Loading user profile..."
+    }
+  ],
+  "ZqrnQ+": [
+    {
+      "type": 0,
+      "value": "Double"
+    }
+  ],
+  "Zs0LJZ": [
+    {
+      "type": 0,
+      "value": "Be the first to set a score on this chart!"
+    }
+  ],
+  "ZxiG3y": [
+    {
+      "type": 0,
+      "value": "Never used"
+    }
+  ],
+  "Zz+mxb": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "EX:"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " Standard timing window for general competitive play."
+    }
+  ],
+  "a4zEIi": [
+    {
+      "type": 0,
+      "value": "Total max = (tap count * perfect weight) + (holds + rolls)*heldWeight."
+    }
+  ],
+  "a89Mq1": [
+    {
+      "type": 0,
+      "value": "Account Ready"
+    }
+  ],
+  "aCiQRg": [
+    {
+      "type": 0,
+      "value": "New Password"
+    }
+  ],
+  "aS/YuY": [
+    {
+      "type": 0,
+      "value": "Copied!"
+    }
+  ],
+  "acWNy9": [
+    {
+      "type": 0,
+      "value": "No packs found matching \""
+    },
+    {
+      "type": 1,
+      "value": "search"
+    },
+    {
+      "type": 0,
+      "value": "\""
+    }
+  ],
+  "acZVz2": [
+    {
+      "type": 0,
+      "value": "Add Rival"
+    }
+  ],
+  "adIw3h": [
+    {
+      "type": 0,
+      "value": "Banning..."
+    }
+  ],
+  "afF6i8": [
+    {
+      "type": 0,
+      "value": "Include Unknown"
+    }
+  ],
+  "aiXGAN": [
+    {
+      "type": 0,
+      "value": "Classic ITG style weighting"
+    }
+  ],
+  "anoRJU": [
+    {
+      "type": 0,
+      "value": "Search by player..."
+    }
+  ],
+  "aq13An": [
+    {
+      "type": 0,
+      "value": "Steps Type"
+    }
+  ],
+  "arUn+B": [
+    {
+      "type": 0,
+      "value": "Resetting Password..."
+    }
+  ],
+  "b497id": [
+    {
+      "type": 0,
+      "value": "Restart ITGMania to ensure configuration is loaded, then play any chart."
+    }
+  ],
+  "bH4nBJ": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
+  "bXo9VG": [
+    {
+      "type": 0,
+      "value": "soon"
+    }
+  ],
+  "bb7dGv": [
+    {
+      "type": 0,
+      "value": "Leaderboards"
+    }
+  ],
+  "bmQJci": [
+    {
+      "type": 0,
+      "value": "Change your account password"
+    }
+  ],
+  "bxd/mE": [
+    {
+      "type": 0,
+      "value": "Loading rivals..."
+    }
+  ],
+  "by4q9+": [
+    {
+      "type": 0,
+      "value": "Send Reset Link "
+    },
+    {
+      "type": 1,
+      "value": "mailIcon"
+    }
+  ],
+  "byTjHq": [
+    {
+      "type": 0,
+      "value": "Points"
+    }
+  ],
+  "byn6nd": [
+    {
+      "type": 0,
+      "value": "Date"
+    }
+  ],
+  "c5lA7h": [
+    {
+      "type": 0,
+      "value": "HardEX (10ms)"
+    }
+  ],
+  "cEZoTR": [
+    {
+      "type": 0,
+      "value": "Creating..."
+    }
+  ],
+  "cNcvUb": [
+    {
+      "type": 0,
+      "value": "Your Arrow Cloud profile should show a new submission shortly after."
+    }
+  ],
+  "cVRF/J": [
+    {
+      "type": 0,
+      "value": "Password Reset Successfully!"
+    }
+  ],
+  "cViiIu": [
+    {
+      "type": 0,
+      "value": "or"
+    }
+  ],
+  "cetLzw": [
+    {
+      "type": 0,
+      "value": "Join Arrow Cloud"
+    }
+  ],
+  "ck1B/I": [
+    {
+      "type": 0,
+      "value": "Resend"
+    }
+  ],
+  "cyaeNo": [
+    {
+      "type": 0,
+      "value": "Showing "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "shown"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " charts"
+    }
+  ],
+  "czOkfs": [
+    {
+      "type": 0,
+      "value": "Grade"
+    }
+  ],
+  "dDM60o": [
+    {
+      "type": 0,
+      "value": "Widget Theme"
+    }
+  ],
+  "dI5InQ": [
+    {
+      "type": 0,
+      "value": "Help navigation"
+    }
+  ],
+  "dIRIMP": [
+    {
+      "type": 0,
+      "value": "Need help?"
+    }
+  ],
+  "dIunyv": [
+    {
+      "type": 0,
+      "value": "We do not host audio files or pack downloads. Pack and chart graphics are scraped from public releases and are not subject to Arrow Cloud copyright."
+    }
+  ],
+  "dPQaz6": [
+    {
+      "type": 0,
+      "value": "Leaderboards to Show"
+    }
+  ],
+  "dQfrc/": [
+    {
+      "type": 0,
+      "value": "#"
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "rank"
+    }
+  ],
+  "dhBX9c": [
+    {
+      "type": 0,
+      "value": "Announcement"
+    }
+  ],
+  "di9f3h": [
+    {
+      "type": 0,
+      "value": "How long to show each leaderboard before switching (10-120 seconds)"
+    }
+  ],
+  "dlu2Wl": [
+    {
+      "type": 0,
+      "value": "Browse"
+    }
+  ],
+  "dpHkxV": [
+    {
+      "type": 0,
+      "value": "..."
+    }
+  ],
+  "dsUKTu": [
+    {
+      "type": 0,
+      "value": "New API Key"
+    }
+  ],
+  "e39ysx": [
+    {
+      "type": 0,
+      "value": "Signing In..."
+    }
+  ],
+  "e3DPEo": [
+    {
+      "type": 0,
+      "value": "Created: "
+    },
+    {
+      "type": 1,
+      "value": "createdAt"
+    }
+  ],
+  "e8mHcE": [
+    {
+      "type": 0,
+      "value": "Time"
+    }
+  ],
+  "e9nfYa": [
+    {
+      "type": 0,
+      "value": "or"
+    }
+  ],
+  "eBxpab": [
+    {
+      "type": 0,
+      "value": "Unknown Artist"
+    }
+  ],
+  "eE6UfK": [
+    {
+      "type": 0,
+      "value": "No inner Fantastic split"
+    }
+  ],
+  "ePYk5e": [
+    {
+      "type": 0,
+      "value": "Failed to delete passkey"
+    }
+  ],
+  "eRpp8o": [
+    {
+      "type": 0,
+      "value": "Preview"
+    }
+  ],
+  "eT8bPV": [
+    {
+      "type": 0,
+      "value": "Packs"
+    }
+  ],
+  "eXmrrH": [
+    {
+      "type": 0,
+      "value": "Loading passkey information..."
+    }
+  ],
+  "ebM7x5": [
+    {
+      "type": 0,
+      "value": "Your email has been successfully verified! Your account is now fully activated."
+    }
+  ],
+  "ebpbUs": [
+    {
+      "type": 0,
+      "value": "Use this URL in OBS as a Browser Source"
+    }
+  ],
+  "eeAYHv": [
+    {
+      "type": 0,
+      "value": "Failed to update profile. Please try again."
+    }
+  ],
+  "eezXdB": [
+    {
+      "type": 0,
+      "value": "You can compete in 10ms (HardEX), 15ms (EX), or ITG scoring systems."
+    }
+  ],
+  "egg6+H": [
+    {
+      "type": 0,
+      "value": "Score"
+    }
+  ],
+  "ejPmny": [
+    {
+      "type": 0,
+      "value": "Configure and preview your streaming widget"
+    }
+  ],
+  "ejXDAu": [
+    {
+      "type": 0,
+      "value": "Overall timing average"
+    }
+  ],
+  "eksVJn": [
+    {
+      "type": 0,
+      "value": "Manage your rivals"
+    }
+  ],
+  "eoVXEp": [
+    {
+      "type": 0,
+      "value": "Check Your Email!"
+    }
+  ],
+  "euAGju": [
+    {
+      "type": 0,
+      "value": "FAQ"
+    }
+  ],
+  "eubUWO": [
+    {
+      "type": 0,
+      "value": "You can always set this up later in your profile settings."
+    }
+  ],
+  "f0wAIn": [
+    {
+      "type": 0,
+      "value": "Profile updated successfully!"
+    }
+  ],
+  "f5pGyU": [
+    {
+      "type": 0,
+      "value": "Unknown Artist"
+    }
+  ],
+  "f70c15": [
+    {
+      "type": 0,
+      "value": "Save Preferences"
+    }
+  ],
+  "f78WCS": [
+    {
+      "type": 0,
+      "value": "Welcome Back"
+    }
+  ],
+  "fB9pUP": [
+    {
+      "type": 0,
+      "value": "Download Theme ZIP"
+    }
+  ],
+  "fDZSZm": [
+    {
+      "type": 0,
+      "value": "Failed to remove profile image"
+    }
+  ],
+  "fhz3KS": [
+    {
+      "type": 0,
+      "value": "No leaderboard data available"
+    }
+  ],
+  "fjW29i": [
+    {
+      "type": 0,
+      "value": "Alias"
+    }
+  ],
+  "fpEyF4": [
+    {
+      "type": 0,
+      "value": "Chart not found"
+    }
+  ],
+  "frfVZq": [
+    {
+      "type": 0,
+      "value": "Pack Uploader"
+    }
+  ],
+  "g/VjGs": [
+    {
+      "type": 0,
+      "value": "Password requirements:"
+    }
+  ],
+  "g0JMrv": [
+    {
+      "type": 0,
+      "value": "No API keys created yet"
+    }
+  ],
+  "gJs2Fl": [
+    {
+      "type": 0,
+      "value": "We collect only: your email address, your chosen alias (display name), and your country if you optionally provide it."
+    }
+  ],
+  "gKcS+F": [
+    {
+      "type": 0,
+      "value": "Join Discord"
+    }
+  ],
+  "gW2PUA": [
+    {
+      "type": 0,
+      "value": "GrooveStats introduced online leaderboards to the ITG community over 20 years ago and has been an extremely valuable tool throughout the game's history. This project aims to offer an alternative platform with a modernized, flexible, and open leaderboard design."
+    }
+  ],
+  "gpHicE": [
+    {
+      "type": 0,
+      "value": "View chart"
+    }
+  ],
+  "gpep2X": [
+    {
+      "type": 0,
+      "value": "Blue Shift uniquely accepts failed plays (plays that didn't complete the full chart) and assigns them an "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "F grade"
+        }
+      ],
+      "type": 8,
+      "value": "semibold"
+    },
+    {
+      "type": 0,
+      "value": ". Your score will still represent the progress you made before failing, allowing you to compete even on attempts that didn't finish. This helps track improvement and gives credit for partial progress."
+    }
+  ],
+  "guUuZ7": [
+    {
+      "type": 0,
+      "value": "Are you sure you want to delete this score? This action cannot be undone."
+    }
+  ],
+  "gyhSf+": [
+    {
+      "type": 0,
+      "value": "Copied"
+    }
+  ],
+  "h1j+Ft": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud (the 'Service') processes minimal personal data. The only personal data categories retained are: (1) email address, (2) user-selected alias, and (3) optional country designation. Email addresses are used exclusively for security and account lifecycle purposes, including password reset and verification workflows. Aliases are publicly displayed on site interfaces and in in-game leaderboard integrations. Country information, when provided, is displayed solely on the user’s profile page and not elsewhere."
+    }
+  ],
+  "hFlOxo": [
+    {
+      "type": 0,
+      "value": "Showing "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "shown"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " packs"
+    }
+  ],
+  "hHNj31": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "hQi+5B": [
+    {
+      "type": 0,
+      "value": "Failed to load countries: "
+    },
+    {
+      "type": 1,
+      "value": "error"
+    }
+  ],
+  "haBkmP": [
+    {
+      "type": 0,
+      "value": "Filters"
+    }
+  ],
+  "hc2MNy": [
+    {
+      "type": 0,
+      "value": "Blue Shift Event"
+    }
+  ],
+  "hdelcO": [
+    {
+      "type": 0,
+      "value": "Without a verified email your account is not recoverable."
+    }
+  ],
+  "hfv1JL": [
+    {
+      "type": 0,
+      "value": "Dismiss alert"
+    }
+  ],
+  "hllRnT": [
+    {
+      "style": {
+        "parsedOptions": {
+          "maximumFractionDigits": 2,
+          "minimumFractionDigits": 2
+        },
+        "tokens": [
+          {
+            "options": [
+            ],
+            "stem": ".00"
+          }
+        ],
+        "type": 0
+      },
+      "type": 2,
+      "value": "value"
+    },
+    {
+      "type": 0,
+      "value": " ms"
+    }
+  ],
+  "hxETKG": [
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "H.EX (10ms):"
+        }
+      ],
+      "type": 8,
+      "value": "strong"
+    },
+    {
+      "type": 0,
+      "value": " For players using high-accuracy mods, focusing on precision timing."
+    }
+  ],
+  "i+E6a3": [
+    {
+      "type": 0,
+      "value": "Footer navigation"
+    }
+  ],
+  "i3ORY6": [
+    {
+      "type": 0,
+      "value": "Earn Points"
+    }
+  ],
+  "iN/fQj": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud supports three parallel scoring interpretations. Raw judgments (the sequence of offsets and misses) are immutable; scoring systems only change how those raw events are weighted into a percentage and mapped to a grade."
+    }
+  ],
+  "iQ5NMV": [
+    {
+      "type": 0,
+      "value": "Summary & Instructions"
+    }
+  ],
+  "iXITn8": [
+    {
+      "type": 0,
+      "value": "Didn't receive the email?"
+    },
+    {
+      "type": 1,
+      "value": "linebreak"
+    },
+    {
+      "type": 0,
+      "value": "Check your spam folder or "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "click here to resend"
+        }
+      ],
+      "type": 8,
+      "value": "button"
+    }
+  ],
+  "iYUlUC": [
+    {
+      "type": 0,
+      "value": "Recent Scores"
+    }
+  ],
+  "iYr7vn": [
+    {
+      "type": 0,
+      "value": "Setup Instructions"
+    }
+  ],
+  "iZ8ydz": [
+    {
+      "type": 0,
+      "value": "Player"
+    }
+  ],
+  "iaN1LS": [
+    {
+      "type": 0,
+      "value": "Last used: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "lastUsed"
+    }
+  ],
+  "iaPSEH": [
+    {
+      "type": 0,
+      "value": "Leaderboards"
+    }
+  ],
+  "ibF5yl": [
+    {
+      "type": 0,
+      "value": "Paste the Widget URL above"
+    }
+  ],
+  "ieFeXy": [
+    {
+      "type": 0,
+      "value": "Failed to load pack data"
+    }
+  ],
+  "if82ki": [
+    {
+      "type": 0,
+      "value": "Logout"
+    }
+  ],
+  "ioJOJl": [
+    {
+      "type": 0,
+      "value": "Current Password"
+    }
+  ],
+  "iqbsz+": [
+    {
+      "type": 0,
+      "value": "Not now"
+    }
+  ],
+  "it89I1": [
+    {
+      "type": 0,
+      "value": "Key • "
+    },
+    {
+      "type": 1,
+      "value": "fingerprint"
+    }
+  ],
+  "j6SWIB": [
+    {
+      "type": 0,
+      "value": "Leaderboard Toggle"
+    }
+  ],
+  "jFD+sg": [
+    {
+      "type": 0,
+      "value": "Profile updated successfully!"
+    }
+  ],
+  "jIZqAg": [
+    {
+      "type": 0,
+      "value": "This key will only be shown once. Copy and store it securely."
+    }
+  ],
+  "jMoAT4": [
+    {
+      "type": 0,
+      "value": "Confirm New Password"
+    }
+  ],
+  "js1oVo": [
+    {
+      "type": 0,
+      "value": "What Arrow Cloud Is NOT"
+    }
+  ],
+  "jsxVw/": [
+    {
+      "type": 0,
+      "value": "We offer a full integration with ITGMania via our custom theme, or a light-weight alternative drop in Simply Love module."
+    }
+  ],
+  "kYDZI0": [
+    {
+      "type": 0,
+      "value": "Back to Home"
+    }
+  ],
+  "kYKyoa": [
+    {
+      "type": 0,
+      "value": "Slightly broader precision reward"
+    }
+  ],
+  "kebfPM": [
+    {
+      "type": 0,
+      "value": "Mean absolute error"
+    }
+  ],
+  "kgCmwz": [
+    {
+      "type": 0,
+      "value": "Set up Passkey"
+    }
+  ],
+  "kjF7Lj": [
+    {
+      "type": 0,
+      "value": "Created: "
+    },
+    {
+      "style": null,
+      "type": 3,
+      "value": "created"
+    }
+  ],
+  "kuM6D7": [
+    {
+      "type": 0,
+      "value": "Play not found"
+    }
+  ],
+  "l8uwY9": [
+    {
+      "type": 0,
+      "value": "Rating"
+    }
+  ],
+  "lcVOiv": [
+    {
+      "type": 0,
+      "value": "Help & FAQs"
+    }
+  ],
+  "lmpJF6": [
+    {
+      "type": 0,
+      "value": "Saving..."
+    }
+  ],
+  "lzqhT9": [
+    {
+      "type": 0,
+      "value": "Rivals are other players you want to keep a close eye on, and/or compete with. Rivals will be highlighted and prioritized when viewing various leaderboards."
+    }
+  ],
+  "m4RRvP": [
+    {
+      "type": 0,
+      "value": "Append to AllowedHosts / HttpAllowHosts"
+    }
+  ],
+  "m4U7BZ": [
+    {
+      "type": 0,
+      "value": "Failed to load image"
+    }
+  ],
+  "mFXNP+": [
+    {
+      "type": 0,
+      "value": "Add a new Browser Source in OBS"
+    }
+  ],
+  "mOHkCr": [
+    {
+      "type": 0,
+      "value": "At least 6 characters long"
+    }
+  ],
+  "mVwWst": [
+    {
+      "type": 0,
+      "value": "Set up a passkey for faster, more secure sign-ins"
+    }
+  ],
+  "meazlj": [
+    {
+      "type": 0,
+      "value": "Confirm your new password"
+    }
+  ],
+  "mmiM0/": [
+    {
+      "type": 0,
+      "value": "Supported formats: JPEG, PNG, GIF, WebP"
+    }
+  ],
+  "mtGCKz": [
+    {
+      "type": 0,
+      "value": "Each phase will contain ~25 charts, spanning a variety of difficulties between 7 and 14. Expect each phase to challenge you in different ways as you compete on the leaderboards."
+    }
+  ],
+  "mvXRqN": [
+    {
+      "type": 0,
+      "value": "Play some songs to get started!"
+    }
+  ],
+  "n46TSr": [
+    {
+      "type": 0,
+      "value": "3 Boards"
+    }
+  ],
+  "n4o4oJ": [
+    {
+      "type": 0,
+      "value": "Player"
+    }
+  ],
+  "nEmRDi": [
+    {
+      "type": 0,
+      "value": "Total Points"
+    }
+  ],
+  "nTaq/y": [
+    {
+      "type": 0,
+      "value": "Failed Plays Welcome"
+    }
+  ],
+  "nWbnaE": [
+    {
+      "type": 0,
+      "value": "No recent scores"
+    }
+  ],
+  "o2nv5R": [
+    {
+      "type": 0,
+      "value": "Leaderboard Dynamics"
+    }
+  ],
+  "o7+BG1": [
+    {
+      "type": 0,
+      "value": "Score deleted successfully"
+    }
+  ],
+  "oGL1Ha": [
+    {
+      "type": 0,
+      "value": "Score"
+    }
+  ],
+  "oeCoFG": [
+    {
+      "type": 0,
+      "value": "Setup Guide"
+    }
+  ],
+  "oiaphe": [
+    {
+      "type": 0,
+      "value": "Greats are equivalent to a miss"
+    }
+  ],
+  "oid8be": [
+    {
+      "type": 0,
+      "value": "Overall Leaderboard"
+    }
+  ],
+  "olipRr": [
+    {
+      "type": 0,
+      "value": "Delete all their data (plays, API keys, etc.)"
+    }
+  ],
+  "on6x6P": [
+    {
+      "type": 0,
+      "value": "Alias"
+    }
+  ],
+  "opIE4F": [
+    {
+      "type": 0,
+      "value": "Use the buttons below to download the required files for your setup."
+    }
+  ],
+  "oueHUv": [
+    {
+      "type": 0,
+      "value": "Create Account"
+    }
+  ],
+  "p4n4Yc": [
+    {
+      "type": 0,
+      "value": "Resend Verification Email"
+    }
+  ],
+  "pB9pg4": [
+    {
+      "type": 0,
+      "value": "Last Played"
+    }
+  ],
+  "pdMp3j": [
+    {
+      "type": 0,
+      "value": "Each chart is worth the same number of overall points - your leaderboard position on the easiest content matters just as much as it does on the hardest charts."
+    }
+  ],
+  "pdQ9u+": [
+    {
+      "type": 0,
+      "value": "Ready to join the competition? Get set up now to be sure you are ready for the event on December 5th!"
+    }
+  ],
+  "pfIZz9": [
+    {
+      "type": 0,
+      "value": "Score"
+    }
+  ],
+  "pveInw": [
+    {
+      "type": 0,
+      "value": "API Keys are used to connect your game client to our servers to submit scores."
+    }
+  ],
+  "q0JHzH": [
+    {
+      "type": 0,
+      "value": "Charts"
+    }
+  ],
+  "qC1meP": [
+    {
+      "type": 0,
+      "value": "Create Account"
+    }
+  ],
+  "qMbYfC": [
+    {
+      "type": 0,
+      "value": "Pack Name"
+    }
+  ],
+  "qORdj/": [
+    {
+      "type": 0,
+      "value": "New Password"
+    }
+  ],
+  "qYK6Ec": [
+    {
+      "type": 0,
+      "value": "We do not use any tracking cookies or similar technologies."
+    }
+  ],
+  "qYn7lJ": [
+    {
+      "type": 0,
+      "value": "Save Profile"
+    }
+  ],
+  "qbwjLM": [
+    {
+      "type": 0,
+      "value": "Cancel"
+    }
+  ],
+  "qh8IGh": [
+    {
+      "type": 0,
+      "value": "Rank"
+    }
+  ],
+  "qkpyHk": [
+    {
+      "type": 0,
+      "value": "Points System"
+    }
+  ],
+  "qoCB1e": [
+    {
+      "type": 0,
+      "value": "Sending..."
+    }
+  ],
+  "qpvO54": [
+    {
+      "type": 0,
+      "value": "Configuration Paths"
+    }
+  ],
+  "qyoslL": [
+    {
+      "type": 0,
+      "value": "Your password has been reset and you've been automatically signed in."
+    }
+  ],
+  "r2gihF": [
+    {
+      "type": 0,
+      "value": "Blue Shift"
+    }
+  ],
+  "r3HlFt": [
+    {
+      "type": 0,
+      "value": "Menu"
+    }
+  ],
+  "rBoPpa": [
+    {
+      "type": 0,
+      "value": "No packs available"
+    }
+  ],
+  "rHQoq4": [
+    {
+      "type": 0,
+      "value": "No charts available."
+    }
+  ],
+  "rPy5Tt": [
+    {
+      "type": 0,
+      "value": "Unknown"
+    }
+  ],
+  "rYdDW0": [
+    {
+      "type": 0,
+      "value": "Email address"
+    }
+  ],
+  "rbGD0/": [
+    {
+      "type": 0,
+      "value": "Date"
+    }
+  ],
+  "ruTh1W": [
+    {
+      "type": 0,
+      "value": "sending..."
+    }
+  ],
+  "ryU59V": [
+    {
+      "type": 0,
+      "value": "Failed Play"
+    }
+  ],
+  "s4GvEu": [
+    {
+      "type": 0,
+      "value": "Finish Setup & Submit a Score"
+    }
+  ],
+  "s5gLzo": [
+    {
+      "type": 0,
+      "value": "Prevent them from logging in"
+    }
+  ],
+  "sCaEgz": [
+    {
+      "type": 0,
+      "value": "Ties on threshold resolved by system precision priority: HardEX > EX > ITG."
+    }
+  ],
+  "sL/xaE": [
+    {
+      "type": 0,
+      "value": "Pack not found"
+    }
+  ],
+  "sU24/r": [
+    {
+      "type": 0,
+      "value": "Unknown"
+    }
+  ],
+  "sWELJA": [
+    {
+      "type": 0,
+      "value": "Sign In"
+    }
+  ],
+  "siD2Ie": [
+    {
+      "type": 0,
+      "value": "Email verification failed. Please try again."
+    }
+  ],
+  "stf0NS": [
+    {
+      "type": 0,
+      "value": "Player"
+    }
+  ],
+  "suj+gY": [
+    {
+      "type": 0,
+      "value": "Choose Your Installation Method"
+    }
+  ],
+  "sxhZC7": [
+    {
+      "type": 0,
+      "value": "Popularity"
+    }
+  ],
+  "tApE2N": [
+    {
+      "type": 0,
+      "value": "Added: "
+    },
+    {
+      "type": 1,
+      "value": "date"
+    }
+  ],
+  "tJZWpJ": [
+    {
+      "type": 0,
+      "value": "Checking login status…"
+    }
+  ],
+  "tmuyhy": [
+    {
+      "type": 1,
+      "value": "alias"
+    },
+    {
+      "type": 0,
+      "value": "'s profile"
+    }
+  ],
+  "tn3SH1": [
+    {
+      "type": 0,
+      "value": "#"
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "rank"
+    }
+  ],
+  "uC7RSq": [
+    {
+      "type": 0,
+      "value": "User not found"
+    }
+  ],
+  "uLqMrt": [
+    {
+      "type": 0,
+      "value": "Enter new password"
+    }
+  ],
+  "uQSgr8": [
+    {
+      "type": 0,
+      "value": "Compete"
+    }
+  ],
+  "uUa2U9": [
+    {
+      "type": 0,
+      "value": "Please enter a name for your passkey"
+    }
+  ],
+  "uc7Ibp": [
+    {
+      "type": 0,
+      "value": "Starts Dec. 5"
+    }
+  ],
+  "upYb9D": [
+    {
+      "type": 0,
+      "value": "Max"
+    }
+  ],
+  "v0nWNk": [
+    {
+      "type": 0,
+      "value": "Saving..."
+    }
+  ],
+  "v9EcKC": [
+    {
+      "type": 0,
+      "value": "Unknown Artist"
+    }
+  ],
+  "vQNNhl": [
+    {
+      "type": 0,
+      "value": "of "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    }
+  ],
+  "ve/RaJ": [
+    {
+      "type": 0,
+      "value": "Enter your alias"
+    }
+  ],
+  "vgnvnd": [
+    {
+      "type": 0,
+      "value": "Failed to load play"
+    }
+  ],
+  "viVXqx": [
+    {
+      "type": 0,
+      "value": "Arrow Cloud Logo"
+    }
+  ],
+  "vpARAu": [
+    {
+      "type": 0,
+      "value": "Are you sure you want to delete this passkey? This action cannot be undone."
+    }
+  ],
+  "vwT2r7": [
+    {
+      "type": 0,
+      "value": "Unknown"
+    }
+  ],
+  "vzcP0o": [
+    {
+      "type": 0,
+      "value": "Both passwords must match"
+    }
+  ],
+  "w2zB1o": [
+    {
+      "type": 0,
+      "value": "Check Your Email"
+    }
+  ],
+  "w69Aiw": [
+    {
+      "type": 0,
+      "value": "Uploading..."
+    }
+  ],
+  "wK4IU8": [
+    {
+      "type": 0,
+      "value": "Don't have an account? "
+    },
+    {
+      "children": [
+        {
+          "type": 0,
+          "value": "Create one here"
+        }
+      ],
+      "type": 8,
+      "value": "createLink"
+    }
+  ],
+  "wMXZJe": [
+    {
+      "type": 0,
+      "value": "How Grade Is Computed"
+    }
+  ],
+  "wMsd+n": [
+    {
+      "type": 0,
+      "value": "Choose which leaderboard styles you would prefer to see in game. Event leaderboards will always be shown."
+    }
+  ],
+  "wVs4V5": [
+    {
+      "type": 0,
+      "value": "No leaderboard data available"
+    }
+  ],
+  "wgc2MU": [
+    {
+      "type": 0,
+      "value": "Back to Sign In"
+    }
+  ],
+  "wkKwRk": [
+    {
+      "type": 0,
+      "value": "Password"
+    }
+  ],
+  "wun7o3": [
+    {
+      "type": 0,
+      "value": "Forgot password?"
+    }
+  ],
+  "wuzSwY": [
+    {
+      "type": 0,
+      "value": "Choose Your Operating System"
+    }
+  ],
+  "wvZ6ln": [
+    {
+      "type": 0,
+      "value": "Search charts..."
+    }
+  ],
+  "wzpW2W": [
+    {
+      "type": 0,
+      "value": "Compete on three separate leaderboards designed to test different skill aspects:"
+    }
+  ],
+  "x8tDS+": [
+    {
+      "type": 0,
+      "value": "Select a country"
+    }
+  ],
+  "xJhO/K": [
+    {
+      "type": 0,
+      "value": "Help"
+    }
+  ],
+  "xM1sJc": [
+    {
+      "type": 0,
+      "value": "Judgments"
+    }
+  ],
+  "xe01xK": [
+    {
+      "type": 0,
+      "value": "Verification Failed"
+    }
+  ],
+  "xfRlae": [
+    {
+      "type": 0,
+      "value": "Date"
+    }
+  ],
+  "xl7GRC": [
+    {
+      "type": 0,
+      "value": "No songs found"
+    }
+  ],
+  "xqsuVH": [
+    {
+      "type": 0,
+      "value": "No timing stats available."
+    }
+  ],
+  "y3KL2j": [
+    {
+      "type": 0,
+      "value": "Not participating"
+    }
+  ],
+  "y8RU5Y": [
+    {
+      "type": 0,
+      "value": "ITG (Money)"
+    }
+  ],
+  "yBJ1AB": [
+    {
+      "type": 0,
+      "value": "Add New Passkey"
+    }
+  ],
+  "yBsO+y": [
+    {
+      "type": 0,
+      "value": "From selected leaderboard"
+    }
+  ],
+  "yM3blP": [
+    {
+      "type": 0,
+      "value": "Browse"
+    }
+  ],
+  "yMAjYZ": [
+    {
+      "type": 0,
+      "value": "Failed to load preferences"
+    }
+  ],
+  "yMETLb": [
+    {
+      "type": 0,
+      "value": "Picture"
+    }
+  ],
+  "ybp4xd": [
+    {
+      "type": 1,
+      "value": "grade"
+    },
+    {
+      "type": 0,
+      "value": " grade"
+    }
+  ],
+  "yqWLeE": [
+    {
+      "type": 0,
+      "value": "Blue Shift"
+    }
+  ],
+  "z+1C0a": [
+    {
+      "type": 0,
+      "value": "Go to Home"
+    }
+  ],
+  "zhxMFg": [
+    {
+      "type": 0,
+      "value": "Example complete line"
+    }
+  ]
+}

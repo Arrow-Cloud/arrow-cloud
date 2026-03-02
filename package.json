@@ -1,0 +1,77 @@
+{
+  "name": "arrow-cloud",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=22 <23"
+  },
+  "workspaces": [
+    "cdk",
+    "api",
+    "frontend",
+    "share-service"
+  ],
+  "scripts": {
+    "prisma:generate": "prisma generate && cp -r api/prisma/generated share-service/api/prisma/",
+    "build": "npm run prisma:generate && npm run build -w cdk && npm run build -w api && npm run build -w frontend && npm run build -w share-service",
+    "deploy": "npm run deploy -w cdk",
+    "destroy": "npm run destroy -w cdk",
+    "format": "npm run format -w cdk && npm run format -w api && npm run format -w frontend",
+    "lint": "npm run lint -w cdk && npm run lint -w api && npm run lint -w frontend",
+    "synth": "npm run synth -w cdk",
+    "test": "npm run test -w api && npm run test -w frontend",
+    "watch-api": "npm run watch -w api",
+    "dev-share": "npm run dev -w share-service",
+    "build-share": "npm run build -w share-service",
+    "prepare": "husky",
+    "test-discord": "tsx scripts/test-discord.ts",
+    "visualize-play": "tsx scripts/visualize-play.ts",
+    "visualize-chartjs": "tsx scripts/visualize-chartjs.ts",
+    "download-play": "tsx scripts/download-play.ts",
+    "cleanup-user-scores": "tsx scripts/cleanup-user-scores.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.25.0",
+    "@types/jest": "^30.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.30.1",
+    "@typescript-eslint/parser": "^8.30.1",
+    "aws-cdk": "^2.90.0",
+    "canvas": "^3.1.2",
+    "eslint": "^9.25.0",
+    "eslint-config-prettier": "^10.1.2",
+    "eslint-plugin-formatjs": "^5.4.2",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^5.2.6",
+    "eslint-plugin-promise": "^7.2.1",
+    "globals": "^16.0.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
+    "prettier": "^3.5.3",
+    "puppeteer": "^24.34.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.0",
+    "typescript-eslint": "^8.30.1"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --max-warnings=0",
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.837.0",
+    "@prisma/client": "^6.6.0",
+    "chart.js": "^4.5.0",
+    "chartjs-adapter-date-fns": "^3.0.0",
+    "chartjs-node-canvas": "^5.0.0",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.4.7",
+    "node-vibrant": "^4.0.3",
+    "p-limit": "^6.2.0",
+    "prisma": "^6.6.0",
+    "sharp": "^0.33.5",
+    "uuid": "^11.1.0",
+    "zod": "^3.25.74"
+  }
+}

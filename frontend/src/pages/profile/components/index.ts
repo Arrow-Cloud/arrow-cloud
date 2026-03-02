@@ -1,0 +1,11 @@
+export { default as EmailVerificationAlert } from './EmailVerificationAlert';
+export { default as BasicInfoSection } from './BasicInfoSection';
+export { default as AliasSection } from './AliasSection';
+export { default as ProfileSection } from './AliasSection';
+export { default as PasswordSection } from './PasswordSection';
+export { default as ApiKeysSection } from './ApiKeysSection';
+export { default as RivalsSection } from './RivalsSection';
+export { default as PasskeySection } from './PasskeySection';
+export { default as ProfileImageSection } from './ProfileImageSection';
+export { WidgetSection } from './WidgetSection';
+export { TrophiesSection } from './TrophiesSection';

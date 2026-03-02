@@ -1,0 +1,27 @@
+{
+  "name": "arrow-cloud-share-service",
+  "version": "1.0.0",
+  "description": "Share service for Arrow Cloud play sharing with Discord/social media OpenGraph previews",
+  "main": "dist/lambda.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.958.0",
+    "@prisma/client": "^6.2.1",
+    "@sparticuz/chromium": "^143.0.0",
+    "puppeteer-core": "^23.11.1"
+  },
+  "devDependencies": {
+    "@prisma/nextjs-monorepo-workaround-plugin": "^7.2.0",
+    "@types/node": "^20.11.5",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.3.3",
+    "webpack": "^5.104.1",
+    "webpack-cli": "^6.0.1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

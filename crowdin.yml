@@ -1,0 +1,3 @@
+files:
+  - source: /frontend/src/intl/raw/en.json
+    translation: /frontend/src/intl/raw/%two_letters_code%.json

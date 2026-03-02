@@ -1,0 +1,2438 @@
+{
+  "+0hbIW": {
+    "description": "Placeholder for new passkey name input",
+    "message": "e.g., Mobile, Work Laptop, Personal Device"
+  },
+  "+9eRWt": {
+    "description": "Percentage calculation step 1",
+    "message": "Each tap note contributes its window weight based on the offset of when you hit the tap note."
+  },
+  "+FgcFw": {
+    "description": "label for the user profile field displaying their country",
+    "message": "Country"
+  },
+  "+a1gOU": {
+    "description": "alt text for the blue shift logo image",
+    "message": "Blue Shift Logo"
+  },
+  "+gIWnk": {
+    "description": "displayed on a user profile when they haven't played any charts in the current event",
+    "message": "No scores in this leaderboard category yet."
+  },
+  "+h2LEI": {
+    "description": "Message displayed while waiting for the pack data to load",
+    "message": "Please wait while we fetch the pack data"
+  },
+  "+pLe/x": {
+    "description": "Label for the user's best score on this chart",
+    "message": "Personal Best"
+  },
+  "+tpXd6": {
+    "description": "Instruction to create account and verify email",
+    "message": "Sign up on the site (Register) and verify your email. This will associate future score submissions with your profile."
+  },
+  "/1csZt": {
+    "description": "Displayed as an error to users while attempting to log in or register",
+    "message": "Registration failed. Please try again."
+  },
+  "/CnYKe": {
+    "description": "section heading on the homepage",
+    "message": "Event Format"
+  },
+  "/Cz20N": {
+    "description": "Button label for saving profile changes",
+    "message": "Save Changes"
+  },
+  "/GvRCG": {
+    "description": "Message shown when there are no changes to save in profile update",
+    "message": "No changes to save"
+  },
+  "/L5Ek3": {
+    "description": "sub-text explaining the 'not participating' label",
+    "message": "This user hasn't participated in the Blue Shift Beta event yet."
+  },
+  "/MH50s": {
+    "description": "Title for the standard deviation cubed stat on the timing chart",
+    "message": "Std.Dev.^3"
+  },
+  "/UnDQ8": {
+    "description": "message displayed on the submit button of the forgot password form while submission is in progress",
+    "message": "{loadingSpinner} Sending Reset Link..."
+  },
+  "/c0R5m": {
+    "description": "Page title for the privacy policy page",
+    "message": "Privacy Policy"
+  },
+  "/eiyYH": {
+    "description": "label for the date a user earned a particular score",
+    "message": "Date"
+  },
+  "/yrXf9": {
+    "description": "Description of FAQ section",
+    "message": "Common quick answers/miscellaneous information"
+  },
+  "01/J8T": {
+    "description": "one item in a bulleted list of effects a ban will have for a user",
+    "message": "Hide their profile from other users"
+  },
+  "0273Op": {
+    "description": "Table header for the number of songs",
+    "message": "Songs"
+  },
+  "05hmF9": {
+    "description": "Information about maximum file size for image upload",
+    "message": "Maximum file size: 5MB"
+  },
+  "0CcN1Y": {
+    "description": "Placeholder for new password input",
+    "message": "Enter new password"
+  },
+  "0IbXta": {
+    "description": "ARIA label for link to chart page from play page",
+    "message": "Go to chart page"
+  },
+  "0OpKH3": {
+    "description": "Label for the chart hash",
+    "message": "Hash: {hash}"
+  },
+  "0POvio": {
+    "description": "description of event structure",
+    "message": "Blue Shift consists of three distinct phases, each lasting three weeks. Players compete across three different leaderboards, each designed to test different aspects of ITG skill. Points are awarded based on your leaderboard position."
+  },
+  "0Susv7": {
+    "description": "section heading for the list of charts in the event",
+    "message": "Event Charts"
+  },
+  "0UKMwf": {
+    "description": "A sub-heading displayed on the login page",
+    "message": "Sign in to your Arrow Cloud account"
+  },
+  "0ZhmWz": {
+    "description": "Description for the mean offset stat on the timing chart",
+    "message": "Did you avg. late (+) or early (-)"
+  },
+  "0k4n4s": {
+    "description": "table column heading for descriptions of the timing windows and corresponding score weights",
+    "message": "EX Weight"
+  },
+  "11eEsx": {
+    "description": "table column heading for descriptions of the timing windows and corresponding score weights",
+    "message": "Window (±ms)"
+  },
+  "13SZgT": {
+    "description": "Label for alias input field",
+    "message": "Alias"
+  },
+  "1CBPXl": {
+    "description": "Date when the privacy policy was last updated",
+    "message": "Last updated: {lastUpdated,date}"
+  },
+  "1Ig/74": {
+    "description": "start time of the event",
+    "message": "<strong>Starts on December 5th, 2025</strong> <small>12:00 PM UTC</small>"
+  },
+  "1IiFi6": {
+    "description": "Indicates that a rival has been added",
+    "message": "Added"
+  },
+  "1My/zA": {
+    "description": "placeholder for when no grade is awarded for a score",
+    "message": "N/A"
+  },
+  "1Y0sic": {
+    "description": "A label for a field of the registration form",
+    "message": "Email"
+  },
+  "1cI8ug": {
+    "description": "section heading on the homepage",
+    "message": "Get Set Up"
+  },
+  "1nKpRW": {
+    "description": "Label for preferences file path",
+    "message": "<label>Preferences:</label> {prefsPath}"
+  },
+  "1nrTvx": {
+    "description": "header displayed on the forgot password page",
+    "message": "Forgot Password?"
+  },
+  "1qm9M9": {
+    "description": "Option for single steps type in the filter",
+    "message": "Single"
+  },
+  "1t8tZ+": {
+    "description": "Button label to upload the selected image file",
+    "message": "Upload Image"
+  },
+  "1y8iSP": {
+    "description": "Title for the simfiles section",
+    "message": "Simfiles"
+  },
+  "21hFSa": {
+    "description": "A message displayed to a user after they have finished registering a new account",
+    "message": "We've sent a verification email to <strong>{email}</strong>. Click that link sometime later, or else you'll have no way to recover your account!"
+  },
+  "2BwvtG": {
+    "description": "Grade calculation step 2",
+    "message": "Some top grades (Sext / Quint) evaluate using a stricter scoring system override (HardEX/EX)."
+  },
+  "2FRvLL": {
+    "description": "Description of grinding feature",
+    "message": "Every 3 weeks you will put up your best scores on 20 curated charts. Grind to your heart's content!"
+  },
+  "2IPNlq": {
+    "description": "Navigation item label for API key management",
+    "message": "API Keys"
+  },
+  "2Q+Z2n": {
+    "description": "EX scoring system name",
+    "message": "EX (15ms)"
+  },
+  "2RNR4i": {
+    "description": "description of leaderboard dynamics on the homepage",
+    "message": "Take points from your competitors - as you pass players on the leaderboards, the points you gain are \"stolen\" from other players."
+  },
+  "2TD5hu": {
+    "description": "button label leading to the help page",
+    "message": "What Is Arrow Cloud?"
+  },
+  "2XL1fo": {
+    "description": "alt text for the logo image on the homepage",
+    "message": "Arrow Cloud Blue Shift Logo"
+  },
+  "2d72YH": {
+    "description": "Label for widget URL",
+    "message": "Widget URL"
+  },
+  "2hFzLG": {
+    "description": "Summary point about email usage",
+    "message": "Your email is used only for account security actions (such as password resets), and occasional announcements."
+  },
+  "2sYnkh": {
+    "description": "Instructions for copying configuration file",
+    "message": "Copy ArrowCloud.ini into your active profile folder (for example: {profileExample})."
+  },
+  "2uZtKR": {
+    "description": "Link to help page",
+    "message": "Help"
+  },
+  "2ywg8y": {
+    "description": "Title for passkey setup suggestion",
+    "message": "Enable Passwordless Login"
+  },
+  "30056/": {
+    "description": "Label for base configuration path",
+    "message": "<label>Base:</label> {basePath}"
+  },
+  "34xrFN": {
+    "description": "Navigation item label for streamer widget settings",
+    "message": "Streamer Widget"
+  },
+  "3N6cLw": {
+    "description": "secondary text setting up the primary label \"3 boards\"",
+    "message": "Compete Across"
+  },
+  "3bG3Pw": {
+    "description": "A placeholder value displayed within an empty input of the password reset form",
+    "message": "Enter your new password"
+  },
+  "3gll2h": {
+    "description": "A placeholder value displayed within an empty input of the registration form",
+    "message": "Create a password"
+  },
+  "3oeumn": {
+    "description": "section heading on the homepage",
+    "message": "Support"
+  },
+  "3pJaQC": {
+    "description": "a live status indicator displayed while waiting for email verification to finish processing",
+    "message": "Verifying Email..."
+  },
+  "3rGlbG": {
+    "description": "Label for confirm password input field",
+    "message": "Confirm Password"
+  },
+  "41VgXE": {
+    "description": "displayed on the password reset form as a link to return to the login page",
+    "message": "Back to Sign In"
+  },
+  "43jzOu": {
+    "description": "displayed as a small chip next to the user on the user page to indicate it is the user currently logged in",
+    "message": "{userIcon} You"
+  },
+  "4TmIV5": {
+    "description": "Warning message about browser security flags",
+    "message": "Some browsers may flag the ArrowCloud.ini download as suspicious because it is a plain-text configuration file. This is expected and the file is safe—you can proceed with the download."
+  },
+  "4XbcYZ": {
+    "description": "Abbreviation for points",
+    "message": "pts"
+  },
+  "4cGAA6": {
+    "description": "Navigation item description for API key management",
+    "message": "Manage your API access tokens"
+  },
+  "4cud4C": {
+    "description": "Label for confirm password input",
+    "message": "Confirm Password"
+  },
+  "4lKz1r": {
+    "description": "Success message when profile image is updated",
+    "message": "Profile image updated successfully!"
+  },
+  "5Bb8X7": {
+    "description": "button label to cancel the process of banning a user",
+    "message": "Cancel"
+  },
+  "5K/3lA": {
+    "description": "Title for the passkeys management section",
+    "message": "Passkeys"
+  },
+  "5UgsH1": {
+    "description": "points system description on the homepage",
+    "message": "Points are distributed based on your ranking position on each leaderboard. Each chart has 3 leaderboards, each phase has 3 leaderboards, and your cumulative points across all phases determine your final standing in the Blue Shift competition."
+  },
+  "5WyHgs": {
+    "description": "A heading displayed to a user after logging in",
+    "message": "Successfully Signed In!"
+  },
+  "5X2Z64": {
+    "description": "Description for the max error stat on the timing chart",
+    "message": "Your worst judgment/outlier"
+  },
+  "5XAAaa": {
+    "description": "Statement about no affiliation with other services",
+    "message": "Arrow Cloud is <semibold>not affiliated</semibold> with GrooveStats, BoogieStats, ITC, ITGDB, SMO, or other services. It does not scrape, proxy, or passthrough leaderboards or scores from external platforms."
+  },
+  "5ghtCO": {
+    "description": "Percentage calculation step 3",
+    "message": "Score sum = tap weights + (held completions * heldWeight) + (roll completions * heldWeight) + (mine hits * minePenalty)."
+  },
+  "5jGvbu": {
+    "description": "table column header label for played charts on the user profile page, this column shows info about the song",
+    "message": "Chart"
+  },
+  "5leU4H": {
+    "description": "Blue Shift feature: rivals system",
+    "message": "Add Rivals"
+  },
+  "5mntyH": {
+    "description": "Description shown when no rivals have been added",
+    "message": "No rivals added yet"
+  },
+  "5nutZC": {
+    "description": "Section title about the purpose of Arrow Cloud",
+    "message": "Why It Exists"
+  },
+  "628Yaq": {
+    "description": "Loading message shown while leaderboards are being fetched",
+    "message": "Loading leaderboards..."
+  },
+  "66nTwC": {
+    "description": "Message displayed while the pack data is loading",
+    "message": "Loading pack..."
+  },
+  "68hzlT": {
+    "description": "Label for the stepartist column",
+    "message": "Stepartist"
+  },
+  "6A/18S": {
+    "description": "Button label to cancel the image selection",
+    "message": "Cancel"
+  },
+  "6HwZWG": {
+    "description": "Main heading for help page",
+    "message": "{bookIcon} Help Center"
+  },
+  "6e+rCB": {
+    "description": "fallback text when we have no data to display for the charts in the event",
+    "message": "No charts available"
+  },
+  "6ey983": {
+    "description": "Placeholder for current password input",
+    "message": "Enter current password"
+  },
+  "6mzOc6": {
+    "description": "Message displayed when there are no songs in the pack",
+    "message": "No songs available in this pack"
+  },
+  "6oesOv": {
+    "description": "A placeholder value displayed within an empty input of the login form",
+    "message": "Enter your email"
+  },
+  "6t1Xf+": {
+    "description": "Placeholder for the alias input field",
+    "message": "Enter your alias"
+  },
+  "7/VMkx": {
+    "description": "FAQ question about keyboard scores",
+    "message": "Can I submit keyboard scores?"
+  },
+  "7/fQHG": {
+    "description": "small header displayed above the list of available color themes for the site",
+    "message": "Select Theme"
+  },
+  "71hxBe": {
+    "description": "OBS version requirement warning",
+    "message": "Note: OBS Studio version 31 or higher is required for proper display."
+  },
+  "77/s9/": {
+    "description": "Label to create account",
+    "message": "Create Your Account"
+  },
+  "7JspJu": {
+    "description": "User menu item for editing profile",
+    "message": "Edit Profile"
+  },
+  "7N0/GV": {
+    "description": "Loading state text",
+    "message": "Loading..."
+  },
+  "7Y3qMa": {
+    "description": "Label for skip passkey setup button",
+    "message": "Skip"
+  },
+  "7eDt6d": {
+    "description": "lable for the stat indicating a user's total number of charts played in an event",
+    "message": "Charts Played"
+  },
+  "7ovwIG": {
+    "description": "secondary text describing the three phases (primary text)",
+    "message": "3 weeks each"
+  },
+  "8+OFcD": {
+    "description": "Label for the score of a score",
+    "message": "Score"
+  },
+  "80Vzt6": {
+    "description": "Button label to retry loading",
+    "message": "Retry"
+  },
+  "82xftT": {
+    "description": "Alt text for chart banner image",
+    "message": "{title} banner"
+  },
+  "85Sq9G": {
+    "description": "ITG feature: penalty",
+    "message": "Way Off & Miss heavily punished"
+  },
+  "86A6Pn": {
+    "description": "label for the stat indicating a user's overall rank within an event",
+    "message": "Overall Rank"
+  },
+  "89o0ZA": {
+    "description": "Displayed as an error to users while attempting to log in or register",
+    "message": "Failed to fetch user data."
+  },
+  "8OA9Ae": {
+    "description": "User menu item for registering a new account",
+    "message": "Register"
+  },
+  "8ZispS": {
+    "description": "Displayed as an error to users while attempting to log in or register",
+    "message": "Login failed. Please try again."
+  },
+  "8bdZjb": {
+    "description": "Option for all steps types in the filter",
+    "message": "All Types"
+  },
+  "8i+1ZL": {
+    "description": "label for an input field specifying the minimum block level to search for (prefer very short length)",
+    "message": "Min"
+  },
+  "8x/8+a": {
+    "description": "FAQ answer about keyboard scores",
+    "message": "<strong>No.</strong> You're looking for Etterna instead. If you submitted a keyboard score by mistake it is your responsibility to delete it. If we notice users with too many keyboard scores, your scores may be wiped at an administrator's discretion."
+  },
+  "94Mbq6": {
+    "description": "Navigation menu item for charts",
+    "message": "Charts"
+  },
+  "9F+o+P": {
+    "description": "button label displayed on the forgot password page",
+    "message": "Back to Sign In"
+  },
+  "9HRRf6": {
+    "description": "table column heading for descriptions of the timing windows and corresponding score weights",
+    "message": "HardEX Weight"
+  },
+  "9K8zUV": {
+    "description": "Blue Shift feature: chart grinding",
+    "message": "Grind"
+  },
+  "9KiYOr": {
+    "description": "Statement about advertising and tracking scripts",
+    "message": "We currently use no advertising or third-party tracking scripts, or third-party tracking services."
+  },
+  "9KyB94": {
+    "description": "Admin menu item for uploading packs",
+    "message": "Pack Uploader"
+  },
+  "9PwMKb": {
+    "description": "Placeholder for current password input field",
+    "message": "Enter current password"
+  },
+  "9gCla1": {
+    "description": "FAQ question about failed score submission",
+    "message": "My score failed to submit, what do I do?"
+  },
+  "9hrAn3": {
+    "description": "Label for the steps type filter",
+    "message": "Steps Type"
+  },
+  "9kMeyR": {
+    "description": "label next to a song's artist for a song in the event (mobile layout)",
+    "message": "Chart Artist"
+  },
+  "9pRwtR": {
+    "description": "Mobile user menu item for registering a new account",
+    "message": "Register"
+  },
+  "9tw8mS": {
+    "description": "Heading for the leaderboards section",
+    "message": "Leaderboards"
+  },
+  "A02a/L": {
+    "description": "Description of rivals feature",
+    "message": "We support rivals, so you can compete with and keep track of your friends."
+  },
+  "A5yRgM": {
+    "description": "Helper text for compatibility mode",
+    "message": "Use fallback colors for older OBS versions (disables theme selection)"
+  },
+  "A8mipM": {
+    "description": "Success message when password is updated",
+    "message": "Password updated successfully!"
+  },
+  "AD4Gnq": {
+    "description": "Title for passkey registration prompt",
+    "message": "Set up Passwordless Login"
+  },
+  "AGRuvQ": {
+    "description": "Label for the add rival input field",
+    "message": "Add Rival"
+  },
+  "AKJw1n": {
+    "description": "A label for a field of the login form",
+    "message": "Email"
+  },
+  "AL/as5": {
+    "description": "Error message displayed when simfiles fail to load",
+    "message": "Error loading simfiles: {error}"
+  },
+  "ANUZlc": {
+    "description": "Access denied message for the Blue Shift event page during preview",
+    "message": "You do not have permission to access this page. The Blue Shift event is currently in preview."
+  },
+  "AOeHCB": {
+    "description": "Not available",
+    "message": "n/a"
+  },
+  "AgADp0": {
+    "description": "Navigation item label for profile settings",
+    "message": "Profile"
+  },
+  "AhjRKO": {
+    "description": "Date when a rival was added",
+    "message": "Added: {added,date}"
+  },
+  "Amu9qR": {
+    "description": "Alert box heading",
+    "message": "Heads up:"
+  },
+  "AqLiqA": {
+    "description": "Button label showing cooldown time before resending verification email",
+    "message": "Resend in {seconds,number}s"
+  },
+  "AxjkbD": {
+    "description": "Placeholder text for the search input in the recent scores section",
+    "message": "Search by song, artist, or player..."
+  },
+  "B067A3": {
+    "description": "Introduction to the setup wizard",
+    "message": "Follow this guided selector to view platform-specific instructions."
+  },
+  "BAchyT": {
+    "description": "Button text to copy URL",
+    "message": "Copy URL"
+  },
+  "BFIMJG": {
+    "description": "A label for a checkbox on the login screen",
+    "message": "Remember me"
+  },
+  "BHuTSI": {
+    "description": "Grade calculation step 1",
+    "message": "Each grade has a minimum % threshold."
+  },
+  "BSsFlc": {
+    "description": "link text leading to the dedicated leaderboard page; displayed next to radio-toggle style buttons for the three leaderboard types",
+    "message": "View full"
+  },
+  "BgdjiI": {
+    "description": "Label for new password input",
+    "message": "New Password"
+  },
+  "BkGM9i": {
+    "description": "Navigation menu item for help",
+    "message": "Help"
+  },
+  "Bs3fyg": {
+    "description": "Button label for removing all preferred leaderboards",
+    "message": "Remove Preferences"
+  },
+  "Bt+/uG": {
+    "description": "Table header for the rank column",
+    "message": "Rank"
+  },
+  "BvJ1Nn": {
+    "description": "Error message shown when saving preferred leaderboards fails",
+    "message": "Failed to save preferences"
+  },
+  "By9s2f": {
+    "description": "Message shown when user has no scores in the event",
+    "message": "No scores yet"
+  },
+  "ByVSO+": {
+    "description": "secondary text on a card, set up by \"Earn Points\"",
+    "message": "based on your leaderboard position"
+  },
+  "C22vWu": {
+    "description": "Mobile menu item for packs",
+    "message": "Packs"
+  },
+  "C4dqyM": {
+    "description": "Label for the grade of a score",
+    "message": "Grade"
+  },
+  "C5CpiW": {
+    "description": "Information about image cropping and resizing",
+    "message": "Images will be automatically cropped to square and resized to 400x400"
+  },
+  "C6tISW": {
+    "description": "introductory header on the blueshift event page",
+    "message": "Welcome to Arrow Cloud"
+  },
+  "C9Lob8": {
+    "description": "Helper text for feature selection",
+    "message": "Choose what information to display in the widget"
+  },
+  "CVXRUi": {
+    "description": "Description for the standard deviation cubed stat on the timing chart",
+    "message": "99.7% of your steps were under this max. value"
+  },
+  "CbHUxa": {
+    "description": "Label for Discord link that opens in new tab",
+    "message": "Join our Discord (opens in new tab)"
+  },
+  "CcMJR2": {
+    "description": "Helper text for leaderboard selection",
+    "message": "Select which leaderboards to cycle through (at least one required)"
+  },
+  "CgzUvb": {
+    "description": "heading section on the homepage",
+    "message": "Leaderboards"
+  },
+  "CnmIBg": {
+    "description": "Error message when an image file is too large",
+    "message": "Image file must be smaller than 5MB"
+  },
+  "CqHJWf": {
+    "description": "Label for the chart stepartist or credit",
+    "message": "Stepartist: {stepartist}"
+  },
+  "Cqcs8A": {
+    "description": "Footer section label",
+    "message": "Footer"
+  },
+  "CtB3h2": {
+    "description": "A message displayed to a user after successfully logging in",
+    "message": "Would you like to set up passwordless authentication for faster future sign-ins?"
+  },
+  "Cy/UbI": {
+    "description": "Placeholder text for the search input on the packs page",
+    "message": "Search packs..."
+  },
+  "D43bLy": {
+    "description": "Navigation item description for profile settings",
+    "message": "Manage your display name and country"
+  },
+  "DI/ILQ": {
+    "description": "Button label to download configuration file",
+    "message": "Download ArrowCloud.ini"
+  },
+  "DNaobF": {
+    "description": "Placeholder text for the search input in the simfiles table",
+    "message": "Search songs..."
+  },
+  "DOXSYq": {
+    "description": "table column header label for played charts on the user profile page, this column displays the ITG grade earned",
+    "message": "Grade"
+  },
+  "DPOFoY": {
+    "description": "Label shown when an API key has never been used",
+    "message": "Never"
+  },
+  "DUbBkQ": {
+    "description": "Table header for the score column",
+    "message": "Score"
+  },
+  "DUif3G": {
+    "description": "Title for the delete score confirmation modal",
+    "message": "Delete Score"
+  },
+  "DVNpb1": {
+    "description": "Loading message shown while countries are being fetched",
+    "message": "Loading countries..."
+  },
+  "DYk76o": {
+    "description": "Label for points stat",
+    "message": "points"
+  },
+  "DdEvZe": {
+    "description": "Success message when profile image is removed",
+    "message": "Profile image removed successfully!"
+  },
+  "DdfLk1": {
+    "description": "Error message when password update fails",
+    "message": "Failed to update password"
+  },
+  "DpZVFd": {
+    "description": "FAQ answer about failed submission - part 2",
+    "message": "If Arrow Cloud is actually down, it means one of two things probably happened: either AWS is having an outage in our region, or a developer pushed a bad release. If this happens we may extend event deadlines to accommodate affected players. Again, we'll do our best to build our module and theme to handle resubmitting your scores automatically."
+  },
+  "Duq0nQ": {
+    "description": "introductory paragraph on the event page",
+    "message": "A modern ITG platform for score tracking, leaderboards, events, rivalries, and more."
+  },
+  "Dya6QR": {
+    "description": "Instructions heading",
+    "message": "How to use in OBS:"
+  },
+  "E2Q8Ev": {
+    "description": "Label for current password input",
+    "message": "Current Password"
+  },
+  "E2VFjz": {
+    "description": "Button label for dismissing the new API key display",
+    "message": "Dismiss"
+  },
+  "EaTIYv": {
+    "description": "Navigation menu item for packs",
+    "message": "Packs"
+  },
+  "Eb0JQV": {
+    "description": "Error message shown when clearing preferred leaderboards fails",
+    "message": "Failed to clear preferences"
+  },
+  "EgWcdC": {
+    "description": "Navigation item label for password settings",
+    "message": "Password"
+  },
+  "Ejaumd": {
+    "description": "Text shown while a delete operation is in progress",
+    "message": "Deleting..."
+  },
+  "EnMoBC": {
+    "description": "Label for the added date column",
+    "message": "Added"
+  },
+  "FBQiEB": {
+    "description": "Loading message shown while API keys are being fetched",
+    "message": "Loading API keys..."
+  },
+  "FBujCk": {
+    "description": "Confirmation of successful login",
+    "message": "Logged in as {userInfo}. This step is complete."
+  },
+  "FEaNa1": {
+    "description": "FAQ answer about failed submission - part 1",
+    "message": "If your score failed to submit, please check your internet connection. We do not accept manual score submissions. We will work to make sure our theme and module integrations handle retrying failed submissions, but that feature is currently not available."
+  },
+  "FXXCXg": {
+    "description": "table heading for the list of charts in the event",
+    "message": "Chart Artist"
+  },
+  "FaknjP": {
+    "description": "Shows the number of songs displayed out of the total",
+    "message": "Showing {shown,number} of {total,number} songs"
+  },
+  "FdrJbE": {
+    "description": "label indicating how many rows are being displayed in the table of played charts of the user profile page",
+    "message": "Showing {recentScores,number} of {total,number} plays"
+  },
+  "FfCFxS": {
+    "description": "Description of Blue Shift event",
+    "message": "Blue Shift is our inaugural 9‑week launch event, beginning early December."
+  },
+  "FkqFg3": {
+    "description": "Title for the mean offset stat on the timing chart",
+    "message": "Mean Offset"
+  },
+  "FrimqV": {
+    "description": "Message shown when no timing data is available for a play",
+    "message": "No timing data available for this play."
+  },
+  "G5D4zt": {
+    "description": "description paragraph on the homepage",
+    "message": "Starting on Dec. 5th 2025, Blue Shift is our inaugural competitive event - a multi-phase remote/online tournament where you can compete with players from around the world across multiple skill categories and leaderboards!"
+  },
+  "G8u4NE": {
+    "description": "Processing indicator when choosing an image file",
+    "message": "Processing..."
+  },
+  "G9kRa2": {
+    "description": "label for the user profile field displaying their registration date",
+    "message": "Member Since"
+  },
+  "GDC8y1": {
+    "description": "secondary descriptive text describing the three boards",
+    "message": "H.EX (10ms), EX, and ITG"
+  },
+  "GHqL4U": {
+    "description": "Passskey unsupported warning message",
+    "message": "Passkeys are not supported on this device or browser."
+  },
+  "GNP6fs": {
+    "description": "Uploading progress indicator",
+    "message": "Uploading... {progress,number,::percent}"
+  },
+  "GRui4y": {
+    "description": "table heading for the list of charts in the event",
+    "message": "Chart"
+  },
+  "GVb3Zo": {
+    "description": "Error message displayed when recent scores fail to load",
+    "message": "Error loading recent scores: {error}"
+  },
+  "GXkfPe": {
+    "description": "Message displayed when no charts match the search criteria",
+    "message": "No charts found."
+  },
+  "GYz+Yc": {
+    "description": "Title for the overall leaderboard page",
+    "message": "Overall Leaderboard"
+  },
+  "GamScG": {
+    "description": "Description of Arrow Cloud service",
+    "message": "Arrow Cloud is a modern online service for ITGMania for tracking scores, hosting leaderboards, and running remote online events. Built with fundamentally scalable infrastructure, and will be open sourced in 2026."
+  },
+  "GgX2r2": {
+    "description": "EX feature: great value",
+    "message": "Greats still retain minor weight"
+  },
+  "GrJ6PI": {
+    "description": "Label for next page button",
+    "message": "Next"
+  },
+  "GrQeWz": {
+    "description": "text on a disabled button, where resend cooldown is a number of seconds counting down",
+    "message": "Resend in {resendCooldown}s"
+  },
+  "Gxtt3v": {
+    "description": "Alert message asking user to verify their email address",
+    "message": "Please verify your email address to secure your account."
+  },
+  "H/xdSH": {
+    "description": "Section title explaining what Arrow Cloud is",
+    "message": "What Arrow Cloud Is"
+  },
+  "HFZ2Dx": {
+    "description": "Section title for scoring systems",
+    "message": "Scoring & Grading Systems"
+  },
+  "HGJlNc": {
+    "description": "Loading state for passkey authentication",
+    "message": "Authenticating..."
+  },
+  "HIvR8W": {
+    "description": "Button to reset selection",
+    "message": "Reset"
+  },
+  "HO0K0o": {
+    "description": "Label for the rank of a score",
+    "message": "Rank"
+  },
+  "HlcJcp": {
+    "description": "Mobile menu section for theme selection",
+    "message": "Theme"
+  },
+  "HmniJw": {
+    "description": "Confirmation message when deleting profile image",
+    "message": "Are you sure you want to remove your profile image?"
+  },
+  "I/+lYe": {
+    "description": "heading for a dialog element confirming a ban action",
+    "message": "Confirm Ban User"
+  },
+  "ID1Yfr": {
+    "description": "Error message when image processing fails",
+    "message": "Failed to process image"
+  },
+  "IFnUpt": {
+    "description": "button label on the homepage",
+    "message": "Log In"
+  },
+  "IJIw7r": {
+    "description": "button label on the homepage",
+    "message": "Sign Up Now"
+  },
+  "ITq0p4": {
+    "description": "Link to privacy policy page",
+    "message": "Privacy Policy"
+  },
+  "J8Xk3g": {
+    "description": "the primary button to submit the password reset form",
+    "message": "Reset Password"
+  },
+  "JEZQFw": {
+    "description": "table column header for player rank within the event",
+    "message": "Rank"
+  },
+  "JKKkzS": {
+    "description": "Button label for changing password",
+    "message": "Change Password"
+  },
+  "JTD1xr": {
+    "description": "Label for setting up passkey button",
+    "message": "Setting up passkey..."
+  },
+  "JTnbHZ": {
+    "description": "Button label for adding a new passkey",
+    "message": "Add Passkey"
+  },
+  "JVuqsu": {
+    "description": "Instructions for adding host to preferences file",
+    "message": "Open {prefsPath} while the game is closed and append the host to the allowed list. If you already have entries, simply add {appendHost} to the end of your existing list."
+  },
+  "Jf70Ja": {
+    "description": "Subtitle for the edit profile page",
+    "message": "Manage your account settings and preferences"
+  },
+  "Jic09P": {
+    "description": "sub-head followed by a bulleted list of effects a ban will have on a user",
+    "message": "Are you sure you want to ban <strong>{userAlias}</strong>? This will:"
+  },
+  "Jy5dn1": {
+    "description": "Table header for the points column",
+    "message": "Points"
+  },
+  "Jyhkfl": {
+    "description": "sub-text under the username on the user profile page",
+    "message": "User Profile"
+  },
+  "KBUN0h": {
+    "description": "Table header for the date a pack was added",
+    "message": "Added"
+  },
+  "KCXDwp": {
+    "description": "Label for the artist column in the simfiles table",
+    "message": "Artist"
+  },
+  "KV+29l": {
+    "description": "Grade calculation step 4",
+    "message": "If no thresholds met: fallback to minimum pass grade (D)."
+  },
+  "Kc/AbT": {
+    "description": "A placeholder value displayed within an empty input of the registration form",
+    "message": "Enter your email"
+  },
+  "KfBAeQ": {
+    "description": "primary text on event description card",
+    "message": "3 Phases"
+  },
+  "KpJJ7D": {
+    "description": "a live status indicator displayed after email verification has been completed",
+    "message": "Email Verified!"
+  },
+  "Kz3cvi": {
+    "description": "Label for setting up passkey button",
+    "message": "Setting up..."
+  },
+  "L4UkwF": {
+    "description": "Label for profiles folder path",
+    "message": "<label>Profiles:</label> {profilesPath}"
+  },
+  "LGRXTs": {
+    "description": "A placeholder value displayed within an empty input of the registration form",
+    "message": "Choose your display name"
+  },
+  "LHEIOI": {
+    "description": "Section heading for percentage calculation",
+    "message": "How Percentage Is Computed"
+  },
+  "LO3Rbr": {
+    "description": "Button label to remove the profile image",
+    "message": "Remove Image"
+  },
+  "LPsP/k": {
+    "description": "Section header for changing password",
+    "message": "Change Password"
+  },
+  "Lgs0xB": {
+    "description": "Error message when recent scores fail to load",
+    "message": "Failed to load recent scores"
+  },
+  "LhgF30": {
+    "description": "Mobile user menu item for editing profile",
+    "message": "Edit Profile"
+  },
+  "Lk4UgA": {
+    "description": "placeholder text for a search input on a player's recent scores",
+    "message": "Search charts or artists..."
+  },
+  "LoJ0Ee": {
+    "description": "one of three bullet point items describing the event leaderboards",
+    "message": "<strong>ITG:</strong> The classic ITG timing window for traditionalists."
+  },
+  "M/hUW7": {
+    "description": "Alt text for the Blue Shift logo",
+    "message": "Blue Shift"
+  },
+  "M3DX4L": {
+    "description": "Error message for when the packs page fails to load",
+    "message": "Error loading packs: {error}"
+  },
+  "M4B3y1": {
+    "description": "Label for the packs column",
+    "message": "Packs"
+  },
+  "M7sGOe": {
+    "description": "Navigation item label for passkey settings",
+    "message": "Passkey Management"
+  },
+  "MAcEmn": {
+    "description": "Navigation item label for rivals management",
+    "message": "Rivals"
+  },
+  "MJfqi+": {
+    "description": "text on a button to ban a user from the platform",
+    "message": "Ban User"
+  },
+  "MO8tb+": {
+    "description": "Alt text for profile image",
+    "message": "Profile image"
+  },
+  "MOf0nY": {
+    "description": "Label for previous page button",
+    "message": "Previous"
+  },
+  "MQb09O": {
+    "description": "label for the stat indicating a user's points earned on a single chart",
+    "message": "Total Points"
+  },
+  "MW8glP": {
+    "description": "Subtitle for help center hero section",
+    "message": "Your hub for understanding Arrow Cloud — what it is, why it exists, and how to prepare your setup."
+  },
+  "MZJzFb": {
+    "description": "Label for rotation delay slider",
+    "message": "Rotation Delay"
+  },
+  "MZaQAv": {
+    "description": "Label showing the last time a passkey was used",
+    "message": "Last used: {lastUsed}"
+  },
+  "MjDpNZ": {
+    "description": "Button text for deleting a score",
+    "message": "Delete Score"
+  },
+  "MoIA9d": {
+    "description": "Navigation item description for leaderboard preferences",
+    "message": "Select which leaderboards you want to see by default"
+  },
+  "MrInI2": {
+    "description": "Title for the timing chart section on the play page",
+    "message": "Timing Chart"
+  },
+  "NIMaHT": {
+    "description": "brief description of the D grade, which is awarded for any pass that does not meet the C- threshold or higher",
+    "message": "Pass Floor"
+  },
+  "NZZiZb": {
+    "description": "Displayed when the chart title is not available",
+    "message": "Unknown Title"
+  },
+  "NbqIsv": {
+    "description": "Detailed explanation of account deletion process",
+    "message": "An account deletion request requires proof of control over the email associated with the account (for example, responding from that address or completing a verification step). Upon verified deletion request, personal data will be removed or irreversibly anonymized subject to any system integrity or anti-abuse safeguards. You may request account deletion by emailing support (at) arrowcloud (dot) dance, or reaching out to an administrator on our Discord Server."
+  },
+  "NcqsCp": {
+    "description": "Button label to choose an image file",
+    "message": "Choose Image"
+  },
+  "NgOmb9": {
+    "description": "Mobile menu section for admin tools",
+    "message": "Admin"
+  },
+  "No2aRz": {
+    "description": "label next to the time a recent score was ",
+    "message": "Time"
+  },
+  "NvFvI1": {
+    "description": "Badge label indicating a feature is in beta",
+    "message": "Beta"
+  },
+  "NvXgF1": {
+    "description": "a heading displayed on the reset password page",
+    "message": "Reset Password"
+  },
+  "Nx1LTA": {
+    "description": "Loading message when saving password",
+    "message": "Saving..."
+  },
+  "O6jEye": {
+    "description": "Information about the selected image file ready for upload",
+    "message": "Selected: {fileName} ({fileSize,number,::unit/kilobyte}) - 400x400 ready for upload"
+  },
+  "O7TzM9": {
+    "description": "Label for the number of participants in the overall leaderboard",
+    "message": "Participants: {count,number}"
+  },
+  "O93xq6": {
+    "description": "descriptive text displayed after a successful password reset",
+    "message": "You'll be redirected to your dashboard momentarily..."
+  },
+  "OWbRXA": {
+    "description": "Button label to clear all active filters",
+    "message": "Clear Filters"
+  },
+  "OfekCx": {
+    "description": "displayed on the registration page below the main form, and below the 'or' separator",
+    "message": "Already have an account? <button>Sign in here</button>"
+  },
+  "OrEocL": {
+    "description": "Statement about how privacy policy updates are communicated",
+    "message": "Notifications of updates to this privacy policy will be sent via email, announced on Discord, and posted on our website."
+  },
+  "P+Gj+q": {
+    "description": "Error message shown when profile update fails",
+    "message": "Failed to update profile"
+  },
+  "P+UCmK": {
+    "description": "Description for built-in security option",
+    "message": "Use your device's built-in security to sign in instantly"
+  },
+  "P/vx2w": {
+    "description": "displayed as a small chip next to the user on the user page to indicate it is someone added as a rival of the current user",
+    "message": "{swordIcon} Rival"
+  },
+  "PGAlRw": {
+    "description": "Table header for the chart column",
+    "message": "Chart"
+  },
+  "PP8AC8": {
+    "description": "text on a button that is used to remove a user from your list of rivals",
+    "message": "Remove Rival"
+  },
+  "PPXCI8": {
+    "description": "an error message displayed after verification fails",
+    "message": "Email verification failed. Please try again or request a new verification email."
+  },
+  "PTMqr0": {
+    "description": "Section heading for grade threshold table",
+    "message": "Grade Thresholds & Badges (ITG base + extensions)"
+  },
+  "PttiTj": {
+    "description": "Page title for editing the user profile",
+    "message": "Edit Profile"
+  },
+  "Q0d0pT": {
+    "description": "Button label for creating a new API key",
+    "message": "Create Key"
+  },
+  "QF7nqo": {
+    "description": "one item in a bulleted list of effects a ban will have for a user",
+    "message": "Send them a suspension notification email"
+  },
+  "QGutVM": {
+    "description": "HardEX feature: precision focus",
+    "message": "Rewards extreme precision"
+  },
+  "QIi1Qb": {
+    "description": "Rank of the player on the chart",
+    "message": "#{rank}"
+  },
+  "QJ79vt": {
+    "description": "Detailed explanation of data security and database access",
+    "message": "We do not sell or rent personal data. Passwords are stored using industry-standard salted hashing. Direct database access is restricted to authorized site administrators. From time to time, anonymized database exports (with direct identifiers removed) may be published or distributed for backup, archival, analytical, or restoration purposes."
+  },
+  "QOAp4b": {
+    "description": "EX feature: window size",
+    "message": "Primary Fantastic at ±15ms"
+  },
+  "QTkpuD": {
+    "description": "Table header for the player column",
+    "message": "Player"
+  },
+  "QYJaeC": {
+    "description": "OBS instruction step 4",
+    "message": "Check 'Shutdown source when not visible' and 'Refresh browser when scene becomes active'"
+  },
+  "Qo+oY5": {
+    "description": "Title for the max error stat on the timing chart",
+    "message": "Max Error"
+  },
+  "Qpj9Z+": {
+    "description": "Placeholder for the add rival input field",
+    "message": "Search user alias (min 2 chars)"
+  },
+  "QreD4A": {
+    "description": "Percentage calculation step 4",
+    "message": "Percent = score sum / max."
+  },
+  "RAgpSZ": {
+    "description": "label next to a score in the recent scores section",
+    "message": "Score"
+  },
+  "RDLRdD": {
+    "description": "Button to navigate to registration page",
+    "message": "Register"
+  },
+  "RHzXYw": {
+    "description": "Displayed as an error to users while attempting to log in or register",
+    "message": "Failed to resend verification email. Please try again."
+  },
+  "RNhXT1": {
+    "description": "section heading on the homepage",
+    "message": "Event Structure"
+  },
+  "RWchvs": {
+    "description": "Error message when failing to load passkey information",
+    "message": "Failed to load passkey information"
+  },
+  "Rfndrb": {
+    "description": "Button to copy text to clipboard",
+    "message": "Copy"
+  },
+  "RoZdO3": {
+    "description": "primary header on the homepage",
+    "message": "Welcome to Arrow Cloud"
+  },
+  "Rp8OF+": {
+    "description": "fallback case when no recent scores load for the event",
+    "message": "No recent scores available"
+  },
+  "S5AGlo": {
+    "description": "Error message when failing to register a passkey",
+    "message": "Failed to register passkey"
+  },
+  "SF7mNm": {
+    "description": "HardEX feature: window size",
+    "message": "Tight inner Fantastic: ±10ms window"
+  },
+  "SI6+yb": {
+    "description": "table column heading for descriptions of the timing windows and corresponding score weights",
+    "message": "ITG Weight"
+  },
+  "SSi3N2": {
+    "description": "button label for the link to pack download",
+    "message": "Download Pack"
+  },
+  "STVQpe": {
+    "description": "Access denied alert heading",
+    "message": "Access Denied"
+  },
+  "SZ1Xar": {
+    "description": "User menu item for logging in",
+    "message": "Login"
+  },
+  "Sgtmaw": {
+    "description": "Blue Shift feature: leaderboard selection",
+    "message": "Choose Your Leaderboards"
+  },
+  "SjGrX2": {
+    "description": "displayed on a disabled button; replaces 'click here to resend'",
+    "message": "resend in {resendCooldown}s"
+  },
+  "SpD64Q": {
+    "description": "Abbreviation for EX leaderboard mode",
+    "message": "EX"
+  },
+  "SsHyj8": {
+    "description": "Placeholder for confirm new password input",
+    "message": "Confirm new password"
+  },
+  "SsRETH": {
+    "description": "OBS instruction step 3",
+    "message": "Set Width: {width}, Height: {height}"
+  },
+  "T3ze71": {
+    "description": "Abbreviation for Hard EX leaderboard mode",
+    "message": "H.EX"
+  },
+  "THr3aV": {
+    "description": "Label for compatibility mode checkbox",
+    "message": "Compatibility Mode"
+  },
+  "TSz5Re": {
+    "description": "table heading for the list of charts in the event",
+    "message": "Difficulty"
+  },
+  "TV0vc/": {
+    "description": "Heading for the associated simfiles section",
+    "message": "Associated Simfiles"
+  },
+  "TZbl8m": {
+    "description": "Button label shown when preferred leaderboards are being saved",
+    "message": "Saving..."
+  },
+  "TdWa2s": {
+    "description": "Add Passkey button label",
+    "message": "Add"
+  },
+  "TeiEDu": {
+    "description": "Label for the date a pack was added",
+    "message": "Added: {date}"
+  },
+  "TiJDoq": {
+    "description": "Button text to delete a score",
+    "message": "Delete Score"
+  },
+  "TiVT6w": {
+    "description": "Description for security key option",
+    "message": "Use a security key for secure authentication"
+  },
+  "TtSTfd": {
+    "description": "Error message shown when failing to delete a score",
+    "message": "Failed to delete score"
+  },
+  "TzNn9X": {
+    "description": "Description for the profile image upload section on the profile page",
+    "message": "Upload a profile image that will be displayed on your public profile and in leaderboards."
+  },
+  "U0/54Q": {
+    "description": "Mobile user menu item for logging out",
+    "message": "Logout"
+  },
+  "UCtdeR": {
+    "description": "primary intro text on the homepage",
+    "message": "Arrow Cloud is a modern platform designed for the ITG community. We provide score tracking, leaderboards, rivalries, and event hosting capabilities with a focus on stability, user experience, and competitive play."
+  },
+  "UTD+LX": {
+    "description": "sub-heading for a table of scores earned by a player in an event",
+    "message": "Chart Scores"
+  },
+  "UcNrFr": {
+    "description": "Navigation item description for passkey settings",
+    "message": "Set up and manage your passkeys"
+  },
+  "UekZ7j": {
+    "description": "a status message displayed while email verification is in process",
+    "message": "Please wait while we verify your email address..."
+  },
+  "UhnD7Q": {
+    "description": "Abbreviation for ITG leaderboard mode",
+    "message": "ITG"
+  },
+  "UoUeqp": {
+    "description": "Error message when an invalid image file type is selected",
+    "message": "Please select a valid image file (JPEG, PNG, GIF, or WebP)"
+  },
+  "VARle9": {
+    "description": "Label for the charts column in the simfiles table",
+    "message": "Charts"
+  },
+  "VDiUbH": {
+    "description": "Table header for the grade column",
+    "message": "Grade"
+  },
+  "VOJppc": {
+    "description": "Message displayed when there are no scores for a chart",
+    "message": "No scores yet"
+  },
+  "VWSTaJ": {
+    "description": "Error message when profile image upload fails",
+    "message": "Failed to upload profile image"
+  },
+  "VxHwC7": {
+    "description": "Instructions for closing ITGMania",
+    "message": "ITGMania must be closed before continuing. If ITGMania is open it may overwrite some changes to preferences files we will be editing."
+  },
+  "VyKUu+": {
+    "description": "Title for the recent scores section",
+    "message": "Recent Scores"
+  },
+  "WBlsh8": {
+    "description": "Disclaimer for naming a new passkey",
+    "message": "Give this passkey a memorable name to identify the device or authenticator."
+  },
+  "WF72pO": {
+    "description": "A label for a field of the registration form",
+    "message": "Password"
+  },
+  "WFfotC": {
+    "description": "displayed after a password reset link has been requested, but the page has been left open long enough that the link expired",
+    "message": "The reset link has expired. Please request a new one."
+  },
+  "WJFQ54": {
+    "description": "Placeholder for confirm new password input field",
+    "message": "Confirm new password"
+  },
+  "WV6MM4": {
+    "description": "Label for a checkbox on the registration form",
+    "message": "I have read and agree to the <privacyLink>Privacy Policy</privacyLink>."
+  },
+  "Wc2PQF": {
+    "description": "Mobile menu item for charts",
+    "message": "Charts"
+  },
+  "X/dxmZ": {
+    "description": "Navigation item description for profile picture settings",
+    "message": "Upload and manage your profile picture"
+  },
+  "X1K1PE": {
+    "description": "Heading for the settings navigation sidebar",
+    "message": "Settings"
+  },
+  "X2YpwH": {
+    "description": "Shows widget dimensions",
+    "message": "Widget dimensions: {width}×{height}px"
+  },
+  "X6xwCH": {
+    "description": "Button label for copying the new API key",
+    "message": "Copy"
+  },
+  "XBomKO": {
+    "description": "Label for the song column",
+    "message": "Song"
+  },
+  "XNTeAR": {
+    "description": "Mobile user menu item for logging in",
+    "message": "Login"
+  },
+  "XNdbAr": {
+    "description": "a subheading displayed on the password reset page",
+    "message": "Enter your new password below"
+  },
+  "XPK5q6": {
+    "description": "small header displayed above the list of available languages for the site",
+    "message": "Select Language"
+  },
+  "XRHhsa": {
+    "description": "Mobile menu section for language selection",
+    "message": "Language"
+  },
+  "Xdhai4": {
+    "description": "Button title to delete a score",
+    "message": "Delete this score"
+  },
+  "XgH7/X": {
+    "description": "button label to confirm a ban action against a user",
+    "message": "Ban User"
+  },
+  "XrZn/3": {
+    "description": "Button label to download module archive",
+    "message": "Download Module"
+  },
+  "Y0Wd0B": {
+    "description": "Note about platform availability for passkey setup",
+    "message": "Note: This device doesn't support built-in authentication. You can still use external security keys."
+  },
+  "YDRVsO": {
+    "description": "displayed on the user profile page if they have no scores to display",
+    "message": "No recent scores"
+  },
+  "YEQ3/1": {
+    "description": "Error message shown when the leaderboard fails to load",
+    "message": "Failed to load leaderboard"
+  },
+  "YM+ci9": {
+    "description": "Label for the country select field",
+    "message": "Country"
+  },
+  "YOS6+m": {
+    "description": "displayed on a disabled button with a loading spinner after submitting the registration form",
+    "message": "Creating Account..."
+  },
+  "YhyBsx": {
+    "description": "Label for the title column in the simfiles table",
+    "message": "Title"
+  },
+  "YoJaPu": {
+    "description": "Fallback chart title",
+    "message": "Chart"
+  },
+  "YrqEwQ": {
+    "description": "Message displayed when there is an error loading charts",
+    "message": "Error loading charts: {error}"
+  },
+  "Z7jjH4": {
+    "description": "Label for the last generated timestamp of the overall leaderboard",
+    "message": "Last generated: {date,date}"
+  },
+  "ZCWT6R": {
+    "description": "message displayed after requesting a password reset. the mmssTime will be a number of minutes and seconds formatted like \"2:30\" which continually counts down every second",
+    "message": "Check your inbox to continue. The link will expire in {mmssTime}"
+  },
+  "ZReS1Z": {
+    "description": "Label for dismiss passkey setup suggestion button",
+    "message": "Not now"
+  },
+  "ZVs5zf": {
+    "description": "subheader displayed on the registration page",
+    "message": "Create your account and start tracking scores"
+  },
+  "ZWQXbX": {
+    "description": "A placeholder value displayed within an empty input of the login form",
+    "message": "Enter your password"
+  },
+  "ZeU0+7": {
+    "description": "Error message shown when play ID is missing",
+    "message": "Play ID is required"
+  },
+  "ZlE4+d": {
+    "description": "Label for widget features selection",
+    "message": "Widget Features"
+  },
+  "ZqM/Oi": {
+    "description": "displayed on the user profile page while data is loading",
+    "message": "Loading user profile..."
+  },
+  "ZqrnQ+": {
+    "description": "Option for double steps type in the filter",
+    "message": "Double"
+  },
+  "Zs0LJZ": {
+    "description": "Encouragement message when no scores exist for a chart",
+    "message": "Be the first to set a score on this chart!"
+  },
+  "ZxiG3y": {
+    "description": "Label for passkeys that have never been used",
+    "message": "Never used"
+  },
+  "Zz+mxb": {
+    "description": "one of three bullet point items describing the event leaderboards",
+    "message": "<strong>EX:</strong> Standard timing window for general competitive play."
+  },
+  "a4zEIi": {
+    "description": "Percentage calculation step 2",
+    "message": "Total max = (tap count * perfect weight) + (holds + rolls)*heldWeight."
+  },
+  "a89Mq1": {
+    "description": "Label when user is logged in",
+    "message": "Account Ready"
+  },
+  "aCiQRg": {
+    "description": "A label for a field of the password reset form",
+    "message": "New Password"
+  },
+  "aS/YuY": {
+    "description": "Button text after copying",
+    "message": "Copied!"
+  },
+  "acWNy9": {
+    "description": "Displayed when no packs match the search query",
+    "message": "No packs found matching \"{search}\""
+  },
+  "acZVz2": {
+    "description": "text on a button that is used to add a user to your list of rivals",
+    "message": "Add Rival"
+  },
+  "adIw3h": {
+    "description": "button label displayed with a loading spinner while a ban action is processing",
+    "message": "Banning..."
+  },
+  "afF6i8": {
+    "description": "label for a checkbox on the user profile list of played charts. when checked will include unregistered charts in the search results",
+    "message": "Include Unknown"
+  },
+  "aiXGAN": {
+    "description": "ITG feature: weighting style",
+    "message": "Classic ITG style weighting"
+  },
+  "anoRJU": {
+    "description": "Placeholder text for the search input in the chart recent scores section",
+    "message": "Search by player..."
+  },
+  "aq13An": {
+    "description": "Label for the steps type column",
+    "message": "Steps Type"
+  },
+  "arUn+B": {
+    "description": "displayed on a disabled button with a loading spinner",
+    "message": "Resetting Password..."
+  },
+  "b497id": {
+    "description": "Instruction to restart game and test",
+    "message": "Restart ITGMania to ensure configuration is loaded, then play any chart."
+  },
+  "bH4nBJ": {
+    "description": "table column header for the recent scores on the event page",
+    "message": "Chart"
+  },
+  "bXo9VG": {
+    "description": "Badge label for upcoming features",
+    "message": "soon"
+  },
+  "bb7dGv": {
+    "description": "Title for the leaderboards section",
+    "message": "Leaderboards"
+  },
+  "bmQJci": {
+    "description": "Navigation item description for password settings",
+    "message": "Change your account password"
+  },
+  "bxd/mE": {
+    "description": "Loading rivals indicator",
+    "message": "Loading rivals..."
+  },
+  "by4q9+": {
+    "description": "label for the submit button on the forgot password form",
+    "message": "Send Reset Link {mailIcon}"
+  },
+  "byTjHq": {
+    "description": "table column header for total points earned by a player within the event",
+    "message": "Points"
+  },
+  "byn6nd": {
+    "description": "Label for the date of a score",
+    "message": "Date"
+  },
+  "c5lA7h": {
+    "description": "HardEX scoring system name",
+    "message": "HardEX (10ms)"
+  },
+  "cEZoTR": {
+    "description": "Button label shown when creating a new API key",
+    "message": "Creating..."
+  },
+  "cNcvUb": {
+    "description": "Verification instruction for successful submission",
+    "message": "Your Arrow Cloud profile should show a new submission shortly after."
+  },
+  "cVRF/J": {
+    "description": "a heading displayed after a successful password reset",
+    "message": "Password Reset Successfully!"
+  },
+  "cViiIu": {
+    "description": "This separates the main login form from a section below it offering to switch to account registration",
+    "message": "or"
+  },
+  "cetLzw": {
+    "description": "Header displayed on the registration page",
+    "message": "Join Arrow Cloud"
+  },
+  "ck1B/I": {
+    "description": "Button label for resending verification email",
+    "message": "Resend"
+  },
+  "cyaeNo": {
+    "description": "Text showing the number of charts displayed out of the total available",
+    "message": "Showing {shown,number} of {total,number} charts"
+  },
+  "czOkfs": {
+    "description": "table column header for the recent scores on the event page",
+    "message": "Grade"
+  },
+  "dDM60o": {
+    "description": "Label for widget theme selector",
+    "message": "Widget Theme"
+  },
+  "dI5InQ": {
+    "description": "Label for help section navigation",
+    "message": "Help navigation"
+  },
+  "dIRIMP": {
+    "description": "a section header on the email verification page",
+    "message": "Need help?"
+  },
+  "dIunyv": {
+    "description": "Disclaimer about hosted content",
+    "message": "We do not host audio files or pack downloads. Pack and chart graphics are scraped from public releases and are not subject to Arrow Cloud copyright."
+  },
+  "dPQaz6": {
+    "description": "Label for leaderboard selection",
+    "message": "Leaderboards to Show"
+  },
+  "dQfrc/": {
+    "description": "stat indicating a user's rank",
+    "message": "#{rank,number}"
+  },
+  "dhBX9c": {
+    "description": "section heading for event-related announcements",
+    "message": "Announcement"
+  },
+  "di9f3h": {
+    "description": "Helper text for rotation delay",
+    "message": "How long to show each leaderboard before switching (10-120 seconds)"
+  },
+  "dlu2Wl": {
+    "description": "Navigation menu button to browse content",
+    "message": "Browse"
+  },
+  "dpHkxV": {
+    "description": "Ellipsis in pagination",
+    "message": "..."
+  },
+  "dsUKTu": {
+    "description": "Label for new API key display",
+    "message": "New API Key"
+  },
+  "e39ysx": {
+    "description": "Displayed with a loading spinner while a login attempt is in progress",
+    "message": "Signing In..."
+  },
+  "e3DPEo": {
+    "description": "Label showing the creation date of a passkey",
+    "message": "Created: {createdAt}"
+  },
+  "e8mHcE": {
+    "description": "table column header for the recent scores on the event page",
+    "message": "Time"
+  },
+  "e9nfYa": {
+    "description": "displayed as a visual separator between the registration form and text offering to switch to the login form",
+    "message": "or"
+  },
+  "eBxpab": {
+    "description": "displayed as a song's artist when data is missing",
+    "message": "Unknown Artist"
+  },
+  "eE6UfK": {
+    "description": "ITG feature: no split",
+    "message": "No inner Fantastic split"
+  },
+  "ePYk5e": {
+    "description": "Error message when failing to delete a passkey",
+    "message": "Failed to delete passkey"
+  },
+  "eRpp8o": {
+    "description": "Label for widget preview section",
+    "message": "Preview"
+  },
+  "eT8bPV": {
+    "description": "Title for the packs page",
+    "message": "Packs"
+  },
+  "eXmrrH": {
+    "description": "Loading message for passkey section",
+    "message": "Loading passkey information..."
+  },
+  "ebM7x5": {
+    "description": "a confirmation message displayed after email verification succeeds",
+    "message": "Your email has been successfully verified! Your account is now fully activated."
+  },
+  "ebpbUs": {
+    "description": "Helper text for widget URL",
+    "message": "Use this URL in OBS as a Browser Source"
+  },
+  "eeAYHv": {
+    "description": "Displayed as an error to users while attempting to log in or register",
+    "message": "Failed to update profile. Please try again."
+  },
+  "eezXdB": {
+    "description": "Description of available scoring systems",
+    "message": "You can compete in 10ms (HardEX), 15ms (EX), or ITG scoring systems."
+  },
+  "egg6+H": {
+    "description": "table column header label for played charts on the user profile page, this column displays the score",
+    "message": "Score"
+  },
+  "ejPmny": {
+    "description": "Navigation item description for streamer widget settings",
+    "message": "Configure and preview your streaming widget"
+  },
+  "ejXDAu": {
+    "description": "Description for the mean absolute error stat on the timing chart",
+    "message": "Overall timing average"
+  },
+  "eksVJn": {
+    "description": "Navigation item description for rivals management",
+    "message": "Manage your rivals"
+  },
+  "eoVXEp": {
+    "description": "A heading displayed to a user after they have finished registring a new account",
+    "message": "Check Your Email!"
+  },
+  "euAGju": {
+    "description": "Section title for frequently asked questions",
+    "message": "FAQ"
+  },
+  "eubUWO": {
+    "description": "Note about setting up passkey later",
+    "message": "You can always set this up later in your profile settings."
+  },
+  "f0wAIn": {
+    "description": "Message shown when profile update is successful",
+    "message": "Profile updated successfully!"
+  },
+  "f5pGyU": {
+    "description": "Displayed when the chart artist is not available",
+    "message": "Unknown Artist"
+  },
+  "f70c15": {
+    "description": "Button label for saving preferred leaderboards",
+    "message": "Save Preferences"
+  },
+  "f78WCS": {
+    "description": "A heading displayed on the login page",
+    "message": "Welcome Back"
+  },
+  "fB9pUP": {
+    "description": "Button label to download theme archive",
+    "message": "Download Theme ZIP"
+  },
+  "fDZSZm": {
+    "description": "Error message when profile image removal fails",
+    "message": "Failed to remove profile image"
+  },
+  "fhz3KS": {
+    "description": "Message shown when there is no leaderboard data",
+    "message": "No leaderboard data available"
+  },
+  "fjW29i": {
+    "description": "Label for the alias input field",
+    "message": "Alias"
+  },
+  "fpEyF4": {
+    "description": "Error message when a chart is not found",
+    "message": "Chart not found"
+  },
+  "frfVZq": {
+    "description": "Mobile admin menu item for pack uploader",
+    "message": "Pack Uploader"
+  },
+  "g/VjGs": {
+    "description": "a label for a bulleted list of password requirements",
+    "message": "Password requirements:"
+  },
+  "g0JMrv": {
+    "description": "Message shown when there are no API keys created",
+    "message": "No API keys created yet"
+  },
+  "gJs2Fl": {
+    "description": "Summary point about data collection",
+    "message": "We collect only: your email address, your chosen alias (display name), and your country if you optionally provide it."
+  },
+  "gKcS+F": {
+    "description": "button label on the homepage",
+    "message": "Join Discord"
+  },
+  "gW2PUA": {
+    "description": "Explanation of Arrow Cloud as alternative to GrooveStats",
+    "message": "GrooveStats introduced online leaderboards to the ITG community over 20 years ago and has been an extremely valuable tool throughout the game's history. This project aims to offer an alternative platform with a modernized, flexible, and open leaderboard design."
+  },
+  "gpHicE": {
+    "description": "ARIA label for the link to view the chart",
+    "message": "View chart"
+  },
+  "gpep2X": {
+    "description": "Explanation of failed play scoring",
+    "message": "Blue Shift uniquely accepts failed plays (plays that didn't complete the full chart) and assigns them an <semibold>F grade</semibold>. Your score will still represent the progress you made before failing, allowing you to compete even on attempts that didn't finish. This helps track improvement and gives credit for partial progress."
+  },
+  "guUuZ7": {
+    "description": "Confirmation message for deleting a score",
+    "message": "Are you sure you want to delete this score? This action cannot be undone."
+  },
+  "gyhSf+": {
+    "description": "Confirmation text after copying",
+    "message": "Copied"
+  },
+  "h1j+Ft": {
+    "description": "Detailed explanation of data processing and retention",
+    "message": "Arrow Cloud (the 'Service') processes minimal personal data. The only personal data categories retained are: (1) email address, (2) user-selected alias, and (3) optional country designation. Email addresses are used exclusively for security and account lifecycle purposes, including password reset and verification workflows. Aliases are publicly displayed on site interfaces and in in-game leaderboard integrations. Country information, when provided, is displayed solely on the user’s profile page and not elsewhere."
+  },
+  "hFlOxo": {
+    "description": "Text showing how many packs are currently displayed out of the total available",
+    "message": "Showing {shown,number} of {total,number} packs"
+  },
+  "hHNj31": {
+    "description": "Cancel button text",
+    "message": "Cancel"
+  },
+  "hQi+5B": {
+    "description": "Error message shown when countries fail to load",
+    "message": "Failed to load countries: {error}"
+  },
+  "haBkmP": {
+    "description": "Label for the filters button on the charts page",
+    "message": "Filters"
+  },
+  "hc2MNy": {
+    "description": "Section title for Blue Shift event information",
+    "message": "Blue Shift Event"
+  },
+  "hdelcO": {
+    "description": "Alert message about account recovery without verified email",
+    "message": "Without a verified email your account is not recoverable."
+  },
+  "hfv1JL": {
+    "description": "Label for dismiss alert button",
+    "message": "Dismiss alert"
+  },
+  "hllRnT": {
+    "description": "Value display for milliseconds",
+    "message": "{value,number, ::.00} ms"
+  },
+  "hxETKG": {
+    "description": "one of three bullet point items describing the event leaderboards",
+    "message": "<strong>H.EX (10ms):</strong> For players using high-accuracy mods, focusing on precision timing."
+  },
+  "i+E6a3": {
+    "description": "Navigation section in footer",
+    "message": "Footer navigation"
+  },
+  "i3ORY6": {
+    "description": "primary text on a card",
+    "message": "Earn Points"
+  },
+  "iN/fQj": {
+    "description": "Introduction to scoring systems",
+    "message": "Arrow Cloud supports three parallel scoring interpretations. Raw judgments (the sequence of offsets and misses) are immutable; scoring systems only change how those raw events are weighted into a percentage and mapped to a grade."
+  },
+  "iQ5NMV": {
+    "description": "Step 4 title for summary and instructions",
+    "message": "Summary & Instructions"
+  },
+  "iXITn8": {
+    "description": "Displayed to users waiting to confirm their email address. Button text may be replaced with 'sending...' or 'resend in Xs'",
+    "message": "Didn't receive the email?{linebreak}Check your spam folder or <button>click here to resend</button>"
+  },
+  "iYUlUC": {
+    "description": "section header for the recent scores card",
+    "message": "Recent Scores"
+  },
+  "iYr7vn": {
+    "description": "button label on the homepage, links to setup help",
+    "message": "Setup Instructions"
+  },
+  "iZ8ydz": {
+    "description": "Label for the player of a score",
+    "message": "Player"
+  },
+  "iaN1LS": {
+    "description": "Label showing the last used date of an API key",
+    "message": "Last used: {lastUsed,date}"
+  },
+  "iaPSEH": {
+    "description": "Navigation item label for leaderboard preferences",
+    "message": "Leaderboards"
+  },
+  "ibF5yl": {
+    "description": "OBS instruction step 2",
+    "message": "Paste the Widget URL above"
+  },
+  "ieFeXy": {
+    "description": "Error message displayed when pack data fails to load",
+    "message": "Failed to load pack data"
+  },
+  "if82ki": {
+    "description": "User menu item for logging out",
+    "message": "Logout"
+  },
+  "ioJOJl": {
+    "description": "Label for current password input field",
+    "message": "Current Password"
+  },
+  "iqbsz+": {
+    "description": "Label for dismiss passkey setup prompt button",
+    "message": "Not now"
+  },
+  "it89I1": {
+    "description": "Label showing the API key fingerprint",
+    "message": "Key • {fingerprint}"
+  },
+  "j6SWIB": {
+    "description": "aria label for a group of buttons that toggle between the different leaderboard types",
+    "message": "Leaderboard Toggle"
+  },
+  "jFD+sg": {
+    "description": "Success message shown when profile is updated",
+    "message": "Profile updated successfully!"
+  },
+  "jIZqAg": {
+    "description": "Warning message shown when displaying a new API key",
+    "message": "This key will only be shown once. Copy and store it securely."
+  },
+  "jMoAT4": {
+    "description": "A label for a field of the password reset form",
+    "message": "Confirm New Password"
+  },
+  "js1oVo": {
+    "description": "Section title about what Arrow Cloud is not",
+    "message": "What Arrow Cloud Is NOT"
+  },
+  "jsxVw/": {
+    "description": "Explanation of installation options",
+    "message": "We offer a full integration with ITGMania via our custom theme, or a light-weight alternative drop in Simply Love module."
+  },
+  "kYDZI0": {
+    "description": "Button text to navigate back to the home page",
+    "message": "Back to Home"
+  },
+  "kYKyoa": {
+    "description": "EX feature: precision range",
+    "message": "Slightly broader precision reward"
+  },
+  "kebfPM": {
+    "description": "Title for the mean absolute error stat on the timing chart",
+    "message": "Mean absolute error"
+  },
+  "kgCmwz": {
+    "description": "Label for set up passkey button",
+    "message": "Set up Passkey"
+  },
+  "kjF7Lj": {
+    "description": "Label showing the creation date of an API key",
+    "message": "Created: {created,date}"
+  },
+  "kuM6D7": {
+    "description": "Error message shown when a play is not found",
+    "message": "Play not found"
+  },
+  "l8uwY9": {
+    "description": "Label for the rating column",
+    "message": "Rating"
+  },
+  "lcVOiv": {
+    "description": "button label on the homepage",
+    "message": "Help & FAQs"
+  },
+  "lmpJF6": {
+    "description": "Button label shown when saving profile changes",
+    "message": "Saving..."
+  },
+  "lzqhT9": {
+    "description": "Description of the rivals section on the profile page",
+    "message": "Rivals are other players you want to keep a close eye on, and/or compete with. Rivals will be highlighted and prioritized when viewing various leaderboards."
+  },
+  "m4RRvP": {
+    "description": "Label for copyable host configuration snippet",
+    "message": "Append to AllowedHosts / HttpAllowHosts"
+  },
+  "m4U7BZ": {
+    "description": "Error message when image loading fails",
+    "message": "Failed to load image"
+  },
+  "mFXNP+": {
+    "description": "OBS instruction step 1",
+    "message": "Add a new Browser Source in OBS"
+  },
+  "mOHkCr": {
+    "description": "one of our password requirements, displayed in a bulleted list",
+    "message": "At least 6 characters long"
+  },
+  "mVwWst": {
+    "description": "Description for passkey setup suggestion",
+    "message": "Set up a passkey for faster, more secure sign-ins"
+  },
+  "meazlj": {
+    "description": "A placeholder value displayed within an empty input of the password reset form",
+    "message": "Confirm your new password"
+  },
+  "mmiM0/": {
+    "description": "Information about supported image formats",
+    "message": "Supported formats: JPEG, PNG, GIF, WebP"
+  },
+  "mtGCKz": {
+    "description": "description of event structure",
+    "message": "Each phase will contain ~25 charts, spanning a variety of difficulties between 7 and 14. Expect each phase to challenge you in different ways as you compete on the leaderboards."
+  },
+  "mvXRqN": {
+    "description": "Hint shown when user has no scores",
+    "message": "Play some songs to get started!"
+  },
+  "n46TSr": {
+    "description": "primary card text set up previously by \"compete across\"",
+    "message": "3 Boards"
+  },
+  "n4o4oJ": {
+    "description": "table column header for the recent scores on the event page",
+    "message": "Player"
+  },
+  "nEmRDi": {
+    "description": "label for the stat indicating a user's total points earned in an event",
+    "message": "Total Points"
+  },
+  "nTaq/y": {
+    "description": "Feature for accepting failed chart attempts",
+    "message": "Failed Plays Welcome"
+  },
+  "nWbnaE": {
+    "description": "Message displayed when there are no recent scores",
+    "message": "No recent scores"
+  },
+  "o2nv5R": {
+    "description": "section heading on the homepage",
+    "message": "Leaderboard Dynamics"
+  },
+  "o7+BG1": {
+    "description": "Message shown after a score is successfully deleted",
+    "message": "Score deleted successfully"
+  },
+  "oGL1Ha": {
+    "description": "label for the score a user earned on a particular chart",
+    "message": "Score"
+  },
+  "oeCoFG": {
+    "description": "Section title for installation setup guide",
+    "message": "Setup Guide"
+  },
+  "oiaphe": {
+    "description": "HardEX feature: miss penalty",
+    "message": "Greats are equivalent to a miss"
+  },
+  "oid8be": {
+    "description": "section heading for the leaderboard card",
+    "message": "Overall Leaderboard"
+  },
+  "olipRr": {
+    "description": "one item in a bulleted list of effects a ban will have for a user",
+    "message": "Delete all their data (plays, API keys, etc.)"
+  },
+  "on6x6P": {
+    "description": "A label for a field of the registration form",
+    "message": "Alias"
+  },
+  "opIE4F": {
+    "description": "Instructions to download theme or module files",
+    "message": "Use the buttons below to download the required files for your setup."
+  },
+  "oueHUv": {
+    "description": "button label appearing for anonymous users",
+    "message": "Create Account"
+  },
+  "p4n4Yc": {
+    "description": "text on a button to resend a verification email",
+    "message": "Resend Verification Email"
+  },
+  "pB9pg4": {
+    "description": "Label for the last played song section",
+    "message": "Last Played"
+  },
+  "pdMp3j": {
+    "description": "description of leaderboard dynamics on the homepage",
+    "message": "Each chart is worth the same number of overall points - your leaderboard position on the easiest content matters just as much as it does on the hardest charts."
+  },
+  "pdQ9u+": {
+    "description": "section text on the homepage",
+    "message": "Ready to join the competition? Get set up now to be sure you are ready for the event on December 5th!"
+  },
+  "pfIZz9": {
+    "description": "table column header for the recent scores on the event page",
+    "message": "Score"
+  },
+  "pveInw": {
+    "description": "Description about API keys usage",
+    "message": "API Keys are used to connect your game client to our servers to submit scores."
+  },
+  "q0JHzH": {
+    "description": "Page title for the charts page",
+    "message": "Charts"
+  },
+  "qC1meP": {
+    "description": "Displayed on the primary submit button for the account registration page",
+    "message": "Create Account"
+  },
+  "qMbYfC": {
+    "description": "Table header for the name of a pack",
+    "message": "Pack Name"
+  },
+  "qORdj/": {
+    "description": "Label for new password input field",
+    "message": "New Password"
+  },
+  "qYK6Ec": {
+    "description": "Summary point about tracking technologies",
+    "message": "We do not use any tracking cookies or similar technologies."
+  },
+  "qYn7lJ": {
+    "description": "Button label for saving the profile",
+    "message": "Save Profile"
+  },
+  "qbwjLM": {
+    "description": "Cancel adding a new passkey button label",
+    "message": "Cancel"
+  },
+  "qh8IGh": {
+    "description": "label for the stat indicating a user's rank on a single chart",
+    "message": "Rank"
+  },
+  "qkpyHk": {
+    "description": "section heading on the homepage",
+    "message": "Points System"
+  },
+  "qoCB1e": {
+    "description": "Button label for sending verification email",
+    "message": "Sending..."
+  },
+  "qpvO54": {
+    "description": "Section header for configuration file paths",
+    "message": "Configuration Paths"
+  },
+  "qyoslL": {
+    "description": "descriptive text displayed after a successful password reset",
+    "message": "Your password has been reset and you've been automatically signed in."
+  },
+  "r2gihF": {
+    "description": "Alt text for Blue Shift logo",
+    "message": "Blue Shift"
+  },
+  "r3HlFt": {
+    "description": "Mobile menu header",
+    "message": "Menu"
+  },
+  "rBoPpa": {
+    "description": "Displayed when there are no packs available",
+    "message": "No packs available"
+  },
+  "rHQoq4": {
+    "description": "Message displayed when there are no charts to show",
+    "message": "No charts available."
+  },
+  "rPy5Tt": {
+    "description": "fallback text when we have no credit info for the artist of a song",
+    "message": "Unknown"
+  },
+  "rYdDW0": {
+    "description": "placeholder value for the text input on the forgot password form",
+    "message": "Email address"
+  },
+  "rbGD0/": {
+    "description": "Table header for the date column",
+    "message": "Date"
+  },
+  "ruTh1W": {
+    "description": "displayed on a disabled button with a loading spinner; replaces 'click here to resend'",
+    "message": "sending..."
+  },
+  "ryU59V": {
+    "description": "brief description of the F grade, which is awarded if the lifebar reaches zero during play",
+    "message": "Failed Play"
+  },
+  "s4GvEu": {
+    "description": "label on a CTA button sending a user to the help page",
+    "message": "Finish Setup & Submit a Score"
+  },
+  "s5gLzo": {
+    "description": "one item in a bulleted list of effects a ban will have for a user",
+    "message": "Prevent them from logging in"
+  },
+  "sCaEgz": {
+    "description": "Grade calculation step 3",
+    "message": "Ties on threshold resolved by system precision priority: HardEX > EX > ITG."
+  },
+  "sL/xaE": {
+    "description": "Message displayed when the pack is not found",
+    "message": "Pack not found"
+  },
+  "sU24/r": {
+    "description": "Unknown difficulty for difficulty badge/chip",
+    "message": "Unknown"
+  },
+  "sWELJA": {
+    "description": "The primary button on the login form",
+    "message": "Sign In"
+  },
+  "siD2Ie": {
+    "description": "Displayed as an error to users while attempting to log in or register",
+    "message": "Email verification failed. Please try again."
+  },
+  "stf0NS": {
+    "description": "table column header for player within the event",
+    "message": "Player"
+  },
+  "suj+gY": {
+    "description": "Step 3 title for method selection",
+    "message": "Choose Your Installation Method"
+  },
+  "sxhZC7": {
+    "description": "Table header for the popularity of a pack",
+    "message": "Popularity"
+  },
+  "tApE2N": {
+    "description": "Label for the chart added date",
+    "message": "Added: {date}"
+  },
+  "tJZWpJ": {
+    "description": "Loading indicator text for auth status",
+    "message": "Checking login status…"
+  },
+  "tmuyhy": {
+    "description": "Alt text for profile avatar image",
+    "message": "{alias}'s profile"
+  },
+  "tn3SH1": {
+    "description": "stat indicating a user's overall rank in an event",
+    "message": "#{rank,number}"
+  },
+  "uC7RSq": {
+    "description": "displayed on the user profile page if the user was not found",
+    "message": "User not found"
+  },
+  "uLqMrt": {
+    "description": "Placeholder for new password input field",
+    "message": "Enter new password"
+  },
+  "uQSgr8": {
+    "description": "secondary text on a card",
+    "message": "Compete"
+  },
+  "uUa2U9": {
+    "description": "Error message when passkey name is empty",
+    "message": "Please enter a name for your passkey"
+  },
+  "uc7Ibp": {
+    "description": "secondary text on event description cards",
+    "message": "Starts Dec. 5"
+  },
+  "upYb9D": {
+    "description": "label for an input field specifying the maximum block level to search for (prefer very short length)",
+    "message": "Max"
+  },
+  "v0nWNk": {
+    "description": "Button label shown when profile is being saved",
+    "message": "Saving..."
+  },
+  "v9EcKC": {
+    "description": "Fallback artist name when none is provided",
+    "message": "Unknown Artist"
+  },
+  "vQNNhl": {
+    "description": "stat indicating total number of participants in an event",
+    "message": "of {total,number}"
+  },
+  "ve/RaJ": {
+    "description": "Placeholder for alias input field",
+    "message": "Enter your alias"
+  },
+  "vgnvnd": {
+    "description": "Error message shown when failing to load a play",
+    "message": "Failed to load play"
+  },
+  "viVXqx": {
+    "description": "Alt text for the Arrow Cloud logo in the navigation bar",
+    "message": "Arrow Cloud Logo"
+  },
+  "vpARAu": {
+    "description": "Confirmation message for deleting a passkey",
+    "message": "Are you sure you want to delete this passkey? This action cannot be undone."
+  },
+  "vwT2r7": {
+    "description": "displayed as a song's title when data is missing",
+    "message": "Unknown"
+  },
+  "vzcP0o": {
+    "description": "one of our password requirements, displayed in a bulleted list",
+    "message": "Both passwords must match"
+  },
+  "w2zB1o": {
+    "description": "header displayed on the forgot password page after a successful submission",
+    "message": "Check Your Email"
+  },
+  "w69Aiw": {
+    "description": "Label for progress",
+    "message": "Uploading..."
+  },
+  "wK4IU8": {
+    "description": "Provides the option to switch from the login page to the registration page",
+    "message": "Don't have an account? <createLink>Create one here</createLink>"
+  },
+  "wMXZJe": {
+    "description": "Section heading for grade calculation",
+    "message": "How Grade Is Computed"
+  },
+  "wMsd+n": {
+    "description": "Instructional text for selecting preferred leaderboard styles",
+    "message": "Choose which leaderboard styles you would prefer to see in game. Event leaderboards will always be shown."
+  },
+  "wVs4V5": {
+    "description": "fallback case for the event leaderboard table",
+    "message": "No leaderboard data available"
+  },
+  "wgc2MU": {
+    "description": "label for a button on the password reset page, after a successful submission",
+    "message": "Back to Sign In"
+  },
+  "wkKwRk": {
+    "description": "A label for a field of the login form",
+    "message": "Password"
+  },
+  "wun7o3": {
+    "description": "A label on a button, on the login screen",
+    "message": "Forgot password?"
+  },
+  "wuzSwY": {
+    "description": "Step 2 title for OS selection",
+    "message": "Choose Your Operating System"
+  },
+  "wvZ6ln": {
+    "description": "Placeholder text for the search input on the charts page",
+    "message": "Search charts..."
+  },
+  "wzpW2W": {
+    "description": "description of leaderboards on the homepage",
+    "message": "Compete on three separate leaderboards designed to test different skill aspects:"
+  },
+  "x8tDS+": {
+    "description": "Placeholder option for the country select field",
+    "message": "Select a country"
+  },
+  "xJhO/K": {
+    "description": "Mobile menu item for help",
+    "message": "Help"
+  },
+  "xM1sJc": {
+    "description": "Title for the judgments section on the play page",
+    "message": "Judgments"
+  },
+  "xe01xK": {
+    "description": "a live status indicator displayed if email verification failed",
+    "message": "Verification Failed"
+  },
+  "xfRlae": {
+    "description": "table column header label for played charts on the user profile page, this column displays the date played",
+    "message": "Date"
+  },
+  "xl7GRC": {
+    "description": "Message displayed when no songs match the search query",
+    "message": "No songs found"
+  },
+  "xqsuVH": {
+    "description": "Message shown when no timing stats are available for a play",
+    "message": "No timing stats available."
+  },
+  "y3KL2j": {
+    "description": "label indicating a user hasn't participated in an event",
+    "message": "Not participating"
+  },
+  "y8RU5Y": {
+    "description": "ITG scoring system name",
+    "message": "ITG (Money)"
+  },
+  "yBJ1AB": {
+    "description": "Title for the add new passkey form",
+    "message": "Add New Passkey"
+  },
+  "yBsO+y": {
+    "description": "Subtext indicating the judgments are from the selected leaderboard",
+    "message": "From selected leaderboard"
+  },
+  "yM3blP": {
+    "description": "Mobile menu section for browsing content",
+    "message": "Browse"
+  },
+  "yMAjYZ": {
+    "description": "Error message shown when loading preferred leaderboards fails",
+    "message": "Failed to load preferences"
+  },
+  "yMETLb": {
+    "description": "Navigation item label for profile picture settings",
+    "message": "Picture"
+  },
+  "ybp4xd": {
+    "description": "alt text for the image representing an earned grade",
+    "message": "{grade} grade"
+  },
+  "yqWLeE": {
+    "description": "secondary header on the homepage",
+    "message": "Blue Shift"
+  },
+  "z+1C0a": {
+    "description": "text displayed on a button to return to the site homepage",
+    "message": "Go to Home"
+  },
+  "zhxMFg": {
+    "description": "Label for copyable example configuration line",
+    "message": "Example complete line"
+  }
+}

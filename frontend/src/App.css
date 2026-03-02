@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@plugin "daisyui/theme" {
+  name: "arrow-blue";
+  default: true;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: oklch(0.15 0.0242 261.185);
+  --color-base-200: oklch(0.23 0.0242 261.185);
+  --color-base-300: oklch(0.35 0.0242 261.185);
+  --color-base-content: oklch(84.153% 0.007 265.754);
+  --color-primary: oklch(0.5298 0.231626 261.185);
+  --color-primary-content: oklch(15.07% 0.027 232.661);
+  --color-secondary: oklch(0.5298 0.231626 331.16);
+  --color-secondary-content: oklch(13.602% 0.031 276.934);
+  --color-accent: oklch(74% 0.238 322.16);
+  --color-accent-content: oklch(14.472% 0.035 350.048);
+  --color-neutral: oklch(27.949% 0.036 260.03);
+  --color-neutral-content: oklch(85.589% 0.007 260.03);
+  --color-info: oklch(0.5298 0.231626 290.56);
+  --color-info-content: oklch(0% 0 0);
+  --color-success: oklch(79% 0.209 151.711);
+  --color-success-content: oklch(15.69% 0.026 181.911);
+  --color-warning: oklch(83.242% 0.139 82.95);
+  --color-warning-content: oklch(16.648% 0.027 82.95);
+  --color-error: oklch(70% 0.191 22.216);
+  --color-error-content: oklch(14.357% 0.034 13.118);
+  --radius-selector: 1rem;
+  --radius-field: 0.5rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "arrow-red";
+  default: false;
+  prefersdark: false;
+  color-scheme: "dark";
+  --color-base-100: oklch(8% 0.02 15);
+  --color-base-200: oklch(6% 0.025 15);
+  --color-base-300: oklch(4% 0.03 15);
+  --color-base-content: oklch(92% 0.008 15);
+  --color-primary: oklch(62% 0.24 15);
+  --color-primary-content: oklch(98% 0.005 15);
+  --color-secondary: oklch(68% 0.20 340);
+  --color-secondary-content: oklch(15% 0.02 340);
+  --color-accent: oklch(75% 0.16 35);
+  --color-accent-content: oklch(12% 0.02 35);
+  --color-neutral: oklch(10% 0.015 15);
+  --color-neutral-content: oklch(88% 0.008 15);
+  --color-info: oklch(65% 0.18 220);
+  --color-info-content: oklch(95% 0.01 220);
+  --color-success: oklch(68% 0.16 140);
+  --color-success-content: oklch(12% 0.02 140);
+  --color-warning: oklch(72% 0.18 55);
+  --color-warning-content: oklch(12% 0.02 55);
+  --color-error: oklch(68% 0.22 8);
+  --color-error-content: oklch(95% 0.01 8);
+  --radius-selector: 0.5rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.3125rem;
+  --size-field: 0.25rem;
+  --border: 0.5px;
+  --depth: 2;
+  --noise: 0.1;
+}
+
+
+@plugin "daisyui" {
+  themes: arrow-blue --default --prefers-dark, winter --prefers-light, arrow-red, cyberpunk, dark, cupcake, retro, lofi, cyberpunk, synthwave, valentine, halloween, garden, forest, business, acid, luxury, dracula, night, coffee, bumblebee;
+}

@@ -1,0 +1,38 @@
+
+# Coverage
+coverage/
+*.lcov
+
+# Build outputs
+dist/
+cdk.out/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+
+node_modules/
+dist/
+.vscode/
+cdk.out/
+cdk.context.json
+
+.env
+
+# Webpack build artifacts (TypeScript compilation outputs in source directories)
+api/src/**/*.js
+api/src/**/*.js.map
+api/src/**/*.d.ts
+api/src/**/*.d.ts.map
+output/
+
+# These instructions kinda suck right now, I'll make something more general purpose later if anyone else wants it.
+.github/copilot-instructions.md
+
+share-service/run-local-lambda.sh
+
+frontend/.env.production
+frontend/.env.development

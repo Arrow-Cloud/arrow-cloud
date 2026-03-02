@@ -1,0 +1,119 @@
+{
+  "songName": "It All Starts Right Now",
+  "artist": "Mameyudoufu",
+  "pack": "ZZ Theme Testing",
+  "length": "3:32",
+  "stepartist": "",
+  "difficulty": "1",
+  "description": "",
+  "itgScore": "96.66",
+  "exScore": "87.50",
+  "grade": "Grade_Tier04",
+  "hash": "1234567890abcdef",
+  "timingData": [
+    [
+      0.51419502496719,
+      -0.016436278820038,
+      1,
+      false,
+      true,
+      false,
+      0,
+      false
+    ],
+    [
+      0.63943308591843,
+      -0.0064115524291992,
+      2,
+      false,
+      false,
+      false,
+      0,
+      false
+    ],
+    [
+      0.76394557952881,
+      -0.00078779458999634,
+      3,
+      false,
+      true,
+      false,
+      0,
+      false
+    ],
+    [
+      0.86240363121033,
+      -0.018676400184631,
+      4,
+      false,
+      false,
+      false,
+      0,
+      false
+    ],
+    [
+      1.00727891922,
+      0.011104941368103,
+      1,
+      false,
+      true,
+      false,
+      0,
+      false
+    ],
+    [
+      1.4584354162216,
+      -0.013960123062134,
+      2,
+      false,
+      false,
+      false,
+      0,
+      false
+    ],
+    [
+      1.8959864377975,
+      -0.042710542678833,
+      3,
+      false,
+      true,
+      false,
+      0,
+      false
+    ],
+    [
+      2.3842403888702,
+      -0.024394512176514,
+      4,
+      false,
+      false,
+      false,
+      0,
+      false
+    ]
+  ],
+  "lifebarInfo": [
+    {
+      "x": 0,
+      "y": 100
+    }
+  ],
+  "worstWindow": 0.0445,
+  "style": "single",
+  "mods": "C775, 35%Mini, 0ms (Vis.Del)",
+  "radar": {
+    "Holds": [
+      4,
+      4
+    ],
+    "Mines": [
+      0,
+      0
+    ],
+    "Rolls": [
+      0,
+      0
+    ]
+  },
+  "passed": true
+}
