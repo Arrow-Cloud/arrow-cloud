@@ -6,40 +6,39 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   lint-and-test:
+    name: ${{ matrix.task.name }}
     runs-on: ubuntu-latest
-    
     strategy:
+      fail-fast: false 
       matrix:
-        node-version: [22.x]
-    
+        task:
+          - { name: "Lint",  command: "npm run lint" }
+          - { name: "Test",  command: "npm run test" }
+          - { name: "Build", command: "npm run build" }
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      
-    - name: Setup Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-        
-    - name: Install dependencies
-      run: npm ci
-      
-    - name: Generate Prisma Client
-      run: npx prisma generate
-      
-    - name: Copy Prisma Client to share-service
-      run: |
-        mkdir -p share-service/api/prisma
-        cp -r api/prisma/generated share-service/api/prisma/
-      
-    - name: Run linter
-      run: npm run lint
-      
-    - name: Run tests
-      run: npm run test
-      
-    - name: Build project
-      run: npm run build
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6.2.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: |
+          npx prisma generate
+          mkdir -p share-service/api/prisma
+          cp -r api/prisma/generated share-service/api/prisma/
+
+      - name: Run ${{ matrix.task.name }}
+        run: ${{ matrix.task.command }}
