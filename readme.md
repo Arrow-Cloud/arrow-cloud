@@ -21,15 +21,12 @@ See CONTRIBUTING.md for guidelines on how to contribute to this project.
 
 _more information coming soon_
 
-## Development Setup
-
-
-
 ## Deployment Setup
 
-_more information coming soon_
+Note: If you want to run this project yourself you will absolutely need some familiarity with AWS, your own AWS account and credentials, and a willingness to spend a little bit of money per month (primarily because of the database server, at least 
+~$20/mo). 
 
-Note: If you want to run this project yourself you will absolutely need some familiarity with AWS, your own AWS account and credentials, and a willingness to spend a little bit of money per month (primarily because of the database server). 
+***The current configuration of the database instance costs a fair bit more than this, you will need to change the instance type to something cheaper to avoid excessive costs. The current deployed instance type is overkill, and Wafles chose to go with it because he wanted to, not because it is necessary.***
 
 You will need to first create a cdk context json file where you can populate some information.
 

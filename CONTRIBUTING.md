@@ -45,7 +45,7 @@ LLM-assisted contributions (e.g. code generated or refined with the help of AI t
 
 ## Testing
 
-Changes **should** include test cases where appropriate, but tests are not strictly required for every PR. The expectation scales with risk — changes to core logic, data handling, or security-sensitive code should be well-tested. Minor UI tweaks or documentation changes may not need tests at all. When in doubt, add tests.
+Changes **SHOULD** include test cases where appropriate, but tests are not strictly required for every PR. The expectation scales with risk — changes to core logic, data handling, or security-sensitive code should be well-tested. Minor UI tweaks or documentation changes may not need tests at all. When in doubt, add tests.
 
 ## General Guidelines
 
