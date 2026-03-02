@@ -56,3 +56,5 @@ cp frontend/.env.example frontend/.env.development
 3. `VITE_WEBSOCKET_URL` - Base URL for websockets
 
 
+
+test
