@@ -266,6 +266,8 @@ model Play {
   updatedAt        DateTime          @updatedAt
   rawTimingDataUrl String // S3
   modifiers        Json?             // Play modifiers (speed, turn, appearance, etc.)
+  engineName       String            @default("ITGMania")
+  engineVersion    String?
   PlayLeaderboard  PlayLeaderboard[]
 
   @@index([chartHash])

@@ -44,6 +44,8 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
         createdAt: true,
         rawTimingDataUrl: true,
         modifiers: true,
+        engineName: true,
+        engineVersion: true,
         user: { select: { id: true, alias: true, profileImageUrl: true } },
         chart: {
           select: {
@@ -109,6 +111,8 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
           updatedAt: play.createdAt,
           rawTimingDataUrl: play.rawTimingDataUrl,
           modifiers: play.modifiers,
+          engineName: play.engineName,
+          engineVersion: play.engineVersion,
         },
         s3Client,
       );
