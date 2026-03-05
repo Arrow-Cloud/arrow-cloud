@@ -120,4 +120,25 @@ describe('Leaderboard eligibility - musicRate & usedAutoplay', () => {
     const lb = new TestLeaderboard(play, submission, scoring, grading, createMockPrisma());
     expect(lb.isEligible()).toBe(false);
   });
+
+  test('ineligible when DeadSync with body version < 1.4', () => {
+    const play = makePlay();
+    const submission = makeSubmission({ _engineName: 'DeadSync', _arrowCloudBodyVersion: '1.3' });
+    const lb = new TestLeaderboard(play, submission, scoring, grading, createMockPrisma());
+    expect(lb.isEligible()).toBe(false);
+  });
+
+  test('eligible when DeadSync with body version >= 1.4', () => {
+    const play = makePlay();
+    const submission = makeSubmission({ _engineName: 'DeadSync', _arrowCloudBodyVersion: '1.4' });
+    const lb = new TestLeaderboard(play, submission, scoring, grading, createMockPrisma());
+    expect(lb.isEligible()).toBe(true);
+  });
+
+  test('eligible when ITGMania with body version 1.2', () => {
+    const play = makePlay();
+    const submission = makeSubmission({ _engineName: 'ITGMania', _arrowCloudBodyVersion: '1.2' });
+    const lb = new TestLeaderboard(play, submission, scoring, grading, createMockPrisma());
+    expect(lb.isEligible()).toBe(true);
+  });
 });

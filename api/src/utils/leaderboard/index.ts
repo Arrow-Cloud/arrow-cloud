@@ -1,6 +1,6 @@
 import { Play } from '../../../prisma/generated';
 import { PrismaClient } from '../../../prisma/generated/client';
-import { GradingSystem, PlaySubmission, ScoringSystem, SubmissionCalculator } from '../scoring';
+import { ENGINES, GradingSystem, PlaySubmission, ScoringSystem, SubmissionCalculator } from '../scoring';
 
 export interface ILeaderboard {
   isEligible: () => boolean;
@@ -62,6 +62,11 @@ export class BaseLeaderboard {
   isEligible(): boolean {
     // Old submissions before schema was finalized are not eligible
     if (parseFloat(this.submissionData._arrowCloudBodyVersion) < 1.2) {
+      return false;
+    }
+
+    // DeadSync requires a newer body version due to later schema additions
+    if (this.submissionData._engineName === ENGINES.DeadSync && parseFloat(this.submissionData._arrowCloudBodyVersion) < 1.4) {
       return false;
     }
 
