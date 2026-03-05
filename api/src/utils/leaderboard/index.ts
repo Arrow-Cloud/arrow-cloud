@@ -65,7 +65,9 @@ export class BaseLeaderboard {
       return false;
     }
 
-    // DeadSync requires a newer body version due to later schema additions
+    // DeadSync had a bug in submissions prior to a certain version, in addition to a breakage with semver for
+    // checking engine version, so we required DeadSync to start sending submissions with bodyVersion 1.4+
+    // so we can reject requests from that engine where the bug was present.
     if (this.submissionData._engineName === ENGINES.DeadSync && parseFloat(this.submissionData._arrowCloudBodyVersion) < 1.4) {
       return false;
     }
