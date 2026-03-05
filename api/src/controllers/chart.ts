@@ -791,6 +791,8 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
               chartHash: hash,
               rawTimingDataUrl: `s3://${BUCKET}/${path}`,
               modifiers: scoreSubmission.modifiers as object,
+              engineName: scoreSubmission._engineName,
+              engineVersion: scoreSubmission._engineVersion,
               ...(pendingTimestamp && {
                 createdAt: pendingTimestamp,
                 updatedAt: pendingTimestamp,

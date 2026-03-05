@@ -1,6 +1,6 @@
 import { Play } from '../../../prisma/generated';
 import { PrismaClient } from '../../../prisma/generated/client';
-import { GradingSystem, PlaySubmission, ScoringSystem, SubmissionCalculator } from '../scoring';
+import { ENGINES, GradingSystem, PlaySubmission, ScoringSystem, SubmissionCalculator } from '../scoring';
 
 export interface ILeaderboard {
   isEligible: () => boolean;
@@ -62,6 +62,13 @@ export class BaseLeaderboard {
   isEligible(): boolean {
     // Old submissions before schema was finalized are not eligible
     if (parseFloat(this.submissionData._arrowCloudBodyVersion) < 1.2) {
+      return false;
+    }
+
+    // DeadSync had a bug in submissions prior to a certain version, in addition to a breakage with semver for
+    // checking engine version, so we required DeadSync to start sending submissions with bodyVersion 1.4+
+    // so we can reject requests from that engine where the bug was present.
+    if (this.submissionData._engineName === ENGINES.DeadSync && parseFloat(this.submissionData._arrowCloudBodyVersion) < 1.4) {
       return false;
     }
 

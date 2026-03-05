@@ -42,7 +42,7 @@ const ModifiersSchema = z.object({
   noteskin: z.string(),
 });
 
-const ENGINES = {
+export const ENGINES = {
   ITGMania: 'ITGMania',
   DeadSync: 'DeadSync',
 };

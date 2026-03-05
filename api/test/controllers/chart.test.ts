@@ -182,6 +182,8 @@ describe('Chart Controller', () => {
             chartHash: mockAuthenticatedEvent.routeParameters?.chartHash,
             rawTimingDataUrl: expect.stringMatching(/^s3:\/\/arrow-cloud-scores\/scores\/1234567890abcdef\/user-123\/\d+\.json$/),
             modifiers: expect.any(Object),
+            engineName: 'ITGMania',
+            engineVersion: undefined,
           },
         });
 
@@ -262,6 +264,14 @@ describe('Chart Controller', () => {
         const uploadedBody = JSON.parse(s3Calls[0].args[0].input.Body as string);
         expect(uploadedBody._engineName).toBe('DeadSync');
         expect(uploadedBody._engineVersion).toBe('2.1.0');
+
+        // Verify play.create was called with the engine fields
+        expect(mockTransaction.play.create).toHaveBeenCalledWith({
+          data: expect.objectContaining({
+            engineName: 'DeadSync',
+            engineVersion: '2.1.0',
+          }),
+        });
       });
 
       it('should default _engineName to ITGMania when not provided', async () => {
@@ -352,6 +362,8 @@ describe('Chart Controller', () => {
             chartHash: mockAuthenticatedEvent.routeParameters?.chartHash,
             rawTimingDataUrl: expect.stringMatching(/^s3:\/\/arrow-cloud-scores\/scores\/1234567890abcdef\/user-123\/\d+\.json$/),
             modifiers: expect.any(Object),
+            engineName: 'ITGMania',
+            engineVersion: undefined,
             createdAt: expectedTimestamp,
             updatedAt: expectedTimestamp,
           },
@@ -407,6 +419,8 @@ describe('Chart Controller', () => {
             chartHash: mockAuthenticatedEvent.routeParameters?.chartHash,
             rawTimingDataUrl: expect.stringMatching(/^s3:\/\/arrow-cloud-scores\/scores\/1234567890abcdef\/user-123\/\d+\.json$/),
             modifiers: expect.any(Object),
+            engineName: 'ITGMania',
+            engineVersion: undefined,
             createdAt: expectedTimestamp,
             updatedAt: expectedTimestamp,
           },
@@ -458,6 +472,8 @@ describe('Chart Controller', () => {
             chartHash: mockAuthenticatedEvent.routeParameters?.chartHash,
             rawTimingDataUrl: expect.stringMatching(/^s3:\/\/arrow-cloud-scores\/scores\/1234567890abcdef\/user-123\/\d+\.json$/),
             modifiers: expect.any(Object),
+            engineName: 'ITGMania',
+            engineVersion: undefined,
           },
         });
       });
@@ -512,6 +528,8 @@ describe('Chart Controller', () => {
             chartHash: mockAuthenticatedEvent.routeParameters?.chartHash,
             rawTimingDataUrl: expect.stringMatching(/^s3:\/\/arrow-cloud-scores\/scores\/1234567890abcdef\/user-123\/\d+\.json$/),
             modifiers: expect.any(Object),
+            engineName: 'ITGMania',
+            engineVersion: undefined,
           },
         });
       });
