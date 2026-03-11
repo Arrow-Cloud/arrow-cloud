@@ -14,7 +14,7 @@
     "puppeteer-core": "^24.37.5"
   },
   "devDependencies": {
-    "@prisma/nextjs-monorepo-workaround-plugin": "^7.2.0",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^7.4.2",
     "@types/node": "^20.11.5",
     "ts-loader": "^9.5.4",
     "typescript": "^5.3.3",
