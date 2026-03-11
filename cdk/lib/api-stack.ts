@@ -405,6 +405,62 @@ export class ApiStack extends cdk.Stack {
       database.secret.grantRead(userStatsLambda);
     }
 
+    // === Pack Leaderboard Processing (SQS + Lambda) ===
+    // Create SQS queue for pack leaderboard processing
+    const packLeaderboardQueue = new sqs.Queue(this, 'PackLeaderboardQueue', {
+      queueName: 'arrow-cloud-pack-leaderboard',
+      visibilityTimeout: cdk.Duration.minutes(5),
+      deadLetterQueue: {
+        queue: new sqs.Queue(this, 'PackLeaderboardDLQ', {
+          queueName: 'arrow-cloud-pack-leaderboard-dlq',
+        }),
+        maxReceiveCount: 3,
+      },
+    });
+
+    // Subscribe SQS queue to SNS topic — only score-submitted events
+    scoreSubmissionTopic.addSubscription(
+      new snsSubscriptions.SqsSubscription(packLeaderboardQueue, {
+        filterPolicy: {
+          eventType: sns.SubscriptionFilter.stringFilter({
+            allowlist: ['score-submitted'],
+          }),
+        },
+      }),
+    );
+
+    // Create Lambda function for pack leaderboard processing
+    const packLeaderboardLambda = new lambda.Function(this, 'PackLeaderboardLambda', {
+      runtime: lambda.Runtime.NODEJS_22_X,
+      architecture: lambda.Architecture.ARM_64,
+      code: lambda.Code.fromAsset('../api/dist'),
+      handler: 'pack-leaderboard.handler',
+      memorySize: 256,
+      timeout: cdk.Duration.minutes(5),
+      environment: {
+        DATABASE_SECRET_ARN: database.secret?.secretArn || '',
+        S3_BUCKET_ASSETS: s3BucketAssets.bucketName,
+      },
+      vpc,
+      vpcSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS,
+      },
+      securityGroups: [lambdaSecurityGroup],
+      events: [
+        new lambdaEventSources.SqsEventSource(packLeaderboardQueue, {
+          batchSize: 10,
+          maxBatchingWindow: cdk.Duration.seconds(5),
+          reportBatchItemFailures: true,
+        }),
+      ],
+    });
+
+    // Grant Pack Leaderboard Lambda access to the database secret and S3
+    if (database.secret) {
+      database.secret.grantRead(packLeaderboardLambda);
+    }
+    s3BucketAssets.grantReadWrite(packLeaderboardLambda);
+
     // === Pack Popularity Calculation Lambda ===
     // Lambda to calculate pack popularity scores every 6 hours
     const packPopularityLambda = new lambda.Function(this, 'PackPopularityLambda', {

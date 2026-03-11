@@ -164,6 +164,36 @@ export const packRecentPlaySchema = z.object({
   createdAt: z.string(),
 });
 
+export const packLeaderboardDataSchema = z.object({
+  generatedAt: z.string(),
+  packId: z.number(),
+  packName: z.string(),
+  users: z.record(
+    z.string(),
+    z.object({
+      alias: z.string(),
+      profileImageUrl: z.string().nullable(),
+    }),
+  ),
+  leaderboards: z.record(
+    z.string(),
+    z.record(
+      z.string(),
+      z.object({
+        totalParticipants: z.number(),
+        rankings: z.array(
+          z.object({
+            rank: z.number(),
+            userId: z.string(),
+            totalScore: z.number(),
+            chartsPlayed: z.number(),
+          }),
+        ),
+      }),
+    ),
+  ),
+});
+
 export const packDetailsSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -175,6 +205,7 @@ export const packDetailsSchema = z.object({
   recentPlays: z.array(packRecentPlaySchema),
   createdAt: z.string(),
   updatedAt: z.string(),
+  packLeaderboard: packLeaderboardDataSchema.optional(),
 });
 
 export type User = z.infer<typeof userSchema>;
@@ -343,6 +374,7 @@ export type PackUser = z.infer<typeof packUserSchema>;
 export type PackLeaderboard = z.infer<typeof packLeaderboardSchema>;
 export type PackRecentPlay = z.infer<typeof packRecentPlaySchema>;
 export type PackDetails = z.infer<typeof packDetailsSchema>;
+export type PackLeaderboardData = z.infer<typeof packLeaderboardDataSchema>;
 export type SimfileChart = z.infer<typeof simfileChartSchema>;
 export type SimfilePack = z.infer<typeof simfilePackSchema>;
 export type SimfileListItem = z.infer<typeof simfileListItemSchema>;
