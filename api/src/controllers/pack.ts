@@ -2,8 +2,11 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 import { PrismaClient } from '../../prisma/generated/client';
 import { ExtendedAPIGatewayProxyEvent } from '../utils/types';
 import { z } from 'zod';
-import { assetS3UrlToCloudFrontUrl, toCfVariantSet } from '../utils/s3';
+import { assetS3UrlToCloudFrontUrl, toCfVariantSet, S3_BUCKET_ASSETS } from '../utils/s3';
 import { respond } from '../utils/responses';
+import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
+
+const s3Client = new S3Client();
 import { resolveChartBanner } from '../utils/chart-banner';
 import { GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID, GLOBAL_HARD_EX_LEADERBOARD_ID } from '../utils/leaderboard';
 
@@ -487,6 +490,29 @@ export async function getPackRecentPlays(event: ExtendedAPIGatewayProxyEvent, pr
 }
 
 /**
+ * Load pack leaderboard JSON from S3, or return null if it doesn't exist.
+ */
+async function loadPackLeaderboard(packId: number): Promise<Record<string, unknown> | null> {
+  try {
+    const response = await s3Client.send(
+      new GetObjectCommand({
+        Bucket: S3_BUCKET_ASSETS,
+        Key: `json/pack-leaderboards/${packId}.json`,
+      }),
+    );
+    if (!response.Body) return null;
+    const body = await response.Body.transformToString();
+    return JSON.parse(body);
+  } catch (err: any) {
+    if (err.name === 'NoSuchKey' || err.$metadata?.httpStatusCode === 404) {
+      return null;
+    }
+    console.error(`Error loading pack leaderboard for pack ${packId}:`, err);
+    return null;
+  }
+}
+
+/**
  * Get a single pack by ID
  * GET /v1/packs/{packId}
  */
@@ -498,7 +524,11 @@ export async function getPack(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
 
     const packId = parseInt(event.routeParameters?.packId, 10);
 
-    const [pack, recentPlaysRaw] = await Promise.all([getPackFromDb(packId, prisma), getRecentPlays(packId, prisma, 1, 5)]);
+    const [pack, recentPlaysRaw, packLeaderboard] = await Promise.all([
+      getPackFromDb(packId, prisma),
+      getRecentPlays(packId, prisma, 1, 5),
+      loadPackLeaderboard(packId),
+    ]);
 
     if (!pack) {
       return respond(404, { error: 'Pack not found' });
@@ -535,6 +565,7 @@ export async function getPack(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
       }),
       createdAt: pack.createdAt.toISOString(),
       updatedAt: pack.updatedAt.toISOString(),
+      packLeaderboard: packLeaderboard || undefined,
     };
 
     return respond(200, response);

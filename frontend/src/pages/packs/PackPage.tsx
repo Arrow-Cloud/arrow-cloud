@@ -4,6 +4,7 @@ import { Calendar, Music, Loader2, Search, ChevronUp, ChevronDown } from 'lucide
 import { getStoredUser, computeHighlight, HighlightedAlias } from '../../utils/rivalHighlight';
 import { AppPageLayout, Alert, Pagination, GradeImage, DifficultyChip } from '../../components';
 import { LeaderboardToggle } from '../../components/leaderboards/LeaderboardToggle';
+import { PackLeaderboard } from '../../components/leaderboards/PackLeaderboard';
 import { useLeaderboardView } from '../../contexts/LeaderboardViewContext';
 import { BannerImage } from '../../components/ui';
 import { getPack } from '../../services/api';
@@ -703,9 +704,10 @@ export const PackPage: React.FC = () => {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Pack Metadata */}
-          <div className="lg:col-span-1">
+          {/* Left Column - Pack Metadata + Leaderboard */}
+          <div className="lg:col-span-1 space-y-6">
             <PackMetadataCard pack={pack} />
+            <PackLeaderboard data={pack.packLeaderboard} />
           </div>
 
           {/* Right Column - Recent Scores */}
