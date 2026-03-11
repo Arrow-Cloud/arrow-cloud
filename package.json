@@ -52,7 +52,7 @@
     "puppeteer": "^24.34.0",
     "tsx": "^4.20.3",
     "typescript": "^5.8.0",
-    "typescript-eslint": "^8.30.1"
+    "typescript-eslint": "^8.56.1"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
