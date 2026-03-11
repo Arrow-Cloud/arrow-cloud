@@ -40,7 +40,7 @@
     "@aws-sdk/client-sqs": "^3.1000.0",
     "@aws-sdk/lib-dynamodb": "^3.943.0",
     "@aws-sdk/s3-request-presigner": "^3.848.0",
-    "@prisma/nextjs-monorepo-workaround-plugin": "^6.10.1",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^7.4.2",
     "@simplewebauthn/server": "^13.1.2",
     "@simplewebauthn/types": "^12.0.0",
     "aws-sdk-client-mock": "^4.1.0",
