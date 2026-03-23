@@ -162,8 +162,8 @@ const HelpPage: React.FC = () => {
   }, [selection]);
 
   // Download links (hard-coded per request) — use HTTPS to avoid mixed content blocking
-  const THEME_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Theme.zip';
-  const MODULE_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Module.zip';
+  const THEME_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Theme%2020260321.zip';
+  const MODULE_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Module%2020260320.2.zip';
   // ArrowCloud.ini is generated server-side with a new API key per request
   const ARROWCLOUD_INI_DOWNLOAD_URL = '/arrowcloud.ini';
 
@@ -1095,13 +1095,13 @@ const HelpPage: React.FC = () => {
                       <p className="mb-4">
                         {intl.formatMessage({
                           defaultMessage:
-                            'Blue Shift was Arrow Cloud\'s inaugural event which ran from December 2025 to February 2026. You can view the results below.',
+                            "Blue Shift was Arrow Cloud's inaugural event which ran from December 2025 to February 2026. You can view the results below.",
                           id: 'eA3EeG',
                           description: 'FAQ answer about failed submission - part 1',
                         })}
                       </p>
                       <p>
-                        <a href="/blueshift-results" className="btn btn-sm btn-secondary" >
+                        <a href="/blueshift-results" className="btn btn-sm btn-secondary">
                           {intl.formatMessage({
                             defaultMessage: 'View Blue Shift Results',
                             id: 'wl0L1c',

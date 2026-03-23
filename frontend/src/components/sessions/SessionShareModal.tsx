@@ -75,7 +75,14 @@ const SelectablePlayCard: React.FC<{
       onClick={() => !disabled && onToggle()}
     >
       {/* Checkbox */}
-      <input type="checkbox" className="checkbox checkbox-primary checkbox-sm" checked={isSelected} onChange={onToggle} disabled={disabled} />
+      <input
+        type="checkbox"
+        className="checkbox checkbox-primary checkbox-sm"
+        checked={isSelected}
+        onChange={onToggle}
+        onClick={(e) => e.stopPropagation()}
+        disabled={disabled}
+      />
 
       {/* Banner thumbnail */}
       <div className="w-20 h-8 rounded overflow-hidden flex-shrink-0">
@@ -91,8 +98,12 @@ const SelectablePlayCard: React.FC<{
 
       {/* Chart info */}
       <div className="flex-1 min-w-0">
-        <div className="font-semibold text-sm truncate">{play.chart.title || formatMessage({ defaultMessage: 'Unknown', id: 'sKHFB+', description: 'Fallback for unknown chart title' })}</div>
-        <div className="text-xs text-base-content/60 truncate">{play.chart.artist || formatMessage({ defaultMessage: 'Unknown Artist', id: '8QTMIv', description: 'Fallback for unknown chart artist' })}</div>
+        <div className="font-semibold text-sm truncate">
+          {play.chart.title || formatMessage({ defaultMessage: 'Unknown', id: 'sKHFB+', description: 'Fallback for unknown chart title' })}
+        </div>
+        <div className="text-xs text-base-content/60 truncate">
+          {play.chart.artist || formatMessage({ defaultMessage: 'Unknown Artist', id: '8QTMIv', description: 'Fallback for unknown chart artist' })}
+        </div>
       </div>
 
       {/* Difficulty */}

@@ -17,16 +17,16 @@
       "value": "Country"
     }
   ],
+  "+JMMEN": [
+    {
+      "type": 0,
+      "value": "Manage"
+    }
+  ],
   "+a1gOU": [
     {
       "type": 0,
       "value": "Blue Shift Logo"
-    }
-  ],
-  "+gIWnk": [
-    {
-      "type": 0,
-      "value": "No scores in this leaderboard category yet."
     }
   ],
   "+h2LEI": [
@@ -41,6 +41,12 @@
       "value": "Personal Best"
     }
   ],
+  "+t0i1m": [
+    {
+      "type": 0,
+      "value": "H.EX"
+    }
+  ],
   "+tpXd6": [
     {
       "type": 0,
@@ -53,10 +59,10 @@
       "value": "Registration failed. Please try again."
     }
   ],
-  "/CnYKe": [
+  "/74Al3": [
     {
       "type": 0,
-      "value": "Event Format"
+      "value": "Save Order"
     }
   ],
   "/Cz20N": [
@@ -69,12 +75,6 @@
     {
       "type": 0,
       "value": "No changes to save"
-    }
-  ],
-  "/L5Ek3": [
-    {
-      "type": 0,
-      "value": "This user hasn't participated in the Blue Shift Beta event yet."
     }
   ],
   "/MH50s": [
@@ -105,10 +105,22 @@
       "value": "Date"
     }
   ],
+  "/tnCO4": [
+    {
+      "type": 0,
+      "value": "Copy URL"
+    }
+  ],
   "/yrXf9": [
     {
       "type": 0,
       "value": "Common quick answers/miscellaneous information"
+    }
+  ],
+  "00faeg": [
+    {
+      "type": 0,
+      "value": "Recent Packs"
     }
   ],
   "01/J8T": [
@@ -121,6 +133,12 @@
     {
       "type": 0,
       "value": "Songs"
+    }
+  ],
+  "02FqeE": [
+    {
+      "type": 0,
+      "value": "Session Started"
     }
   ],
   "05hmF9": [
@@ -149,12 +167,6 @@
     {
       "type": 1,
       "value": "hash"
-    }
-  ],
-  "0POvio": [
-    {
-      "type": 0,
-      "value": "Blue Shift consists of three distinct phases, each lasting three weeks. Players compete across three different leaderboards, each designed to test different aspects of ITG skill. Points are awarded based on your leaderboard position."
     }
   ],
   "0Susv7": [
@@ -204,42 +216,34 @@
       "value": "lastUpdated"
     }
   ],
-  "1Ig/74": [
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "Starts on December 5th, 2025"
-        }
-      ],
-      "type": 8,
-      "value": "strong"
-    },
-    {
-      "type": 0,
-      "value": " "
-    },
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "12:00 PM UTC"
-        }
-      ],
-      "type": 8,
-      "value": "small"
-    }
-  ],
   "1IiFi6": [
     {
       "type": 0,
       "value": "Added"
     }
   ],
+  "1JtbJO": [
+    {
+      "type": 0,
+      "value": "Failed to load trophies"
+    }
+  ],
   "1My/zA": [
     {
       "type": 0,
       "value": "N/A"
+    }
+  ],
+  "1RY6iM": [
+    {
+      "type": 0,
+      "value": "Top Packs Played"
+    }
+  ],
+  "1VjH1d": [
+    {
+      "type": 0,
+      "value": "Mines Dodged"
     }
   ],
   "1Y0sic": [
@@ -324,10 +328,10 @@
       "value": "Some top grades (Sext / Quint) evaluate using a stricter scoring system override (HardEX/EX)."
     }
   ],
-  "2FRvLL": [
+  "2Hi91F": [
     {
       "type": 0,
-      "value": "Every 3 weeks you will put up your best scores on 20 curated charts. Grind to your heart's content!"
+      "value": "Radar Data"
     }
   ],
   "2IPNlq": [
@@ -342,22 +346,16 @@
       "value": "EX (15ms)"
     }
   ],
-  "2RNR4i": [
-    {
-      "type": 0,
-      "value": "Take points from your competitors - as you pass players on the leaderboards, the points you gain are \"stolen\" from other players."
-    }
-  ],
   "2TD5hu": [
     {
       "type": 0,
       "value": "What Is Arrow Cloud?"
     }
   ],
-  "2XL1fo": [
+  "2cIaAb": [
     {
       "type": 0,
-      "value": "Arrow Cloud Blue Shift Logo"
+      "value": "No plays found"
     }
   ],
   "2d72YH": [
@@ -418,16 +416,10 @@
       "value": "basePath"
     }
   ],
-  "34xrFN": [
+  "3LF9Yy": [
     {
       "type": 0,
-      "value": "Streamer Widget"
-    }
-  ],
-  "3N6cLw": [
-    {
-      "type": 0,
-      "value": "Compete Across"
+      "value": "Plays"
     }
   ],
   "3bG3Pw": [
@@ -460,6 +452,12 @@
       "value": "Confirm Password"
     }
   ],
+  "40N/ij": [
+    {
+      "type": 0,
+      "value": "Mon"
+    }
+  ],
   "41VgXE": [
     {
       "type": 0,
@@ -474,6 +472,18 @@
     {
       "type": 0,
       "value": " You"
+    }
+  ],
+  "46fZTI": [
+    {
+      "type": 0,
+      "value": "No scores available"
+    }
+  ],
+  "4BH2f8": [
+    {
+      "type": 0,
+      "value": "Close"
     }
   ],
   "4TmIV5": [
@@ -506,22 +516,40 @@
       "value": "Profile image updated successfully!"
     }
   ],
+  "4yGxz/": [
+    {
+      "type": 0,
+      "value": "No charts available"
+    }
+  ],
+  "51kB0H": [
+    {
+      "type": 0,
+      "value": "Difficulty"
+    }
+  ],
+  "56x/zY": [
+    {
+      "type": 0,
+      "value": "Chart"
+    }
+  ],
   "5Bb8X7": [
     {
       "type": 0,
       "value": "Cancel"
     }
   ],
+  "5E+RUr": [
+    {
+      "type": 0,
+      "value": "No recent scores yet. Get playing!"
+    }
+  ],
   "5K/3lA": [
     {
       "type": 0,
       "value": "Passkeys"
-    }
-  ],
-  "5UgsH1": [
-    {
-      "type": 0,
-      "value": "Points are distributed based on your ranking position on each leaderboard. Each chart has 3 leaderboards, each phase has 3 leaderboards, and your cumulative points across all phases determine your final standing in the Blue Shift competition."
     }
   ],
   "5WyHgs": [
@@ -562,16 +590,16 @@
       "value": "Score sum = tap weights + (held completions * heldWeight) + (roll completions * heldWeight) + (mine hits * minePenalty)."
     }
   ],
+  "5i8EfE": [
+    {
+      "type": 0,
+      "value": "Trophies"
+    }
+  ],
   "5jGvbu": [
     {
       "type": 0,
       "value": "Chart"
-    }
-  ],
-  "5leU4H": [
-    {
-      "type": 0,
-      "value": "Add Rivals"
     }
   ],
   "5mntyH": [
@@ -584,6 +612,12 @@
     {
       "type": 0,
       "value": "Why It Exists"
+    }
+  ],
+  "5sAIEv": [
+    {
+      "type": 0,
+      "value": "Users"
     }
   ],
   "628Yaq": [
@@ -692,22 +726,26 @@
       "value": "Skip"
     }
   ],
-  "7eDt6d": [
+  "7ivPDh": [
     {
       "type": 0,
-      "value": "Charts Played"
-    }
-  ],
-  "7ovwIG": [
-    {
-      "type": 0,
-      "value": "3 weeks each"
+      "value": "Phase 1"
     }
   ],
   "8+OFcD": [
     {
       "type": 0,
       "value": "Score"
+    }
+  ],
+  "8/S5Tc": [
+    {
+      "type": 1,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " steps"
     }
   ],
   "80Vzt6": [
@@ -732,22 +770,28 @@
       "value": "Way Off & Miss heavily punished"
     }
   ],
-  "86A6Pn": [
-    {
-      "type": 0,
-      "value": "Overall Rank"
-    }
-  ],
   "89o0ZA": [
     {
       "type": 0,
       "value": "Failed to fetch user data."
     }
   ],
+  "8IH2Xh": [
+    {
+      "type": 0,
+      "value": "No users available"
+    }
+  ],
   "8OA9Ae": [
     {
       "type": 0,
       "value": "Register"
+    }
+  ],
+  "8QTMIv": [
+    {
+      "type": 0,
+      "value": "Unknown Artist"
     }
   ],
   "8ZispS": [
@@ -762,10 +806,22 @@
       "value": "All Types"
     }
   ],
+  "8diw/q": [
+    {
+      "type": 0,
+      "value": "Next"
+    }
+  ],
   "8i+1ZL": [
     {
       "type": 0,
       "value": "Min"
+    }
+  ],
+  "8iqCJI": [
+    {
+      "type": 0,
+      "value": "Charts"
     }
   ],
   "8x/8+a": [
@@ -790,6 +846,12 @@
       "value": "Charts"
     }
   ],
+  "9CoJA4": [
+    {
+      "type": 0,
+      "value": "Your unlocked trophies will display here."
+    }
+  ],
   "9F+o+P": [
     {
       "type": 0,
@@ -800,12 +862,6 @@
     {
       "type": 0,
       "value": "HardEX Weight"
-    }
-  ],
-  "9K8zUV": [
-    {
-      "type": 0,
-      "value": "Grind"
     }
   ],
   "9KiYOr": [
@@ -856,10 +912,10 @@
       "value": "Leaderboards"
     }
   ],
-  "A02a/L": [
+  "9wJH2E": [
     {
       "type": 0,
-      "value": "We support rivals, so you can compete with and keep track of your friends."
+      "value": "Share this score"
     }
   ],
   "A5yRgM": [
@@ -872,6 +928,12 @@
     {
       "type": 0,
       "value": "Password updated successfully!"
+    }
+  ],
+  "AAP0Lq": [
+    {
+      "type": 0,
+      "value": "Search users..."
     }
   ],
   "AD4Gnq": [
@@ -912,6 +974,22 @@
     {
       "type": 0,
       "value": "n/a"
+    }
+  ],
+  "AW7bIo": [
+    {
+      "type": 0,
+      "value": "Unknown"
+    }
+  ],
+  "AbjsQp": [
+    {
+      "type": 0,
+      "value": "Error loading users: "
+    },
+    {
+      "type": 1,
+      "value": "error"
     }
   ],
   "AgADp0": [
@@ -958,6 +1036,38 @@
       "value": "Search by song, artist, or player..."
     }
   ],
+  "AzxLjP": [
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " play"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " plays"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
   "B067A3": [
     {
       "type": 0,
@@ -988,6 +1098,12 @@
       "value": "View full"
     }
   ],
+  "BTbrvn": [
+    {
+      "type": 0,
+      "value": "View Profile"
+    }
+  ],
   "BgdjiI": [
     {
       "type": 0,
@@ -998,6 +1114,22 @@
     {
       "type": 0,
       "value": "Help"
+    }
+  ],
+  "BkIenQ": [
+    {
+      "type": 0,
+      "value": "PBs Only"
+    }
+  ],
+  "BlBhJ7": [
+    {
+      "type": 0,
+      "value": "Started "
+    },
+    {
+      "type": 1,
+      "value": "time"
     }
   ],
   "Bs3fyg": [
@@ -1022,12 +1154,6 @@
     {
       "type": 0,
       "value": "No scores yet"
-    }
-  ],
-  "ByVSO+": [
-    {
-      "type": 0,
-      "value": "based on your leaderboard position"
     }
   ],
   "C22vWu": [
@@ -1076,12 +1202,6 @@
     {
       "type": 0,
       "value": "Select which leaderboards to cycle through (at least one required)"
-    }
-  ],
-  "CgzUvb": [
-    {
-      "type": 0,
-      "value": "Leaderboards"
     }
   ],
   "CnmIBg": [
@@ -1166,6 +1286,12 @@
       "value": "Loading countries..."
     }
   ],
+  "DYQ8XL": [
+    {
+      "type": 0,
+      "value": "Grade"
+    }
+  ],
   "DYk76o": [
     {
       "type": 0,
@@ -1190,6 +1316,24 @@
       "value": "If Arrow Cloud is actually down, it means one of two things probably happened: either AWS is having an outage in our region, or a developer pushed a bad release. If this happens we may extend event deadlines to accommodate affected players. Again, we'll do our best to build our module and theme to handle resubmitting your scores automatically."
     }
   ],
+  "Dqs29A": [
+    {
+      "type": 0,
+      "value": "Chart "
+    },
+    {
+      "type": 1,
+      "value": "current"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "type": 1,
+      "value": "total"
+    }
+  ],
   "Duq0nQ": [
     {
       "type": 0,
@@ -1212,6 +1356,12 @@
     {
       "type": 0,
       "value": "Dismiss"
+    }
+  ],
+  "E4mZwn": [
+    {
+      "type": 0,
+      "value": "Charts"
     }
   ],
   "EaTIYv": [
@@ -1300,6 +1450,12 @@
       "value": " songs"
     }
   ],
+  "FbtN0h": [
+    {
+      "type": 0,
+      "value": "All Scores"
+    }
+  ],
   "FdrJbE": [
     {
       "type": 0,
@@ -1324,12 +1480,6 @@
       "value": " plays"
     }
   ],
-  "FfCFxS": [
-    {
-      "type": 0,
-      "value": "Blue Shift is our inaugural 9‑week launch event, beginning early December."
-    }
-  ],
   "FkqFg3": [
     {
       "type": 0,
@@ -1342,10 +1492,16 @@
       "value": "No timing data available for this play."
     }
   ],
-  "G5D4zt": [
+  "G6Bo2J": [
     {
       "type": 0,
-      "value": "Starting on Dec. 5th 2025, Blue Shift is our inaugural competitive event - a multi-phase remote/online tournament where you can compete with players from around the world across multiple skill categories and leaderboards!"
+      "value": "Player"
+    }
+  ],
+  "G6xjMl": [
+    {
+      "type": 0,
+      "value": "No PBs on this Leaderboard"
     }
   ],
   "G8u4NE": [
@@ -1358,12 +1514,6 @@
     {
       "type": 0,
       "value": "Member Since"
-    }
-  ],
-  "GDC8y1": [
-    {
-      "type": 0,
-      "value": "H.EX (10ms), EX, and ITG"
     }
   ],
   "GHqL4U": [
@@ -1429,6 +1579,18 @@
       "value": "Arrow Cloud is a modern online service for ITGMania for tracking scores, hosting leaderboards, and running remote online events. Built with fundamentally scalable infrastructure, and will be open sourced in 2026."
     }
   ],
+  "GbDfeL": [
+    {
+      "type": 0,
+      "value": "Scores"
+    }
+  ],
+  "Gdrt7M": [
+    {
+      "type": 0,
+      "value": "H.EX"
+    }
+  ],
   "GgX2r2": [
     {
       "type": 0,
@@ -1455,6 +1617,12 @@
       "value": "s"
     }
   ],
+  "GxaXj9": [
+    {
+      "type": 0,
+      "value": "Back"
+    }
+  ],
   "Gxtt3v": [
     {
       "type": 0,
@@ -1465,6 +1633,30 @@
     {
       "type": 0,
       "value": "What Arrow Cloud Is"
+    }
+  ],
+  "H4R3Dg": [
+    {
+      "type": 0,
+      "value": "My Scores"
+    }
+  ],
+  "H5m4gD": [
+    {
+      "type": 0,
+      "value": "N/A"
+    }
+  ],
+  "H7XAcz": [
+    {
+      "type": 0,
+      "value": "Clear Selection"
+    }
+  ],
+  "HCJHu+": [
+    {
+      "type": 0,
+      "value": "Steps Hit"
     }
   ],
   "HFZ2Dx": [
@@ -1489,6 +1681,30 @@
     {
       "type": 0,
       "value": "Rank"
+    }
+  ],
+  "HSLoUA": [
+    {
+      "type": 0,
+      "value": "Showing "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "shown"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "style": null,
+      "type": 2,
+      "value": "total"
+    },
+    {
+      "type": 0,
+      "value": " users"
     }
   ],
   "HlcJcp": [
@@ -1531,6 +1747,22 @@
     {
       "type": 0,
       "value": "Privacy Policy"
+    }
+  ],
+  "IXRHTg": [
+    {
+      "type": 1,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " plays"
+    }
+  ],
+  "J4DsUl": [
+    {
+      "type": 0,
+      "value": "No recent sessions available"
     }
   ],
   "J8Xk3g": [
@@ -1585,6 +1817,12 @@
       "value": " to the end of your existing list."
     }
   ],
+  "JY41Vf": [
+    {
+      "type": 0,
+      "value": "Share Session"
+    }
+  ],
   "Jf70Ja": [
     {
       "type": 0,
@@ -1623,6 +1861,12 @@
       "value": "User Profile"
     }
   ],
+  "K0gQHa": [
+    {
+      "type": 0,
+      "value": "Phase 2"
+    }
+  ],
   "KBUN0h": [
     {
       "type": 0,
@@ -1641,16 +1885,16 @@
       "value": "If no thresholds met: fallback to minimum pass grade (D)."
     }
   ],
+  "KYCIL1": [
+    {
+      "type": 0,
+      "value": "Your Activity"
+    }
+  ],
   "Kc/AbT": [
     {
       "type": 0,
       "value": "Enter your email"
-    }
-  ],
-  "KfBAeQ": [
-    {
-      "type": 0,
-      "value": "3 Phases"
     }
   ],
   "KpJJ7D": [
@@ -1727,20 +1971,16 @@
       "value": "Search charts or artists..."
     }
   ],
-  "LoJ0Ee": [
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "ITG:"
-        }
-      ],
-      "type": 8,
-      "value": "strong"
-    },
+  "LnQ8ys": [
     {
       "type": 0,
-      "value": " The classic ITG timing window for traditionalists."
+      "value": "All Countries"
+    }
+  ],
+  "M/FX2E": [
+    {
+      "type": 0,
+      "value": "Pack Leaderboard"
     }
   ],
   "M/hUW7": [
@@ -1795,18 +2035,6 @@
       "value": "Previous"
     }
   ],
-  "MQb09O": [
-    {
-      "type": 0,
-      "value": "Total Points"
-    }
-  ],
-  "MW8glP": [
-    {
-      "type": 0,
-      "value": "Your hub for understanding Arrow Cloud — what it is, why it exists, and how to prepare your setup."
-    }
-  ],
   "MZJzFb": [
     {
       "type": 0,
@@ -1823,10 +2051,22 @@
       "value": "lastUsed"
     }
   ],
+  "MfLQN4": [
+    {
+      "type": 0,
+      "value": "No Trophies Yet"
+    }
+  ],
   "MjDpNZ": [
     {
       "type": 0,
       "value": "Delete Score"
+    }
+  ],
+  "MnF0X2": [
+    {
+      "type": 0,
+      "value": "Thank you to everyone who participated in Blue Shift! Check out the final standings to see how you ranked. We've assigned trophies to participants, check your profile out to see yours!"
     }
   ],
   "MoIA9d": [
@@ -1839,6 +2079,12 @@
     {
       "type": 0,
       "value": "Timing Chart"
+    }
+  ],
+  "NF25+d": [
+    {
+      "type": 0,
+      "value": "Session share preview"
     }
   ],
   "NIMaHT": [
@@ -1871,10 +2117,48 @@
       "value": "Admin"
     }
   ],
+  "Nh4MbP": [
+    {
+      "offset": 0,
+      "options": {
+        "one": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " play"
+            }
+          ]
+        },
+        "other": {
+          "value": [
+            {
+              "type": 7
+            },
+            {
+              "type": 0,
+              "value": " plays"
+            }
+          ]
+        }
+      },
+      "pluralType": "cardinal",
+      "type": 6,
+      "value": "count"
+    }
+  ],
   "No2aRz": [
     {
       "type": 0,
       "value": "Time"
+    }
+  ],
+  "NsHg0w": [
+    {
+      "type": 0,
+      "value": "Statistics"
     }
   ],
   "NvFvI1": [
@@ -1971,10 +2255,28 @@
       "value": "button"
     }
   ],
+  "OolH+a": [
+    {
+      "type": 0,
+      "value": "Overall Rankings"
+    }
+  ],
   "OrEocL": [
     {
       "type": 0,
       "value": "Notifications of updates to this privacy policy will be sent via email, announced on Discord, and posted on our website."
+    }
+  ],
+  "OuTVaI": [
+    {
+      "type": 0,
+      "value": "Scoring System"
+    }
+  ],
+  "OwJKGB": [
+    {
+      "type": 0,
+      "value": "Holds Held"
     }
   ],
   "P+Gj+q": [
@@ -2023,10 +2325,22 @@
       "value": "Grade Thresholds & Badges (ITG base + extensions)"
     }
   ],
+  "Pnpb2O": [
+    {
+      "type": 0,
+      "value": "Phase Rankings"
+    }
+  ],
   "PttiTj": [
     {
       "type": 0,
       "value": "Edit Profile"
+    }
+  ],
+  "PuRP5k": [
+    {
+      "type": 0,
+      "value": "Live"
     }
   ],
   "Q0d0pT": [
@@ -2081,6 +2395,18 @@
       "value": "Check 'Shutdown source when not visible' and 'Refresh browser when scene becomes active'"
     }
   ],
+  "Qhfqx5": [
+    {
+      "type": 0,
+      "value": "Session not found"
+    }
+  ],
+  "QnWYrL": [
+    {
+      "type": 0,
+      "value": "Phase 3"
+    }
+  ],
   "Qo+oY5": [
     {
       "type": 0,
@@ -2117,12 +2443,6 @@
       "value": "Failed to resend verification email. Please try again."
     }
   ],
-  "RNhXT1": [
-    {
-      "type": 0,
-      "value": "Event Structure"
-    }
-  ],
   "RWchvs": [
     {
       "type": 0,
@@ -2147,6 +2467,12 @@
       "value": "No recent scores available"
     }
   ],
+  "S1Vv4x": [
+    {
+      "type": 0,
+      "value": "Time"
+    }
+  ],
   "S5AGlo": [
     {
       "type": 0,
@@ -2165,6 +2491,12 @@
       "value": "ITG Weight"
     }
   ],
+  "SNYJQP": [
+    {
+      "type": 0,
+      "value": "Reset"
+    }
+  ],
   "SSi3N2": [
     {
       "type": 0,
@@ -2181,12 +2513,6 @@
     {
       "type": 0,
       "value": "Login"
-    }
-  ],
-  "Sgtmaw": [
-    {
-      "type": 0,
-      "value": "Choose Your Leaderboards"
     }
   ],
   "SjGrX2": [
@@ -2233,6 +2559,12 @@
       "value": "height"
     }
   ],
+  "SyigeG": [
+    {
+      "type": 0,
+      "value": "Total Plays"
+    }
+  ],
   "T3ze71": [
     {
       "type": 0,
@@ -2269,6 +2601,12 @@
       "value": "Add"
     }
   ],
+  "Tdcwjh": [
+    {
+      "type": 0,
+      "value": "Your Placement"
+    }
+  ],
   "TeiEDu": [
     {
       "type": 0,
@@ -2289,6 +2627,12 @@
     {
       "type": 0,
       "value": "Use a security key for secure authentication"
+    }
+  ],
+  "TjZyeR": [
+    {
+      "type": 0,
+      "value": "Used on activity heatmaps and generated share images to represent your local time."
     }
   ],
   "TtSTfd": [
@@ -2315,12 +2659,6 @@
       "value": "Arrow Cloud is a modern platform designed for the ITG community. We provide score tracking, leaderboards, rivalries, and event hosting capabilities with a focus on stability, user experience, and competitive play."
     }
   ],
-  "UTD+LX": [
-    {
-      "type": 0,
-      "value": "Chart Scores"
-    }
-  ],
   "UcNrFr": [
     {
       "type": 0,
@@ -2331,6 +2669,12 @@
     {
       "type": 0,
       "value": "Please wait while we verify your email address..."
+    }
+  ],
+  "UgVhWr": [
+    {
+      "type": 0,
+      "value": "Blue Shift?"
     }
   ],
   "UhnD7Q": [
@@ -2363,6 +2707,12 @@
       "value": "No scores yet"
     }
   ],
+  "VPCWX3": [
+    {
+      "type": 0,
+      "value": "Duration"
+    }
+  ],
   "VWSTaJ": [
     {
       "type": 0,
@@ -2379,6 +2729,12 @@
     {
       "type": 0,
       "value": "Recent Scores"
+    }
+  ],
+  "VzU8H9": [
+    {
+      "type": 0,
+      "value": "Player"
     }
   ],
   "WBlsh8": [
@@ -2425,6 +2781,16 @@
       "value": "."
     }
   ],
+  "WYDkuD": [
+    {
+      "type": 1,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " charts"
+    }
+  ],
   "Wc2PQF": [
     {
       "type": 0,
@@ -2435,6 +2801,12 @@
     {
       "type": 0,
       "value": "Upload and manage your profile picture"
+    }
+  ],
+  "X0NEcW": [
+    {
+      "type": 0,
+      "value": "Ongoing"
     }
   ],
   "X1K1PE": [
@@ -2513,6 +2885,12 @@
       "value": "Ban User"
     }
   ],
+  "XnqSir": [
+    {
+      "type": 0,
+      "value": "View Results"
+    }
+  ],
   "XrZn/3": [
     {
       "type": 0,
@@ -2543,6 +2921,12 @@
       "value": "Country"
     }
   ],
+  "YORqn2": [
+    {
+      "type": 0,
+      "value": "Chart Scores"
+    }
+  ],
   "YOS6+m": [
     {
       "type": 0,
@@ -2571,6 +2955,12 @@
       "value": "error"
     }
   ],
+  "Yz+BKn": [
+    {
+      "type": 0,
+      "value": "Wed"
+    }
+  ],
   "Z7jjH4": [
     {
       "type": 0,
@@ -2590,6 +2980,12 @@
     {
       "type": 1,
       "value": "mmssTime"
+    }
+  ],
+  "ZG7hLb": [
+    {
+      "type": 0,
+      "value": "User"
     }
   ],
   "ZReS1Z": [
@@ -2640,26 +3036,24 @@
       "value": "Be the first to set a score on this chart!"
     }
   ],
+  "Ztv8Vl": [
+    {
+      "type": 0,
+      "value": "Drag and drop to reorder your trophies. The first "
+    },
+    {
+      "type": 1,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " trophies will be displayed on your profile."
+    }
+  ],
   "ZxiG3y": [
     {
       "type": 0,
       "value": "Never used"
-    }
-  ],
-  "Zz+mxb": [
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "EX:"
-        }
-      ],
-      "type": 8,
-      "value": "strong"
-    },
-    {
-      "type": 0,
-      "value": " Standard timing window for general competitive play."
     }
   ],
   "a4zEIi": [
@@ -2680,10 +3074,34 @@
       "value": "New Password"
     }
   ],
+  "aNmvzp": [
+    {
+      "type": 0,
+      "value": "Select up to "
+    },
+    {
+      "type": 1,
+      "value": "max"
+    },
+    {
+      "type": 0,
+      "value": " plays to highlight in your session share image"
+    }
+  ],
   "aS/YuY": [
     {
       "type": 0,
       "value": "Copied!"
+    }
+  ],
+  "aSDNdQ": [
+    {
+      "type": 1,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " trophies hidden from profile"
     }
   ],
   "acWNy9": [
@@ -2730,10 +3148,10 @@
       "value": "Search by player..."
     }
   ],
-  "aq13An": [
+  "apFDFw": [
     {
       "type": 0,
-      "value": "Steps Type"
+      "value": "Global Activity"
     }
   ],
   "arUn+B": [
@@ -2764,6 +3182,12 @@
     {
       "type": 0,
       "value": "Leaderboards"
+    }
+  ],
+  "beNMGy": [
+    {
+      "type": 0,
+      "value": "Images may take a few seconds to generate for the first time"
     }
   ],
   "bmQJci": [
@@ -2816,6 +3240,12 @@
     {
       "type": 0,
       "value": "Your Arrow Cloud profile should show a new submission shortly after."
+    }
+  ],
+  "cSQcQe": [
+    {
+      "type": 0,
+      "value": "ITG"
     }
   ],
   "cVRF/J": [
@@ -2925,6 +3355,12 @@
       "value": "How long to show each leaderboard before switching (10-120 seconds)"
     }
   ],
+  "djn/1t": [
+    {
+      "type": 0,
+      "value": "No recent sessions yet. Get playing!"
+    }
+  ],
   "dlu2Wl": [
     {
       "type": 0,
@@ -2941,6 +3377,12 @@
     {
       "type": 0,
       "value": "New API Key"
+    }
+  ],
+  "dt96tJ": [
+    {
+      "type": 0,
+      "value": "Rolls Hit"
     }
   ],
   "e39ysx": [
@@ -2971,16 +3413,22 @@
       "value": "or"
     }
   ],
-  "eBxpab": [
+  "eA3EeG": [
     {
       "type": 0,
-      "value": "Unknown Artist"
+      "value": "Blue Shift was Arrow Cloud's inaugural event which ran from December 2025 to February 2026. You can view the results below."
     }
   ],
   "eE6UfK": [
     {
       "type": 0,
       "value": "No inner Fantastic split"
+    }
+  ],
+  "eLMJOK": [
+    {
+      "type": 0,
+      "value": "Rivals' Scores"
     }
   ],
   "ePYk5e": [
@@ -3019,28 +3467,26 @@
       "value": "Use this URL in OBS as a Browser Source"
     }
   ],
+  "ecAIWs": [
+    {
+      "type": 0,
+      "value": "Phase "
+    },
+    {
+      "type": 1,
+      "value": "phaseNumber"
+    }
+  ],
   "eeAYHv": [
     {
       "type": 0,
       "value": "Failed to update profile. Please try again."
     }
   ],
-  "eezXdB": [
-    {
-      "type": 0,
-      "value": "You can compete in 10ms (HardEX), 15ms (EX), or ITG scoring systems."
-    }
-  ],
   "egg6+H": [
     {
       "type": 0,
       "value": "Score"
-    }
-  ],
-  "ejPmny": [
-    {
-      "type": 0,
-      "value": "Configure and preview your streaming widget"
     }
   ],
   "ejXDAu": [
@@ -3059,6 +3505,12 @@
     {
       "type": 0,
       "value": "Check Your Email!"
+    }
+  ],
+  "epvAVc": [
+    {
+      "type": 0,
+      "value": "Points"
     }
   ],
   "euAGju": [
@@ -3109,6 +3561,12 @@
       "value": "Failed to remove profile image"
     }
   ],
+  "fG8Uky": [
+    {
+      "type": 0,
+      "value": "Note: these are packs recently indexed by Arrow Cloud and does not reflect the release date of those packs necessarily."
+    }
+  ],
   "fhz3KS": [
     {
       "type": 0,
@@ -3145,6 +3603,26 @@
       "value": "No API keys created yet"
     }
   ],
+  "g8JAUX": [
+    {
+      "type": 0,
+      "value": "No users found matching \""
+    },
+    {
+      "type": 1,
+      "value": "search"
+    },
+    {
+      "type": 0,
+      "value": "\""
+    }
+  ],
+  "gE+yeP": [
+    {
+      "type": 0,
+      "value": "EX"
+    }
+  ],
   "gJs2Fl": [
     {
       "type": 0,
@@ -3157,36 +3635,28 @@
       "value": "Join Discord"
     }
   ],
+  "gVeY2y": [
+    {
+      "type": 0,
+      "value": "Unknown Artist"
+    }
+  ],
   "gW2PUA": [
     {
       "type": 0,
       "value": "GrooveStats introduced online leaderboards to the ITG community over 20 years ago and has been an extremely valuable tool throughout the game's history. This project aims to offer an alternative platform with a modernized, flexible, and open leaderboard design."
     }
   ],
+  "gXxTKr": [
+    {
+      "type": 0,
+      "value": "Share preview"
+    }
+  ],
   "gpHicE": [
     {
       "type": 0,
       "value": "View chart"
-    }
-  ],
-  "gpep2X": [
-    {
-      "type": 0,
-      "value": "Blue Shift uniquely accepts failed plays (plays that didn't complete the full chart) and assigns them an "
-    },
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "F grade"
-        }
-      ],
-      "type": 8,
-      "value": "semibold"
-    },
-    {
-      "type": 0,
-      "value": ". Your score will still represent the progress you made before failing, allowing you to compete even on attempts that didn't finish. This helps track improvement and gives credit for partial progress."
     }
   ],
   "guUuZ7": [
@@ -3199,6 +3669,12 @@
     {
       "type": 0,
       "value": "Copied"
+    }
+  ],
+  "gzpqYg": [
+    {
+      "type": 0,
+      "value": "Steps Hit"
     }
   ],
   "h1j+Ft": [
@@ -3247,16 +3723,16 @@
       "value": "error"
     }
   ],
+  "hZH12I": [
+    {
+      "type": 0,
+      "value": "Users"
+    }
+  ],
   "haBkmP": [
     {
       "type": 0,
       "value": "Filters"
-    }
-  ],
-  "hc2MNy": [
-    {
-      "type": 0,
-      "value": "Blue Shift Event"
     }
   ],
   "hdelcO": [
@@ -3295,38 +3771,64 @@
       "value": " ms"
     }
   ],
-  "hxETKG": [
-    {
-      "children": [
-        {
-          "type": 0,
-          "value": "H.EX (10ms):"
-        }
-      ],
-      "type": 8,
-      "value": "strong"
-    },
-    {
-      "type": 0,
-      "value": " For players using high-accuracy mods, focusing on precision timing."
-    }
-  ],
   "i+E6a3": [
     {
       "type": 0,
       "value": "Footer navigation"
     }
   ],
-  "i3ORY6": [
+  "i/TsED": [
     {
       "type": 0,
-      "value": "Earn Points"
+      "value": "Ready to start tracking your scores? Get set up now to connect your game and start competing on the leaderboards!"
+    }
+  ],
+  "i0NYF+": [
+    {
+      "type": 0,
+      "value": "EX"
+    }
+  ],
+  "i8w9+X": [
+    {
+      "type": 0,
+      "value": "Failed to load results: "
+    },
+    {
+      "type": 1,
+      "value": "error"
     }
   ],
   "iN/fQj": [
     {
       "type": 0,
       "value": "Arrow Cloud supports three parallel scoring interpretations. Raw judgments (the sequence of offsets and misses) are immutable; scoring systems only change how those raw events are weighted into a percentage and mapped to a grade."
+    }
+  ],
+  "iPg/Z+": [
+    {
+      "type": 0,
+      "value": "Showing "
+    },
+    {
+      "type": 1,
+      "value": "start"
+    },
+    {
+      "type": 0,
+      "value": "-"
+    },
+    {
+      "type": 1,
+      "value": "end"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "type": 1,
+      "value": "total"
     }
   ],
   "iQ5NMV": [
@@ -3412,6 +3914,12 @@
       "value": "Logout"
     }
   ],
+  "injFaU": [
+    {
+      "type": 0,
+      "value": "Live Session"
+    }
+  ],
   "ioJOJl": [
     {
       "type": 0,
@@ -3440,10 +3948,32 @@
       "value": "Leaderboard Toggle"
     }
   ],
+  "j6cl8r": [
+    {
+      "type": 0,
+      "value": "Ended "
+    },
+    {
+      "type": 1,
+      "value": "time"
+    }
+  ],
+  "j87Gi0": [
+    {
+      "type": 0,
+      "value": "Joined"
+    }
+  ],
   "jFD+sg": [
     {
       "type": 0,
       "value": "Profile updated successfully!"
+    }
+  ],
+  "jGmBu3": [
+    {
+      "type": 0,
+      "value": "No scores yet"
     }
   ],
   "jIZqAg": [
@@ -3458,6 +3988,12 @@
       "value": "Confirm New Password"
     }
   ],
+  "jna5bk": [
+    {
+      "type": 0,
+      "value": "View All"
+    }
+  ],
   "js1oVo": [
     {
       "type": 0,
@@ -3468,6 +4004,12 @@
     {
       "type": 0,
       "value": "We offer a full integration with ITGMania via our custom theme, or a light-weight alternative drop in Simply Love module."
+    }
+  ],
+  "k20lzD": [
+    {
+      "type": 0,
+      "value": "Final Results"
     }
   ],
   "kYDZI0": [
@@ -3517,6 +4059,12 @@
       "value": "Rating"
     }
   ],
+  "lWmuWi": [
+    {
+      "type": 0,
+      "value": "No recent scores available"
+    }
+  ],
   "lcVOiv": [
     {
       "type": 0,
@@ -3527,6 +4075,24 @@
     {
       "type": 0,
       "value": "Saving..."
+    }
+  ],
+  "lz1Jbz": [
+    {
+      "type": 1,
+      "value": "count"
+    },
+    {
+      "type": 0,
+      "value": " of "
+    },
+    {
+      "type": 1,
+      "value": "max"
+    },
+    {
+      "type": 0,
+      "value": " plays selected"
     }
   ],
   "lzqhT9": [
@@ -3559,10 +4125,22 @@
       "value": "At least 6 characters long"
     }
   ],
+  "mSiBrQ": [
+    {
+      "type": 0,
+      "value": "Fri"
+    }
+  ],
   "mVwWst": [
     {
       "type": 0,
       "value": "Set up a passkey for faster, more secure sign-ins"
+    }
+  ],
+  "mb1qgo": [
+    {
+      "type": 0,
+      "value": "Charts Played"
     }
   ],
   "meazlj": [
@@ -3577,10 +4155,18 @@
       "value": "Supported formats: JPEG, PNG, GIF, WebP"
     }
   ],
-  "mtGCKz": [
+  "ms2BeF": [
     {
       "type": 0,
-      "value": "Each phase will contain ~25 charts, spanning a variety of difficulties between 7 and 14. Expect each phase to challenge you in different ways as you compete on the leaderboards."
+      "value": "Welcome back, "
+    },
+    {
+      "type": 1,
+      "value": "name"
+    },
+    {
+      "type": 0,
+      "value": "!"
     }
   ],
   "mvXRqN": [
@@ -3589,40 +4175,16 @@
       "value": "Play some songs to get started!"
     }
   ],
-  "n46TSr": [
-    {
-      "type": 0,
-      "value": "3 Boards"
-    }
-  ],
   "n4o4oJ": [
     {
       "type": 0,
       "value": "Player"
     }
   ],
-  "nEmRDi": [
-    {
-      "type": 0,
-      "value": "Total Points"
-    }
-  ],
-  "nTaq/y": [
-    {
-      "type": 0,
-      "value": "Failed Plays Welcome"
-    }
-  ],
   "nWbnaE": [
     {
       "type": 0,
       "value": "No recent scores"
-    }
-  ],
-  "o2nv5R": [
-    {
-      "type": 0,
-      "value": "Leaderboard Dynamics"
     }
   ],
   "o7+BG1": [
@@ -3635,6 +4197,12 @@
     {
       "type": 0,
       "value": "Score"
+    }
+  ],
+  "oJibSl": [
+    {
+      "type": 0,
+      "value": "Sessions"
     }
   ],
   "oeCoFG": [
@@ -3691,22 +4259,28 @@
       "value": "Last Played"
     }
   ],
-  "pdMp3j": [
+  "pBUB3k": [
     {
       "type": 0,
-      "value": "Each chart is worth the same number of overall points - your leaderboard position on the easiest content matters just as much as it does on the hardest charts."
+      "value": "Score"
     }
   ],
-  "pdQ9u+": [
+  "pLlCUm": [
     {
       "type": 0,
-      "value": "Ready to join the competition? Get set up now to be sure you are ready for the event on December 5th!"
+      "value": "Arrange and display your earned trophies"
     }
   ],
   "pfIZz9": [
     {
       "type": 0,
       "value": "Score"
+    }
+  ],
+  "puPEAC": [
+    {
+      "type": 0,
+      "value": "Share"
     }
   ],
   "pveInw": [
@@ -3757,18 +4331,6 @@
       "value": "Cancel"
     }
   ],
-  "qh8IGh": [
-    {
-      "type": 0,
-      "value": "Rank"
-    }
-  ],
-  "qkpyHk": [
-    {
-      "type": 0,
-      "value": "Points System"
-    }
-  ],
   "qoCB1e": [
     {
       "type": 0,
@@ -3785,6 +4347,12 @@
     {
       "type": 0,
       "value": "Your password has been reset and you've been automatically signed in."
+    }
+  ],
+  "qz9XeG": [
+    {
+      "type": 0,
+      "value": "Cancel"
     }
   ],
   "r2gihF": [
@@ -3859,10 +4427,22 @@
       "value": "Ties on threshold resolved by system precision priority: HardEX > EX > ITG."
     }
   ],
+  "sKHFB+": [
+    {
+      "type": 0,
+      "value": "Unknown"
+    }
+  ],
   "sL/xaE": [
     {
       "type": 0,
       "value": "Pack not found"
+    }
+  ],
+  "sQcEY7": [
+    {
+      "type": 0,
+      "value": "Show Rivals Only"
     }
   ],
   "sU24/r": [
@@ -3901,6 +4481,12 @@
       "value": "Popularity"
     }
   ],
+  "t29u+f": [
+    {
+      "type": 0,
+      "value": "Share"
+    }
+  ],
   "tApE2N": [
     {
       "type": 0,
@@ -3915,6 +4501,12 @@
     {
       "type": 0,
       "value": "Checking login status…"
+    }
+  ],
+  "tR3UGU": [
+    {
+      "type": 0,
+      "value": "Plays"
     }
   ],
   "tmuyhy": [
@@ -3950,28 +4542,34 @@
       "value": "Enter new password"
     }
   ],
-  "uQSgr8": [
-    {
-      "type": 0,
-      "value": "Compete"
-    }
-  ],
   "uUa2U9": [
     {
       "type": 0,
       "value": "Please enter a name for your passkey"
     }
   ],
-  "uc7Ibp": [
+  "up/yoE": [
     {
       "type": 0,
-      "value": "Starts Dec. 5"
+      "value": "Rank"
     }
   ],
   "upYb9D": [
     {
       "type": 0,
       "value": "Max"
+    }
+  ],
+  "urteJe": [
+    {
+      "type": 0,
+      "value": "Primary"
+    }
+  ],
+  "uui9sw": [
+    {
+      "type": 0,
+      "value": "No packs available"
     }
   ],
   "v0nWNk": [
@@ -3984,6 +4582,18 @@
     {
       "type": 0,
       "value": "Unknown Artist"
+    }
+  ],
+  "vGgqg5": [
+    {
+      "type": 0,
+      "value": "Country"
+    }
+  ],
+  "vLwO8K": [
+    {
+      "type": 0,
+      "value": "Trophy Case"
     }
   ],
   "vQNNhl": [
@@ -4001,6 +4611,12 @@
     {
       "type": 0,
       "value": "Enter your alias"
+    }
+  ],
+  "vgg5G0": [
+    {
+      "type": 0,
+      "value": "ITG"
     }
   ],
   "vgnvnd": [
@@ -4021,10 +4637,10 @@
       "value": "Are you sure you want to delete this passkey? This action cannot be undone."
     }
   ],
-  "vwT2r7": [
+  "vqkjSf": [
     {
       "type": 0,
-      "value": "Unknown"
+      "value": "Activity"
     }
   ],
   "vzcP0o": [
@@ -4043,6 +4659,18 @@
     {
       "type": 0,
       "value": "Uploading..."
+    }
+  ],
+  "wGZZ+M": [
+    {
+      "type": 0,
+      "value": "Unlocked trophies will display here."
+    }
+  ],
+  "wIu1Zm": [
+    {
+      "type": 0,
+      "value": "Chart Not Passed"
     }
   ],
   "wK4IU8": [
@@ -4079,6 +4707,12 @@
       "value": "No leaderboard data available"
     }
   ],
+  "waqPQd": [
+    {
+      "type": 0,
+      "value": "Plays"
+    }
+  ],
   "wgc2MU": [
     {
       "type": 0,
@@ -4089,6 +4723,12 @@
     {
       "type": 0,
       "value": "Password"
+    }
+  ],
+  "wl0L1c": [
+    {
+      "type": 0,
+      "value": "View Blue Shift Results"
     }
   ],
   "wun7o3": [
@@ -4109,16 +4749,38 @@
       "value": "Search charts..."
     }
   ],
-  "wzpW2W": [
+  "x7nBF5": [
     {
       "type": 0,
-      "value": "Compete on three separate leaderboards designed to test different skill aspects:"
+      "value": "Score"
     }
   ],
   "x8tDS+": [
     {
       "type": 0,
       "value": "Select a country"
+    }
+  ],
+  "xGl07L": [
+    {
+      "type": 0,
+      "value": "Share Play"
+    }
+  ],
+  "xH7Yfe": [
+    {
+      "type": 0,
+      "value": "Saving..."
+    }
+  ],
+  "xJMUKT": [
+    {
+      "type": 0,
+      "value": "of "
+    },
+    {
+      "type": 1,
+      "value": "total"
     }
   ],
   "xJhO/K": [
@@ -4145,6 +4807,12 @@
       "value": "Date"
     }
   ],
+  "xjRuiz": [
+    {
+      "type": 0,
+      "value": "More"
+    }
+  ],
   "xl7GRC": [
     {
       "type": 0,
@@ -4157,10 +4825,16 @@
       "value": "No timing stats available."
     }
   ],
-  "y3KL2j": [
+  "y3vXzI": [
     {
       "type": 0,
-      "value": "Not participating"
+      "value": "No leaderboard data available"
+    }
+  ],
+  "y67Nsv": [
+    {
+      "type": 0,
+      "value": "Difficulty Distribution"
     }
   ],
   "y8RU5Y": [
@@ -4173,12 +4847,6 @@
     {
       "type": 0,
       "value": "Add New Passkey"
-    }
-  ],
-  "yBsO+y": [
-    {
-      "type": 0,
-      "value": "From selected leaderboard"
     }
   ],
   "yM3blP": [
@@ -4209,16 +4877,58 @@
       "value": " grade"
     }
   ],
-  "yqWLeE": [
+  "yhBoww": [
     {
       "type": 0,
-      "value": "Blue Shift"
+      "value": "Copied!"
+    }
+  ],
+  "ypbD+D": [
+    {
+      "type": 0,
+      "value": "Secondary"
     }
   ],
   "z+1C0a": [
     {
       "type": 0,
       "value": "Go to Home"
+    }
+  ],
+  "zA4z8x": [
+    {
+      "type": 0,
+      "value": "Failed to save trophy order"
+    }
+  ],
+  "zBg9VK": [
+    {
+      "type": 0,
+      "value": "Less"
+    }
+  ],
+  "zEaIY3": [
+    {
+      "type": 0,
+      "value": "Timezone"
+    }
+  ],
+  "zPreo/": [
+    {
+      "type": 0,
+      "value": "Grade"
+    }
+  ],
+  "zXp6Z2": [
+    {
+      "type": 0,
+      "value": "No data available"
+    }
+  ],
+  "zb/rKC": [
+    {
+      "type": 0,
+      "value": "Users"
     }
   ],
   "zhxMFg": [
