@@ -5,6 +5,7 @@ import { respond } from '../utils/responses';
 import { assetS3UrlToCloudFrontUrl, toCfVariantSet } from '../utils/s3';
 import { z } from 'zod';
 import { resolveChartBanner } from '../utils/chart-banner';
+import { MAX_METER_FOR_PERFECT_SCORES, MIN_STEPS_FOR_PERFECT_SCORES, EXCLUDED_PACK_IDS, extractStepsHit, isPerfectScore } from '../utils/stats-utils';
 
 // Session gap threshold (2 hours in milliseconds) - used to determine if session is ongoing
 const SESSION_GAP_MS = 2 * 60 * 60 * 1000;
@@ -96,6 +97,9 @@ interface SessionDetails {
   playCount: number;
   distinctCharts: number;
   stepsHit: number;
+  quads: number;
+  quints: number;
+  hexes: number;
   difficultyDistribution: Array<{ meter: number; count: number }>;
   topPacks: Array<{
     packId: number;
@@ -158,6 +162,46 @@ export async function getSession(event: ExtendedAPIGatewayProxyEvent, prisma: Pr
 
     // Calculate duration
     const durationMs = session.endedAt.getTime() - session.startedAt.getTime();
+
+    // Count quads/quints/hexes across all session plays
+    const allSessionPlaysForPerfects = await prisma.play.findMany({
+      where: {
+        userId: session.userId,
+        createdAt: { gte: session.startedAt, lte: session.endedAt },
+      },
+      select: {
+        chart: {
+          select: {
+            meter: true,
+            simfiles: { select: { simfile: { select: { packId: true } } } },
+          },
+        },
+        PlayLeaderboard: {
+          where: { leaderboardId: { in: [LEADERBOARD_ITG, LEADERBOARD_EX, LEADERBOARD_HARDEX] } },
+          select: { leaderboardId: true, data: true },
+        },
+      },
+    });
+
+    let quads = 0;
+    let quints = 0;
+    let hexes = 0;
+    for (const play of allSessionPlaysForPerfects) {
+      const itgData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === LEADERBOARD_ITG)?.data;
+      const playStepsHit = extractStepsHit(itgData);
+      const chartPackIds = play.chart?.simfiles?.map((sc) => sc.simfile.packId) ?? [];
+      const chartInPack = chartPackIds.length > 0;
+      const chartInExcludedPack = chartPackIds.some((id) => EXCLUDED_PACK_IDS.includes(id));
+      const meterOk = play.chart?.meter != null && play.chart.meter <= MAX_METER_FOR_PERFECT_SCORES;
+      const enoughSteps = playStepsHit >= MIN_STEPS_FOR_PERFECT_SCORES;
+      if (chartInPack && !chartInExcludedPack && meterOk && enoughSteps) {
+        if (isPerfectScore(itgData)) quads++;
+        const exData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === LEADERBOARD_EX)?.data;
+        if (isPerfectScore(exData)) quints++;
+        const hexData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === LEADERBOARD_HARDEX)?.data;
+        if (isPerfectScore(hexData)) hexes++;
+      }
+    }
 
     // Convert stored difficulty distribution from { [meter]: count } to array format
     const storedDistribution = (session.difficultyDistribution as Record<string, number>) || {};
@@ -488,6 +532,9 @@ export async function getSession(event: ExtendedAPIGatewayProxyEvent, prisma: Pr
       playCount: session.playCount,
       distinctCharts: session.distinctCharts,
       stepsHit: session.stepsHit,
+      quads,
+      quints,
+      hexes,
       difficultyDistribution,
       topPacks,
       plays: transformedPlays,

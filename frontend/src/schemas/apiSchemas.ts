@@ -885,6 +885,9 @@ export const userProfileSchema = z.object({
       chartsPlayed: z.number().optional(),
       stepsHit: z.number().optional(),
       heatMap: z.record(z.string(), z.number()).optional(),
+      quads: z.number().optional(),
+      quints: z.number().optional(),
+      hexes: z.number().optional(),
     })
     .optional()
     .nullable(),
@@ -1074,6 +1077,9 @@ export const sessionDetailsSchema = z.object({
   playCount: z.number(),
   distinctCharts: z.number(),
   stepsHit: z.number(),
+  quads: z.number().optional().default(0),
+  quints: z.number().optional().default(0),
+  hexes: z.number().optional().default(0),
   difficultyDistribution: z.array(
     z.object({
       meter: z.number(),

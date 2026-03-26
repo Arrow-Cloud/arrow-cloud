@@ -7,26 +7,16 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { EX_SCORING_SYSTEM, MONEY_SCORING_SYSTEM, HARD_EX_SCORING_SYSTEM, PlaySubmission } from '../utils/scoring';
 import { publishScoreDeletedEvent, EVENT_TYPES } from '../utils/events';
 import { resolveChartBanner } from '../utils/chart-banner';
-
-// ITG leaderboard ID
-const ITG_LEADERBOARD_ID = 3;
-
-/**
- * Extract steps hit (non-Miss judgments) from PlayLeaderboard data
- */
-function extractStepsHit(data: unknown): number {
-  if (!data || typeof data !== 'object') return 0;
-  const judgments = (data as { judgments?: Record<string, number> }).judgments;
-  if (!judgments || typeof judgments !== 'object') return 0;
-
-  let stepsHit = 0;
-  for (const [judgment, count] of Object.entries(judgments)) {
-    if (judgment !== 'Miss' && typeof count === 'number') {
-      stepsHit += count;
-    }
-  }
-  return stepsHit;
-}
+import {
+  ITG_LEADERBOARD_ID,
+  EX_LEADERBOARD_ID,
+  HARD_EX_LEADERBOARD_ID,
+  MAX_METER_FOR_PERFECT_SCORES,
+  MIN_STEPS_FOR_PERFECT_SCORES,
+  EXCLUDED_PACK_IDS,
+  extractStepsHit,
+  isPerfectScore,
+} from '../utils/stats-utils';
 
 const s3Client = new S3Client();
 
@@ -216,7 +206,7 @@ export async function deletePlay(event: AuthenticatedEvent, prisma: PrismaClient
     if (Number.isNaN(playId)) return respond(400, { error: 'Invalid playId' });
 
     // First, check if the play exists and verify ownership
-    // Also fetch data needed for the score-deleted event
+    // Also fetch data needed for the score-deleted event (all leaderboards for quad/quint/hex detection)
     const play = await prisma.play.findUnique({
       where: { id: playId, userId: event.user.id },
       select: {
@@ -230,11 +220,12 @@ export async function deletePlay(event: AuthenticatedEvent, prisma: PrismaClient
             songName: true,
             difficulty: true,
             meter: true,
+            simfileId: true,
+            simfiles: { select: { simfile: { select: { packId: true } } } },
           },
         },
         PlayLeaderboard: {
-          where: { leaderboardId: ITG_LEADERBOARD_ID },
-          select: { data: true },
+          select: { leaderboardId: true, data: true },
         },
       },
     });
@@ -247,7 +238,22 @@ export async function deletePlay(event: AuthenticatedEvent, prisma: PrismaClient
     const playTimestamp = play.createdAt.toISOString();
     const chartHash = play.chartHash;
     const meter = play.chart?.meter ?? null;
-    const stepsHit = extractStepsHit(play.PlayLeaderboard[0]?.data);
+    const itgData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+    const exData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === EX_LEADERBOARD_ID)?.data;
+    const hexData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === HARD_EX_LEADERBOARD_ID)?.data;
+    const stepsHit = extractStepsHit(itgData);
+
+    // Determine if this play was a quad/quint/hex
+    const chartPackIds = play.chart?.simfiles?.map((sc) => sc.simfile.packId) ?? [];
+    const chartInPack = chartPackIds.length > 0;
+    const chartInExcludedPack = chartPackIds.some((id) => EXCLUDED_PACK_IDS.includes(id));
+    const meterOk = meter != null && meter <= MAX_METER_FOR_PERFECT_SCORES;
+    const enoughSteps = stepsHit >= MIN_STEPS_FOR_PERFECT_SCORES;
+    const qualifiesForPerfectScores = chartInPack && !chartInExcludedPack && meterOk && enoughSteps;
+
+    const wasQuad = qualifiesForPerfectScores && isPerfectScore(itgData);
+    const wasQuint = qualifiesForPerfectScores && isPerfectScore(exData);
+    const wasHex = qualifiesForPerfectScores && isPerfectScore(hexData);
 
     // Delete the play and all related records using a transaction
     await prisma.$transaction(async (tx) => {
@@ -280,6 +286,9 @@ export async function deletePlay(event: AuthenticatedEvent, prisma: PrismaClient
         playTimestamp,
         stepsHit,
         meter,
+        wasQuad,
+        wasQuint,
+        wasHex,
       });
       console.log('Score deleted event published successfully');
     } catch (error) {

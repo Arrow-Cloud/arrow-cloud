@@ -111,10 +111,12 @@ interface SessionStatsProps {
 }
 
 const SessionStats: React.FC<SessionStatsProps> = ({ session }) => {
+  const hasPerfectScores = session.quads > 0 || session.quints > 0 || session.hexes > 0;
+
   return (
     <div className="card bg-base-100/60 backdrop-blur-sm shadow-lg">
       <div className="card-body py-4">
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="text-center p-4 bg-gradient-to-br from-primary/10 to-transparent rounded-lg">
             <div className="flex items-center justify-center gap-2 mb-1">
               <Play size={16} className="text-primary" />
@@ -150,7 +152,61 @@ const SessionStats: React.FC<SessionStatsProps> = ({ session }) => {
               <FormattedNumber value={session.stepsHit} />
             </span>
           </div>
+
+          <div className="text-center p-4 bg-gradient-to-br from-primary/10 to-transparent rounded-lg">
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <Timer size={16} className="text-primary" />
+              <span className="text-sm font-medium text-base-content/80">
+                <FormattedMessage defaultMessage="Duration" id="b+0PJw" description="Label for session duration in stats" />
+              </span>
+            </div>
+            <span className="text-3xl font-bold text-base-content tabular-nums">{formatDuration(session.durationMs)}</span>
+          </div>
         </div>
+
+        {hasPerfectScores && (
+          <div className="grid grid-cols-3 gap-4 mt-4 pt-4 border-t border-base-content/10">
+            {session.quads > 0 && (
+              <div className="text-center p-3 bg-gradient-to-br from-primary/10 to-transparent rounded-lg">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <GradeImage grade="quad" className="w-5 h-5" />
+                  <span className="text-sm font-medium text-base-content/80">
+                    <FormattedMessage defaultMessage="Quads" id="ef3a2E" description="Label for quad count in session" />
+                  </span>
+                </div>
+                <span className="text-2xl font-bold text-base-content tabular-nums">
+                  <FormattedNumber value={session.quads} />
+                </span>
+              </div>
+            )}
+            {session.quints > 0 && (
+              <div className="text-center p-3 bg-gradient-to-br from-secondary/10 to-transparent rounded-lg">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <GradeImage grade="quint" className="w-5 h-5" />
+                  <span className="text-sm font-medium text-base-content/80">
+                    <FormattedMessage defaultMessage="Quints" id="161pDN" description="Label for quint count in session" />
+                  </span>
+                </div>
+                <span className="text-2xl font-bold text-base-content tabular-nums">
+                  <FormattedNumber value={session.quints} />
+                </span>
+              </div>
+            )}
+            {session.hexes > 0 && (
+              <div className="text-center p-3 bg-gradient-to-br from-accent/10 to-transparent rounded-lg">
+                <div className="flex items-center justify-center gap-2 mb-1">
+                  <GradeImage grade="hex" className="w-5 h-5" />
+                  <span className="text-sm font-medium text-base-content/80">
+                    <FormattedMessage defaultMessage="Hexes" id="1IVbWS" description="Label for hex count in session" />
+                  </span>
+                </div>
+                <span className="text-2xl font-bold text-base-content tabular-nums">
+                  <FormattedNumber value={session.hexes} />
+                </span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

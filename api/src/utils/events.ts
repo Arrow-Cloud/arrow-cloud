@@ -70,6 +70,9 @@ export interface ScoreDeletedEvent {
   playTimestamp: string; // When the original play was created (needed to find the session)
   stepsHit: number; // Steps to subtract from user stats
   meter: number | null; // Chart difficulty for session adjustment
+  wasQuad?: boolean; // Whether the deleted play was a quad (100% ITG)
+  wasQuint?: boolean; // Whether the deleted play was a quint (100% EX)
+  wasHex?: boolean; // Whether the deleted play was a hex (100% H.EX)
 }
 
 /**
