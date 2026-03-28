@@ -162,8 +162,8 @@ const HelpPage: React.FC = () => {
   }, [selection]);
 
   // Download links (hard-coded per request) — use HTTPS to avoid mixed content blocking
-  const THEME_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Theme%2020260321.zip';
-  const MODULE_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Module%2020260320.2.zip';
+  const THEME_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Theme%2020260328.zip';
+  const MODULE_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Module%2020260328.zip';
   // ArrowCloud.ini is generated server-side with a new API key per request
   const ARROWCLOUD_INI_DOWNLOAD_URL = '/arrowcloud.ini';
 
