@@ -2,6 +2,16 @@ import type { SQSEvent, SQSHandler, SQSBatchResponse } from 'aws-lambda';
 import { PrismaClient } from '../prisma/generated/client';
 import { ScoreSubmissionEvent, ScoreDeletedEvent, EVENT_TYPES } from './utils/events';
 import { getDatabaseUrl } from './utils/secrets';
+import {
+  ITG_LEADERBOARD_ID,
+  EX_LEADERBOARD_ID,
+  HARD_EX_LEADERBOARD_ID,
+  MAX_METER_FOR_PERFECT_SCORES,
+  MIN_STEPS_FOR_PERFECT_SCORES,
+  EXCLUDED_PACK_IDS,
+  extractStepsHit,
+  isPerfectScore,
+} from './utils/stats-utils';
 
 let prisma: PrismaClient | undefined;
 
@@ -24,6 +34,9 @@ interface UserStats {
   chartsPlayed: number;
   stepsHit: number;
   heatMap: Record<string, number>; // { "YYYY-MM-DD": playCount }
+  quads: number;
+  quints: number;
+  hexes: number;
 }
 
 /**
@@ -48,28 +61,8 @@ function getDateStringInTimezone(date: Date = new Date(), timezone: string = 'UT
   }
 }
 
-// ITG leaderboard ID
-const ITG_LEADERBOARD_ID = 3;
-
 // Session gap threshold (2 hours in milliseconds)
 const SESSION_GAP_MS = 2 * 60 * 60 * 1000;
-
-/**
- * Extract steps hit (non-Miss judgments) from PlayLeaderboard data
- */
-function extractStepsHit(data: unknown): number {
-  if (!data || typeof data !== 'object') return 0;
-  const judgments = (data as { judgments?: Record<string, number> }).judgments;
-  if (!judgments || typeof judgments !== 'object') return 0;
-
-  let stepsHit = 0;
-  for (const [judgment, count] of Object.entries(judgments)) {
-    if (judgment !== 'Miss' && typeof count === 'number') {
-      stepsHit += count;
-    }
-  }
-  return stepsHit;
-}
 
 /**
  * Process a single score submission event and update user stats
@@ -81,8 +74,8 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
   console.log(`Processing stats update for user ${userId}, play ${playId}`);
 
   try {
-    // Query the database for total play count, unique charts, user's current stats, ITG leaderboard data, and chart info
-    const [totalPlays, uniqueCharts, user, playLeaderboard, chart] = await Promise.all([
+    // Query the database for total play count, unique charts, user's current stats, leaderboard data, and chart info
+    const [totalPlays, uniqueCharts, user, itgLeaderboard, exLeaderboard, hexLeaderboard, chart] = await Promise.all([
       prismaClient.play.count({
         where: { userId },
       }),
@@ -104,21 +97,43 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
         },
         select: { data: true },
       }),
+      prismaClient.playLeaderboard.findUnique({
+        where: {
+          playId_leaderboardId: {
+            playId,
+            leaderboardId: EX_LEADERBOARD_ID,
+          },
+        },
+        select: { data: true },
+      }),
+      prismaClient.playLeaderboard.findUnique({
+        where: {
+          playId_leaderboardId: {
+            playId,
+            leaderboardId: HARD_EX_LEADERBOARD_ID,
+          },
+        },
+        select: { data: true },
+      }),
       prismaClient.chart.findUnique({
         where: { hash: event.chartHash },
-        select: { meter: true },
+        select: {
+          meter: true,
+          simfileId: true,
+          simfiles: { select: { simfile: { select: { packId: true } } } },
+        },
       }),
     ]);
 
     const chartsPlayed = uniqueCharts.length;
 
-    // Get existing stats (additive behavior for stepsHit and heatMap)
-    const existingStats = (user?.stats as UserStats | null) || { totalPlays: 0, chartsPlayed: 0, stepsHit: 0, heatMap: {} };
+    // Get existing stats (additive behavior for stepsHit, heatMap, quads, quints, hexes)
+    const existingStats = (user?.stats as UserStats | null) || { totalPlays: 0, chartsPlayed: 0, stepsHit: 0, heatMap: {}, quads: 0, quints: 0, hexes: 0 };
     const existingStepsHit = existingStats.stepsHit || 0;
     const existingHeatMap = existingStats.heatMap || {};
 
     // Extract steps hit from this play's ITG leaderboard data
-    const newStepsHit = extractStepsHit(playLeaderboard?.data);
+    const newStepsHit = extractStepsHit(itgLeaderboard?.data);
 
     // Update heatMap for today (using user's preferred timezone, fallback to UTC)
     const userTimezone = user?.timezone || 'UTC';
@@ -126,12 +141,34 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
     const updatedHeatMap = { ...existingHeatMap };
     updatedHeatMap[today] = (updatedHeatMap[today] || 0) + 1;
 
-    // Update user stats with the current totals (stepsHit and heatMap are additive)
+    // Determine if this play qualifies as a quad/quint/hex
+    // Requirements: chart belongs to a non-excluded pack, meter <= 50, and at least 100 steps hit
+    const chartPackIds = chart?.simfiles?.map((sc) => sc.simfile.packId) ?? [];
+    const chartInPack = chartPackIds.length > 0;
+    const chartInExcludedPack = chartPackIds.some((id) => EXCLUDED_PACK_IDS.includes(id));
+    const meterOk = chart?.meter != null && chart.meter <= MAX_METER_FOR_PERFECT_SCORES;
+    const enoughSteps = newStepsHit >= MIN_STEPS_FOR_PERFECT_SCORES;
+    const qualifiesForPerfectScores = chartInPack && !chartInExcludedPack && meterOk && enoughSteps;
+
+    let quadIncrement = 0;
+    let quintIncrement = 0;
+    let hexIncrement = 0;
+
+    if (qualifiesForPerfectScores) {
+      if (isPerfectScore(itgLeaderboard?.data)) quadIncrement = 1;
+      if (isPerfectScore(exLeaderboard?.data)) quintIncrement = 1;
+      if (isPerfectScore(hexLeaderboard?.data)) hexIncrement = 1;
+    }
+
+    // Update user stats with the current totals (stepsHit, heatMap, quads/quints/hexes are additive)
     const updatedStats: UserStats = {
       totalPlays,
       chartsPlayed,
       stepsHit: existingStepsHit + newStepsHit,
       heatMap: updatedHeatMap,
+      quads: (existingStats.quads || 0) + quadIncrement,
+      quints: (existingStats.quints || 0) + quintIncrement,
+      hexes: (existingStats.hexes || 0) + hexIncrement,
     };
 
     // Update user stats
@@ -141,7 +178,7 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
     });
 
     console.log(
-      `Updated stats for user ${userId}: totalPlays=${updatedStats.totalPlays}, chartsPlayed=${updatedStats.chartsPlayed}, stepsHit=${updatedStats.stepsHit} (+${newStepsHit})`,
+      `Updated stats for user ${userId}: totalPlays=${updatedStats.totalPlays}, chartsPlayed=${updatedStats.chartsPlayed}, stepsHit=${updatedStats.stepsHit} (+${newStepsHit}), quads=${updatedStats.quads} (+${quadIncrement}), quints=${updatedStats.quints} (+${quintIncrement}), hexes=${updatedStats.hexes} (+${hexIncrement})`,
     );
 
     // Update user session
@@ -272,7 +309,7 @@ async function processScoreDeletion(event: ScoreDeletedEvent, prismaClient: Pris
     const userTimezone = user?.timezone || 'UTC';
 
     // Get existing stats and subtract the deleted play's contribution
-    const existingStats = (user?.stats as UserStats | null) || { totalPlays: 0, chartsPlayed: 0, stepsHit: 0, heatMap: {} };
+    const existingStats = (user?.stats as UserStats | null) || { totalPlays: 0, chartsPlayed: 0, stepsHit: 0, heatMap: {}, quads: 0, quints: 0, hexes: 0 };
     const existingStepsHit = existingStats.stepsHit || 0;
     const existingHeatMap = existingStats.heatMap || {};
 
@@ -289,12 +326,20 @@ async function processScoreDeletion(event: ScoreDeletedEvent, prismaClient: Pris
       }
     }
 
+    // Subtract quad/quint/hex counts from the deleted play
+    const wasQuad = event.wasQuad ?? false;
+    const wasQuint = event.wasQuint ?? false;
+    const wasHex = event.wasHex ?? false;
+
     // Update user stats
     const updatedStats: UserStats = {
       totalPlays,
       chartsPlayed,
       stepsHit: newStepsHit,
       heatMap: updatedHeatMap,
+      quads: Math.max(0, (existingStats.quads || 0) - (wasQuad ? 1 : 0)),
+      quints: Math.max(0, (existingStats.quints || 0) - (wasQuint ? 1 : 0)),
+      hexes: Math.max(0, (existingStats.hexes || 0) - (wasHex ? 1 : 0)),
     };
 
     await prismaClient.user.update({
@@ -303,7 +348,7 @@ async function processScoreDeletion(event: ScoreDeletedEvent, prismaClient: Pris
     });
 
     console.log(
-      `Updated stats for user ${userId}: totalPlays=${updatedStats.totalPlays}, chartsPlayed=${updatedStats.chartsPlayed}, stepsHit=${updatedStats.stepsHit} (-${deletedStepsHit})`,
+      `Updated stats for user ${userId}: totalPlays=${updatedStats.totalPlays}, chartsPlayed=${updatedStats.chartsPlayed}, stepsHit=${updatedStats.stepsHit} (-${deletedStepsHit}), quads=${updatedStats.quads}, quints=${updatedStats.quints}, hexes=${updatedStats.hexes}`,
     );
 
     // Find and recalculate the affected session

@@ -1,9 +1,16 @@
 import { Prisma, PrismaClient } from '../api/prisma/generated/client';
+import {
+  ITG_LEADERBOARD_ID,
+  EX_LEADERBOARD_ID,
+  HARD_EX_LEADERBOARD_ID,
+  MAX_METER_FOR_PERFECT_SCORES,
+  MIN_STEPS_FOR_PERFECT_SCORES,
+  EXCLUDED_PACK_IDS,
+  extractStepsHit,
+  isPerfectScore,
+} from '../api/src/utils/stats-utils';
 
 const prisma = new PrismaClient();
-
-// ITG leaderboard ID
-const ITG_LEADERBOARD_ID = 3;
 
 // Batch size for paginating through plays
 const PLAY_BATCH_SIZE = 1000;
@@ -14,31 +21,6 @@ const SESSION_GAP_MS = 2 * 60 * 60 * 1000;
 // Minimum session requirements
 const MIN_PLAYS_PER_SESSION = 2;
 const MIN_SESSION_DURATION_MS = 3 * 60 * 1000; // 3 minutes
-
-interface Judgments {
-  [key: string]: number;
-}
-
-interface PlayLeaderboardData {
-  judgments?: Judgments;
-}
-
-/**
- * Extract steps hit (non-Miss judgments) from PlayLeaderboard data
- */
-function extractStepsHit(data: unknown): number {
-  if (!data || typeof data !== 'object') return 0;
-  const judgments = (data as PlayLeaderboardData).judgments;
-  if (!judgments || typeof judgments !== 'object') return 0;
-
-  let stepsHit = 0;
-  for (const [judgment, count] of Object.entries(judgments)) {
-    if (judgment !== 'Miss' && typeof count === 'number') {
-      stepsHit += count;
-    }
-  }
-  return stepsHit;
-}
 
 async function backfillUserStats(targetUserId?: string): Promise<void> {
   if (targetUserId) {
@@ -82,36 +64,63 @@ async function backfillUserStats(targetUserId?: string): Promise<void> {
 
     // Page through ITG leaderboard entries for this user's plays (for stepsHit)
     let stepsHit = 0;
+    let quads = 0;
+    let quints = 0;
+    let hexes = 0;
     let cursor: number | undefined;
     let batchCount = 0;
 
     while (true) {
-      const playLeaderboards = await prisma.playLeaderboard.findMany({
+      // Fetch plays with all leaderboard data and chart info for perfect score detection
+      const plays = await prisma.play.findMany({
         where: {
-          leaderboardId: ITG_LEADERBOARD_ID,
-          play: {
-            userId: user_id,
-          },
+          userId: user_id,
         },
         select: {
-          playId: true,
-          data: true,
+          id: true,
+          chart: {
+            select: {
+              meter: true,
+              simfileId: true,
+              simfiles: { select: { simfile: { select: { packId: true } } } },
+            },
+          },
+          PlayLeaderboard: {
+            select: { leaderboardId: true, data: true },
+          },
         },
-        orderBy: { playId: 'asc' },
+        orderBy: { id: 'asc' },
         take: PLAY_BATCH_SIZE,
-        ...(cursor ? { skip: 1, cursor: { playId_leaderboardId: { playId: cursor, leaderboardId: ITG_LEADERBOARD_ID } } } : {}),
+        ...(cursor ? { skip: 1, cursor: { id: cursor } } : {}),
       });
 
-      if (playLeaderboards.length === 0) break;
+      if (plays.length === 0) break;
 
       batchCount++;
-      for (const pl of playLeaderboards) {
-        stepsHit += extractStepsHit(pl.data);
+      for (const play of plays) {
+        const itgData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+        const playStepsHit = extractStepsHit(itgData);
+        stepsHit += playStepsHit;
+
+        // Check if this play qualifies as a quad/quint/hex
+        const chartPackIds = play.chart?.simfiles?.map((sc) => sc.simfile.packId) ?? [];
+        const chartInPack = chartPackIds.length > 0;
+        const chartInExcludedPack = chartPackIds.some((id) => EXCLUDED_PACK_IDS.includes(id));
+        const meterOk = play.chart?.meter != null && play.chart.meter <= MAX_METER_FOR_PERFECT_SCORES;
+        const enoughSteps = playStepsHit >= MIN_STEPS_FOR_PERFECT_SCORES;
+
+        if (chartInPack && !chartInExcludedPack && meterOk && enoughSteps) {
+          if (isPerfectScore(itgData)) quads++;
+          const exData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === EX_LEADERBOARD_ID)?.data;
+          if (isPerfectScore(exData)) quints++;
+          const hexData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === HARD_EX_LEADERBOARD_ID)?.data;
+          if (isPerfectScore(hexData)) hexes++;
+        }
       }
 
-      cursor = playLeaderboards[playLeaderboards.length - 1].playId;
+      cursor = plays[plays.length - 1].id;
 
-      if (playLeaderboards.length < PLAY_BATCH_SIZE) break;
+      if (plays.length < PLAY_BATCH_SIZE) break;
     }
 
     // Calculate heatMap from play dates (in user's timezone)
@@ -138,11 +147,14 @@ async function backfillUserStats(targetUserId?: string): Promise<void> {
           chartsPlayed,
           stepsHit,
           heatMap,
+          quads,
+          quints,
+          hexes,
         } as any,
       },
     });
     console.log(
-      `Updated user ${user_id}: totalPlays=${totalPlays}, chartsPlayed=${chartsPlayed}, stepsHit=${stepsHit}, heatMapDays=${Object.keys(heatMap).length}, timezone=${userTimezone} (${batchCount} batches)`,
+      `Updated user ${user_id}: totalPlays=${totalPlays}, chartsPlayed=${chartsPlayed}, stepsHit=${stepsHit}, quads=${quads}, quints=${quints}, hexes=${hexes}, heatMapDays=${Object.keys(heatMap).length}, timezone=${userTimezone} (${batchCount} batches)`,
     );
   }
 

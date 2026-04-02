@@ -6,6 +6,7 @@ import { AuthenticatedEvent, ExtendedAPIGatewayProxyEvent } from '../utils/types
 import { internalServerErrorResponse, respond } from '../utils/responses';
 import { assetS3UrlToCloudFrontUrl } from '../utils/s3';
 import { getUserPreferredLeaderboardIds, setUserPreferredLeaderboards, UpdatePreferredLeaderboardsSchema } from '../services/userPreferredLeaderboards';
+import { DEFAULT_LEADERBOARDS } from '../utils/leaderboard';
 import { getUserTrophies, updateTrophyDisplayOrder } from '../services/trophies';
 import { publishDiscordMessage } from '../utils/discordNotify';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
@@ -306,7 +307,11 @@ const getRecentPlaysForUser = async (userId: string, prisma: PrismaClient, prefe
                 },
               },
             },
-            where: opts.leaderboard ? { leaderboardId: filterLeaderboardId ?? -1 } : usePrefFilter ? { leaderboardId: { in: preferredIds! } } : undefined,
+            where: opts.leaderboard
+              ? { leaderboardId: filterLeaderboardId ?? -1 }
+              : usePrefFilter
+                ? { leaderboardId: { in: [...new Set([...DEFAULT_LEADERBOARDS, ...preferredIds!])] } }
+                : undefined,
           },
           chart: {
             select: {
@@ -373,7 +378,11 @@ const getRecentPlaysForUser = async (userId: string, prisma: PrismaClient, prefe
               },
             },
           },
-          where: opts.leaderboard ? { leaderboardId: filterLeaderboardId ?? -1 } : usePrefFilter ? { leaderboardId: { in: preferredIds! } } : undefined,
+          where: opts.leaderboard
+            ? { leaderboardId: filterLeaderboardId ?? -1 }
+            : usePrefFilter
+              ? { leaderboardId: { in: [...new Set([...DEFAULT_LEADERBOARDS, ...preferredIds!])] } }
+              : undefined,
         },
         chart: {
           select: {

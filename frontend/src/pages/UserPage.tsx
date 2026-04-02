@@ -167,6 +167,45 @@ const UserMetadataCard: React.FC<UserMetadataCardProps> = ({
                   <span className="text-2xl font-bold text-base-content tabular-nums">{user.stats.stepsHit.toLocaleString()}</span>
                 </div>
               )}
+              {user.stats.quads !== undefined && user.stats.quads > 0 && (
+                <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary">
+                  <span className="text-sm font-medium text-base-content/80 flex items-center gap-2">
+                    <GradeImage grade="quad" className="w-5 h-5" />
+                    <FormattedMessage
+                      defaultMessage="Quads"
+                      id="Bg/ALb"
+                      description="label for the user profile field displaying their number of quad star scores (100% ITG)"
+                    />
+                  </span>
+                  <span className="text-2xl font-bold text-base-content tabular-nums">{user.stats.quads.toLocaleString()}</span>
+                </div>
+              )}
+              {user.stats.quints !== undefined && user.stats.quints > 0 && (
+                <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary">
+                  <span className="text-sm font-medium text-base-content/80 flex items-center gap-2">
+                    <GradeImage grade="quint" className="w-5 h-5" />
+                    <FormattedMessage
+                      defaultMessage="Quints"
+                      id="40dwCc"
+                      description="label for the user profile field displaying their number of quint star scores (100% EX)"
+                    />
+                  </span>
+                  <span className="text-2xl font-bold text-base-content tabular-nums">{user.stats.quints.toLocaleString()}</span>
+                </div>
+              )}
+              {user.stats.hexes !== undefined && user.stats.hexes > 0 && (
+                <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary">
+                  <span className="text-sm font-medium text-base-content/80 flex items-center gap-2">
+                    <GradeImage grade="hex" className="w-5 h-5" />
+                    <FormattedMessage
+                      defaultMessage="Hexes"
+                      id="HQoABI"
+                      description="label for the user profile field displaying their number of hex star scores (100% H.EX)"
+                    />
+                  </span>
+                  <span className="text-2xl font-bold text-base-content tabular-nums">{user.stats.hexes.toLocaleString()}</span>
+                </div>
+              )}
             </div>
           </div>
         )}

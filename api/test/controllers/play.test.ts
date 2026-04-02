@@ -293,6 +293,7 @@ describe('Play Controller - deletePlay', () => {
         songName: 'Test Song',
         difficulty: 'Expert',
         meter: 12,
+        simfileId: null,
       },
       PlayLeaderboard: [],
     });
