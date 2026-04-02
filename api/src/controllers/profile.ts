@@ -6,7 +6,6 @@ import { AuthenticatedEvent, ExtendedAPIGatewayProxyEvent } from '../utils/types
 import { internalServerErrorResponse, respond } from '../utils/responses';
 import { assetS3UrlToCloudFrontUrl } from '../utils/s3';
 import { getUserPreferredLeaderboardIds, setUserPreferredLeaderboards, UpdatePreferredLeaderboardsSchema } from '../services/userPreferredLeaderboards';
-import { DEFAULT_LEADERBOARDS } from '../utils/leaderboard';
 import { getUserTrophies, updateTrophyDisplayOrder } from '../services/trophies';
 import { publishDiscordMessage } from '../utils/discordNotify';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
@@ -125,9 +124,7 @@ type RecentPlaysOptions = {
   orderDirection: 'asc' | 'desc';
 };
 
-const getRecentPlaysForUser = async (userId: string, prisma: PrismaClient, preferredIds: number[] | null, opts: RecentPlaysOptions) => {
-  const usePrefFilter = preferredIds && preferredIds.length > 0;
-
+const getRecentPlaysForUser = async (userId: string, prisma: PrismaClient, opts: RecentPlaysOptions) => {
   // Build where clause for plays
   const where: any = {
     userId,
@@ -307,11 +304,7 @@ const getRecentPlaysForUser = async (userId: string, prisma: PrismaClient, prefe
                 },
               },
             },
-            where: opts.leaderboard
-              ? { leaderboardId: filterLeaderboardId ?? -1 }
-              : usePrefFilter
-                ? { leaderboardId: { in: [...new Set([...DEFAULT_LEADERBOARDS, ...preferredIds!])] } }
-                : undefined,
+            where: opts.leaderboard ? { leaderboardId: filterLeaderboardId ?? -1 } : undefined,
           },
           chart: {
             select: {
@@ -378,11 +371,7 @@ const getRecentPlaysForUser = async (userId: string, prisma: PrismaClient, prefe
               },
             },
           },
-          where: opts.leaderboard
-            ? { leaderboardId: filterLeaderboardId ?? -1 }
-            : usePrefFilter
-              ? { leaderboardId: { in: [...new Set([...DEFAULT_LEADERBOARDS, ...preferredIds!])] } }
-              : undefined,
+          where: opts.leaderboard ? { leaderboardId: filterLeaderboardId ?? -1 } : undefined,
         },
         chart: {
           select: {
@@ -505,7 +494,7 @@ export const getUserById = async (event: ExtendedAPIGatewayProxyEvent, prisma: P
     ]);
 
     const [{ plays: recentPlays, totalCount }, blueShiftData, trophies] = await Promise.all([
-      getRecentPlaysForUser(userId, prisma, preferredIds.length ? preferredIds : null, {
+      getRecentPlaysForUser(userId, prisma, {
         page,
         limit,
         search,
