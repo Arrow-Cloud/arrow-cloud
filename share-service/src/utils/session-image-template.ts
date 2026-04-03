@@ -500,8 +500,14 @@ export function generateSessionImageHTML(session: SessionData): string {
     
     .header-stat {
       display: flex;
-      align-items: baseline;
+      align-items: center;
       gap: 4px;
+    }
+    
+    .grade-icon {
+      width: 16px;
+      height: 16px;
+      object-fit: contain;
     }
     
     .header-stat-value {
@@ -833,7 +839,31 @@ export function generateSessionImageHTML(session: SessionData): string {
         <div class="header-stat">
           <span class="header-stat-value">${session.stats.stepsHit.toLocaleString()}</span>
           <span class="header-stat-label">steps</span>
-        </div>
+        </div>${
+          session.stats.quads > 0
+            ? `
+        <div class="header-stat">
+          <img src="${getGradeImage('quad')}" class="grade-icon" />
+          <span class="header-stat-value">${session.stats.quads}</span>
+        </div>`
+            : ''
+        }${
+          session.stats.quints > 0
+            ? `
+        <div class="header-stat">
+          <img src="${getGradeImage('quint')}" class="grade-icon" />
+          <span class="header-stat-value">${session.stats.quints}</span>
+        </div>`
+            : ''
+        }${
+          session.stats.hexes > 0
+            ? `
+        <div class="header-stat">
+          <img src="${getGradeImage('hex')}" class="grade-icon" />
+          <span class="header-stat-value">${session.stats.hexes}</span>
+        </div>`
+            : ''
+        }
       </div>
     </div>
     <div class="duration-badge">${formatDuration(session.durationMs)}</div>

@@ -2,6 +2,7 @@ import { assetS3UrlToCloudFrontUrl } from '../utils/assets';
 import { getPrisma } from '../prisma';
 import { loadTimingDataFromS3 } from '../utils/s3';
 import { S3Client } from '@aws-sdk/client-s3';
+import { ITG_LEADERBOARD_ID, EX_LEADERBOARD_ID, HARD_EX_LEADERBOARD_ID, countPerfectScores } from '@api/utils/stats-utils';
 
 const s3Client = new S3Client({});
 
@@ -52,6 +53,9 @@ export interface SessionData {
     playCount: number;
     distinctCharts: number;
     stepsHit: number;
+    quads: number;
+    quints: number;
+    hexes: number;
   };
   difficultyDistribution: Array<{ meter: number; count: number }>;
   topPacks: TopPack[];
@@ -59,16 +63,11 @@ export interface SessionData {
   scoringSystem: string;
 }
 
-// Leaderboard IDs
-const LEADERBOARD_EX = 2;
-const LEADERBOARD_ITG = 3;
-const LEADERBOARD_HARDEX = 4;
-
 function getLeaderboardId(system: string): number {
   const sys = system.toUpperCase();
-  if (sys === 'H.EX' || sys === 'HARDEX') return LEADERBOARD_HARDEX;
-  if (sys === 'ITG' || sys === 'MONEY') return LEADERBOARD_ITG;
-  return LEADERBOARD_EX;
+  if (sys === 'H.EX' || sys === 'HARDEX') return HARD_EX_LEADERBOARD_ID;
+  if (sys === 'ITG' || sys === 'MONEY') return ITG_LEADERBOARD_ID;
+  return EX_LEADERBOARD_ID;
 }
 
 export async function fetchSessionData(sessionId: number, playIds: number[], system: string = 'EX'): Promise<SessionData | null> {
@@ -100,6 +99,28 @@ export async function fetchSessionData(sessionId: number, playIds: number[], sys
   if (!session) {
     return null;
   }
+
+  // Count quads/quints/hexes across all session plays
+  const allSessionPlays = await prisma.play.findMany({
+    where: {
+      userId: session.userId,
+      createdAt: { gte: session.startedAt, lte: session.endedAt },
+    },
+    select: {
+      chart: {
+        select: {
+          meter: true,
+          simfiles: { select: { simfile: { select: { packId: true } } } },
+        },
+      },
+      PlayLeaderboard: {
+        where: { leaderboardId: { in: [ITG_LEADERBOARD_ID, EX_LEADERBOARD_ID, HARD_EX_LEADERBOARD_ID] } },
+        select: { leaderboardId: true, data: true },
+      },
+    },
+  });
+
+  const { quads, quints, hexes } = countPerfectScores(allSessionPlays);
 
   // Convert stored difficulty distribution from { [meter]: count } to array format
   const storedDistribution = (session.difficultyDistribution as Record<string, number>) || {};
@@ -332,6 +353,9 @@ export async function fetchSessionData(sessionId: number, playIds: number[], sys
       playCount: session.playCount,
       distinctCharts: session.distinctCharts,
       stepsHit: session.stepsHit,
+      quads,
+      quints,
+      hexes,
     },
     difficultyDistribution,
     topPacks,

@@ -6,11 +6,9 @@ import {
   ITG_LEADERBOARD_ID,
   EX_LEADERBOARD_ID,
   HARD_EX_LEADERBOARD_ID,
-  MAX_METER_FOR_PERFECT_SCORES,
-  MIN_STEPS_FOR_PERFECT_SCORES,
-  EXCLUDED_PACK_IDS,
   extractStepsHit,
   isPerfectScore,
+  isPlayEligibleForPerfectScores,
 } from './utils/stats-utils';
 
 let prisma: PrismaClient | undefined;
@@ -142,13 +140,8 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
     updatedHeatMap[today] = (updatedHeatMap[today] || 0) + 1;
 
     // Determine if this play qualifies as a quad/quint/hex
-    // Requirements: chart belongs to a non-excluded pack, meter <= 50, and at least 100 steps hit
     const chartPackIds = chart?.simfiles?.map((sc) => sc.simfile.packId) ?? [];
-    const chartInPack = chartPackIds.length > 0;
-    const chartInExcludedPack = chartPackIds.some((id) => EXCLUDED_PACK_IDS.includes(id));
-    const meterOk = chart?.meter != null && chart.meter <= MAX_METER_FOR_PERFECT_SCORES;
-    const enoughSteps = newStepsHit >= MIN_STEPS_FOR_PERFECT_SCORES;
-    const qualifiesForPerfectScores = chartInPack && !chartInExcludedPack && meterOk && enoughSteps;
+    const qualifiesForPerfectScores = isPlayEligibleForPerfectScores(chartPackIds, chart?.meter, newStepsHit);
 
     let quadIncrement = 0;
     let quintIncrement = 0;

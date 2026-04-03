@@ -1,14 +1,5 @@
 import { Prisma, PrismaClient } from '../api/prisma/generated/client';
-import {
-  ITG_LEADERBOARD_ID,
-  EX_LEADERBOARD_ID,
-  HARD_EX_LEADERBOARD_ID,
-  MAX_METER_FOR_PERFECT_SCORES,
-  MIN_STEPS_FOR_PERFECT_SCORES,
-  EXCLUDED_PACK_IDS,
-  extractStepsHit,
-  isPerfectScore,
-} from '../api/src/utils/stats-utils';
+import { ITG_LEADERBOARD_ID, extractStepsHit, countPerfectScores } from '../api/src/utils/stats-utils';
 
 const prisma = new PrismaClient();
 
@@ -99,24 +90,13 @@ async function backfillUserStats(targetUserId?: string): Promise<void> {
       batchCount++;
       for (const play of plays) {
         const itgData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
-        const playStepsHit = extractStepsHit(itgData);
-        stepsHit += playStepsHit;
-
-        // Check if this play qualifies as a quad/quint/hex
-        const chartPackIds = play.chart?.simfiles?.map((sc) => sc.simfile.packId) ?? [];
-        const chartInPack = chartPackIds.length > 0;
-        const chartInExcludedPack = chartPackIds.some((id) => EXCLUDED_PACK_IDS.includes(id));
-        const meterOk = play.chart?.meter != null && play.chart.meter <= MAX_METER_FOR_PERFECT_SCORES;
-        const enoughSteps = playStepsHit >= MIN_STEPS_FOR_PERFECT_SCORES;
-
-        if (chartInPack && !chartInExcludedPack && meterOk && enoughSteps) {
-          if (isPerfectScore(itgData)) quads++;
-          const exData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === EX_LEADERBOARD_ID)?.data;
-          if (isPerfectScore(exData)) quints++;
-          const hexData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === HARD_EX_LEADERBOARD_ID)?.data;
-          if (isPerfectScore(hexData)) hexes++;
-        }
+        stepsHit += extractStepsHit(itgData);
       }
+
+      const batch = countPerfectScores(plays);
+      quads += batch.quads;
+      quints += batch.quints;
+      hexes += batch.hexes;
 
       cursor = plays[plays.length - 1].id;
 
