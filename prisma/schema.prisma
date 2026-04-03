@@ -52,6 +52,8 @@ model User {
   permissions                  UserPermission[]
   // Session tracking
   sessions                     UserSession[]
+  // Notifications
+  notifications                Notification[]
 }
 
 model Passkey {
@@ -421,4 +423,23 @@ model UserSession {
   @@index([userId])
   @@index([userId, startedAt]) // For querying user's sessions chronologically
   @@index([startedAt])         // For global session queries/feeds
+}
+
+// ----- Notification models -----
+
+model Notification {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String    // e.g., "rival_added", "trophy_earned"
+  title     String
+  body      String?
+  data      Json?     // Flexible payload for deep-linking (e.g., { "playId": 123, "chartHash": "abc" })
+  channel   String    @default("in_app") // Delivery channel: in_app, email, push (future)
+  readAt    DateTime? // null = unread; set on read from any channel
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@index([userId, readAt])    // Fast unread count: WHERE userId = ? AND readAt IS NULL
+  @@index([userId, createdAt]) // Paginated notification feed
 }

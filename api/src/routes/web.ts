@@ -32,6 +32,7 @@ import { getPlay as getPlayController, deletePlay as deletePlayController } from
 import { getSession, getRecentSessions, getUserSessions } from '../controllers/session';
 import { getWidgetData } from '../controllers/widget';
 import { getGlobalRecentScores } from '../controllers/global-scores';
+import { listNotifications, markRead, markAllRead } from '../controllers/notifications';
 
 export const webRoutes: Routes = {
   '/login': {
@@ -379,6 +380,27 @@ export const webRoutes: Routes = {
     GET: {
       handler: getGlobalRecentScores,
       optionalAuth: true,
+    },
+  },
+  '/notifications': {
+    GET: {
+      handler: listNotifications,
+      requiresAuth: true,
+    },
+  },
+  '/notifications/read-all': {
+    PUT: {
+      handler: markAllRead,
+      requiresAuth: true,
+    },
+  },
+  '/notifications/{notificationId}/read': {
+    PUT: {
+      handler: markRead,
+      requiresAuth: true,
+      patternMatching: {
+        notificationId: /\d+/,
+      },
     },
   },
 };

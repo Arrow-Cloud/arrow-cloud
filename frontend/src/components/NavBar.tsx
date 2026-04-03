@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ThemeController from './ThemeController';
 import { useAuth } from '../contexts/AuthContext';
 import { LocaleController } from './LocaleController';
+import NotificationBell from './NotificationBell';
 
 interface BrowseMenuItemProps {
   children: React.ReactNode;
@@ -76,6 +77,9 @@ const NavBar: React.FC = () => {
   const canUploadPacks = hasPermission('packs.upload');
   const canBanUsers = hasPermission('users.ban');
   const hasAnyAdmin = hasAny([canUploadPacks ? 'packs.upload' : '', canBanUsers ? 'users.ban' : ''].filter(Boolean));
+
+  // Feature flags
+  const canSeeNotifications = hasPermission('notifications.preview');
 
   const handleLogout = () => {
     logout();
@@ -169,6 +173,9 @@ const NavBar: React.FC = () => {
             </DropDownIconMenuItem>
           )}
 
+          {/* Notification Bell (desktop) */}
+          {user && canSeeNotifications && <NotificationBell />}
+
           <ul className="menu menu-horizontal px-1 py-0">
             <DropDownIconMenuItem icon={<User className="w-5 h-5" />} dropdownWidth="w-40" dropdownType="menu">
               {user ? (
@@ -241,7 +248,9 @@ const NavBar: React.FC = () => {
         </div>
 
         {/* Mobile Navigation */}
-        <div className="flex-none lg:hidden">
+        <div className="flex-none lg:hidden flex items-center">
+          {/* Notification Bell (mobile - always visible outside drawer) */}
+          {user && canSeeNotifications && <NotificationBell />}
           <button className="btn btn-ghost btn-circle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
