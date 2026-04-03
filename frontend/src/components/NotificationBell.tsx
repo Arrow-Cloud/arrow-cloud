@@ -90,7 +90,7 @@ const NotificationBell: React.FC = () => {
 
           {/* Notification list */}
           <div className="overflow-y-auto flex-1">
-            {isLoading && !hasLoaded ? (
+            {!hasLoaded ? (
               <div className="flex justify-center py-6">
                 <span className="loading loading-spinner loading-sm" />
               </div>

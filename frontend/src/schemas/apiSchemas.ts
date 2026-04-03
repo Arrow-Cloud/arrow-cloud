@@ -1199,7 +1199,7 @@ export const notificationSchema = z.object({
   type: z.string(),
   title: z.string(),
   body: z.string().nullable().optional(),
-  data: z.record(z.unknown()).nullable().optional(),
+  data: z.unknown().nullable().optional(),
   readAt: z.string().nullable().optional(),
   createdAt: z.string(),
 });
