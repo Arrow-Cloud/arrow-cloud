@@ -39,3 +39,51 @@ export function isPerfectScore(data: unknown): boolean {
   const score = (data as { score?: string }).score;
   return score === '100.00';
 }
+
+export interface PerfectScoreCounts {
+  quads: number;
+  quints: number;
+  hexes: number;
+}
+
+interface PlayForPerfectScoreCheck {
+  chart: {
+    meter: number | null;
+    simfiles: Array<{ simfile: { packId: number } }>;
+  } | null;
+  PlayLeaderboard: Array<{ leaderboardId: number; data: unknown }>;
+}
+
+/**
+ * Check if a single play is eligible for quad/quint/hex counting.
+ * Requirements: chart belongs to a non-excluded pack, meter <= 50, and at least `stepsHit` steps hit.
+ */
+export function isPlayEligibleForPerfectScores(chartPackIds: number[], meter: number | null | undefined, stepsHit: number): boolean {
+  const chartInPack = chartPackIds.length > 0;
+  const chartInExcludedPack = chartPackIds.some((id) => EXCLUDED_PACK_IDS.includes(id));
+  const meterOk = meter != null && meter <= MAX_METER_FOR_PERFECT_SCORES;
+  const enoughSteps = stepsHit >= MIN_STEPS_FOR_PERFECT_SCORES;
+  return chartInPack && !chartInExcludedPack && meterOk && enoughSteps;
+}
+
+/**
+ * Count quads/quints/hexes across an array of plays that include PlayLeaderboard entries.
+ */
+export function countPerfectScores(plays: PlayForPerfectScoreCheck[]): PerfectScoreCounts {
+  let quads = 0;
+  let quints = 0;
+  let hexes = 0;
+  for (const play of plays) {
+    const itgData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+    const stepsHit = extractStepsHit(itgData);
+    const chartPackIds = play.chart?.simfiles?.map((sc) => sc.simfile.packId) ?? [];
+    if (isPlayEligibleForPerfectScores(chartPackIds, play.chart?.meter, stepsHit)) {
+      if (isPerfectScore(itgData)) quads++;
+      const exData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === EX_LEADERBOARD_ID)?.data;
+      if (isPerfectScore(exData)) quints++;
+      const hexData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === HARD_EX_LEADERBOARD_ID)?.data;
+      if (isPerfectScore(hexData)) hexes++;
+    }
+  }
+  return { quads, quints, hexes };
+}
