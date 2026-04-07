@@ -370,6 +370,7 @@ model UserPermission {
 model Trophy {
   id          Int          @id @default(autoincrement())
   name        String       @unique
+  slug        String?      @unique // Machine-readable identifier for backend lookups (e.g., "quads_100")
   description String       // Supports interpolation, e.g., "Achieved {rank} place in {eventName}"
   tier        String       // common, rare, epic, legendary
   imageUrl    String?      // URL to the trophy image asset
