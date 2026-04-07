@@ -1,4 +1,3 @@
-export { BlueShiftAnnouncementCard } from './BlueShiftAnnouncementCard';
 export { WelcomeBackCard } from './WelcomeBackCard';
 export { AboutCard } from './AboutCard';
 export { UserRecentScoresCard } from './UserRecentScoresCard';
