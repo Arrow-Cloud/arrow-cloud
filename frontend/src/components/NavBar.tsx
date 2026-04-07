@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import ThemeController from './ThemeController';
 import { useAuth } from '../contexts/AuthContext';
 import { LocaleController } from './LocaleController';
+import NotificationBell from './NotificationBell';
 
 interface BrowseMenuItemProps {
   children: React.ReactNode;
@@ -169,6 +170,9 @@ const NavBar: React.FC = () => {
             </DropDownIconMenuItem>
           )}
 
+          {/* Notification Bell (desktop) */}
+          {user && <NotificationBell />}
+
           <ul className="menu menu-horizontal px-1 py-0">
             <DropDownIconMenuItem icon={<User className="w-5 h-5" />} dropdownWidth="w-40" dropdownType="menu">
               {user ? (
@@ -241,7 +245,9 @@ const NavBar: React.FC = () => {
         </div>
 
         {/* Mobile Navigation */}
-        <div className="flex-none lg:hidden">
+        <div className="flex-none lg:hidden flex items-center">
+          {/* Notification Bell (mobile - always visible outside drawer) */}
+          {user && <NotificationBell />}
           <button className="btn btn-ghost btn-circle" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>

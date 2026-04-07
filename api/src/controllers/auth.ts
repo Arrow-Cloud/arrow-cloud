@@ -457,6 +457,16 @@ export const getUser = async (event: AuthenticatedEvent, prisma: PrismaClient): 
       console.warn('Failed to check userHasSubmittedScore in getUser', e);
     }
 
+    // Unread notification count
+    let unreadNotificationCount = 0;
+    try {
+      unreadNotificationCount = await prisma.notification.count({
+        where: { userId: event.user.id, readAt: null },
+      });
+    } catch (e) {
+      console.warn('Failed to count unread notifications in getUser', e);
+    }
+
     return respond(200, {
       user: {
         ...user,
@@ -465,6 +475,7 @@ export const getUser = async (event: AuthenticatedEvent, prisma: PrismaClient): 
         rivalUserIds,
         permissions,
         userHasSubmittedScore,
+        unreadNotificationCount,
       },
     });
   } catch (error) {

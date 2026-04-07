@@ -10,6 +10,7 @@ export const userSchema = z.object({
   countryId: z.number().optional().nullable(),
   // Indicates whether the user has submitted at least one score (play)
   userHasSubmittedScore: z.boolean().optional(),
+  unreadNotificationCount: z.number().optional(),
   country: z
     .object({
       id: z.number(),
@@ -32,6 +33,7 @@ export const getUserResponseSchema = z.object({
     rivalUserIds: z.array(z.string()).optional(),
     permissions: z.array(z.string()).optional(),
     userHasSubmittedScore: z.boolean().optional(),
+    unreadNotificationCount: z.number().optional(),
   }),
 });
 
@@ -1189,3 +1191,23 @@ export type WidgetLeaderboardData = z.infer<typeof widgetLeaderboardDataSchema>;
 export type WidgetLastPlayedChart = z.infer<typeof widgetLastPlayedChartSchema>;
 export type WidgetLastPlayedScore = z.infer<typeof widgetLastPlayedScoreSchema>;
 export type WidgetDataResponse = z.infer<typeof widgetDataResponseSchema>;
+
+// ----- Notification schemas -----
+
+export const notificationSchema = z.object({
+  id: z.number(),
+  type: z.string(),
+  title: z.string(),
+  body: z.string().nullable().optional(),
+  data: z.unknown().nullable().optional(),
+  readAt: z.string().nullable().optional(),
+  createdAt: z.string(),
+});
+
+export const notificationsResponseSchema = z.object({
+  notifications: z.array(notificationSchema),
+  nextCursor: z.number().nullable(),
+});
+
+export type Notification = z.infer<typeof notificationSchema>;
+export type NotificationsResponse = z.infer<typeof notificationsResponseSchema>;

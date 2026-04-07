@@ -57,6 +57,8 @@ import {
   type WidgetDataResponse,
   sessionDetailsSchema,
   type SessionDetails,
+  notificationsResponseSchema,
+  type NotificationsResponse,
 } from '../schemas/apiSchemas';
 
 const BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL || 'https://api.arrowcloud.dance';
@@ -831,4 +833,22 @@ export const getWidgetData = async (userId: string, features?: string): Promise<
   }
   const response = await api.get(`/widget/blueshift/data?${params.toString()}`);
   return validateResponse(widgetDataResponseSchema, response.data, '/widget/blueshift/data');
+};
+
+// Notifications
+export const getNotifications = async (cursor?: number): Promise<NotificationsResponse> => {
+  const params = new URLSearchParams();
+  if (cursor) params.append('cursor', cursor.toString());
+  const query = params.toString();
+  const url = query ? `/notifications?${query}` : '/notifications';
+  const response = await api.get(url);
+  return validateResponse(notificationsResponseSchema, response.data, '/notifications');
+};
+
+export const markNotificationRead = async (notificationId: number): Promise<void> => {
+  await api.put(`/notifications/${notificationId}/read`);
+};
+
+export const markAllNotificationsRead = async (): Promise<void> => {
+  await api.put('/notifications/read-all');
 };

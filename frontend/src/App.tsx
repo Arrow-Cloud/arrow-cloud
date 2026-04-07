@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { IntlProvider, NavBar, LoadingSpinner, ProtectedRoute, Footer } from './components';
 import ScrollToTop from './components/ScrollToTop';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 import { LeaderboardViewProvider } from './contexts/LeaderboardViewContext';
 import { useAutoDetectTimezone } from './hooks/useTimezone';
 import { PacksPage } from './pages/packs/PacksPage';
@@ -115,9 +116,11 @@ const App: React.FC = () => {
   return (
     <IntlProvider>
       <AuthProvider>
-        <LeaderboardViewProvider>
-          <AppContent />
-        </LeaderboardViewProvider>
+        <NotificationProvider>
+          <LeaderboardViewProvider>
+            <AppContent />
+          </LeaderboardViewProvider>
+        </NotificationProvider>
       </AuthProvider>
     </IntlProvider>
   );
