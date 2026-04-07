@@ -16,15 +16,7 @@ import {
 } from '../../services/api';
 import { type PackListItem, type UserRecentPlay } from '../../schemas/apiSchemas';
 
-import {
-  BlueShiftAnnouncementCard,
-  WelcomeBackCard,
-  AboutCard,
-  UserRecentScoresCard,
-  GlobalActivityCard,
-  RecentPacksCard,
-  SetupAndSupportCards,
-} from './components';
+import { WelcomeBackCard, AboutCard, UserRecentScoresCard, GlobalActivityCard, RecentPacksCard, SetupAndSupportCards } from './components';
 
 const PAGE_SIZE = 10;
 const MAX_PAGES = 10;
@@ -202,9 +194,6 @@ export const HomePageNew: React.FC = () => {
       <div className="min-h-[calc(100vh-theme(spacing.16)-40px)] pt-20 bg-gradient-to-b from-base-100 via-primary-200/50 to-base/100">
         <div className="container mx-auto px-4 py-16">
           <div className="max-w-5xl mx-auto">
-            {/* Blue Shift Announcement */}
-            <BlueShiftAnnouncementCard />
-
             {/* Welcome Back Card - Only show for logged in users */}
             {user && <WelcomeBackCard user={user} />}
 

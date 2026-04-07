@@ -10,6 +10,7 @@ import {
   isPerfectScore,
   isPlayEligibleForPerfectScores,
 } from './utils/stats-utils';
+import { checkAndAssignPerfectScoreTrophies } from './utils/trophy-assignment';
 
 let prisma: PrismaClient | undefined;
 
@@ -173,6 +174,19 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
     console.log(
       `Updated stats for user ${userId}: totalPlays=${updatedStats.totalPlays}, chartsPlayed=${updatedStats.chartsPlayed}, stepsHit=${updatedStats.stepsHit} (+${newStepsHit}), quads=${updatedStats.quads} (+${quadIncrement}), quints=${updatedStats.quints} (+${quintIncrement}), hexes=${updatedStats.hexes} (+${hexIncrement})`,
     );
+
+    // Check for perfect score trophy milestones
+    // TODO: Once backfill is done, gate this behind (quadIncrement > 0 || quintIncrement > 0 || hexIncrement > 0)
+    //       to avoid unnecessary DB lookups on every play
+    try {
+      await checkAndAssignPerfectScoreTrophies(prismaClient, userId, {
+        quads: updatedStats.quads,
+        quints: updatedStats.quints,
+        hexes: updatedStats.hexes,
+      });
+    } catch (trophyErr) {
+      console.error(`Failed to check/assign perfect score trophies for user ${userId}:`, trophyErr);
+    }
 
     // Update user session
     await updateUserSession(prismaClient, userId, event.chartHash, event.timestamp, newStepsHit, chart?.meter ?? null);
