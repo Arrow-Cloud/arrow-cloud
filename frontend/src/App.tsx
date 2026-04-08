@@ -35,7 +35,7 @@ const AppContent: React.FC = () => {
               <div className="fixed top-0 left-0 right-0 z-50">
                 <NavBar />
               </div>
-              <div className="flex flex-col min-h-screen bg-gradient-to-b from-base-200 via-base-100 to-base-100">
+              <div className="flex flex-col min-h-screen bg-gradient-to-b from-base-200 via-base-100/95 to-primary/5">
                 <div className="flex-1">
                   <AnimatedRoutes />
                 </div>
