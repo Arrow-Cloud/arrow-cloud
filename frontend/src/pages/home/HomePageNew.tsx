@@ -190,9 +190,9 @@ export const HomePageNew: React.FC = () => {
     : null;
 
   return (
-    <AppPageLayout className="pb-0 !min-h-0">
-      <div className="min-h-[calc(100vh-theme(spacing.16)-40px)] pt-20 bg-gradient-to-b from-base-100 via-primary-200/50 to-base/100">
-        <div className="container mx-auto px-4 py-16">
+    <AppPageLayout className="pb-0">
+      <div>
+        <div className="container mx-auto px-4">
           <div className="max-w-5xl mx-auto">
             {/* Welcome Back Card - Only show for logged in users */}
             {user && <WelcomeBackCard user={user} />}

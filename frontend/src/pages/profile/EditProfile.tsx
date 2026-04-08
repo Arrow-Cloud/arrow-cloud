@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User as UserIcon, Lock, Fingerprint, Key, Users, Camera, SlidersHorizontal, XCircle, Trophy } from 'lucide-react';
 import { updatePreferredLeaderboards, getUser } from '../../services/api';
+import { AppPageLayout } from '../../components';
 import {
   EmailVerificationAlert,
   ProfileSection as ProfileSectionComponent,
@@ -55,11 +56,7 @@ const navigationItems: NavigationItem[] = [
     label: <FormattedMessage defaultMessage="Trophies" description="Navigation item label for trophy management" id="5i8EfE" />,
     icon: Trophy,
     description: (
-      <FormattedMessage
-        defaultMessage="Arrange and display your earned trophies"
-        description="Navigation item description for trophy management"
-        id="pLlCUm"
-      />
+      <FormattedMessage defaultMessage="Arrange and display your earned trophies" description="Navigation item description for trophy management" id="pLlCUm" />
     ),
   },
   {
@@ -326,67 +323,62 @@ export const EditProfilePage: React.FC = () => {
   const activeItem = navigationItems.find((item) => item.id === activeSection);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/80 via-secondary/60 to-accent/70">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.1)_1px,transparent_0)] [background-size:20px_20px] opacity-20"></div>
-      <div className="absolute inset-0 bg-gradient-to-t from-base-200/30 via-transparent to-primary/20"></div>
+    <AppPageLayout accent="secondary">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-white mb-2">
+            <FormattedMessage defaultMessage="Edit Profile" description="Page title for editing the user profile" id="PttiTj" />
+          </h1>
+          <p className="text-white/80">
+            <FormattedMessage defaultMessage="Manage your account settings and preferences" description="Subtitle for the edit profile page" id="Jf70Ja" />
+          </p>
+        </div>
 
-      <div className="relative min-h-screen p-4 pt-24">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">
-              <FormattedMessage defaultMessage="Edit Profile" description="Page title for editing the user profile" id="PttiTj" />
-            </h1>
-            <p className="text-white/80">
-              <FormattedMessage defaultMessage="Manage your account settings and preferences" description="Subtitle for the edit profile page" id="Jf70Ja" />
-            </p>
-          </div>
+        <EmailVerificationAlert />
 
-          <EmailVerificationAlert />
-
-          <div className="card bg-base-100/95 backdrop-blur-lg shadow-xl border border-base-300/30 mt-6">
-            <div className="card-body p-0">
-              <div className="grid grid-cols-1 lg:grid-cols-4">
-                {/* Navigation Sidebar */}
-                <div className="lg:col-span-1 border-r border-base-300/30">
-                  <div className="p-6">
-                    <h2 className="text-lg font-bold mb-4 text-base-content">
-                      <FormattedMessage defaultMessage="Settings" description="Heading for the settings navigation sidebar" id="X1K1PE" />
-                    </h2>
-                    <div className="space-y-1">
-                      {navigationItems.map((item) => (
-                        <NavigationItem key={item.id} item={item} isActive={activeSection === item.id} onClick={() => handleSectionChange(item.id)} />
-                      ))}
-                    </div>
+        <div className="card bg-base-100/95 backdrop-blur-lg shadow-xl border border-base-300/30 mt-6">
+          <div className="card-body p-0">
+            <div className="grid grid-cols-1 lg:grid-cols-4">
+              {/* Navigation Sidebar */}
+              <div className="lg:col-span-1 border-r border-base-300/30">
+                <div className="p-6">
+                  <h2 className="text-lg font-bold mb-4 text-base-content">
+                    <FormattedMessage defaultMessage="Settings" description="Heading for the settings navigation sidebar" id="X1K1PE" />
+                  </h2>
+                  <div className="space-y-1">
+                    {navigationItems.map((item) => (
+                      <NavigationItem key={item.id} item={item} isActive={activeSection === item.id} onClick={() => handleSectionChange(item.id)} />
+                    ))}
                   </div>
                 </div>
+              </div>
 
-                {/* Content Area */}
-                <div className="lg:col-span-3">
-                  <div className="p-6 space-y-6">
-                    {/* Section Header */}
-                    <div className="flex items-center gap-3 pb-4 border-b border-base-300/30">
-                      {activeItem && (
-                        <>
-                          <div className="p-3 rounded-xl bg-primary/10">
-                            <activeItem.icon className="w-6 h-6 text-primary" />
-                          </div>
-                          <div>
-                            <h2 className="text-2xl font-bold text-base-content">{activeItem.label}</h2>
-                            <p className="text-base-content/70">{activeItem.description}</p>
-                          </div>
-                        </>
-                      )}
-                    </div>
-
-                    {/* Section Content */}
-                    <div>{renderSectionContent(activeSection)}</div>
+              {/* Content Area */}
+              <div className="lg:col-span-3">
+                <div className="p-6 space-y-6">
+                  {/* Section Header */}
+                  <div className="flex items-center gap-3 pb-4 border-b border-base-300/30">
+                    {activeItem && (
+                      <>
+                        <div className="p-3 rounded-xl bg-primary/10">
+                          <activeItem.icon className="w-6 h-6 text-primary" />
+                        </div>
+                        <div>
+                          <h2 className="text-2xl font-bold text-base-content">{activeItem.label}</h2>
+                          <p className="text-base-content/70">{activeItem.description}</p>
+                        </div>
+                      </>
+                    )}
                   </div>
+
+                  {/* Section Content */}
+                  <div>{renderSectionContent(activeSection)}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </AppPageLayout>
   );
 };

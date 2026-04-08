@@ -574,7 +574,7 @@ export const SessionPage: React.FC = () => {
 
   if (loading && !session) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="secondary">
         <div className="flex items-center justify-center min-h-[400px]">
           <Loader2 className="w-8 h-8 animate-spin text-primary" />
         </div>
@@ -584,7 +584,7 @@ export const SessionPage: React.FC = () => {
 
   if (error || !session) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="secondary">
         <Alert variant="error">
           {error || <FormattedMessage defaultMessage="Session not found" id="Qhfqx5" description="Error message when session is not found" />}
         </Alert>
@@ -593,8 +593,8 @@ export const SessionPage: React.FC = () => {
   }
 
   return (
-    <AppPageLayout>
-      <div className="max-w-4xl mx-auto space-y-6 pt-32">
+    <AppPageLayout accent="secondary">
+      <div className="max-w-4xl mx-auto space-y-6 px-4">
         {/* Session Header and Difficulty Distribution - side by side on desktop */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <SessionHeader session={session} onShare={() => setShowShareModal(true)} canShare={canShare} />

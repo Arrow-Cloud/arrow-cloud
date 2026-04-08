@@ -445,18 +445,14 @@ const HelpPage: React.FC = () => {
   }, [currentInstructions, configInfo, selection.method]);
 
   return (
-    <AppPageLayout className="pb-0">
-      <div className="pt-28 pb-28 min-h-screen relative">
-        {/* Decorative background layers */}
-        <div className="absolute inset-0 -z-10 bg-base-100/80" />
-        <div className="absolute inset-0 -z-10 opacity-60 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--p)/0.25),transparent_60%),radial-gradient(circle_at_80%_70%,hsl(var(--s)/0.20),transparent_65%)]" />
-        <div className="absolute inset-0 -z-10 mix-blend-overlay bg-[linear-gradient(135deg,hsl(var(--b2)/0.15)_0%,transparent_40%,hsl(var(--b2)/0.15)_60%,transparent_85%)]" />
+    <AppPageLayout className="pb-0" accent="info">
+      <div className="pb-28 relative">
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="grid lg:grid-cols-[260px_1fr] gap-8 items-start">
             {/* Side Navigation */}
             <nav
               aria-label={intl.formatMessage({ defaultMessage: 'Help navigation', id: 'dI5InQ', description: 'Label for help section navigation' })}
-              className="hidden lg:block sticky top-28"
+              className="hidden lg:block sticky top-24"
             >
               <ul className="bg-base-200/60 border border-base-content/10 rounded-2xl p-3 text font-medium w-60 space-y-1 shadow-xl backdrop-blur-md">
                 {[

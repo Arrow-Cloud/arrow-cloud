@@ -109,12 +109,7 @@ const OverallRankingsSection: React.FC<OverallRankingsSectionProps> = ({ summary
                 <ProfileAvatar profileImageUrl={currentUserInfo.profileImageUrl} alias={currentUserInfo.alias} size="sm" />
                 <span className="font-bold text-2xl text-primary">#{currentUserRank}</span>
                 <span className="text-base-content/60 text-sm">
-                  <FormattedMessage
-                    defaultMessage="of {total}"
-                    id="xJMUKT"
-                    description="Out of total participants"
-                    values={{ total: overallData.length }}
-                  />
+                  <FormattedMessage defaultMessage="of {total}" id="xJMUKT" description="Out of total participants" values={{ total: overallData.length }} />
                 </span>
               </div>
               <div className="sm:ml-auto flex flex-col gap-1 text-sm">
@@ -712,57 +707,55 @@ export const BlueShiftResultsPage: React.FC = () => {
 
   return (
     <AppPageLayout className="pb-0">
-      <div className="min-h-screen pt-20 bg-gradient-to-b from-base-100 via-primary-200/50 to-base/100">
-        <div className="container mx-auto px-4 py-8 max-w-3xl">
-          <HeroTitle />
+      <div className="container mx-auto px-4 py-8 max-w-3xl">
+        <HeroTitle />
 
-          {/* Loading State */}
-          {isLoading && (
-            <div className="flex justify-center items-center py-20">
-              <div className="loading loading-spinner loading-lg text-primary"></div>
-            </div>
-          )}
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="loading loading-spinner loading-lg text-primary"></div>
+          </div>
+        )}
 
-          {/* Error State */}
-          {error && !isLoading && (
-            <div className="alert alert-error mb-8">
-              <FormattedMessage
-                defaultMessage="Failed to load results: {error}"
-                id="i8w9+X"
-                description="Error message for failed data load"
-                values={{ error }}
-              />
-            </div>
-          )}
+        {/* Error State */}
+        {error && !isLoading && (
+          <div className="alert alert-error mb-8">
+            <FormattedMessage
+              defaultMessage="Failed to load results: {error}"
+              id="i8w9+X"
+              description="Error message for failed data load"
+              values={{ error }}
+            />
+          </div>
+        )}
 
-          {/* Content */}
-          {summaryData && !isLoading && (
-            <div className="space-y-8">
-              {/* Overall Rankings */}
-              <OverallRankingsSection summaryData={summaryData} activeLeaderboard={activeTab} page={page} onPageChange={setPage} />
+        {/* Content */}
+        {summaryData && !isLoading && (
+          <div className="space-y-8">
+            {/* Overall Rankings */}
+            <OverallRankingsSection summaryData={summaryData} activeLeaderboard={activeTab} page={page} onPageChange={setPage} />
 
-              {/* Phase Rankings */}
-              <PhaseRankingsSection
-                summaryData={summaryData}
-                activeLeaderboard={activeTab}
-                selectedPhase={selectedPhase}
-                onPhaseChange={setSelectedPhase}
-                page={phasePage}
-                onPageChange={setPhasePage}
-              />
+            {/* Phase Rankings */}
+            <PhaseRankingsSection
+              summaryData={summaryData}
+              activeLeaderboard={activeTab}
+              selectedPhase={selectedPhase}
+              onPhaseChange={setSelectedPhase}
+              page={phasePage}
+              onPageChange={setPhasePage}
+            />
 
-              {/* Chart Scores */}
-              <ChartScoresSection
-                summaryData={summaryData}
-                activeLeaderboard={activeTab}
-                selectedPhase={chartPhase}
-                onPhaseChange={setChartPhase}
-                chartIndex={chartIndex}
-                onChartIndexChange={setChartIndex}
-              />
-            </div>
-          )}
-        </div>
+            {/* Chart Scores */}
+            <ChartScoresSection
+              summaryData={summaryData}
+              activeLeaderboard={activeTab}
+              selectedPhase={chartPhase}
+              onPhaseChange={setChartPhase}
+              chartIndex={chartIndex}
+              onChartIndexChange={setChartIndex}
+            />
+          </div>
+        )}
       </div>
     </AppPageLayout>
   );
