@@ -974,7 +974,7 @@ export const UserPage: React.FC = () => {
   if (error) {
     return (
       <AppPageLayout>
-        <div className="container mx-auto px-4 pt-28 py-8">
+        <div className="container mx-auto px-4 py-8">
           <Alert variant="error" className="mb-8">
             {error}
           </Alert>
@@ -986,7 +986,7 @@ export const UserPage: React.FC = () => {
   if (!userProfile) {
     return (
       <AppPageLayout>
-        <div className="container mx-auto px-4 pt-28 py-8">
+        <div className="container mx-auto px-4 py-8">
           <Alert variant="error" className="mb-8">
             <FormattedMessage defaultMessage="User not found" id="uC7RSq" description="displayed on the user profile page if the user was not found" />
           </Alert>
@@ -996,8 +996,8 @@ export const UserPage: React.FC = () => {
   }
 
   return (
-    <AppPageLayout className="pb-0 !min-h-0">
-      <div className="min-h-[calc(100vh-theme(spacing.16)-40px)] pt-28 pb-8 bg-gradient-to-b from-base-100 via-primary-200/50 to-base/100">
+    <AppPageLayout className="pb-0">
+      <div className="pb-8">
         <div className="container mx-auto">
           {rivalActionError && (
             <Alert variant="error" className="mb-4">

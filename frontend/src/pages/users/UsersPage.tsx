@@ -83,7 +83,7 @@ export const UsersPage: React.FC = () => {
   if (error) {
     return (
       <AppPageLayout>
-        <div className="container mx-auto px-4 pt-20">
+        <div className="container mx-auto px-4">
           <div className="card bg-base-100/40 backdrop-blur-sm shadow-xl">
             <div className="card-body">
               <div className="alert alert-error">
@@ -108,7 +108,7 @@ export const UsersPage: React.FC = () => {
 
   return (
     <AppPageLayout>
-      <div className="container mx-auto px-4 pt-20">
+      <div className="container mx-auto px-4">
         {/* Header */}
         <div className="text-center my-8">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">

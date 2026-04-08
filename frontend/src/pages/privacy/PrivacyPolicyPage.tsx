@@ -6,8 +6,8 @@ const lastUpdated = new Date('2025-11-29');
 
 export const PrivacyPolicyPage: React.FC = () => {
   return (
-    <AppPageLayout className="pb-0">
-      <div className="pt-28 pb-16 min-h-screen bg-base-100/70">
+    <AppPageLayout className="pb-0" accent="info">
+      <div>
         <div className="container mx-auto px-4 max-w-3xl">
           <div className="card bg-base-200/60 backdrop-blur-sm border border-base-content/10 shadow-md rounded-xl p-8" data-testid="privacy-card">
             <header className="mb-8">

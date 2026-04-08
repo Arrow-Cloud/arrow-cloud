@@ -648,7 +648,7 @@ export const PackPage: React.FC = () => {
 
   if (loading) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="secondary">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-center min-h-96">
             <div className="text-center">
@@ -672,7 +672,7 @@ export const PackPage: React.FC = () => {
 
   if (error) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="secondary">
         <div className="container mx-auto px-4 py-8">
           <Alert variant="error" className="mb-8">
             {error}
@@ -684,7 +684,7 @@ export const PackPage: React.FC = () => {
 
   if (!pack) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="secondary">
         <div className="container mx-auto px-4 py-8">
           <Alert variant="error" className="mb-8">
             <FormattedMessage defaultMessage="Pack not found" id="sL/xaE" description="Message displayed when the pack is not found" />
@@ -695,9 +695,8 @@ export const PackPage: React.FC = () => {
   }
 
   return (
-    <AppPageLayout>
-      <div className="container mx-auto px-4 py-20">
-        {/* Header with Pack Banner */}
+    <AppPageLayout accent="secondary">
+      <div className="container mx-auto px-4">
         <div className="text-center my-8">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{pack.name}</h1>
         </div>
