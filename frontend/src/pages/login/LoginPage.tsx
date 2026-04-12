@@ -90,10 +90,7 @@ const RegisterLinkSection: React.FC<RegisterLinkSectionProps> = ({ registerUrl, 
         values={{
           createLink: (contents) =>
             registerUrl ? (
-              <a
-                href={registerUrl}
-                className="link link-primary hover:link-accent font-semibold transition-colors"
-              >
+              <a href={registerUrl} className="link link-primary hover:link-accent font-semibold transition-colors">
                 {contents}
               </a>
             ) : (
@@ -257,7 +254,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ eventMode = false }) => {
                   <div className="flex justify-center mb-4">
                     <img
                       src="https://assets.arrowcloud.dance/logos/20250725/text-t.png"
-                      alt="Arrow Cloud"
+                      alt={formatMessage({
+                        defaultMessage: 'Arrow Cloud',
+                        id: 'ciETVJ',
+                        description: 'Alt text for the Arrow Cloud logo on the event login page',
+                      })}
                       className="h-12 w-auto"
                     />
                   </div>
@@ -267,7 +268,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ eventMode = false }) => {
 
                 {eventMode && (
                   <p className="text-center text-base-content/70 mb-6">
-                    <FormattedMessage defaultMessage="Sign in to your Arrow Cloud account" id="0UKMwf" description="A sub-heading displayed on the login page" />
+                    <FormattedMessage
+                      defaultMessage="Sign in to your Arrow Cloud account"
+                      id="0UKMwf"
+                      description="A sub-heading displayed on the login page"
+                    />
                   </p>
                 )}
 
@@ -315,9 +320,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ eventMode = false }) => {
                   <LoginSubmitButton isLoading={isLoading} />
                 </form>
 
-                {!eventMode && (
-                  <PasskeyButton onSuccess={() => navigate(from, { replace: true })} disabled={isLoading} className="mb-4" />
-                )}
+                {!eventMode && <PasskeyButton onSuccess={() => navigate(from, { replace: true })} disabled={isLoading} className="mb-4" />}
 
                 <div className="divider text-base-content/50">
                   <FormattedMessage
@@ -327,10 +330,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ eventMode = false }) => {
                   />
                 </div>
 
-                <RegisterLinkSection
-                  registerUrl={eventMode ? 'https://arrowcloud.dance/register' : undefined}
-                  onRegisterClick={() => navigate('/register')}
-                />
+                <RegisterLinkSection registerUrl={eventMode ? 'https://arrowcloud.dance/register' : undefined} onRegisterClick={() => navigate('/register')} />
               </>
             )}
           </div>
