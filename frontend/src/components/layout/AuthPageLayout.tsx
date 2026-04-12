@@ -4,9 +4,11 @@ interface AuthPageLayoutProps {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'accent';
   className?: string;
+  /** When true, uses a plain background instead of gradients */
+  eventMode?: boolean;
 }
 
-const AuthPageLayout: React.FC<AuthPageLayoutProps> = ({ children, variant = 'primary', className = '' }) => {
+const AuthPageLayout: React.FC<AuthPageLayoutProps> = ({ children, variant = 'primary', className = '', eventMode = false }) => {
   const getGradientClasses = () => {
     switch (variant) {
       case 'secondary':
@@ -28,6 +30,14 @@ const AuthPageLayout: React.FC<AuthPageLayoutProps> = ({ children, variant = 'pr
         return 'to-primary/20';
     }
   };
+
+  if (eventMode) {
+    return (
+      <div className={`min-h-screen bg-base-200 ${className}`}>
+        <div className="min-h-screen flex items-center justify-center p-4">{children}</div>
+      </div>
+    );
+  }
 
   return (
     <div className={`min-h-screen bg-gradient-to-br ${getGradientClasses()} ${className}`}>

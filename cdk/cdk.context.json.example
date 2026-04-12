@@ -10,6 +10,7 @@
       "description": "YOUR NAME"
     }
   ],
+  "wildcardCertArn": "",
   "corsAllowedOrigins": [
     "http://localhost:5173"
   ]

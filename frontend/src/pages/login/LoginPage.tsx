@@ -30,9 +30,10 @@ interface RememberMeForgotSectionProps {
   rememberMe: boolean;
   onRememberMeChange: (checked: boolean) => void;
   onForgotPasswordClick: () => void;
+  forgotPasswordUrl?: string;
 }
 
-const RememberMeForgotSection: React.FC<RememberMeForgotSectionProps> = ({ rememberMe, onRememberMeChange, onForgotPasswordClick }) => (
+const RememberMeForgotSection: React.FC<RememberMeForgotSectionProps> = ({ rememberMe, onRememberMeChange, onForgotPasswordClick, forgotPasswordUrl }) => (
   <div className="flex items-center justify-between">
     <label className="cursor-pointer label">
       <input type="checkbox" className="checkbox checkbox-primary checkbox-sm" checked={rememberMe} onChange={(e) => onRememberMeChange(e.target.checked)} />
@@ -40,9 +41,15 @@ const RememberMeForgotSection: React.FC<RememberMeForgotSectionProps> = ({ remem
         <FormattedMessage defaultMessage="Remember me" id="BFIMJG" description="A label for a checkbox on the login screen" />
       </span>
     </label>
-    <button type="button" onClick={onForgotPasswordClick} className="label-text-alt link link-primary hover:link-accent transition-colors">
-      <FormattedMessage defaultMessage="Forgot password?" id="wun7o3" description="A label on a button, on the login screen" />
-    </button>
+    {forgotPasswordUrl ? (
+      <a href={forgotPasswordUrl} className="label-text-alt link link-primary hover:link-accent transition-colors">
+        <FormattedMessage defaultMessage="Forgot password?" id="wun7o3" description="A label on a button, on the login screen" />
+      </a>
+    ) : (
+      <button type="button" onClick={onForgotPasswordClick} className="label-text-alt link link-primary hover:link-accent transition-colors">
+        <FormattedMessage defaultMessage="Forgot password?" id="wun7o3" description="A label on a button, on the login screen" />
+      </button>
+    )}
   </div>
 );
 
@@ -71,27 +78,36 @@ const LoginSubmitButton: React.FC<LoginSubmitButtonProps> = ({ isLoading }) => (
 );
 
 interface RegisterLinkSectionProps {
+  registerUrl?: string;
   onRegisterClick: () => void;
 }
 
-const RegisterLinkSection: React.FC<RegisterLinkSectionProps> = ({ onRegisterClick }) => (
+const RegisterLinkSection: React.FC<RegisterLinkSectionProps> = ({ registerUrl, onRegisterClick }) => (
   <div className="text-center">
     <p className="text-base-content/70">
       <FormattedMessage
         defaultMessage="Don't have an account? <createLink>Create one here</createLink>"
         values={{
-          createLink: (contents) => (
-            <a
-              href="#"
-              className="link link-primary hover:link-accent font-semibold transition-colors"
-              onClick={(e) => {
-                e.preventDefault();
-                onRegisterClick();
-              }}
-            >
-              {contents}
-            </a>
-          ),
+          createLink: (contents) =>
+            registerUrl ? (
+              <a
+                href={registerUrl}
+                className="link link-primary hover:link-accent font-semibold transition-colors"
+              >
+                {contents}
+              </a>
+            ) : (
+              <a
+                href="#"
+                className="link link-primary hover:link-accent font-semibold transition-colors"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onRegisterClick();
+                }}
+              >
+                {contents}
+              </a>
+            ),
         }}
         id="wK4IU8"
         description="Provides the option to switch from the login page to the registration page"
@@ -127,7 +143,12 @@ const PasskeySuccessView: React.FC<PasskeySuccessViewProps> = ({ onContinue, onD
   </div>
 );
 
-export const LoginPage: React.FC = () => {
+interface LoginPageProps {
+  /** When true, shows Arrow Cloud logo, hides passkey, links register externally */
+  eventMode?: boolean;
+}
+
+export const LoginPage: React.FC<LoginPageProps> = ({ eventMode = false }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
@@ -224,7 +245,7 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <AuthPageLayout>
+    <AuthPageLayout eventMode={eventMode}>
       <div className="w-full max-w-md">
         <div className="card bg-base-100/95 backdrop-blur-lg shadow-2xl border border-base-300/30 ring-1 ring-white/10 mt-20">
           <div className="card-body p-8">
@@ -232,7 +253,23 @@ export const LoginPage: React.FC = () => {
               <PasskeySuccessView onContinue={handlePasskeySetupSuccess} onDismiss={handlePasskeySetupDismiss} />
             ) : (
               <>
-                <LoginHeader />
+                {eventMode && (
+                  <div className="flex justify-center mb-4">
+                    <img
+                      src="https://assets.arrowcloud.dance/logos/20250725/text-t.png"
+                      alt="Arrow Cloud"
+                      className="h-12 w-auto"
+                    />
+                  </div>
+                )}
+
+                {!eventMode && <LoginHeader />}
+
+                {eventMode && (
+                  <p className="text-center text-base-content/70 mb-6">
+                    <FormattedMessage defaultMessage="Sign in to your Arrow Cloud account" id="0UKMwf" description="A sub-heading displayed on the login page" />
+                  </p>
+                )}
 
                 {error && (
                   <Alert variant="error" className="mb-6">
@@ -272,12 +309,15 @@ export const LoginPage: React.FC = () => {
                     rememberMe={rememberMe}
                     onRememberMeChange={setRememberMe}
                     onForgotPasswordClick={() => navigate('/forgot-password')}
+                    forgotPasswordUrl={eventMode ? 'https://arrowcloud.dance/forgot-password' : undefined}
                   />
 
                   <LoginSubmitButton isLoading={isLoading} />
                 </form>
 
-                <PasskeyButton onSuccess={() => navigate(from, { replace: true })} disabled={isLoading} className="mb-4" />
+                {!eventMode && (
+                  <PasskeyButton onSuccess={() => navigate(from, { replace: true })} disabled={isLoading} className="mb-4" />
+                )}
 
                 <div className="divider text-base-content/50">
                   <FormattedMessage
@@ -287,7 +327,10 @@ export const LoginPage: React.FC = () => {
                   />
                 </div>
 
-                <RegisterLinkSection onRegisterClick={() => navigate('/register')} />
+                <RegisterLinkSection
+                  registerUrl={eventMode ? 'https://arrowcloud.dance/register' : undefined}
+                  onRegisterClick={() => navigate('/register')}
+                />
               </>
             )}
           </div>

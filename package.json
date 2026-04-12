@@ -9,7 +9,8 @@
     "cdk",
     "api",
     "frontend",
-    "share-service"
+    "share-service",
+    "events/*"
   ],
   "scripts": {
     "prisma:generate": "prisma generate && cp -r api/prisma/generated share-service/api/prisma/",
