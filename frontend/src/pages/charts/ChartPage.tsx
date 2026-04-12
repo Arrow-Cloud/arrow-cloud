@@ -1030,7 +1030,7 @@ export const ChartPage: React.FC = () => {
 
   if (loading) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="accent">
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-center items-center py-20">
             <Loader2 size={48} className="animate-spin text-primary" />
@@ -1042,7 +1042,7 @@ export const ChartPage: React.FC = () => {
 
   if (error) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="accent">
         <div className="container mx-auto px-4 py-8">
           <Alert variant="error" className="mb-8">
             {error}
@@ -1054,7 +1054,7 @@ export const ChartPage: React.FC = () => {
 
   if (!chart) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="accent">
         <div className="container mx-auto px-4 py-8">
           <Alert variant="error" className="mb-8">
             <FormattedMessage defaultMessage="Chart not found" id="fpEyF4" description="Error message when a chart is not found" />
@@ -1065,8 +1065,8 @@ export const ChartPage: React.FC = () => {
   }
 
   return (
-    <AppPageLayout>
-      <div className="container mx-auto px-4 pt-20">
+    <AppPageLayout accent="accent">
+      <div className="container mx-auto px-4">
         <div className="space-y-8 my-8">
           {/* Main Content */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

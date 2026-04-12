@@ -887,8 +887,8 @@ export const PlayPage: React.FC = () => {
   }, [playId]);
 
   return (
-    <AppPageLayout>
-      <div className="container mx-auto px-4 pt-20 mt-6">
+    <AppPageLayout accent="accent">
+      <div className="container mx-auto px-4 mt-6">
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <Loader2 size={48} className="animate-spin text-primary" />

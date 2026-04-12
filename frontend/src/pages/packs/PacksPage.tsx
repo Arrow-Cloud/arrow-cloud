@@ -123,7 +123,7 @@ export const PacksPage: React.FC = () => {
 
   if (error) {
     return (
-      <AppPageLayout>
+      <AppPageLayout accent="secondary">
         <div className="container mx-auto px-4 py-8">
           <div className="card bg-base-100/40 backdrop-blur-sm shadow-xl">
             <div className="card-body">
@@ -148,9 +148,8 @@ export const PacksPage: React.FC = () => {
   }
 
   return (
-    <AppPageLayout>
-      <div className="container mx-auto px-4 pt-20">
-        {/* Header */}
+    <AppPageLayout accent="secondary">
+      <div className="container mx-auto px-4">
         <div className="text-center my-8">
           <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
             <FormattedMessage defaultMessage="Packs" id="eT8bPV" description="Title for the packs page" />
