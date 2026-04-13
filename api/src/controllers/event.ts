@@ -148,3 +148,87 @@ export async function getEventCharts(event: ExtendedAPIGatewayProxyEvent, prisma
     return respond(500, { error: 'Internal server error' });
   }
 }
+
+/**
+ * Get a single chart's event-specific data (points, metadata) plus full chart details
+ * GET /event/{eventId}/chart/{chartHash}
+ */
+export async function getEventChart(event: ExtendedAPIGatewayProxyEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> {
+  const eventId = parseInt(event.routeParameters?.eventId || '', 10);
+  const chartHash = event.routeParameters?.chartHash || '';
+
+  try {
+    const eventChart = await prisma.eventChart.findUnique({
+      where: { eventId_chartHash: { eventId, chartHash } },
+      include: {
+        chart: {
+          select: {
+            hash: true,
+            songName: true,
+            artist: true,
+            rating: true,
+            length: true,
+            stepsType: true,
+            difficulty: true,
+            meter: true,
+            stepartist: true,
+            credit: true,
+            simfiles: {
+              orderBy: { createdAt: 'asc' },
+              select: {
+                createdAt: true,
+                simfile: {
+                  select: {
+                    bannerUrl: true,
+                    mdBannerUrl: true,
+                    smBannerUrl: true,
+                    bannerVariants: true,
+                    pack: {
+                      select: {
+                        id: true,
+                        name: true,
+                        bannerUrl: true,
+                        mdBannerUrl: true,
+                        smBannerUrl: true,
+                        bannerVariants: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!eventChart) {
+      return respond(404, { error: 'Event chart not found' });
+    }
+
+    return respond(200, {
+      eventChart: {
+        id: eventChart.id,
+        eventId: eventChart.eventId,
+        chartHash: eventChart.chartHash,
+        metadata: eventChart.metadata,
+        chart: {
+          hash: eventChart.chart.hash,
+          songName: eventChart.chart.songName,
+          artist: eventChart.chart.artist,
+          rating: eventChart.chart.rating,
+          length: eventChart.chart.length,
+          stepsType: eventChart.chart.stepsType,
+          difficulty: eventChart.chart.difficulty,
+          meter: eventChart.chart.meter,
+          stepartist: eventChart.chart.stepartist,
+          credit: eventChart.chart.credit,
+          ...resolveChartBanner(eventChart.chart.simfiles),
+        },
+      },
+    });
+  } catch (error) {
+    console.error('Error getting event chart:', error);
+    return respond(500, { error: 'Internal server error' });
+  }
+}

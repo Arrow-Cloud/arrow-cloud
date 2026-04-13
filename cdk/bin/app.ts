@@ -4,6 +4,8 @@ import { FrontendStack } from '../lib/frontend-stack';
 import { CertificatesStackUsEast1, CertificatesStackUsEast2, WildcardCertificateStack } from '../lib/certificates-stack';
 import { ShareServiceStack } from '../lib/share-service-stack';
 import { EventSiteStack } from '../lib/event-site-stack';
+import { EventBackendConstruct } from '../lib/event-backend-construct';
+import * as path from 'path';
 
 const app = new cdk.App();
 
@@ -49,6 +51,26 @@ if (wildcardCertArn) {
     subdomain: 'testevent',
     domainName,
     wildcardCertArn,
-    distPath: '../events/testevent/dist',
+    distPath: '../events/testevent/frontend/dist',
   });
 }
+
+// === Event Backends ===
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const testeventConfig = require('../../events/testevent/backend/config.json');
+
+new EventBackendConstruct(apiStack, 'EventBackend-testevent', {
+  eventSlug: 'testevent',
+  scoreSubmissionTopic: apiStack.scoreSubmissionTopic,
+  chartHashes: testeventConfig.chartHashes,
+  scoreProcessorCodePath: path.join(__dirname, '../../events/testevent/backend/dist'),
+  scoreProcessorHandler: 'score-processor.handler',
+  scheduledProcessorCodePath: path.join(__dirname, '../../events/testevent/backend/dist'),
+  scheduledProcessorHandler: 'scheduled-processor.handler',
+  readApiCodePath: path.join(__dirname, '../../events/testevent/backend/dist'),
+  readApiHandler: 'read-api.handler',
+  environment: {
+    LEADERBOARD_TYPE: testeventConfig.leaderboardType || 'EX',
+    EVENT_ID: String(testeventConfig.eventId),
+  },
+});

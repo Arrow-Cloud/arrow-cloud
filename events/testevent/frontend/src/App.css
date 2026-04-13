@@ -1,5 +1,5 @@
 @import "tailwindcss";
-@source "../../../frontend/src";
+@source "../../../../frontend/src";
 
 @plugin "daisyui/theme" {
   name: "silk-light";
@@ -50,8 +50,8 @@
   --color-primary-content: oklch(100% 0 0);
   --color-secondary: oklch(21.455% 0.001 17.278);
   --color-secondary-content: oklch(100% 0 0);
-  --color-accent: oklch(26.861% 0 0);
-  --color-accent-content: oklch(100% 0 0);
+  --color-accent: oklch(80% 0.025 284.3);
+  --color-accent-content: oklch(20% 0.025 284.3);
   --color-neutral: oklch(0% 0 0);
   --color-neutral-content: oklch(100% 0 0);
   --color-info: oklch(79.54% 0.103 205.9);

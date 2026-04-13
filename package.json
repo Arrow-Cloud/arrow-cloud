@@ -10,7 +10,8 @@
     "api",
     "frontend",
     "share-service",
-    "events/*"
+    "events/*/frontend",
+    "events/*/backend"
   ],
   "scripts": {
     "prisma:generate": "prisma generate && cp -r api/prisma/generated share-service/api/prisma/",
@@ -18,7 +19,7 @@
     "deploy": "npm run deploy -w cdk",
     "destroy": "npm run destroy -w cdk",
     "format": "npm run format -w cdk && npm run format -w api && npm run format -w frontend",
-    "lint": "npm run lint -w cdk && npm run lint -w api && npm run lint -w frontend && npm run lint -w events/testevent",
+    "lint": "npm run lint -w cdk && npm run lint -w api && npm run lint -w frontend && npm run lint -w events/testevent/frontend",
     "synth": "npm run synth -w cdk",
     "test": "npm run test -w api && npm run test -w frontend",
     "watch-api": "npm run watch -w api",

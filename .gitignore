@@ -29,6 +29,9 @@ api/src/**/*.d.ts
 api/src/**/*.d.ts.map
 output/
 
+# Event backend configs (contain chart hashes, not secrets but event-specific)
+events/*/backend/config.json
+
 # These instructions kinda suck right now, I'll make something more general purpose later if anyone else wants it.
 .github/copilot-instructions.md
 
