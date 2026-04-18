@@ -43,6 +43,7 @@ interface ChartMeta {
   songName: string;
   artist: string;
   stepartist: string;
+  stepsType: string | null;
   difficulty: string;
   difficultyRating: number;
   bannerUrl: string | null;
@@ -79,10 +80,7 @@ async function getActivity(params: Record<string, string>) {
  * GET /user/:userId — User summary + personal bests
  */
 async function getUser(userId: string) {
-  const [summary, bests] = await Promise.all([
-    getState<UserSummary>(`USER#${userId}`, '#SUMMARY'),
-    queryState<BestItem>(`USER#${userId}`, 'BEST#'),
-  ]);
+  const [summary, bests] = await Promise.all([getState<UserSummary>(`USER#${userId}`, '#SUMMARY'), queryState<BestItem>(`USER#${userId}`, 'BEST#')]);
 
   if (!summary) {
     return respond(404, { error: 'User not found in this event' });
@@ -114,9 +112,10 @@ async function getChartDetail(chartHash: string, params: Record<string, string>)
   const limit = Math.min(parseInt(params.limit || '50', 10) || 50, 100);
   const sort = params.sort === 'time' ? 'time' : 'score';
 
-  const gsiConfig = sort === 'time'
-    ? { index: 'gsi2' as const, pkName: 'gsi2pk', pkValue: `CHARTTIME#${chartHash}` }
-    : { index: 'gsi1' as const, pkName: 'gsi1pk', pkValue: `CHARTBEST#${chartHash}` };
+  const gsiConfig =
+    sort === 'time'
+      ? { index: 'gsi2' as const, pkName: 'gsi2pk', pkValue: `CHARTTIME#${chartHash}` }
+      : { index: 'gsi1' as const, pkName: 'gsi1pk', pkValue: `CHARTBEST#${chartHash}` };
 
   const [meta, result] = await Promise.all([
     getState<ChartMeta>(`CHART#${chartHash}`, '#META'),

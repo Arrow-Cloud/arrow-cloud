@@ -6,8 +6,9 @@ import { BannerImage } from '@shared/components/ui/BannerImage';
 import { useUserDetail } from '../services/eventStateApi';
 import type { PlayItem } from '../services/eventStateApi';
 import { formatRelativeTimeAuto } from '@shared/utils/formatRelativeTime';
-import { User, Loader2, ArrowUpDown, Search } from 'lucide-react';
+import { User, Loader2, ArrowUpDown, Search, ArrowLeftRight } from 'lucide-react';
 import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
+import { getStoredUser } from '@shared/utils/rivalHighlight';
 
 type BestSortKey = 'name' | 'rating' | 'score' | 'date';
 type SortDir = 'asc' | 'desc';
@@ -31,10 +32,15 @@ export default function UserDetailPage() {
   const [sortDir, setSortDir] = useState<SortDir>('desc');
 
   const sorted = useMemo(() => sortBests(bests, sortKey, sortDir), [bests, sortKey, sortDir]);
+  const storedUser = getStoredUser();
+  const isOtherUser = storedUser?.id && storedUser.id.toString() !== userId;
 
   function toggleSort(key: BestSortKey) {
     if (sortKey === key) setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
-    else { setSortKey(key); setSortDir(key === 'name' ? 'asc' : 'desc'); }
+    else {
+      setSortKey(key);
+      setSortDir(key === 'name' ? 'asc' : 'desc');
+    }
   }
 
   if (!userId) return null;
@@ -73,6 +79,12 @@ export default function UserDetailPage() {
               <div className="flex items-center gap-3 mb-2">
                 <User className="w-6 h-6 text-accent" />
                 <h1 className="text-2xl font-bold tracking-tight">{summary.playerAlias}</h1>
+                {isOtherUser && (
+                  <Link to={`/compare/${storedUser!.id}/${userId}`} className="btn btn-ghost btn-sm gap-1.5 ml-auto">
+                    <ArrowLeftRight className="w-4 h-4" />
+                    <FormattedMessage defaultMessage="Compare" id="5qGOtz" description="Compare scores button on user detail page" />
+                  </Link>
+                )}
               </div>
 
               {/* Stats row */}
@@ -98,9 +110,7 @@ export default function UserDetailPage() {
                   </div>
                 </div>
                 <div className="bg-base-200 rounded-xl p-3 text-center">
-                  <div className="text-sm font-medium text-base-content/70">
-                    {formatRelativeTimeAuto(summary.lastPlayAt, intl)}
-                  </div>
+                  <div className="text-sm font-medium text-base-content/70">{formatRelativeTimeAuto(summary.lastPlayAt, intl)}</div>
                   <div className="text-xs text-base-content/50">
                     <FormattedMessage defaultMessage="Last Play" id="ap8eaY" description="Last play stat label" />
                   </div>
@@ -122,13 +132,11 @@ export default function UserDetailPage() {
                 <div className="space-y-2">
                   {/* Sort controls */}
                   <div className="flex items-center gap-2 text-xs text-base-content/50 mb-3">
-                    <span><FormattedMessage defaultMessage="Sort by:" id="KYLlCP" description="Sort by label" /></span>
+                    <span>
+                      <FormattedMessage defaultMessage="Sort by:" id="KYLlCP" description="Sort by label" />
+                    </span>
                     {(['name', 'rating', 'score', 'date'] as BestSortKey[]).map((key) => (
-                      <button
-                        key={key}
-                        onClick={() => toggleSort(key)}
-                        className={`btn btn-xs ${sortKey === key ? 'btn-accent' : 'btn-ghost'}`}
-                      >
+                      <button key={key} onClick={() => toggleSort(key)} className={`btn btn-xs ${sortKey === key ? 'btn-accent' : 'btn-ghost'}`}>
                         {key === 'name' && <FormattedMessage defaultMessage="Name" id="vmMgA0" description="Sort by name button" />}
                         {key === 'rating' && <FormattedMessage defaultMessage="Rating" id="bmeBEF" description="Sort by rating button" />}
                         {key === 'score' && <FormattedMessage defaultMessage="Score" id="25MuT/" description="Sort by score button" />}
@@ -166,9 +174,7 @@ export default function UserDetailPage() {
                         </div>
                         <div className="flex items-center gap-2 mt-1">
                           <DifficultyChip stepsType={null} difficulty={play.difficulty} meter={play.difficultyRating} size="sm" />
-                          <span className="text-xs text-base-content/40">
-                            {formatRelativeTimeAuto(play.timestamp, intl)}
-                          </span>
+                          <span className="text-xs text-base-content/40">{formatRelativeTimeAuto(play.timestamp, intl)}</span>
                         </div>
                       </div>
 
@@ -178,7 +184,8 @@ export default function UserDetailPage() {
                           <GradeImage grade={play.grade} className="w-6 h-6" />
                           <span className="tabular-nums text-sm font-medium">
                             {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
-                            <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />{'%'}
+                            <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />
+                            {'%'}
                           </span>
                         </div>
                         <div className="text-xs font-semibold text-accent tabular-nums mt-0.5">

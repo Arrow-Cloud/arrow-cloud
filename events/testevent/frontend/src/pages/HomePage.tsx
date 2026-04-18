@@ -5,10 +5,14 @@ import { useActivity } from '../services/eventStateApi';
 import { formatRelativeTimeAuto } from '@shared/utils/formatRelativeTime';
 import { Sparkles, Music, Info, Users, Activity, Loader2 } from 'lucide-react';
 import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
+import { getStoredUser, computeHighlight, HighlightedAlias } from '@shared/utils/rivalHighlight';
 
 export default function HomePage() {
   const { data, loading, error } = useActivity(30);
   const intl = useIntl();
+  const storedUser = getStoredUser();
+  const currentUserId = storedUser?.id;
+  const rivalIds = storedUser?.rivalUserIds ?? [];
 
   return (
     <div className="pt-24 pb-16 px-4">
@@ -104,75 +108,78 @@ export default function HomePage() {
 
           {!loading && !error && data.length === 0 && (
             <p className="text-center text-base-content/50 py-8 text-sm">
-              <FormattedMessage defaultMessage="No activity yet — scores will appear here as they come in" id="FpXac3" description="Empty activity on home page" />
+              <FormattedMessage
+                defaultMessage="No activity yet — scores will appear here as they come in"
+                id="FpXac3"
+                description="Empty activity on home page"
+              />
             </p>
           )}
 
           {!loading && !error && data.length > 0 && (
             <div className="space-y-2">
-              {data.map((play) => (
-                <div
-                  key={`${play.playId}`}
-                  className="flex items-center gap-3 rounded-xl bg-base-200 p-3 ring-1 ring-base-content/5"
-                >
-                  {/* Banner */}
-                  <Link to={`/chart/${play.chartHash}`} className="w-24 shrink-0 rounded-lg overflow-hidden">
-                    <BannerImage
-                      bannerVariants={play.bannerVariants as any}
-                      mdBannerUrl={play.mdBannerUrl}
-                      smBannerUrl={play.smBannerUrl}
-                      bannerUrl={play.bannerUrl}
-                      alt=""
-                      className="w-full object-cover"
-                      style={{ aspectRatio: '2.56' }}
-                      sizePreference="responsive"
-                    />
-                  </Link>
-
-                  {/* Grade */}
-                  <div className="w-8 shrink-0 flex justify-center">
-                    <GradeImage grade={play.grade} className="w-8 h-8" />
-                  </div>
-
-                  {/* Song + Player info */}
-                  <div className="flex-1 min-w-0">
-                    <Link
-                      to={`/chart/${play.chartHash}`}
-                      className="font-medium text-sm truncate block hover:text-accent transition-colors"
-                    >
-                      {play.songName || <FormattedMessage defaultMessage="Unknown" id="Lppdo1" description="Fallback for unknown song name" />}
+              {data.map((play) => {
+                const hl = computeHighlight(currentUserId, rivalIds, play.userId);
+                return (
+                  <div
+                    key={`${play.playId}`}
+                    className={`flex items-center gap-3 rounded-xl bg-base-200 p-3 ring-1 ring-base-content/5 ${hl.rowGradientClass}`}
+                  >
+                    {/* Banner */}
+                    <Link to={`/chart/${play.chartHash}`} className="w-24 shrink-0 rounded-lg overflow-hidden">
+                      <BannerImage
+                        bannerVariants={play.bannerVariants as any}
+                        mdBannerUrl={play.mdBannerUrl}
+                        smBannerUrl={play.smBannerUrl}
+                        bannerUrl={play.bannerUrl}
+                        alt=""
+                        className="w-full object-cover"
+                        style={{ aspectRatio: '2.56' }}
+                        sizePreference="responsive"
+                      />
                     </Link>
-                    <div className="flex items-center gap-2 text-xs text-base-content/50 mt-0.5">
-                      <Link to={`/user/${play.userId}`} className="hover:text-accent transition-colors">
-                        {play.playerAlias}
-                      </Link>
-                      {play.points > 0 && (
-                        <span className="text-accent font-semibold tabular-nums">
-                          <FormattedMessage
-                            defaultMessage="{points} pt"
-                            id="rj/gZn"
-                            description="Points badge on event chart card"
-                            values={{ points: play.points.toLocaleString() }}
-                          />
-                        </span>
-                      )}
+
+                    {/* Grade */}
+                    <div className="w-8 shrink-0 flex justify-center">
+                      <GradeImage grade={play.grade} className="w-8 h-8" />
                     </div>
-                  </div>
 
-                  {/* Score */}
-                  <div className="text-right shrink-0">
-                    <span className="text-info font-bold tabular-nums">
-                      {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
-                      <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />{'%'}
-                    </span>
-                  </div>
+                    {/* Song + Player info */}
+                    <div className="flex-1 min-w-0">
+                      <Link to={`/chart/${play.chartHash}`} className="font-medium text-sm truncate block hover:text-accent transition-colors">
+                        {play.songName || <FormattedMessage defaultMessage="Unknown" id="Lppdo1" description="Fallback for unknown song name" />}
+                      </Link>
+                      <div className="flex items-center gap-2 text-xs text-base-content/50 mt-0.5">
+                        <Link to={`/user/${play.userId}`} className={`hover:text-accent transition-colors ${hl.playerTextClass}`}>
+                          <HighlightedAlias alias={play.playerAlias} highlight={hl} />
+                        </Link>
+                        {play.points > 0 && (
+                          <span className="text-accent font-semibold tabular-nums">
+                            <FormattedMessage
+                              defaultMessage="{points} pt"
+                              id="rj/gZn"
+                              description="Points badge on event chart card"
+                              values={{ points: play.points.toLocaleString() }}
+                            />
+                          </span>
+                        )}
+                      </div>
+                    </div>
 
-                  {/* Timestamp */}
-                  <div className="text-xs text-base-content/40 shrink-0 w-20 text-right">
-                    {formatRelativeTimeAuto(play.timestamp, intl)}
+                    {/* Score */}
+                    <div className="text-right shrink-0">
+                      <span className="text-info font-bold tabular-nums">
+                        {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+                        <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />
+                        {'%'}
+                      </span>
+                    </div>
+
+                    {/* Timestamp */}
+                    <div className="text-xs text-base-content/40 shrink-0 w-20 text-right">{formatRelativeTimeAuto(play.timestamp, intl)}</div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>

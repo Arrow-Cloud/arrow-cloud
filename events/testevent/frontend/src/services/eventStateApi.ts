@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 
-const STATE_API_URL =
-  (import.meta as any).env?.VITE_EVENT_STATE_API_URL ||
-  'https://4ddpzsx5dsptbocd6xodmdftki0trqos.lambda-url.us-east-2.on.aws';
+const STATE_API_URL = (import.meta as any).env?.VITE_EVENT_STATE_API_URL || 'https://4ddpzsx5dsptbocd6xodmdftki0trqos.lambda-url.us-east-2.on.aws';
 
 export interface PlayItem {
   playId: number;
@@ -41,6 +39,7 @@ export interface ChartMeta {
   songName: string;
   artist: string;
   stepartist: string;
+  stepsType: string | null;
   difficulty: string;
   difficultyRating: number;
   bannerUrl: string | null;
@@ -59,6 +58,16 @@ async function fetchState<T>(path: string): Promise<T> {
   const res = await fetch(`${STATE_API_URL}${path}`);
   if (!res.ok) throw new Error(`Event API error: ${res.status}`);
   return res.json();
+}
+
+// --- Fetch helpers ---
+
+export async function fetchUserBests(userId: string): Promise<{ summary: UserSummary | null; bests: PlayItem[] }> {
+  try {
+    return await fetchState<{ summary: UserSummary; bests: PlayItem[] }>(`/user/${userId}`);
+  } catch {
+    return { summary: null, bests: [] };
+  }
 }
 
 // --- Hooks ---
@@ -81,18 +90,22 @@ export function useLeaderboard(pageSize = 50) {
           setHasMore(!!res.cursor);
         }
       })
-      .catch((err) => { if (!cancelled) setError(err.message); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .catch((err) => {
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [pageSize]);
 
   const loadMore = useCallback(async () => {
     if (!cursorRef.current || loadingMore) return;
     setLoadingMore(true);
     try {
-      const res = await fetchState<PaginatedResponse<UserSummary>>(
-        `/leaderboard?limit=${pageSize}&cursor=${encodeURIComponent(cursorRef.current)}`
-      );
+      const res = await fetchState<PaginatedResponse<UserSummary>>(`/leaderboard?limit=${pageSize}&cursor=${encodeURIComponent(cursorRef.current)}`);
       setData((prev) => [...prev, ...res.data]);
       cursorRef.current = res.cursor || null;
       setHasMore(!!res.cursor);
@@ -114,10 +127,18 @@ export function useActivity(limit = 50) {
   useEffect(() => {
     let cancelled = false;
     fetchState<PaginatedResponse<PlayItem>>(`/activity?limit=${limit}`)
-      .then((res) => { if (!cancelled) setData(res.data); })
-      .catch((err) => { if (!cancelled) setError(err.message); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .then((res) => {
+        if (!cancelled) setData(res.data);
+      })
+      .catch((err) => {
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [limit]);
 
   return { data, loading, error };
@@ -149,9 +170,15 @@ export function useChartDetail(chartHash: string, sort: ChartSort = 'score', pag
           setHasMore(!!res.cursor);
         }
       })
-      .catch((err) => { if (!cancelled) setError(err.message); })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .catch((err) => {
+        if (!cancelled) setError(err.message);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [chartHash, sort, pageSize]);
 
   const loadMore = useCallback(async () => {
@@ -159,7 +186,7 @@ export function useChartDetail(chartHash: string, sort: ChartSort = 'score', pag
     setLoadingMore(true);
     try {
       const res = await fetchState<{ chart: ChartMeta | null; data: PlayItem[]; cursor?: string }>(
-        `/chart/${chartHash}?limit=${pageSize}&sort=${sort}&cursor=${encodeURIComponent(cursorRef.current)}`
+        `/chart/${chartHash}?limit=${pageSize}&sort=${sort}&cursor=${encodeURIComponent(cursorRef.current)}`,
       );
       setScores((prev) => [...prev, ...res.data]);
       cursorRef.current = res.cursor || null;
@@ -200,8 +227,12 @@ export function useUserDetail(userId: string) {
           }
         }
       })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
   }, [userId]);
 
   return { summary, bests, loading, error };
@@ -220,7 +251,9 @@ export function useEventChartsMeta() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => { reload(); }, [reload]);
+  useEffect(() => {
+    reload();
+  }, [reload]);
 
   return { data, loading, error, reload };
 }

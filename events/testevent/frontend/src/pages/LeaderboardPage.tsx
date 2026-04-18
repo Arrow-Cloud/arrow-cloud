@@ -2,9 +2,13 @@ import { Link } from 'react-router-dom';
 import { useLeaderboard } from '../services/eventStateApi';
 import { Trophy, Loader2 } from 'lucide-react';
 import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { getStoredUser, computeHighlight, HighlightedAlias } from '@shared/utils/rivalHighlight';
 
 export default function LeaderboardPage() {
   const { data, loading, loadingMore, error, hasMore, loadMore } = useLeaderboard();
+  const storedUser = getStoredUser();
+  const currentUserId = storedUser?.id;
+  const rivalIds = storedUser?.rivalUserIds ?? [];
 
   return (
     <div className="pt-24 pb-16 px-4">
@@ -63,21 +67,22 @@ export default function LeaderboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {data.map((user, i) => {
-                    const userId = user.userId || user.pk?.replace('USER#', '') || '';
+                  {data.map((entry, i) => {
+                    const userId = entry.userId || entry.pk?.replace('USER#', '') || '';
+                    const hl = computeHighlight(currentUserId, rivalIds, userId);
                     return (
-                      <tr key={userId} className="border-base-content/5 hover:bg-base-200/30">
+                      <tr key={userId} className={`border-base-content/5 hover:bg-base-200/30 ${hl.rowGradientClass}`}>
                         <td className="text-center tabular-nums font-semibold text-base-content/60">{i + 1}</td>
                         <td>
-                          <Link to={`/user/${userId}`} className="font-medium hover:text-accent transition-colors">
-                            {user.playerAlias}
+                          <Link to={`/user/${userId}`} className={`font-medium hover:text-accent transition-colors ${hl.playerTextClass}`}>
+                            <HighlightedAlias alias={entry.playerAlias} highlight={hl} />
                           </Link>
                         </td>
                         <td className="text-right tabular-nums font-bold text-accent">
-                          <FormattedNumber value={user.totalPoints} />
+                          <FormattedNumber value={entry.totalPoints} />
                         </td>
-                        <td className="text-center tabular-nums text-base-content/60">{user.chartsPlayed}</td>
-                        <td className="text-center tabular-nums text-base-content/60">{user.totalPlays}</td>
+                        <td className="text-center tabular-nums text-base-content/60">{entry.chartsPlayed}</td>
+                        <td className="text-center tabular-nums text-base-content/60">{entry.totalPlays}</td>
                       </tr>
                     );
                   })}
@@ -88,10 +93,11 @@ export default function LeaderboardPage() {
             {hasMore && (
               <div className="flex justify-center mt-6">
                 <button className="btn btn-ghost btn-sm" onClick={loadMore} disabled={loadingMore}>
-                  {loadingMore
-                    ? <Loader2 className="w-4 h-4 animate-spin" />
-                    : <FormattedMessage defaultMessage="Load More" id="8abn1D" description="Load more button" />
-                  }
+                  {loadingMore ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <FormattedMessage defaultMessage="Load More" id="8abn1D" description="Load more button" />
+                  )}
                 </button>
               </div>
             )}

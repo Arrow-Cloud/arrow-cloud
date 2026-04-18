@@ -7,12 +7,16 @@ import type { ChartSort } from '../services/eventStateApi';
 import { formatRelativeTimeAuto } from '@shared/utils/formatRelativeTime';
 import { Music, Loader2, ArrowUpDown } from 'lucide-react';
 import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
+import { getStoredUser, computeHighlight, HighlightedAlias } from '@shared/utils/rivalHighlight';
 
 export default function ChartDetailPage() {
   const { chartHash } = useParams<{ chartHash: string }>();
   const [sort, setSort] = useState<ChartSort>('score');
   const { chart, scores, loading, loadingMore, error, hasMore, loadMore } = useChartDetail(chartHash || '', sort);
   const intl = useIntl();
+  const storedUser = getStoredUser();
+  const currentUserId = storedUser?.id;
+  const rivalIds = storedUser?.rivalUserIds ?? [];
 
   function toggleSort(key: ChartSort) {
     if (sort !== key) setSort(key);
@@ -62,7 +66,9 @@ export default function ChartDetailPage() {
               {chart && (
                 <div className="flex flex-wrap items-center gap-2 text-sm text-base-content/50 ml-9">
                   <span>{chart.artist || chart.stepartist}</span>
-                  <span>{chart.difficulty} {chart.difficultyRating}</span>
+                  <span>
+                    {chart.difficulty} {chart.difficultyRating}
+                  </span>
                   {chart.maxPoints > 0 && (
                     <>
                       <span className="text-accent font-semibold">
@@ -116,27 +122,29 @@ export default function ChartDetailPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {scores.map((play, i) => (
-                        <tr key={play.userId || play.playId} className="border-base-content/5 hover:bg-base-200/30">
-                          <td className="text-center tabular-nums font-semibold text-base-content/60">{i + 1}</td>
-                          <td>
-                            <Link to={`/user/${play.userId}`} className="font-medium hover:text-accent transition-colors">
-                              {play.playerAlias}
-                            </Link>
-                          </td>
-                          <td className="text-center">
-                            <GradeImage grade={play.grade} className="w-6 h-6 inline-block" />
-                          </td>
-                          <td className="text-right tabular-nums">
-                            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
-                            <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />{'%'}
-                          </td>
-                          <td className="text-right tabular-nums font-semibold text-accent">{play.points.toLocaleString()}</td>
-                          <td className="text-right text-xs text-base-content/50">
-                            {formatRelativeTimeAuto(play.timestamp, intl)}
-                          </td>
-                        </tr>
-                      ))}
+                      {scores.map((play, i) => {
+                        const hl = computeHighlight(currentUserId, rivalIds, play.userId);
+                        return (
+                          <tr key={play.userId || play.playId} className={`border-base-content/5 hover:bg-base-200/30 ${hl.rowGradientClass}`}>
+                            <td className="text-center tabular-nums font-semibold text-base-content/60">{i + 1}</td>
+                            <td>
+                              <Link to={`/user/${play.userId}`} className={`font-medium hover:text-accent transition-colors ${hl.playerTextClass}`}>
+                                <HighlightedAlias alias={play.playerAlias} highlight={hl} />
+                              </Link>
+                            </td>
+                            <td className="text-center">
+                              <GradeImage grade={play.grade} className="w-6 h-6 inline-block" />
+                            </td>
+                            <td className="text-right tabular-nums">
+                              {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+                              <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />
+                              {'%'}
+                            </td>
+                            <td className="text-right tabular-nums font-semibold text-accent">{play.points.toLocaleString()}</td>
+                            <td className="text-right text-xs text-base-content/50">{formatRelativeTimeAuto(play.timestamp, intl)}</td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
@@ -144,10 +152,11 @@ export default function ChartDetailPage() {
                 {hasMore && (
                   <div className="flex justify-center mt-6">
                     <button className="btn btn-ghost btn-sm" onClick={loadMore} disabled={loadingMore}>
-                      {loadingMore
-                        ? <Loader2 className="w-4 h-4 animate-spin" />
-                        : <FormattedMessage defaultMessage="Load More" id="8abn1D" description="Load more button" />
-                      }
+                      {loadingMore ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <FormattedMessage defaultMessage="Load More" id="8abn1D" description="Load more button" />
+                      )}
                     </button>
                   </div>
                 )}

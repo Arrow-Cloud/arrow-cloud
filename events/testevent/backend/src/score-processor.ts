@@ -29,6 +29,7 @@ interface ChartMeta {
   songName: string;
   artist: string;
   stepartist: string;
+  stepsType: string | null;
   difficulty: string;
   difficultyRating: number;
   bannerUrl: string | null;
@@ -53,17 +54,16 @@ interface BestItem {
 async function getChartMeta(chartHash: string): Promise<ChartMeta> {
   const cached = await getState<ChartMeta>(`CHART#${chartHash}`, '#META');
   // Re-fetch if cached data is missing banner variant fields (added after initial cache)
-  if (cached?.songName && 'mdBannerUrl' in cached) return cached;
+  if (cached?.songName && 'mdBannerUrl' in cached && 'stepsType' in cached) return cached;
 
-  const { eventChart } = await apiFetch<EventChartApiResponse>(
-    `/event/${EVENT_ID}/chart/${chartHash}`,
-  );
+  const { eventChart } = await apiFetch<EventChartApiResponse>(`/event/${EVENT_ID}/chart/${chartHash}`);
 
   const chart = eventChart.chart;
   const meta: ChartMeta = {
     songName: chart.songName || 'Unknown',
     artist: chart.artist || 'Unknown',
     stepartist: chart.stepartist || chart.credit || 'Unknown',
+    stepsType: chart.stepsType || null,
     difficulty: chart.difficulty || 'Unknown',
     difficultyRating: chart.meter ?? chart.rating ?? 0,
     bannerUrl: chart.bannerUrl || null,
@@ -96,19 +96,24 @@ async function recomputeUserSummary(userId: string, playerAlias: string): Promis
   // Count total plays from PLAY items
   const plays = await queryState<{ pk: string }>(`USER#${userId}`, 'PLAY#');
 
-  await putState(`USER#${userId}`, '#SUMMARY', {
-    type: 'USER_SUMMARY',
-    userId,
-    playerAlias,
-    totalScore,
-    totalPoints,
-    chartsPlayed,
-    totalPlays: plays.length,
-    lastPlayAt: new Date().toISOString(),
-  }, {
-    gsi2pk: 'LEADERBOARD',
-    gsi2sk: `${pointsToSortKey(totalPoints)}#${userId}`,
-  });
+  await putState(
+    `USER#${userId}`,
+    '#SUMMARY',
+    {
+      type: 'USER_SUMMARY',
+      userId,
+      playerAlias,
+      totalScore,
+      totalPoints,
+      chartsPlayed,
+      totalPlays: plays.length,
+      lastPlayAt: new Date().toISOString(),
+    },
+    {
+      gsi2pk: 'LEADERBOARD',
+      gsi2sk: `${pointsToSortKey(totalPoints)}#${userId}`,
+    },
+  );
 }
 
 /**
@@ -123,9 +128,7 @@ async function processRecord(record: SQSRecord): Promise<void> {
   const snsWrapper = JSON.parse(record.body);
   const event: ScoreSubmissionEvent = JSON.parse(snsWrapper.Message);
 
-  console.log(
-    `[${EVENT_SLUG}] Score received: chart=${event.chartHash} user=${event.userId} play=${event.play.id}`,
-  );
+  console.log(`[${EVENT_SLUG}] Score received: chart=${event.chartHash} user=${event.userId} play=${event.play.id}`);
 
   // Fetch enriched play data from the API
   const play = await apiFetch<PlayApiResponse>(`/play/${event.play.id}`);
@@ -156,6 +159,7 @@ async function processRecord(record: SQSRecord): Promise<void> {
       songName: chartMeta.songName,
       artist: chartMeta.artist,
       stepartist: chartMeta.stepartist,
+      stepsType: chartMeta.stepsType,
       difficulty: chartMeta.difficulty,
       difficultyRating: chartMeta.difficultyRating,
       bannerUrl: chartMeta.bannerUrl,
@@ -179,32 +183,38 @@ async function processRecord(record: SQSRecord): Promise<void> {
   // 2. Check/update personal best
   const currentBest = await getState<BestItem>(`USER#${userId}`, `BEST#${event.chartHash}`);
   if (!currentBest || scoreData.score > currentBest.score) {
-    await putState(`USER#${userId}`, `BEST#${event.chartHash}`, {
-      type: 'BEST',
-      playId,
-      userId,
-      chartHash: event.chartHash,
-      songName: chartMeta.songName,
-      artist: chartMeta.artist,
-      stepartist: chartMeta.stepartist,
-      difficulty: chartMeta.difficulty,
-      difficultyRating: chartMeta.difficultyRating,
-      bannerUrl: chartMeta.bannerUrl,
-      mdBannerUrl: chartMeta.mdBannerUrl,
-      smBannerUrl: chartMeta.smBannerUrl,
-      bannerVariants: chartMeta.bannerVariants || null,
-      score: scoreData.score,
-      grade: scoreData.grade,
-      points,
-      maxPoints: chartMeta.maxPoints,
-      timestamp,
-      playerAlias,
-    }, {
-      gsi1pk: `CHARTBEST#${event.chartHash}`,
-      gsi1sk: `${scoreToSortKey(scoreData.score)}#${userId}`,
-      gsi2pk: `CHARTTIME#${event.chartHash}`,
-      gsi2sk: `${timestamp}#${userId}`,
-    });
+    await putState(
+      `USER#${userId}`,
+      `BEST#${event.chartHash}`,
+      {
+        type: 'BEST',
+        playId,
+        userId,
+        chartHash: event.chartHash,
+        songName: chartMeta.songName,
+        artist: chartMeta.artist,
+        stepartist: chartMeta.stepartist,
+        stepsType: chartMeta.stepsType,
+        difficulty: chartMeta.difficulty,
+        difficultyRating: chartMeta.difficultyRating,
+        bannerUrl: chartMeta.bannerUrl,
+        mdBannerUrl: chartMeta.mdBannerUrl,
+        smBannerUrl: chartMeta.smBannerUrl,
+        bannerVariants: chartMeta.bannerVariants || null,
+        score: scoreData.score,
+        grade: scoreData.grade,
+        points,
+        maxPoints: chartMeta.maxPoints,
+        timestamp,
+        playerAlias,
+      },
+      {
+        gsi1pk: `CHARTBEST#${event.chartHash}`,
+        gsi1sk: `${scoreToSortKey(scoreData.score)}#${userId}`,
+        gsi2pk: `CHARTTIME#${event.chartHash}`,
+        gsi2sk: `${timestamp}#${userId}`,
+      },
+    );
   }
 
   // 3. Recompute user summary
