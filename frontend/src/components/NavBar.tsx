@@ -63,7 +63,16 @@ const DropDownIconMenuItem: React.FC<DropDownIconMenuItemProps> = ({ icon, child
   );
 };
 
-const NavBar: React.FC = () => {
+interface NavBarProps {
+  /** When true, hides admin tools and browse menu */
+  eventMode?: boolean;
+  /** Custom logo element to replace the default Arrow Cloud logo */
+  logo?: React.ReactNode;
+  /** Extra elements to render in the nav bar (e.g. theme toggle) */
+  extra?: React.ReactNode;
+}
+
+const NavBar: React.FC<NavBarProps> = ({ eventMode = false, logo, extra }) => {
   const navigate = useNavigate();
   const { formatMessage } = useIntl();
   const { user, logout, hasPermission, hasAny } = useAuth();
@@ -76,7 +85,7 @@ const NavBar: React.FC = () => {
   // Admin permissions
   const canUploadPacks = hasPermission('packs.upload');
   const canBanUsers = hasPermission('users.ban');
-  const hasAnyAdmin = hasAny([canUploadPacks ? 'packs.upload' : '', canBanUsers ? 'users.ban' : ''].filter(Boolean));
+  const hasAnyAdmin = !eventMode && hasAny([canUploadPacks ? 'packs.upload' : '', canBanUsers ? 'users.ban' : ''].filter(Boolean));
 
   const handleLogout = () => {
     logout();
@@ -119,45 +128,53 @@ const NavBar: React.FC = () => {
       <div className="navbar bg-base-100/80 backdrop-blur-sm shadow-lg">
         <div className="flex-1">
           <Link to="/" className="inline-flex pl-3">
-            <img
-              src="https://assets.arrowcloud.dance/logos/20250725/text-t.png"
-              alt={formatMessage({ defaultMessage: 'Arrow Cloud Logo', id: 'viVXqx', description: 'Alt text for the Arrow Cloud logo in the navigation bar' })}
-              className="h-14 w-auto mr-2"
-            />
+            {logo || (
+              <img
+                src="https://assets.arrowcloud.dance/logos/20250725/text-t.png"
+                alt={formatMessage({ defaultMessage: 'Arrow Cloud Logo', id: 'viVXqx', description: 'Alt text for the Arrow Cloud logo in the navigation bar' })}
+                className="h-14 w-auto mr-2"
+              />
+            )}
           </Link>
         </div>
 
         {/* Desktop Navigation */}
         <div className="flex-none hidden lg:flex">
           {/* Browse Dropdown */}
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost">
-              {formatMessage({ defaultMessage: 'Browse', id: 'dlu2Wl', description: 'Navigation menu button to browse content' })}
-              <ChevronDown className="w-4 h-4 ml-1" />
+          {!eventMode && (
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost">
+                {formatMessage({ defaultMessage: 'Browse', id: 'dlu2Wl', description: 'Navigation menu button to browse content' })}
+                <ChevronDown className="w-4 h-4 ml-1" />
+              </div>
+              <ul tabIndex={0} className="dropdown-content bg-base-100 rounded-box z-[1] w-32 p-2 shadow-2xl border border-base-300 mt-3 menu">
+                <BrowseMenuItem to="/packs">
+                  {formatMessage({ defaultMessage: 'Packs', id: 'EaTIYv', description: 'Navigation menu item for packs' })}
+                </BrowseMenuItem>
+                <BrowseMenuItem to="/charts">
+                  {formatMessage({ defaultMessage: 'Charts', id: '94Mbq6', description: 'Navigation menu item for charts' })}
+                </BrowseMenuItem>
+                <BrowseMenuItem to="/users">
+                  {formatMessage({ defaultMessage: 'Users', id: '5sAIEv', description: 'Navigation menu item for users' })}
+                </BrowseMenuItem>
+                <BrowseMenuItem to="/help">
+                  {formatMessage({ defaultMessage: 'Help', id: 'BkGM9i', description: 'Navigation menu item for help' })}
+                </BrowseMenuItem>
+              </ul>
             </div>
-            <ul tabIndex={0} className="dropdown-content bg-base-100 rounded-box z-[1] w-32 p-2 shadow-2xl border border-base-300 mt-3 menu">
-              <BrowseMenuItem to="/packs">
-                {formatMessage({ defaultMessage: 'Packs', id: 'EaTIYv', description: 'Navigation menu item for packs' })}
-              </BrowseMenuItem>
-              <BrowseMenuItem to="/charts">
-                {formatMessage({ defaultMessage: 'Charts', id: '94Mbq6', description: 'Navigation menu item for charts' })}
-              </BrowseMenuItem>
-              <BrowseMenuItem to="/users">
-                {formatMessage({ defaultMessage: 'Users', id: '5sAIEv', description: 'Navigation menu item for users' })}
-              </BrowseMenuItem>
-              <BrowseMenuItem to="/help">
-                {formatMessage({ defaultMessage: 'Help', id: 'BkGM9i', description: 'Navigation menu item for help' })}
-              </BrowseMenuItem>
-            </ul>
-          </div>
+          )}
 
-          <DropDownIconMenuItem icon={<Palette className="w-5 h-5" />} dropdownWidth="w-64" dropdownType="content">
-            <ThemeController />
-          </DropDownIconMenuItem>
+          {!eventMode && (
+            <DropDownIconMenuItem icon={<Palette className="w-5 h-5" />} dropdownWidth="w-64" dropdownType="content">
+              <ThemeController />
+            </DropDownIconMenuItem>
+          )}
 
-          <DropDownIconMenuItem icon={<Languages className="w-5 h-5" />} dropdownWidth="w-64" dropdownType="content">
-            <LocaleController />
-          </DropDownIconMenuItem>
+          {!eventMode && (
+            <DropDownIconMenuItem icon={<Languages className="w-5 h-5" />} dropdownWidth="w-64" dropdownType="content">
+              <LocaleController />
+            </DropDownIconMenuItem>
+          )}
 
           {/* Admin Dropdown (desktop) */}
           {hasAnyAdmin && (
@@ -169,6 +186,8 @@ const NavBar: React.FC = () => {
               )}
             </DropDownIconMenuItem>
           )}
+
+          {extra}
 
           {/* Notification Bell (desktop) */}
           {user && <NotificationBell />}
@@ -273,101 +292,107 @@ const NavBar: React.FC = () => {
               {/* Mobile Menu Items */}
               <div className="space-y-2">
                 {/* Browse Collapsible */}
-                <div>
-                  <button
-                    className="w-full flex items-center justify-between p-3 text-left hover:bg-base-200 rounded-lg transition-colors"
-                    onClick={handleBrowseToggle}
-                  >
-                    <span className="font-medium">
-                      {formatMessage({ defaultMessage: 'Browse', id: 'yM3blP', description: 'Mobile menu section for browsing content' })}
-                    </span>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isBrowseOpen ? 'rotate-180' : ''}`} />
-                  </button>
+                {!eventMode && (
+                  <div>
+                    <button
+                      className="w-full flex items-center justify-between p-3 text-left hover:bg-base-200 rounded-lg transition-colors"
+                      onClick={handleBrowseToggle}
+                    >
+                      <span className="font-medium">
+                        {formatMessage({ defaultMessage: 'Browse', id: 'yM3blP', description: 'Mobile menu section for browsing content' })}
+                      </span>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${isBrowseOpen ? 'rotate-180' : ''}`} />
+                    </button>
 
-                  {isBrowseOpen && (
-                    <div className="ml-4 mt-2 space-y-1">
-                      <button
-                        className="w-full text-left p-2 text-sm hover:bg-base-200 rounded transition-colors"
-                        onClick={() => {
-                          navigate('/packs');
-                          closeMobileMenu();
-                        }}
-                      >
-                        {formatMessage({ defaultMessage: 'Packs', id: 'C22vWu', description: 'Mobile menu item for packs' })}
-                      </button>
-                      <button
-                        className="w-full text-left p-2 text-sm hover:bg-base-200 rounded transition-colors"
-                        onClick={() => {
-                          navigate('/charts');
-                          closeMobileMenu();
-                        }}
-                      >
-                        {formatMessage({ defaultMessage: 'Charts', id: 'Wc2PQF', description: 'Mobile menu item for charts' })}
-                      </button>
-                      <button
-                        className="w-full text-left p-2 text-sm hover:bg-base-200 rounded transition-colors"
-                        onClick={() => {
-                          navigate('/users');
-                          closeMobileMenu();
-                        }}
-                      >
-                        {formatMessage({ defaultMessage: 'Users', id: 'hZH12I', description: 'Mobile menu item for users' })}
-                      </button>
-                      <button
-                        className="w-full text-left p-2 text-sm hover:bg-base-200 rounded transition-colors"
-                        onClick={() => {
-                          navigate('/help');
-                          closeMobileMenu();
-                        }}
-                      >
-                        {formatMessage({ defaultMessage: 'Help', id: 'xJhO/K', description: 'Mobile menu item for help' })}
-                      </button>
-                    </div>
-                  )}
-                </div>
+                    {isBrowseOpen && (
+                      <div className="ml-4 mt-2 space-y-1">
+                        <button
+                          className="w-full text-left p-2 text-sm hover:bg-base-200 rounded transition-colors"
+                          onClick={() => {
+                            navigate('/packs');
+                            closeMobileMenu();
+                          }}
+                        >
+                          {formatMessage({ defaultMessage: 'Packs', id: 'C22vWu', description: 'Mobile menu item for packs' })}
+                        </button>
+                        <button
+                          className="w-full text-left p-2 text-sm hover:bg-base-200 rounded transition-colors"
+                          onClick={() => {
+                            navigate('/charts');
+                            closeMobileMenu();
+                          }}
+                        >
+                          {formatMessage({ defaultMessage: 'Charts', id: 'Wc2PQF', description: 'Mobile menu item for charts' })}
+                        </button>
+                        <button
+                          className="w-full text-left p-2 text-sm hover:bg-base-200 rounded transition-colors"
+                          onClick={() => {
+                            navigate('/users');
+                            closeMobileMenu();
+                          }}
+                        >
+                          {formatMessage({ defaultMessage: 'Users', id: 'hZH12I', description: 'Mobile menu item for users' })}
+                        </button>
+                        <button
+                          className="w-full text-left p-2 text-sm hover:bg-base-200 rounded transition-colors"
+                          onClick={() => {
+                            navigate('/help');
+                            closeMobileMenu();
+                          }}
+                        >
+                          {formatMessage({ defaultMessage: 'Help', id: 'xJhO/K', description: 'Mobile menu item for help' })}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Theme Controller */}
-                <div>
-                  <button
-                    className="w-full flex items-center justify-between p-3 text-left hover:bg-base-200 rounded-lg transition-colors"
-                    onClick={handleThemeToggle}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Palette className="w-5 h-5" />
-                      <span className="font-medium">
-                        {formatMessage({ defaultMessage: 'Theme', id: 'HlcJcp', description: 'Mobile menu section for theme selection' })}
-                      </span>
-                    </div>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isThemeOpen ? 'rotate-180' : ''}`} />
-                  </button>
+                {!eventMode && (
+                  <div>
+                    <button
+                      className="w-full flex items-center justify-between p-3 text-left hover:bg-base-200 rounded-lg transition-colors"
+                      onClick={handleThemeToggle}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Palette className="w-5 h-5" />
+                        <span className="font-medium">
+                          {formatMessage({ defaultMessage: 'Theme', id: 'HlcJcp', description: 'Mobile menu section for theme selection' })}
+                        </span>
+                      </div>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${isThemeOpen ? 'rotate-180' : ''}`} />
+                    </button>
 
-                  {isThemeOpen && (
-                    <div className="ml-4 mt-2">
-                      <ThemeController />
-                    </div>
-                  )}
-                </div>
+                    {isThemeOpen && (
+                      <div className="ml-4 mt-2">
+                        <ThemeController />
+                      </div>
+                    )}
+                  </div>
+                )}
 
-                <div>
-                  <button
-                    className="w-full flex items-center justify-between p-3 text-left hover:bg-base-200 rounded-lg transition-colors"
-                    onClick={handleLanguageToggle}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Languages className="w-5 h-5" />
-                      <span className="font-medium">
-                        {formatMessage({ defaultMessage: 'Language', id: 'XRHhsa', description: 'Mobile menu section for language selection' })}
-                      </span>
-                    </div>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${isThemeOpen ? 'rotate-180' : ''}`} />
-                  </button>
+                {!eventMode && (
+                  <div>
+                    <button
+                      className="w-full flex items-center justify-between p-3 text-left hover:bg-base-200 rounded-lg transition-colors"
+                      onClick={handleLanguageToggle}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Languages className="w-5 h-5" />
+                        <span className="font-medium">
+                          {formatMessage({ defaultMessage: 'Language', id: 'XRHhsa', description: 'Mobile menu section for language selection' })}
+                        </span>
+                      </div>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${isThemeOpen ? 'rotate-180' : ''}`} />
+                    </button>
 
-                  {isLanguageOpen && (
-                    <div className="ml-4 mt-2">
-                      <LocaleController />
-                    </div>
-                  )}
-                </div>
+                    {isLanguageOpen && (
+                      <div className="ml-4 mt-2">
+                        <LocaleController />
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Admin (mobile) */}
                 {hasAnyAdmin && (
@@ -400,6 +425,12 @@ const NavBar: React.FC = () => {
                         )}
                       </div>
                     )}
+                  </div>
+                )}
+
+                {extra && (
+                  <div className="py-2">
+                    {extra}
                   </div>
                 )}
 

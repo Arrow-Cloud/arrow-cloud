@@ -1,8 +1,11 @@
 import * as cdk from 'aws-cdk-lib';
 import { ApiStack } from '../lib/api-stack';
 import { FrontendStack } from '../lib/frontend-stack';
-import { CertificatesStackUsEast1, CertificatesStackUsEast2 } from '../lib/certificates-stack';
+import { CertificatesStackUsEast1, CertificatesStackUsEast2, WildcardCertificateStack } from '../lib/certificates-stack';
 import { ShareServiceStack } from '../lib/share-service-stack';
+import { EventSiteStack } from '../lib/event-site-stack';
+import { EventBackendConstruct } from '../lib/event-backend-construct';
+import * as path from 'path';
 
 const app = new cdk.App();
 
@@ -21,6 +24,12 @@ new CertificatesStackUsEast2(app, 'CertificatesUsEast2', {
   domainName,
 });
 
+// Wildcard cert for event subdomains (*.arrowcloud.dance) — deploy independently
+new WildcardCertificateStack(app, 'WildcardCertificate', {
+  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' },
+  domainName,
+});
+
 // Main stacks
 const apiStack = new ApiStack(app, 'ApiStack');
 new FrontendStack(app, 'FrontendStack');
@@ -31,4 +40,37 @@ new ShareServiceStack(app, 'ShareServiceStack', {
   dbSecurityGroup: apiStack.dbSecurityGroup,
   databaseSecret: apiStack.databaseSecret,
   scoresBucket: apiStack.scoresBucket,
+});
+
+// === Event Sites ===
+// Wildcard cert ARN from context (set after deploying WildcardCertificate stack)
+const wildcardCertArn = app.node.tryGetContext('wildcardCertArn') as string | undefined;
+
+if (wildcardCertArn) {
+  new EventSiteStack(app, 'EventSite-testevent', {
+    subdomain: 'testevent',
+    domainName,
+    wildcardCertArn,
+    distPath: '../events/testevent/frontend/dist',
+  });
+}
+
+// === Event Backends ===
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const testeventConfig = require('../../events/testevent/backend/config.json');
+
+new EventBackendConstruct(apiStack, 'EventBackend-testevent', {
+  eventSlug: 'testevent',
+  scoreSubmissionTopic: apiStack.scoreSubmissionTopic,
+  chartHashes: testeventConfig.chartHashes,
+  scoreProcessorCodePath: path.join(__dirname, '../../events/testevent/backend/dist'),
+  scoreProcessorHandler: 'score-processor.handler',
+  scheduledProcessorCodePath: path.join(__dirname, '../../events/testevent/backend/dist'),
+  scheduledProcessorHandler: 'scheduled-processor.handler',
+  readApiCodePath: path.join(__dirname, '../../events/testevent/backend/dist'),
+  readApiHandler: 'read-api.handler',
+  environment: {
+    LEADERBOARD_TYPE: testeventConfig.leaderboardType || 'EX',
+    EVENT_ID: String(testeventConfig.eventId),
+  },
 });

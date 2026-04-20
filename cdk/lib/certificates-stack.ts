@@ -40,6 +40,28 @@ export class CertificatesStackUsEast1 extends cdk.Stack {
   }
 }
 
+export class WildcardCertificateStack extends cdk.Stack {
+  public readonly wildcardCertArn: string;
+
+  constructor(scope: Construct, id: string, props: CertificatesStackProps) {
+    super(scope, id, props);
+
+    const { domainName } = props;
+
+    const wildcardCert = new acm.Certificate(this, 'WildcardCert', {
+      domainName: `*.${domainName}`,
+      validation: acm.CertificateValidation.fromDns(), // manual DNS validation at Porkbun
+    });
+
+    this.wildcardCertArn = wildcardCert.certificateArn;
+
+    new cdk.CfnOutput(this, 'WildcardCertificateArn', {
+      value: wildcardCert.certificateArn,
+      description: `ACM wildcard certificate ARN (us-east-1) for *.${domainName} — use for event subdomains`,
+    });
+  }
+}
+
 export class CertificatesStackUsEast2 extends cdk.Stack {
   public readonly apiCertArn: string;
 

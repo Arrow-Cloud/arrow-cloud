@@ -26,6 +26,7 @@ export class ApiStack extends cdk.Stack {
   public readonly dbSecurityGroup: ec2.ISecurityGroup;
   public readonly databaseSecret: secretsmanager.ISecret;
   public readonly scoresBucket: s3.IBucket;
+  public readonly scoreSubmissionTopic: sns.ITopic;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -699,5 +700,6 @@ export class ApiStack extends cdk.Stack {
     this.dbSecurityGroup = dbSecurityGroup;
     this.databaseSecret = database.secret!;
     this.scoresBucket = s3BucketScores;
+    this.scoreSubmissionTopic = scoreSubmissionTopic;
   }
 }
