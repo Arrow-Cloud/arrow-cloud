@@ -183,8 +183,9 @@ export default function UserDetailPage() {
                         <div className="flex items-center justify-end gap-2">
                           <GradeImage grade={play.grade} className="w-6 h-6" />
                           <span className="tabular-nums text-sm font-medium">
-                            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+                            {}
                             <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />
+                            {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
                             {'%'}
                           </span>
                         </div>

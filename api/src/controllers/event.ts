@@ -232,3 +232,143 @@ export async function getEventChart(event: ExtendedAPIGatewayProxyEvent, prisma:
     return respond(500, { error: 'Internal server error' });
   }
 }
+
+const BackfillQuerySchema = z.object({
+  since: z.string().datetime().optional(),
+  leaderboardType: z.string().optional().default('EX'),
+});
+
+/**
+ * Get all plays for an event in a denormalized format optimized for backfill.
+ * Returns chart metadata + flat play rows with scores pre-extracted.
+ *
+ * GET /event/{eventId}/backfill?leaderboardType=EX&since=2024-01-01T00:00:00Z
+ */
+export async function getEventBackfill(event: ExtendedAPIGatewayProxyEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> {
+  const eventId = parseInt(event.routeParameters?.eventId || '', 10);
+
+  try {
+    const queryParams = event.queryStringParameters || {};
+    const { since, leaderboardType } = BackfillQuerySchema.parse(queryParams);
+
+    // Find the leaderboard ID for the requested type
+    const leaderboard = await prisma.leaderboard.findFirst({
+      where: { type: leaderboardType },
+      select: { id: true },
+    });
+    if (!leaderboard) {
+      return respond(400, { error: `Leaderboard type "${leaderboardType}" not found` });
+    }
+
+    // Get all event charts with full metadata in one query
+    const eventCharts = await prisma.eventChart.findMany({
+      where: { eventId },
+      include: {
+        chart: {
+          select: {
+            hash: true,
+            songName: true,
+            artist: true,
+            stepsType: true,
+            difficulty: true,
+            meter: true,
+            stepartist: true,
+            credit: true,
+            simfiles: {
+              orderBy: { createdAt: 'asc' },
+              select: {
+                createdAt: true,
+                simfile: {
+                  select: {
+                    bannerUrl: true,
+                    mdBannerUrl: true,
+                    smBannerUrl: true,
+                    bannerVariants: true,
+                    pack: {
+                      select: {
+                        bannerUrl: true,
+                        mdBannerUrl: true,
+                        smBannerUrl: true,
+                        bannerVariants: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const chartHashes = eventCharts.map((ec) => ec.chartHash);
+
+    // Build charts response with resolved banners
+    const charts = eventCharts.map((ec) => {
+      const banner = resolveChartBanner(ec.chart.simfiles);
+      return {
+        chartHash: ec.chartHash,
+        songName: ec.chart.songName || 'Unknown',
+        artist: ec.chart.artist || 'Unknown',
+        stepartist: ec.chart.stepartist || ec.chart.credit || 'Unknown',
+        stepsType: ec.chart.stepsType || null,
+        difficulty: ec.chart.difficulty || 'Unknown',
+        meter: ec.chart.meter ?? 0,
+        bannerUrl: banner.bannerUrl,
+        mdBannerUrl: banner.mdBannerUrl,
+        smBannerUrl: banner.smBannerUrl,
+        bannerVariants: banner.bannerVariants || null,
+        maxPoints: ((ec.metadata as Record<string, unknown>)?.points as number) || 0,
+      };
+    });
+
+    // Get all plays for event charts, joined with their leaderboard scores
+    const playRecords = await prisma.play.findMany({
+      where: {
+        chartHash: { in: chartHashes },
+        ...(since ? { createdAt: { gte: new Date(since) } } : {}),
+        PlayLeaderboard: {
+          some: { leaderboardId: leaderboard.id },
+        },
+      },
+      select: {
+        id: true,
+        chartHash: true,
+        createdAt: true,
+        user: {
+          select: { id: true, alias: true },
+        },
+        PlayLeaderboard: {
+          where: { leaderboardId: leaderboard.id },
+          select: { data: true },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
+
+    // Flatten into denormalized play rows
+    const plays = playRecords
+      .map((play) => {
+        const lbData = play.PlayLeaderboard[0]?.data as { score?: string; grade?: string } | null;
+        if (!lbData?.score) return null;
+        return {
+          playId: play.id,
+          userId: play.user.id,
+          playerAlias: play.user.alias,
+          chartHash: play.chartHash,
+          score: parseFloat(lbData.score),
+          grade: lbData.grade || '',
+          createdAt: play.createdAt.toISOString(),
+        };
+      })
+      .filter((p): p is NonNullable<typeof p> => p !== null);
+
+    return respond(200, { charts, plays });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return respond(400, { error: 'Invalid query parameters', details: error.errors });
+    }
+    console.error('Error getting event backfill:', error);
+    return respond(500, { error: 'Internal server error' });
+  }
+}

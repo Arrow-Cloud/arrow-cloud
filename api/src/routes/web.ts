@@ -33,7 +33,7 @@ import { getSession, getRecentSessions, getUserSessions } from '../controllers/s
 import { getWidgetData } from '../controllers/widget';
 import { getGlobalRecentScores } from '../controllers/global-scores';
 import { listNotifications, markRead, markAllRead } from '../controllers/notifications';
-import { getEvent, getEventCharts, getEventChart } from '../controllers/event';
+import { getEvent, getEventCharts, getEventChart, getEventBackfill } from '../controllers/event';
 
 export const webRoutes: Routes = {
   '/login': {
@@ -429,6 +429,15 @@ export const webRoutes: Routes = {
       patternMatching: {
         eventId: /\d+/,
         chartHash: /[a-f0-9]+/,
+      },
+    },
+  },
+  '/event/{eventId}/backfill': {
+    GET: {
+      handler: getEventBackfill,
+      requiresAuth: false,
+      patternMatching: {
+        eventId: /\d+/,
       },
     },
   },

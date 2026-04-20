@@ -1,110 +1,159 @@
 import type { ScheduledHandler } from 'aws-lambda';
 import {
-  EVENT_SLUG,
-  CHART_HASHES,
-  queryGsi,
-  queryState,
+  apiFetch,
   getState,
-  updateGsiKeys,
-  updateAttributes,
-  scoreToSortKey,
-  pointsToSortKey,
+  putState,
+  buildPlayData,
+  buildBestData,
+  recomputeUserSummary,
+  EVENT_SLUG,
+  EVENT_ID,
+  LEADERBOARD_TYPE,
+  type ChartMeta,
+  type BestItem,
+  type BackfillApiResponse,
+  type BackfillChart,
+  type BackfillPlay,
 } from './shared';
 
-interface BestItem {
-  pk: string;
-  sk: string;
-  chartHash: string;
-  score: number;
-  userId: string;
-  timestamp: string;
-  playerAlias?: string;
-  gsi1pk?: string;
-  gsi2pk?: string;
-}
-
-interface UserSummary {
-  pk: string;
-  sk: string;
-  totalPoints: number;
-  userId: string;
-  playerAlias: string;
-  gsi2pk?: string;
+/**
+ * Convert a BackfillChart (from the API) into a ChartMeta (used by DDB record builders).
+ */
+function toChartMeta(chart: BackfillChart): ChartMeta {
+  return {
+    songName: chart.songName,
+    artist: chart.artist,
+    stepartist: chart.stepartist,
+    stepsType: chart.stepsType,
+    difficulty: chart.difficulty,
+    difficultyRating: chart.meter,
+    bannerUrl: chart.bannerUrl,
+    mdBannerUrl: chart.mdBannerUrl,
+    smBannerUrl: chart.smBannerUrl,
+    bannerVariants: chart.bannerVariants,
+    maxPoints: chart.maxPoints,
+  };
 }
 
 /**
- * Backfill GSI keys and missing fields on existing BEST and USER_SUMMARY items.
- * Uses conditional writes for GSI keys (safe to run repeatedly).
- * Also patches playerAlias onto BEST items that are missing it.
+ * Fetch all event plays from the backfill API. Supports incremental sync via `since`.
  */
-async function backfillGsiKeys(): Promise<{ bests: number; summaries: number; aliases: number }> {
-  // Discover all user IDs from chart plays
-  const allUserIds = new Set<string>();
-  for (const chartHash of CHART_HASHES) {
-    const plays = await queryGsi<{ userId: string }>(
-      'gsi1', 'gsi1pk', `CHART#${chartHash}`, { scanForward: false, limit: 1000 },
-    );
-    for (const play of plays) {
-      if (play.userId) allUserIds.add(play.userId);
+async function fetchBackfillData(since?: string): Promise<BackfillApiResponse> {
+  const params = new URLSearchParams({ leaderboardType: LEADERBOARD_TYPE });
+  if (since) params.set('since', since);
+  return apiFetch<BackfillApiResponse>(`/event/${EVENT_ID}/backfill?${params}`);
+}
+
+/**
+ * Full reconciliation pipeline:
+ *
+ * 1. Fetch all plays from the source-of-truth API
+ * 2. Write/refresh CHART#META items
+ * 3. Backfill any missing PLAY items
+ * 4. Reconcile BEST items (correct stale/wrong bests)
+ * 5. Recompute USER_SUMMARY for affected users
+ */
+async function reconcile(since?: string): Promise<{
+  chartsRefreshed: number;
+  playsWritten: number;
+  bestsFixed: number;
+  summariesRecomputed: number;
+}> {
+  const { charts, plays } = await fetchBackfillData(since);
+
+  // --- Step 1: Build chart metadata map & write CHART#META items ---
+  const chartMetaMap = new Map<string, ChartMeta>();
+  for (const chart of charts) {
+    const meta = toChartMeta(chart);
+    chartMetaMap.set(chart.chartHash, meta);
+    await putState(`CHART#${chart.chartHash}`, '#META', { ...meta, type: 'CHART_META' });
+  }
+
+  // --- Step 2: Group plays by user, backfill missing PLAY items ---
+  // Track: per-user, per-chart → best play (highest score) from API
+  const userPlays = new Map<string, { alias: string; chartBests: Map<string, BackfillPlay> }>();
+  let playsWritten = 0;
+
+  for (const play of plays) {
+    const chartMeta = chartMetaMap.get(play.chartHash);
+    if (!chartMeta) continue;
+
+    // Track best-per-chart from API data
+    let userData = userPlays.get(play.userId);
+    if (!userData) {
+      userData = { alias: play.playerAlias, chartBests: new Map() };
+      userPlays.set(play.userId, userData);
+    }
+    const currentApiBest = userData.chartBests.get(play.chartHash);
+    if (!currentApiBest || play.score > currentApiBest.score) {
+      userData.chartBests.set(play.chartHash, play);
+    }
+
+    // Check if PLAY item exists; write if missing
+    const sk = `PLAY#${play.createdAt}#${play.playId}`;
+    const existing = await getState(`USER#${play.userId}`, sk);
+    if (!existing) {
+      const { data, gsiKeys } = buildPlayData(
+        { playId: play.playId, userId: play.userId, playerAlias: play.playerAlias, score: play.score, grade: play.grade, timestamp: play.createdAt },
+        play.chartHash,
+        chartMeta,
+      );
+      await putState(`USER#${play.userId}`, sk, data, gsiKeys);
+      playsWritten++;
     }
   }
 
-  let bestsUpdated = 0;
-  let summariesUpdated = 0;
-  let aliasesPatched = 0;
+  // --- Step 3: Reconcile BEST items ---
+  let bestsFixed = 0;
+  const affectedUserIds = new Set<string>();
 
-  for (const userId of allUserIds) {
-    // Get user summary first (need playerAlias for BEST backfill)
-    const summary = await getState<UserSummary>(`USER#${userId}`, '#SUMMARY');
-    const playerAlias = summary?.playerAlias;
+  for (const [userId, { alias, chartBests }] of userPlays) {
+    for (const [chartHash, apiBest] of chartBests) {
+      const chartMeta = chartMetaMap.get(chartHash)!;
+      const currentBest = await getState<BestItem>(`USER#${userId}`, `BEST#${chartHash}`);
 
-    // Backfill BEST items with GSI keys + playerAlias
-    const bests = await queryState<BestItem>(`USER#${userId}`, 'BEST#');
-    for (const best of bests) {
-      if (!best.chartHash || !best.score) continue;
+      // Write BEST if missing, or if the API has a higher score, or if chart metadata changed
+      const needsUpdate = !currentBest || apiBest.score > currentBest.score || currentBest.points === undefined;
 
-      // GSI1: chart leaderboard sorted by score
-      const gsi1Updated = await updateGsiKeys(best.pk, best.sk, {
-        gsi1pk: `CHARTBEST#${best.chartHash}`,
-        gsi1sk: `${scoreToSortKey(best.score)}#${userId}`,
-      });
-      if (gsi1Updated) bestsUpdated++;
-
-      // GSI2: chart bests sorted by time
-      if (best.timestamp) {
-        await updateGsiKeys(best.pk, best.sk, {
-          gsi2pk: `CHARTTIME#${best.chartHash}`,
-          gsi2sk: `${best.timestamp}#${userId}`,
-        });
+      if (needsUpdate) {
+        const bestPlay = apiBest;
+        const { data, gsiKeys } = buildBestData(
+          { playId: bestPlay.playId, userId, playerAlias: alias, score: bestPlay.score, grade: bestPlay.grade, timestamp: bestPlay.createdAt },
+          chartHash,
+          chartMeta,
+        );
+        await putState(`USER#${userId}`, `BEST#${chartHash}`, data, gsiKeys);
+        bestsFixed++;
+        affectedUserIds.add(userId);
       }
-
-      // Patch playerAlias if missing
-      if (!best.playerAlias && playerAlias) {
-        await updateAttributes(best.pk, best.sk, { playerAlias });
-        aliasesPatched++;
-      }
-    }
-
-    // Backfill USER_SUMMARY with GSI2 keys (for leaderboard)
-    if (summary && summary.totalPoints !== undefined) {
-      const updated = await updateGsiKeys(summary.pk, summary.sk, {
-        gsi2pk: 'LEADERBOARD',
-        gsi2sk: `${pointsToSortKey(summary.totalPoints)}#${userId}`,
-      });
-      if (updated) summariesUpdated++;
     }
   }
 
-  return { bests: bestsUpdated, summaries: summariesUpdated, aliases: aliasesPatched };
+  // --- Step 4: Recompute USER_SUMMARY for affected users ---
+  for (const userId of affectedUserIds) {
+    const userData = userPlays.get(userId)!;
+    await recomputeUserSummary(userId, userData.alias);
+  }
+
+  return {
+    chartsRefreshed: charts.length,
+    playsWritten,
+    bestsFixed,
+    summariesRecomputed: affectedUserIds.size,
+  };
 }
 
 export const handler: ScheduledHandler = async () => {
-  console.log(
-    `[${EVENT_SLUG}] Scheduled run at ${new Date().toISOString()} — ${CHART_HASHES.length} charts configured`,
-  );
+  console.log(`[${EVENT_SLUG}] Scheduled reconciliation at ${new Date().toISOString()}`);
 
-  const result = await backfillGsiKeys();
+  // TODO: Could store last successful run timestamp in DDB and pass as `since` for incremental sync
+  const result = await reconcile();
+
   console.log(
-    `[${EVENT_SLUG}] GSI backfill: ${result.bests} bests, ${result.summaries} summaries, ${result.aliases} aliases updated`,
+    `[${EVENT_SLUG}] Reconciliation complete: ` +
+      `${result.chartsRefreshed} charts refreshed, ` +
+      `${result.playsWritten} plays backfilled, ` +
+      `${result.bestsFixed} bests fixed, ` +
+      `${result.summariesRecomputed} summaries recomputed`,
   );
 };

@@ -1,17 +1,16 @@
 import type { SQSHandler, SQSBatchResponse, SQSRecord } from 'aws-lambda';
 import {
   apiFetch,
-  calculatePoints,
   extractScore,
   getState,
   putState,
-  queryState,
-  scoreToSortKey,
-  pointsToSortKey,
+  getChartMeta,
+  recomputeUserSummary,
+  buildPlayData,
+  buildBestData,
   EVENT_SLUG,
-  EVENT_ID,
   type PlayApiResponse,
-  type EventChartApiResponse,
+  type BestItem,
 } from './shared';
 
 interface ScoreSubmissionEvent {
@@ -23,97 +22,6 @@ interface ScoreSubmissionEvent {
     id: string;
     rawTimingDataUrl: string;
   };
-}
-
-interface ChartMeta {
-  songName: string;
-  artist: string;
-  stepartist: string;
-  stepsType: string | null;
-  difficulty: string;
-  difficultyRating: number;
-  bannerUrl: string | null;
-  mdBannerUrl: string | null;
-  smBannerUrl: string | null;
-  bannerVariants?: Record<string, unknown> | null;
-  maxPoints: number;
-}
-
-interface BestItem {
-  pk: string;
-  sk: string;
-  score: number;
-  points: number;
-}
-
-/**
- * Fetch chart metadata from DynamoDB cache, falling back to the event chart API.
- * Uses GET /event/{eventId}/chart/{chartHash} which returns both event metadata
- * (including points) and chart details in a single call.
- */
-async function getChartMeta(chartHash: string): Promise<ChartMeta> {
-  const cached = await getState<ChartMeta>(`CHART#${chartHash}`, '#META');
-  // Re-fetch if cached data is missing banner variant fields (added after initial cache)
-  if (cached?.songName && 'mdBannerUrl' in cached && 'stepsType' in cached) return cached;
-
-  const { eventChart } = await apiFetch<EventChartApiResponse>(`/event/${EVENT_ID}/chart/${chartHash}`);
-
-  const chart = eventChart.chart;
-  const meta: ChartMeta = {
-    songName: chart.songName || 'Unknown',
-    artist: chart.artist || 'Unknown',
-    stepartist: chart.stepartist || chart.credit || 'Unknown',
-    stepsType: chart.stepsType || null,
-    difficulty: chart.difficulty || 'Unknown',
-    difficultyRating: chart.meter ?? chart.rating ?? 0,
-    bannerUrl: chart.bannerUrl || null,
-    mdBannerUrl: chart.mdBannerUrl || null,
-    smBannerUrl: chart.smBannerUrl || null,
-    bannerVariants: chart.bannerVariants || null,
-    maxPoints: (eventChart.metadata as { points?: number }).points || 0,
-  };
-
-  await putState(`CHART#${chartHash}`, '#META', { ...meta, type: 'CHART_META' });
-  return meta;
-}
-
-/**
- * Recompute a user's summary from their personal bests.
- */
-async function recomputeUserSummary(userId: string, playerAlias: string): Promise<void> {
-  const bests = await queryState<BestItem>(`USER#${userId}`, 'BEST#');
-
-  let totalScore = 0;
-  let totalPoints = 0;
-  let chartsPlayed = 0;
-
-  for (const best of bests) {
-    totalScore += best.score || 0;
-    totalPoints += best.points || 0;
-    chartsPlayed++;
-  }
-
-  // Count total plays from PLAY items
-  const plays = await queryState<{ pk: string }>(`USER#${userId}`, 'PLAY#');
-
-  await putState(
-    `USER#${userId}`,
-    '#SUMMARY',
-    {
-      type: 'USER_SUMMARY',
-      userId,
-      playerAlias,
-      totalScore,
-      totalPoints,
-      chartsPlayed,
-      totalPlays: plays.length,
-      lastPlayAt: new Date().toISOString(),
-    },
-    {
-      gsi2pk: 'LEADERBOARD',
-      gsi2sk: `${pointsToSortKey(totalPoints)}#${userId}`,
-    },
-  );
 }
 
 /**
@@ -144,77 +52,18 @@ async function processRecord(record: SQSRecord): Promise<void> {
   const playId = play.id;
   const userId = play.user.id;
   const playerAlias = play.user.alias;
-  const points = calculatePoints(scoreData.score, chartMeta.maxPoints);
+
+  const playInput = { playId, userId, playerAlias, score: scoreData.score, grade: scoreData.grade, timestamp };
 
   // 1. Write PLAY item — denormalized with all metadata for flexible querying
-  await putState(
-    `USER#${userId}`,
-    `PLAY#${timestamp}#${playId}`,
-    {
-      type: 'PLAY',
-      playId,
-      userId,
-      playerAlias,
-      chartHash: event.chartHash,
-      songName: chartMeta.songName,
-      artist: chartMeta.artist,
-      stepartist: chartMeta.stepartist,
-      stepsType: chartMeta.stepsType,
-      difficulty: chartMeta.difficulty,
-      difficultyRating: chartMeta.difficultyRating,
-      bannerUrl: chartMeta.bannerUrl,
-      mdBannerUrl: chartMeta.mdBannerUrl,
-      smBannerUrl: chartMeta.smBannerUrl,
-      bannerVariants: chartMeta.bannerVariants || null,
-      score: scoreData.score,
-      grade: scoreData.grade,
-      points,
-      maxPoints: chartMeta.maxPoints,
-      timestamp,
-    },
-    {
-      gsi1pk: `CHART#${event.chartHash}`,
-      gsi1sk: `${timestamp}#${playId}`,
-      gsi2pk: 'ACTIVITY',
-      gsi2sk: `${timestamp}#${playId}`,
-    },
-  );
+  const { data: playData, gsiKeys: playGsi } = buildPlayData(playInput, event.chartHash, chartMeta);
+  await putState(`USER#${userId}`, `PLAY#${timestamp}#${playId}`, playData, playGsi);
 
   // 2. Check/update personal best
   const currentBest = await getState<BestItem>(`USER#${userId}`, `BEST#${event.chartHash}`);
   if (!currentBest || scoreData.score > currentBest.score) {
-    await putState(
-      `USER#${userId}`,
-      `BEST#${event.chartHash}`,
-      {
-        type: 'BEST',
-        playId,
-        userId,
-        chartHash: event.chartHash,
-        songName: chartMeta.songName,
-        artist: chartMeta.artist,
-        stepartist: chartMeta.stepartist,
-        stepsType: chartMeta.stepsType,
-        difficulty: chartMeta.difficulty,
-        difficultyRating: chartMeta.difficultyRating,
-        bannerUrl: chartMeta.bannerUrl,
-        mdBannerUrl: chartMeta.mdBannerUrl,
-        smBannerUrl: chartMeta.smBannerUrl,
-        bannerVariants: chartMeta.bannerVariants || null,
-        score: scoreData.score,
-        grade: scoreData.grade,
-        points,
-        maxPoints: chartMeta.maxPoints,
-        timestamp,
-        playerAlias,
-      },
-      {
-        gsi1pk: `CHARTBEST#${event.chartHash}`,
-        gsi1sk: `${scoreToSortKey(scoreData.score)}#${userId}`,
-        gsi2pk: `CHARTTIME#${event.chartHash}`,
-        gsi2sk: `${timestamp}#${userId}`,
-      },
-    );
+    const { data: bestData, gsiKeys: bestGsi } = buildBestData(playInput, event.chartHash, chartMeta);
+    await putState(`USER#${userId}`, `BEST#${event.chartHash}`, bestData, bestGsi);
   }
 
   // 3. Recompute user summary

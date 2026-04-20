@@ -136,8 +136,9 @@ export default function ChartDetailPage() {
                               <GradeImage grade={play.grade} className="w-6 h-6 inline-block" />
                             </td>
                             <td className="text-right tabular-nums">
-                              {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+                              {}
                               <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />
+                              {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
                               {'%'}
                             </td>
                             <td className="text-right tabular-nums font-semibold text-accent">{play.points.toLocaleString()}</td>

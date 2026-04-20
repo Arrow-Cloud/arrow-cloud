@@ -169,8 +169,9 @@ export default function HomePage() {
                     {/* Score */}
                     <div className="text-right shrink-0">
                       <span className="text-info font-bold tabular-nums">
-                        {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+                        {}
                         <FormattedNumber value={play.score} minimumFractionDigits={2} maximumFractionDigits={2} />
+                        {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
                         {'%'}
                       </span>
                     </div>

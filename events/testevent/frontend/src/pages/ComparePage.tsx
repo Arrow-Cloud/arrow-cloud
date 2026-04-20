@@ -366,8 +366,9 @@ export default function ComparePage() {
                                 <div className="flex items-center justify-center gap-1.5">
                                   <GradeImage grade={bestA.grade} className="w-5 h-5" />
                                   <span className={`tabular-nums text-sm font-medium ${aWins ? 'text-success' : ''}`}>
-                                    {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+                                    {}
                                     <FormattedNumber value={bestA.score} minimumFractionDigits={2} maximumFractionDigits={2} />
+                                    {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
                                     {'%'}
                                   </span>
                                 </div>
@@ -393,8 +394,9 @@ export default function ComparePage() {
                                 <div className="flex items-center justify-center gap-1.5">
                                   <GradeImage grade={bestB.grade} className="w-5 h-5" />
                                   <span className={`tabular-nums text-sm font-medium ${bWins ? 'text-success' : ''}`}>
-                                    {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
+                                    {}
                                     <FormattedNumber value={bestB.score} minimumFractionDigits={2} maximumFractionDigits={2} />
+                                    {/* eslint-disable-next-line formatjs/no-literal-string-in-jsx */}
                                     {'%'}
                                   </span>
                                 </div>
