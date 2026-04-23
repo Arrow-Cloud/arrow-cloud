@@ -1,0 +1,99 @@
+@import "tailwindcss";
+@source "../../../../frontend/src";
+
+/*
+ * Event accent color — change these two values to re-theme the entire site.
+ * Hue ~145 = green. Adjust lightness/chroma for intensity.
+ */
+:root {
+  --event-hue: 155;
+  --event-chroma: 0.18;
+}
+
+@plugin "daisyui/theme" {
+  name: "event-light";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  /* Base surfaces: warm off-white */
+  --color-base-100: oklch(97.5% 0.005 155);
+  --color-base-200: oklch(94% 0.008 155);
+  --color-base-300: oklch(89% 0.012 155);
+  --color-base-content: oklch(25% 0.02 155);
+  /* Primary: deep green */
+  --color-primary: oklch(40% 0.14 155);
+  --color-primary-content: oklch(97% 0.01 155);
+  /* Secondary: muted teal */
+  --color-secondary: oklch(50% 0.10 180);
+  --color-secondary-content: oklch(97% 0.01 180);
+  /* Accent: vibrant green */
+  --color-accent: oklch(55% 0.18 155);
+  --color-accent-content: oklch(97% 0.01 155);
+  /* Neutral */
+  --color-neutral: oklch(20% 0.01 155);
+  --color-neutral-content: oklch(90% 0.005 155);
+  /* Semantic */
+  --color-info: oklch(70% 0.12 230);
+  --color-info-content: oklch(25% 0.06 230);
+  --color-success: oklch(75% 0.15 155);
+  --color-success-content: oklch(20% 0.06 155);
+  --color-warning: oklch(82% 0.12 80);
+  --color-warning-content: oklch(35% 0.06 80);
+  --color-error: oklch(65% 0.18 25);
+  --color-error-content: oklch(97% 0.01 25);
+  /* Shape */
+  --radius-selector: 1rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin "daisyui/theme" {
+  name: "event-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  /* Base surfaces: dark with green tint */
+  --color-base-100: oklch(18% 0.015 155);
+  --color-base-200: oklch(22% 0.018 155);
+  --color-base-300: oklch(28% 0.020 155);
+  --color-base-content: oklch(92% 0.01 155);
+  /* Primary: bright green on dark */
+  --color-primary: oklch(72% 0.18 155);
+  --color-primary-content: oklch(15% 0.04 155);
+  /* Secondary: teal */
+  --color-secondary: oklch(65% 0.12 180);
+  --color-secondary-content: oklch(15% 0.03 180);
+  /* Accent: bright green */
+  --color-accent: oklch(75% 0.18 155);
+  --color-accent-content: oklch(15% 0.04 155);
+  /* Neutral */
+  --color-neutral: oklch(12% 0.01 155);
+  --color-neutral-content: oklch(95% 0.005 155);
+  /* Semantic */
+  --color-info: oklch(75% 0.10 210);
+  --color-info-content: oklch(15% 0.03 210);
+  --color-success: oklch(80% 0.15 155);
+  --color-success-content: oklch(15% 0.04 155);
+  --color-warning: oklch(85% 0.13 80);
+  --color-warning-content: oklch(18% 0.03 80);
+  --color-error: oklch(72% 0.16 25);
+  --color-error-content: oklch(15% 0.03 25);
+  /* Shape */
+  --radius-selector: 1rem;
+  --radius-field: 0.75rem;
+  --radius-box: 1rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
+}
+
+@plugin "daisyui" {
+  themes: event-light --default --prefers-light, event-dark --prefers-dark;
+}

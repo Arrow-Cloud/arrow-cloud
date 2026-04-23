@@ -10,60 +10,65 @@ import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 
 export interface EventBackendProps {
-  /** Short identifier for the event, used in resource naming (e.g. "testevent") */
+  /** Short identifier for the event, used in resource naming (e.g. "golf") */
   eventSlug: string;
 
+  // --- Score processing (optional — omit for events that don't process leaderboard scores) ---
+
   /** SNS topic that publishes score submission events */
-  scoreSubmissionTopic: sns.ITopic;
+  scoreSubmissionTopic?: sns.ITopic;
 
   /** Chart hashes this event cares about — used for SNS subscription filtering */
-  chartHashes: string[];
+  chartHashes?: string[];
 
   /** Path to the compiled score processor Lambda code */
-  scoreProcessorCodePath: string;
+  scoreProcessorCodePath?: string;
 
   /** Handler entry point for the score processor Lambda (e.g. "score-processor.handler") */
-  scoreProcessorHandler: string;
+  scoreProcessorHandler?: string;
 
   /** Path to the compiled scheduled processor Lambda code */
-  scheduledProcessorCodePath: string;
+  scheduledProcessorCodePath?: string;
 
   /** Handler entry point for the scheduled processor Lambda (e.g. "scheduled-processor.handler") */
-  scheduledProcessorHandler: string;
-
-  /** Path to the compiled read API Lambda code */
-  readApiCodePath: string;
-
-  /** Handler entry point for the read API Lambda (e.g. "read-api.handler") */
-  readApiHandler: string;
+  scheduledProcessorHandler?: string;
 
   /** How often the scheduled Lambda runs (default: 1 hour) */
   scheduleInterval?: cdk.Duration;
 
+  // --- Read API (optional — omit for events without a public read API) ---
+
+  /** Path to the compiled read API Lambda code */
+  readApiCodePath?: string;
+
+  /** Handler entry point for the read API Lambda (e.g. "read-api.handler") */
+  readApiHandler?: string;
+
+  // --- Shared ---
+
   /** Base URL for the Arrow Cloud API (default: https://api.arrowcloud.dance) */
   apiBaseUrl?: string;
 
-  /** Additional environment variables for both Lambdas */
+  /** Additional environment variables injected into all Lambdas for this event */
   environment?: Record<string, string>;
 }
 
 /**
  * Reusable construct for event backend processing.
  *
- * Creates:
- * - SQS queue subscribed to the score submission SNS topic, filtered by chart hash
- * - Score processor Lambda triggered by SQS messages
- * - DynamoDB table for event-specific state
- * - Scheduled Lambda on an EventBridge rule for periodic processing
- * - DLQs for both queues
+ * All feature groups are opt-in via props:
+ * - Score processing (SNS→SQS→Lambda + scheduled reconciliation): provide scoreSubmissionTopic, chartHashes, scoreProcessor* and scheduledProcessor* props
+ * - Read API (public Lambda Function URL): provide readApiCodePath + readApiHandler
+ *
+ * Every event gets a DynamoDB state table regardless.
  */
 export class EventBackendConstruct extends Construct {
   public readonly table: dynamodb.Table;
-  public readonly scoreProcessorLambda: lambda.Function;
-  public readonly scheduledProcessorLambda: lambda.Function;
-  public readonly readApiLambda: lambda.Function;
-  public readonly readApiUrl: string;
-  public readonly queue: sqs.Queue;
+  public readonly scoreProcessorLambda?: lambda.Function;
+  public readonly scheduledProcessorLambda?: lambda.Function;
+  public readonly readApiLambda?: lambda.Function;
+  public readonly readApiUrl?: string;
+  public readonly queue?: sqs.Queue;
 
   constructor(scope: Construct, id: string, props: EventBackendProps) {
     super(scope, id);
@@ -116,114 +121,119 @@ export class EventBackendConstruct extends Construct {
       EVENT_SLUG: eventSlug,
       STATE_TABLE_NAME: this.table.tableName,
       API_BASE_URL: apiBaseUrl,
-      CHART_HASHES: JSON.stringify(chartHashes),
+      CHART_HASHES: JSON.stringify(chartHashes ?? []),
       ...environment,
     };
 
-    // === Score Processor (SNS → SQS → Lambda) ===
-    const dlq = new sqs.Queue(this, 'ScoreProcessorDLQ', {
-      queueName: `${prefix}-score-processor-dlq`,
-    });
+    // === Score Processor (SNS → SQS → Lambda) — optional ===
+    if (scoreSubmissionTopic && chartHashes && scoreProcessorCodePath && scoreProcessorHandler) {
+      const dlq = new sqs.Queue(this, 'ScoreProcessorDLQ', {
+        queueName: `${prefix}-score-processor-dlq`,
+      });
 
-    this.queue = new sqs.Queue(this, 'ScoreProcessorQueue', {
-      queueName: `${prefix}-score-processor`,
-      visibilityTimeout: cdk.Duration.minutes(5),
-      deadLetterQueue: {
-        queue: dlq,
-        maxReceiveCount: 3,
-      },
-    });
-
-    // Subscribe to SNS with chart hash filter
-    scoreSubmissionTopic.addSubscription(
-      new snsSubscriptions.SqsSubscription(this.queue, {
-        filterPolicy: {
-          eventType: sns.SubscriptionFilter.stringFilter({
-            allowlist: ['score-submitted'],
-          }),
-          chartHash: sns.SubscriptionFilter.stringFilter({
-            allowlist: chartHashes,
-          }),
+      this.queue = new sqs.Queue(this, 'ScoreProcessorQueue', {
+        queueName: `${prefix}-score-processor`,
+        visibilityTimeout: cdk.Duration.minutes(5),
+        deadLetterQueue: {
+          queue: dlq,
+          maxReceiveCount: 3,
         },
-      }),
-    );
+      });
 
-    this.scoreProcessorLambda = new lambda.Function(this, 'ScoreProcessorLambda', {
-      functionName: `${prefix}-score-processor`,
-      runtime: lambda.Runtime.NODEJS_22_X,
-      architecture: lambda.Architecture.ARM_64,
-      code: lambda.Code.fromAsset(scoreProcessorCodePath),
-      handler: scoreProcessorHandler,
-      memorySize: 256,
-      timeout: cdk.Duration.minutes(1),
-      environment: sharedEnv,
-      events: [
-        new lambdaEventSources.SqsEventSource(this.queue, {
-          batchSize: 10,
-          maxBatchingWindow: cdk.Duration.seconds(5),
-          reportBatchItemFailures: true,
+      scoreSubmissionTopic.addSubscription(
+        new snsSubscriptions.SqsSubscription(this.queue, {
+          filterPolicy: {
+            eventType: sns.SubscriptionFilter.stringFilter({
+              allowlist: ['score-submitted'],
+            }),
+            chartHash: sns.SubscriptionFilter.stringFilter({
+              allowlist: chartHashes,
+            }),
+          },
         }),
-      ],
-    });
+      );
 
-    this.table.grantReadWriteData(this.scoreProcessorLambda);
+      this.scoreProcessorLambda = new lambda.Function(this, 'ScoreProcessorLambda', {
+        functionName: `${prefix}-score-processor`,
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        code: lambda.Code.fromAsset(scoreProcessorCodePath),
+        handler: scoreProcessorHandler,
+        memorySize: 256,
+        timeout: cdk.Duration.minutes(1),
+        environment: sharedEnv,
+        events: [
+          new lambdaEventSources.SqsEventSource(this.queue, {
+            batchSize: 10,
+            maxBatchingWindow: cdk.Duration.seconds(5),
+            reportBatchItemFailures: true,
+          }),
+        ],
+      });
 
-    // === Scheduled Processor (EventBridge → Lambda) ===
-    this.scheduledProcessorLambda = new lambda.Function(this, 'ScheduledProcessorLambda', {
-      functionName: `${prefix}-scheduled-processor`,
-      runtime: lambda.Runtime.NODEJS_22_X,
-      architecture: lambda.Architecture.ARM_64,
-      code: lambda.Code.fromAsset(scheduledProcessorCodePath),
-      handler: scheduledProcessorHandler,
-      memorySize: 256,
-      timeout: cdk.Duration.minutes(5),
-      environment: sharedEnv,
-    });
+      this.table.grantReadWriteData(this.scoreProcessorLambda);
+    }
 
-    this.table.grantReadWriteData(this.scheduledProcessorLambda);
+    // === Scheduled Processor (EventBridge → Lambda) — optional ===
+    if (scheduledProcessorCodePath && scheduledProcessorHandler) {
+      this.scheduledProcessorLambda = new lambda.Function(this, 'ScheduledProcessorLambda', {
+        functionName: `${prefix}-scheduled-processor`,
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        code: lambda.Code.fromAsset(scheduledProcessorCodePath),
+        handler: scheduledProcessorHandler,
+        memorySize: 256,
+        timeout: cdk.Duration.minutes(5),
+        environment: sharedEnv,
+      });
 
-    const schedule = new events.Rule(this, 'ScheduledProcessorRule', {
-      ruleName: `${prefix}-scheduled-processor`,
-      description: `Periodic processing for event: ${eventSlug}`,
-      schedule: events.Schedule.rate(scheduleInterval),
-    });
+      this.table.grantReadWriteData(this.scheduledProcessorLambda);
 
-    schedule.addTarget(new targets.LambdaFunction(this.scheduledProcessorLambda));
+      const schedule = new events.Rule(this, 'ScheduledProcessorRule', {
+        ruleName: `${prefix}-scheduled-processor`,
+        description: `Periodic processing for event: ${eventSlug}`,
+        schedule: events.Schedule.rate(scheduleInterval),
+      });
 
-    // === Read API (Lambda Function URL) ===
-    this.readApiLambda = new lambda.Function(this, 'ReadApiLambda', {
-      functionName: `${prefix}-read-api`,
-      runtime: lambda.Runtime.NODEJS_22_X,
-      architecture: lambda.Architecture.ARM_64,
-      code: lambda.Code.fromAsset(readApiCodePath),
-      handler: readApiHandler,
-      memorySize: 256,
-      timeout: cdk.Duration.seconds(10),
-      environment: sharedEnv,
-    });
+      schedule.addTarget(new targets.LambdaFunction(this.scheduledProcessorLambda));
+    }
 
-    this.table.grantReadData(this.readApiLambda);
+    // === Read API (Lambda Function URL) — optional ===
+    if (readApiCodePath && readApiHandler) {
+      this.readApiLambda = new lambda.Function(this, 'ReadApiLambda', {
+        functionName: `${prefix}-read-api`,
+        runtime: lambda.Runtime.NODEJS_22_X,
+        architecture: lambda.Architecture.ARM_64,
+        code: lambda.Code.fromAsset(readApiCodePath),
+        handler: readApiHandler,
+        memorySize: 256,
+        timeout: cdk.Duration.seconds(10),
+        environment: sharedEnv,
+      });
 
-    const fnUrl = this.readApiLambda.addFunctionUrl({
-      authType: lambda.FunctionUrlAuthType.NONE,
-      cors: {
-        allowedOrigins: ['*'],
-        allowedMethods: [lambda.HttpMethod.GET],
-        allowedHeaders: ['content-type'],
-      },
-    });
+      this.table.grantReadData(this.readApiLambda);
 
-    this.readApiUrl = fnUrl.url;
+      const readFnUrl = this.readApiLambda.addFunctionUrl({
+        authType: lambda.FunctionUrlAuthType.NONE,
+        cors: {
+          allowedOrigins: ['*'],
+          allowedMethods: [lambda.HttpMethod.GET],
+          allowedHeaders: ['content-type'],
+        },
+      });
+
+      this.readApiUrl = readFnUrl.url;
+
+      new cdk.CfnOutput(this, 'ReadApiUrl', {
+        value: readFnUrl.url,
+        description: `Read API URL for event: ${eventSlug}`,
+      });
+    }
 
     // === Outputs ===
     new cdk.CfnOutput(this, 'StateTableName', {
       value: this.table.tableName,
       description: `DynamoDB state table for event: ${eventSlug}`,
-    });
-
-    new cdk.CfnOutput(this, 'ReadApiUrl', {
-      value: fnUrl.url,
-      description: `Read API URL for event: ${eventSlug}`,
     });
   }
 }

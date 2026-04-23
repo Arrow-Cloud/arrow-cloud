@@ -5,6 +5,7 @@ import { CertificatesStackUsEast1, CertificatesStackUsEast2, WildcardCertificate
 import { ShareServiceStack } from '../lib/share-service-stack';
 import { EventSiteStack } from '../lib/event-site-stack';
 import { EventBackendConstruct } from '../lib/event-backend-construct';
+import { GolfBackendConstruct } from '../lib/golf-backend-stack';
 import * as path from 'path';
 
 const app = new cdk.App();
@@ -53,11 +54,22 @@ if (wildcardCertArn) {
     wildcardCertArn,
     distPath: '../events/testevent/frontend/dist',
   });
+
+  new EventSiteStack(app, 'EventSite-golf', {
+    subdomain: '6ddf7d26',
+    domainName,
+    wildcardCertArn,
+    distPath: '../events/golf/frontend/dist',
+  });
 }
 
 // === Event Backends ===
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const testeventConfig = require('../../events/testevent/backend/config.json');
+
+new GolfBackendConstruct(apiStack, 'EventBackend-golf', {
+  submitApiCodePath: path.join(__dirname, '../../events/golf/backend/dist'),
+});
 
 new EventBackendConstruct(apiStack, 'EventBackend-testevent', {
   eventSlug: 'testevent',
