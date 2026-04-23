@@ -5,7 +5,7 @@ import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { EventBackendConstruct } from './event-backend-construct';
 
-export interface GolfBackendProps {
+export interface GolfBackendStackProps extends cdk.StackProps {
   /** Path to the compiled submit API Lambda code (the dist/ directory) */
   submitApiCodePath: string;
 }
@@ -18,14 +18,14 @@ export interface GolfBackendProps {
  * - Private S3 bucket for chart submission uploads
  * - Submit API Lambda with a Function URL that issues pre-signed S3 PUT URLs
  */
-export class GolfBackendConstruct extends Construct {
+export class GolfBackendStack extends cdk.Stack {
   public readonly backend: EventBackendConstruct;
   public readonly table: dynamodb.Table;
   public readonly submissionsBucket: s3.Bucket;
   public readonly submitApiUrl: string;
 
-  constructor(scope: Construct, id: string, props: GolfBackendProps) {
-    super(scope, id);
+  constructor(scope: Construct, id: string, props: GolfBackendStackProps) {
+    super(scope, id, props);
 
     const { submitApiCodePath } = props;
 
