@@ -1,22 +1,13 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
 import { PrismaClient } from '../../prisma/generated/client';
 import { AuthenticatedEvent } from '../utils/types';
-import { generateApiKey, hashApiKey } from '../utils/auth';
 import { respondText, internalServerErrorResponse } from '../utils/responses';
+import { issueApiKeyForUser } from '../services/apiKeys';
 
 // Generates a new API key for the requesting user and returns an ArrowCloud.ini file
 export const downloadArrowCloudIni = async (event: AuthenticatedEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> => {
   try {
-    // Create a brand new API key
-    const key = generateApiKey();
-    const keyHash = hashApiKey(key);
-
-    await prisma.apiKey.create({
-      data: {
-        keyHash,
-        userId: event.user.id,
-      },
-    });
+    const { key } = await issueApiKeyForUser(prisma, event.user.id);
 
     const ini = `[ArrowCloud]\nApiKey=${key}\n`;
 

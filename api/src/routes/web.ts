@@ -28,6 +28,7 @@ import { getCountries } from '../controllers/countries';
 import { listRivals, addRival, deleteRival, autocompleteUsers } from '../controllers/rivals';
 import { listApiKeys, createApiKey, deleteApiKey } from '../controllers/api-keys';
 import { downloadArrowCloudIni } from '../controllers/arrowcloud-ini';
+import { startDeviceLogin, getDeviceLoginSession, approveDeviceLogin, pollDeviceLogin } from '../controllers/device-login';
 import { getPlay as getPlayController, deletePlay as deletePlayController } from '../controllers/play';
 import { getSession, getRecentSessions, getUserSessions } from '../controllers/session';
 import { getWidgetData } from '../controllers/widget';
@@ -369,6 +370,36 @@ export const webRoutes: Routes = {
     GET: {
       handler: downloadArrowCloudIni,
       requiresAuth: true,
+    },
+  },
+  '/device-login/start': {
+    POST: {
+      handler: startDeviceLogin,
+      requiresAuth: false,
+    },
+  },
+  '/device-login/poll': {
+    POST: {
+      handler: pollDeviceLogin,
+      requiresAuth: false,
+    },
+  },
+  '/device-login/session/{sessionId}': {
+    GET: {
+      handler: getDeviceLoginSession,
+      optionalAuth: true,
+      patternMatching: {
+        sessionId: /[a-f0-9-]{36}/,
+      },
+    },
+  },
+  '/device-login/session/{sessionId}/approve': {
+    POST: {
+      handler: approveDeviceLogin,
+      requiresAuth: true,
+      patternMatching: {
+        sessionId: /[a-f0-9-]{36}/,
+      },
     },
   },
   '/widget/blueshift/data': {

@@ -825,6 +825,32 @@ export const downloadArrowCloudIni = async (): Promise<Blob> => {
   return response.data as Blob;
 };
 
+export type DeviceLoginStatus = 'pending' | 'approved' | 'consumed' | 'cancelled' | 'expired';
+
+export interface DeviceLoginSessionResponse {
+  sessionId: string;
+  shortCode: string;
+  status: DeviceLoginStatus;
+  machineLabel: string | null;
+  clientVersion: string | null;
+  themeVersion: string | null;
+  expiresAt: string;
+  approvedAt: string | null;
+  consumedAt: string | null;
+  canApprove: boolean;
+  approvedByCurrentUser: boolean;
+}
+
+export const getDeviceLoginSession = async (sessionId: string): Promise<DeviceLoginSessionResponse> => {
+  const response = await api.get(`/device-login/session/${sessionId}`);
+  return response.data as DeviceLoginSessionResponse;
+};
+
+export const approveDeviceLoginSession = async (sessionId: string): Promise<DeviceLoginSessionResponse> => {
+  const response = await api.post(`/device-login/session/${sessionId}/approve`, {});
+  return response.data as DeviceLoginSessionResponse;
+};
+
 // Widget data
 export const getWidgetData = async (userId: string, features?: string): Promise<WidgetDataResponse> => {
   const params = new URLSearchParams({ userId });
