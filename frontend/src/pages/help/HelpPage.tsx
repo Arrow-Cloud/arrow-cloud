@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { AppPageLayout } from '../../components';
-import { MonitorSmartphone, Settings2, Info, BookOpen, Ban, CircleQuestionMark, CheckCircle2, Download } from 'lucide-react';
+import { MonitorSmartphone, Settings2, Info, BookOpen, Ban, CircleQuestionMark, CheckCircle2, Download, ChevronDown } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { GradeImage } from '../../components';
 import { downloadArrowCloudIni as fetchArrowCloudIni } from '../../services/api';
@@ -84,15 +84,39 @@ const CopyableText: React.FC<{ label?: string; value: string; className?: string
 };
 
 // Step section with heading and rich content support
-const StepSection: React.FC<{ number: number; title: string; children: React.ReactNode }> = ({ number, title, children }) => (
-  <section className="rounded-lg border border-base-content/10 bg-base-100/60 p-4 space-y-3">
-    <header className="flex items-center gap-2">
-      <span className="badge badge-primary badge-sm">{number}</span>
-      <h4 className="font-semibold text-base-content">{title}</h4>
-    </header>
-    <div className="text-base text-base-content/80 leading-relaxed">{children}</div>
-  </section>
-);
+const StepSection: React.FC<{ number: number; title: string; children: React.ReactNode; defaultCollapsed?: boolean }> = ({
+  number,
+  title,
+  children,
+  defaultCollapsed = false,
+}) => {
+  if (defaultCollapsed) {
+    return (
+      <details className="group rounded-lg border border-base-content/10 bg-base-100/50 p-4" open={false}>
+        <summary className="list-none cursor-pointer">
+          <header className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2">
+              <span className="badge badge-outline badge-sm">{number}</span>
+              <h4 className="font-semibold text-base-content/80">{title}</h4>
+            </div>
+            <ChevronDown className="w-4 h-4 text-base-content/60 transition-transform group-open:rotate-180" aria-hidden="true" />
+          </header>
+        </summary>
+        <div className="mt-3 text-base text-base-content/80 leading-relaxed">{children}</div>
+      </details>
+    );
+  }
+
+  return (
+    <section className="rounded-lg border border-base-content/10 bg-base-100/60 p-4 space-y-3">
+      <header className="flex items-center gap-2">
+        <span className="badge badge-primary badge-sm">{number}</span>
+        <h4 className="font-semibold text-base-content">{title}</h4>
+      </header>
+      <div className="text-base text-base-content/80 leading-relaxed">{children}</div>
+    </section>
+  );
+};
 
 const HelpPage: React.FC = () => {
   const intl = useIntl();
@@ -153,13 +177,6 @@ const HelpPage: React.FC = () => {
   const resetSelection = () => setSelection({});
 
   const canProceedMethod = !!selection.os;
-
-  const selectionSummary = useMemo(() => {
-    if (!selection.os) return 'Choose your operating system to begin.';
-    if (!selection.method) return `Selected ${selection.os}. Now choose an installation method.`;
-    const methodLabel = INSTALL_METHODS.find((m) => m.key === selection.method)?.label || selection.method;
-    return `Selected ${selection.os} / ${methodLabel}. Installation instructions coming soon.`;
-  }, [selection]);
 
   // Download links (hard-coded per request) — use HTTPS to avoid mixed content blocking
   const THEME_DOWNLOAD_URL = 'https://assets.arrowcloud.dance/theme/Arrow%20Cloud%20Theme%2020260424.zip';
@@ -288,23 +305,12 @@ const HelpPage: React.FC = () => {
           <div className="space-y-2">
             <p>
               {intl.formatMessage({
-                defaultMessage: 'Use the buttons below to download the required files for your setup.',
-                id: 'opIE4F',
+                defaultMessage: 'Download the theme or module for your setup.',
+                id: 'J1shcT',
                 description: 'Instructions to download theme or module files',
               })}
             </p>
-            <div role="alert" className="alert alert-warning">
-              <span className="font-medium">{intl.formatMessage({ defaultMessage: 'Heads up:', id: 'Amu9qR', description: 'Alert box heading' })}</span>
-              <span>
-                {intl.formatMessage({
-                  defaultMessage:
-                    'Some browsers may flag the ArrowCloud.ini download as suspicious because it is a plain-text configuration file. This is expected and the file is safe—you can proceed with the download.',
-                  id: '4TmIV5',
-                  description: 'Warning message about browser security flags',
-                })}
-              </span>
-            </div>
-            <div className="flex flex-col md:flex-row gap-3">
+            <div className="flex flex-col md:flex-row gap-3 max-w-xl">
               <a
                 href={selection.method === 'theme' ? THEME_DOWNLOAD_URL : MODULE_DOWNLOAD_URL}
                 className="btn btn-primary btn-lg gap-2 shadow-lg flex-1 justify-center"
@@ -314,60 +320,19 @@ const HelpPage: React.FC = () => {
                   ? intl.formatMessage({ defaultMessage: 'Download Theme ZIP', id: 'fB9pUP', description: 'Button label to download theme archive' })
                   : intl.formatMessage({ defaultMessage: 'Download Module', id: 'XrZn/3', description: 'Button label to download module archive' })}
               </a>
-              <a href={ARROWCLOUD_INI_DOWNLOAD_URL} onClick={handleDownloadIni} className="btn btn-secondary btn-lg gap-2 shadow-lg flex-1 justify-center">
-                <Download className="w-5 h-5" />
-                {intl.formatMessage({ defaultMessage: 'Download ArrowCloud.ini', id: 'DI/ILQ', description: 'Button label to download configuration file' })}
-              </a>
             </div>
           </div>
         ),
       },
       {
-        title: 'Place ArrowCloud.ini',
+        title: selection.method === 'theme' ? 'Install the Theme' : 'Install the Module',
         content: (
-          <div className="space-y-3">
-            <p>
-              {intl.formatMessage(
-                {
-                  defaultMessage: 'Copy ArrowCloud.ini into your active profile folder (for example: {profileExample}).',
-                  id: '2sYnkh',
-                  description: 'Instructions for copying configuration file',
-                },
-                { profileExample: <code className="px-1 py-0.5 rounded bg-base-200/70">{profileExample}</code> },
-              )}
-            </p>
-            <div className="rounded-md border border-base-content/10 bg-base-100/60 p-3 text-sm space-y-1">
-              <div className="font-medium text-base-content/80">
-                {intl.formatMessage({ defaultMessage: 'Configuration Paths', id: 'qpvO54', description: 'Section header for configuration file paths' })}
-              </div>
-              <div>
-                {intl.formatMessage(
-                  { defaultMessage: '<label>Base:</label> {basePath}', id: '30056/', description: 'Label for base configuration path' },
-                  {
-                    label: (txt) => <span className="text-base-content/60">{txt}</span>,
-                    basePath: <code className="bg-base-200/70 px-1 py-0.5 rounded">{configInfo.base}</code>,
-                  },
-                )}
-              </div>
-              <div>
-                {intl.formatMessage(
-                  { defaultMessage: '<label>Preferences:</label> {prefsPath}', id: '1nKpRW', description: 'Label for preferences file path' },
-                  {
-                    label: (txt) => <span className="text-base-content/60">{txt}</span>,
-                    prefsPath: <code className="bg-base-200/70 px-1 py-0.5 rounded">{configInfo.preferences}</code>,
-                  },
-                )}
-              </div>
-              <div>
-                {intl.formatMessage(
-                  { defaultMessage: '<label>Profiles:</label> {profilesPath}', id: 'L4UkwF', description: 'Label for profiles folder path' },
-                  {
-                    label: (txt) => <span className="text-base-content/60">{txt}</span>,
-                    profilesPath: <code className="bg-base-200/70 px-1 py-0.5 rounded">{configInfo.profiles}</code>,
-                  },
-                )}
-              </div>
-            </div>
+          <div className="space-y-2">
+            <ul className="list-disc pl-5 space-y-1">
+              {currentInstructions.steps.map((s, i) => (
+                <li key={i}>{s}</li>
+              ))}
+            </ul>
           </div>
         ),
       },
@@ -409,35 +374,129 @@ const HelpPage: React.FC = () => {
         ),
       },
       {
-        title: selection.method === 'theme' ? 'Install the Theme' : 'Install the Module',
+        title: 'Login in-game (recommended)',
         content: (
-          <div className="space-y-2">
-            <ul className="list-disc pl-5 space-y-1">
-              {currentInstructions.steps.map((s, i) => (
-                <li key={i}>{s}</li>
-              ))}
-            </ul>
+          <div className="space-y-3">
+            <ol className="list-decimal pl-5 space-y-1">
+              <li>
+                {intl.formatMessage({
+                  defaultMessage: 'Open ITGMania and go to song select.',
+                  id: 'NK8QJr',
+                  description: 'First step for in-game QR login flow',
+                })}
+              </li>
+              <li>
+                {intl.formatMessage({
+                  defaultMessage: 'Open the menu by pressing Left + Right at the same time.',
+                  id: 'sa/bqQ',
+                  description: 'Second step for in-game QR login flow',
+                })}
+              </li>
+              <li>
+                {intl.formatMessage({
+                  defaultMessage: 'Select Arrow Cloud Login (or Re-Link).',
+                  id: 'N7IXXV',
+                  description: 'Third step for in-game QR login flow',
+                })}
+              </li>
+              <li>
+                {intl.formatMessage({
+                  defaultMessage: 'Scan the QR code and approve in your browser.',
+                  id: 'tObA4g',
+                  description: 'Fourth step for in-game QR login flow',
+                })}
+              </li>
+            </ol>
           </div>
         ),
       },
       {
-        title: 'Restart & Verify',
+        title: 'Manual fallback: ArrowCloud.ini',
+        collapsed: true,
         content: (
-          <div className="space-y-2">
+          <div className="space-y-3">
             <p>
               {intl.formatMessage({
-                defaultMessage: 'Restart ITGMania to ensure configuration is loaded, then play any chart.',
-                id: 'b497id',
-                description: 'Instruction to restart game and test',
+                defaultMessage: 'If QR login is unavailable, you can still configure manually with ArrowCloud.ini.',
+                id: 'MpP4C+',
+                description: 'Introduction for manual INI fallback setup',
               })}
             </p>
-            <p>
-              {intl.formatMessage({
-                defaultMessage: 'Your Arrow Cloud profile should show a new submission shortly after.',
-                id: 'cNcvUb',
-                description: 'Verification instruction for successful submission',
-              })}
-            </p>
+            <ol className="list-decimal pl-5 space-y-1">
+              <li>
+                {intl.formatMessage({
+                  defaultMessage: 'Close ITGMania before editing or placing ArrowCloud.ini.',
+                  id: 'yvqJ2l',
+                  description: 'Manual fallback step instructing user to close game',
+                })}
+              </li>
+              <li>
+                {intl.formatMessage(
+                  {
+                    defaultMessage: 'Download ArrowCloud.ini and copy it into your active profile folder (for example: {profileExample}).',
+                    id: '6RIP8P',
+                    description: 'Manual fallback step instructing user to place ini file',
+                  },
+                  { profileExample: <code className="px-1 py-0.5 rounded bg-base-200/70">{profileExample}</code> },
+                )}
+              </li>
+              <li>
+                {intl.formatMessage({
+                  defaultMessage: 'Open ITGMania after the file is in place to load the configuration.',
+                  id: 'E3YAU3',
+                  description: 'Manual fallback step instructing user to reopen game',
+                })}
+              </li>
+            </ol>
+            <div role="alert" className="alert alert-warning">
+              <span className="font-medium">{intl.formatMessage({ defaultMessage: 'Heads up:', id: 'Amu9qR', description: 'Alert box heading' })}</span>
+              <span>
+                {intl.formatMessage({
+                  defaultMessage:
+                    'Some browsers may flag the ArrowCloud.ini download as suspicious because it is a plain-text configuration file. This is expected and the file is safe.',
+                  id: 'b6GTMd',
+                  description: 'Warning message about browser security flags for INI fallback',
+                })}
+              </span>
+            </div>
+            <div className="flex flex-col md:flex-row gap-3 max-w-xl">
+              <a href={ARROWCLOUD_INI_DOWNLOAD_URL} onClick={handleDownloadIni} className="btn btn-secondary btn-lg gap-2 shadow-lg flex-1 justify-center">
+                <Download className="w-5 h-5" />
+                {intl.formatMessage({ defaultMessage: 'Download ArrowCloud.ini', id: 'DI/ILQ', description: 'Button label to download configuration file' })}
+              </a>
+            </div>
+            <div className="rounded-md border border-base-content/10 bg-base-100/60 p-3 text-sm space-y-1">
+              <div className="font-medium text-base-content/80">
+                {intl.formatMessage({ defaultMessage: 'Configuration Paths', id: 'qpvO54', description: 'Section header for configuration file paths' })}
+              </div>
+              <div>
+                {intl.formatMessage(
+                  { defaultMessage: '<label>Base:</label> {basePath}', id: '30056/', description: 'Label for base configuration path' },
+                  {
+                    label: (txt) => <span className="text-base-content/60">{txt}</span>,
+                    basePath: <code className="bg-base-200/70 px-1 py-0.5 rounded">{configInfo.base}</code>,
+                  },
+                )}
+              </div>
+              <div>
+                {intl.formatMessage(
+                  { defaultMessage: '<label>Preferences:</label> {prefsPath}', id: '1nKpRW', description: 'Label for preferences file path' },
+                  {
+                    label: (txt) => <span className="text-base-content/60">{txt}</span>,
+                    prefsPath: <code className="bg-base-200/70 px-1 py-0.5 rounded">{configInfo.preferences}</code>,
+                  },
+                )}
+              </div>
+              <div>
+                {intl.formatMessage(
+                  { defaultMessage: '<label>Profiles:</label> {profilesPath}', id: 'L4UkwF', description: 'Label for profiles folder path' },
+                  {
+                    label: (txt) => <span className="text-base-content/60">{txt}</span>,
+                    profilesPath: <code className="bg-base-200/70 px-1 py-0.5 rounded">{configInfo.profiles}</code>,
+                  },
+                )}
+              </div>
+            </div>
           </div>
         ),
       },
@@ -722,11 +781,18 @@ const HelpPage: React.FC = () => {
                         })}
                       </h3>
                     </div>
-                    <p className="text text-base-content/70 mb-3">{selectionSummary}</p>
+                    <p className="text text-base-content/70 mb-3">
+                      {!stepSections &&
+                        intl.formatMessage({
+                          defaultMessage: 'Complete the previous steps to view instructions.',
+                          id: '2P7yex',
+                          description: 'Step 4 description for summary and instructions',
+                        })}
+                    </p>
                     {stepSections && (
                       <div className="mt-5 space-y-4">
                         {stepSections.map((s, i) => (
-                          <StepSection key={i} number={i + 1} title={s.title}>
+                          <StepSection key={i} number={i + 1} title={s.title} defaultCollapsed={Boolean(s.collapsed)}>
                             {s.content}
                           </StepSection>
                         ))}
