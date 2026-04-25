@@ -39,6 +39,7 @@ model User {
   plays                        Play[]
   eventRegistrations           EventRegistration[]
   apiKeys                      ApiKey[]
+  deviceLoginSessions          DeviceLoginSession[]
   passkeys                     Passkey[]
   preferredLeaderboards        UserPreferredLeaderboard[]
   trophies                     UserTrophy[]
@@ -92,6 +93,31 @@ model ApiKey {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   lastUsedAt DateTime?
+}
+
+model DeviceLoginSession {
+  id              String    @id @default(uuid())
+  userId          String?
+  user            User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  shortCode       String    @unique
+  pollTokenHash   String    @unique
+  status          String
+  machineLabel    String?
+  clientVersion   String?
+  themeVersion    String?
+  ipAddress       String?
+  userAgent       String?
+  approvedAt      DateTime?
+  consumedAt      DateTime?
+  cancelledAt     DateTime?
+  issuedApiKeyHash String?
+  expiresAt       DateTime
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([expiresAt])
 }
 
 model Event {

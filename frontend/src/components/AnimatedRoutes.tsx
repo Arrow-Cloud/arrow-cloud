@@ -22,6 +22,7 @@ import { BlueShiftPage, BlueShiftResultsPage } from '../pages/blueshift';
 import PrivacyPolicyPage from '../pages/privacy/PrivacyPolicyPage';
 import HelpPage from '../pages/help/HelpPage';
 import OverallLeaderboardPage from '../pages/leaderboards/OverallLeaderboardPage';
+import DeviceLoginPage from '../pages/device-login/DeviceLoginPage';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -73,6 +74,7 @@ const AnimatedRoutes = () => {
           <Route path="/privacy" element={<PrivacyPolicyPage />} />
           <Route path="/help" element={<HelpPage />} />
           <Route path="/leaderboards/overall" element={<OverallLeaderboardPage />} />
+          <Route path="/device-login/:sessionId" element={<DeviceLoginPage />} />
         </Routes>
       </PageTransition>
     </AnimatePresence>

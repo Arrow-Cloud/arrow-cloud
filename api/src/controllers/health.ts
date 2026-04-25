@@ -1,4 +1,3 @@
-import { PrismaClient } from '../../prisma/generated';
 import { sendExampleEmail } from '../utils/email';
 import { emptyResponse, respond } from '../utils/responses';
 import type { RouteHandler, AuthenticatedRouteHandler, AuthenticatedEvent } from '../utils/types';
@@ -7,11 +6,10 @@ export const healthCheck: RouteHandler = async () => {
   return respond(200, { message: 'OK' });
 };
 
-export const authCheck: AuthenticatedRouteHandler = async (event: AuthenticatedEvent, prisma: PrismaClient) => {
+export const authCheck: AuthenticatedRouteHandler = async (event: AuthenticatedEvent) => {
   const user = event.user;
 
-  const n = await prisma.user.count();
-  return respond(200, { message: `Hello ${user.alias}! We currently have ${n} users.` });
+  return respond(200, { message: `Hello ${user.alias}!` });
 };
 
 export const postCheck: AuthenticatedRouteHandler = async (event: AuthenticatedEvent) => {
