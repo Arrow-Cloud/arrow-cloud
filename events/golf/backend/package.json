@@ -7,7 +7,10 @@
     "build": "node build.mjs"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1041.0",
     "@aws-sdk/client-s3": "^3.837.0",
+    "@aws-sdk/client-sqs": "^3.837.0",
+    "@aws-sdk/lib-dynamodb": "^3.1041.0",
     "@aws-sdk/s3-request-presigner": "^3.837.0"
   },
   "devDependencies": {

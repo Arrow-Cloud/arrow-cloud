@@ -27,6 +27,7 @@ export class ApiStack extends cdk.Stack {
   public readonly databaseSecret: secretsmanager.ISecret;
   public readonly scoresBucket: s3.IBucket;
   public readonly scoreSubmissionTopic: sns.ITopic;
+  public readonly discordNotifyQueue: sqs.Queue;
 
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
@@ -301,7 +302,7 @@ export class ApiStack extends cdk.Stack {
     const discordSecret = secretsmanager.Secret.fromSecretNameV2(this, 'DiscordBotSecret', 'DiscordBotSecret');
 
     // SQS queue for Discord notifications
-    const discordNotifyQueue = new sqs.Queue(this, 'DiscordNotifyQueue', {
+    this.discordNotifyQueue = new sqs.Queue(this, 'DiscordNotifyQueue', {
       queueName: 'arrow-cloud-discord-notify',
       visibilityTimeout: cdk.Duration.minutes(2),
       deadLetterQueue: {
@@ -325,23 +326,23 @@ export class ApiStack extends cdk.Stack {
         // DISCORD_DEFAULT_CHANNEL_ID: '123456789012345678',
       },
       // Removed VPC configuration to avoid NAT Gateway charges for Discord API calls
-      events: [new lambdaEventSources.SqsEventSource(discordNotifyQueue, { batchSize: 5 })],
+      events: [new lambdaEventSources.SqsEventSource(this.discordNotifyQueue, { batchSize: 5 })],
     });
 
     // Allow Discord Lambda to read bot secret
     discordSecret.grantRead(discordNotifierLambda);
 
     // Allow API Lambda to send messages to the Discord queue
-    discordNotifyQueue.grantSendMessages(apiLambda);
+    this.discordNotifyQueue.grantSendMessages(apiLambda);
     // Allow the pack processor lambda to send messages to the Discord queue
-    discordNotifyQueue.grantSendMessages(packProcessorLambda);
+    this.discordNotifyQueue.grantSendMessages(packProcessorLambda);
 
     // Expose queue URL to API Lambda for convenience
-    apiLambda.addEnvironment('DISCORD_NOTIFY_QUEUE_URL', discordNotifyQueue.queueUrl);
+    apiLambda.addEnvironment('DISCORD_NOTIFY_QUEUE_URL', this.discordNotifyQueue.queueUrl);
     // Expose queue URL to Pack Processor Lambda
-    packProcessorLambda.addEnvironment('DISCORD_NOTIFY_QUEUE_URL', discordNotifyQueue.queueUrl);
+    packProcessorLambda.addEnvironment('DISCORD_NOTIFY_QUEUE_URL', this.discordNotifyQueue.queueUrl);
 
-    new cdk.CfnOutput(this, 'DiscordNotifyQueueUrl', { value: discordNotifyQueue.queueUrl });
+    new cdk.CfnOutput(this, 'DiscordNotifyQueueUrl', { value: this.discordNotifyQueue.queueUrl });
 
     // Debounce state table
     new dynamodb.Table(this, 'DebounceLocks', {

@@ -1,6 +1,8 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
 import { Flag, UploadCloud, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useAuth } from '@shared/contexts/AuthContext';
 
 const SUBMIT_API_URL = import.meta.env.VITE_GOLF_SUBMIT_API_URL as string | undefined;
 
@@ -8,7 +10,15 @@ type UploadState = 'idle' | 'requesting' | 'uploading' | 'done' | 'error';
 
 const SubmitChartPage = () => {
   const { formatMessage } = useIntl();
+  const { user, isInitializing } = useAuth();
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isInitializing && !user) {
+      navigate('/login', { replace: true });
+    }
+  }, [isInitializing, user, navigate]);
   const [file, setFile] = useState<File | null>(null);
   const [uploadState, setUploadState] = useState<UploadState>('idle');
   const [errorMessage, setErrorMessage] = useState('');
@@ -24,7 +34,7 @@ const SubmitChartPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!file || !SUBMIT_API_URL) return;
+    if (!file || !SUBMIT_API_URL || !user) return;
 
     setUploadState('requesting');
     setErrorMessage('');
@@ -34,7 +44,12 @@ const SubmitChartPage = () => {
       const urlRes = await fetch(`${SUBMIT_API_URL}/upload-url`, {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, contentType: file.type || 'application/octet-stream' }),
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type || 'application/octet-stream',
+          userId: user?.id,
+          userAlias: user?.alias,
+        }),
       });
 
       if (!urlRes.ok) {
@@ -42,7 +57,10 @@ const SubmitChartPage = () => {
         throw new Error(error ?? `Server error ${urlRes.status}`);
       }
 
-      const { uploadUrl } = (await urlRes.json()) as { uploadUrl: string; key: string };
+      const { uploadUrl } = (await urlRes.json()) as {
+        uploadUrl: string;
+        key: string;
+      };
 
       // Step 2: PUT the file directly to S3 using the pre-signed URL
       setUploadState('uploading');
@@ -128,16 +146,16 @@ const SubmitChartPage = () => {
             {uploadState === 'uploading' && (
               <div className="flex flex-col gap-1">
                 <progress className="progress progress-accent w-full" value={progress} max={100} />
-                  <span className="text-xs text-base-content/60 text-right">
-                    {formatMessage(
-                      {
-                        defaultMessage: '{progress}% ',
-                        id: 'SrvHAs',
-                        description: 'Upload progress percentage label',
-                      },
-                      { progress },
-                    ).trim()}
-                  </span>
+                <span className="text-xs text-base-content/60 text-right">
+                  {formatMessage(
+                    {
+                      defaultMessage: '{progress}% ',
+                      id: 'SrvHAs',
+                      description: 'Upload progress percentage label',
+                    },
+                    { progress },
+                  ).trim()}
+                </span>
               </div>
             )}
 
@@ -152,11 +170,7 @@ const SubmitChartPage = () => {
               <div role="alert" className="alert alert-warning text-sm">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>
-                  <FormattedMessage
-                    defaultMessage="VITE_GOLF_SUBMIT_API_URL is not configured."
-                    id="CXVMTq"
-                    description="Missing env var warning"
-                  />
+                  <FormattedMessage defaultMessage="VITE_GOLF_SUBMIT_API_URL is not configured." id="CXVMTq" description="Missing env var warning" />
                 </span>
               </div>
             )}
