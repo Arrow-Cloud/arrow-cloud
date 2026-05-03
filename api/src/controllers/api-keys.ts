@@ -2,7 +2,7 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 import { PrismaClient } from '../../prisma/generated/client';
 import { AuthenticatedEvent } from '../utils/types';
 import { internalServerErrorResponse, respond } from '../utils/responses';
-import { generateApiKey, hashApiKey } from '../utils/auth';
+import { issueApiKeyForUser } from '../services/apiKeys';
 
 export const listApiKeys = async (event: AuthenticatedEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> => {
   try {
@@ -27,24 +27,16 @@ export const listApiKeys = async (event: AuthenticatedEvent, prisma: PrismaClien
 
 export const createApiKey = async (event: AuthenticatedEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> => {
   try {
-    const key = generateApiKey();
-    const keyHash = hashApiKey(key);
-
-    const created = await prisma.apiKey.create({
-      data: {
-        keyHash,
-        userId: event.user.id,
-      },
-    });
+    const issued = await issueApiKeyForUser(prisma, event.user.id);
 
     return respond(201, {
       apiKey: {
-        id: created.keyHash,
-        createdAt: created.createdAt,
-        lastUsedAt: (created as any).lastUsedAt ?? null,
-        fingerprint: created.keyHash.slice(0, 8),
+        id: issued.keyHash,
+        createdAt: issued.createdAt,
+        lastUsedAt: issued.lastUsedAt,
+        fingerprint: issued.keyHash.slice(0, 8),
       },
-      key, // plaintext only returned upon creation
+      key: issued.key, // plaintext only returned upon creation
       message: 'API key created. Store it securely; it will not be shown again.',
     });
   } catch (err) {

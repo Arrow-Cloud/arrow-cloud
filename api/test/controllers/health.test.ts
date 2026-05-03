@@ -4,11 +4,7 @@ import { AuthenticatedEvent } from '../../src/utils/types';
 import { PrismaClient, User } from '../../prisma/generated/client';
 
 // Mock Prisma
-const mockPrisma = {
-  user: {
-    count: jest.fn(),
-  },
-} as unknown as PrismaClient;
+const mockPrisma = {} as unknown as PrismaClient;
 
 describe('Health Controller', () => {
   let mockEvent: APIGatewayProxyEvent;
@@ -86,18 +82,14 @@ describe('Health Controller', () => {
   });
 
   describe('authCheck', () => {
-    it('should return user greeting with user count', async () => {
-      const userCount = 42;
-      mockPrisma.user.count = jest.fn().mockResolvedValue(userCount);
-
+    it('should return user greeting', async () => {
       const result = await authCheck(mockAuthenticatedEvent, mockPrisma);
 
-      expect(mockPrisma.user.count).toHaveBeenCalledTimes(1);
       expect(result).toEqual(
         expect.objectContaining({
           statusCode: 200,
           body: JSON.stringify({
-            message: `Hello ${mockUser.alias}! We currently have ${userCount} users.`,
+            message: `Hello ${mockUser.alias}!`,
           }),
         }),
       );
