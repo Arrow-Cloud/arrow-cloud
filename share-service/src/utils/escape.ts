@@ -31,9 +31,11 @@ export function escapeHtml(value: unknown): string {
 
 /**
  * Validate that a URL is safe to drop into an `src` / `href` attribute.
- * Allows http(s) and data:image/* URIs. Anything else (including
- * `javascript:`, `vbscript:`, malformed URLs, or non-strings) returns the
- * supplied fallback (default: empty string).
+ *
+ * Allows only `http://` and `https://` URLs. Everything else
+ * (`javascript:`, `vbscript:`, `data:`, `file:`, protocol-relative `//host`,
+ * malformed URLs, non-strings, anything containing control characters)
+ * returns the supplied fallback (default: empty string).
  *
  * The returned value is also HTML-attribute-escaped.
  */
@@ -44,10 +46,8 @@ export function safeUrl(value: unknown, fallback: string = ''): string {
   // eslint-disable-next-line no-control-regex
   if (/[\u0000-\u001f\u007f]/.test(trimmed)) return escapeHtml(fallback);
   const lower = trimmed.toLowerCase();
-  if (lower.startsWith('http://') || lower.startsWith('https://') || lower.startsWith('data:image/')) {
+  if (lower.startsWith('https://') || lower.startsWith('http://')) {
     return escapeHtml(trimmed);
   }
-  // Protocol-relative URLs (//host/...) are also acceptable; they inherit the page's scheme.
-  if (lower.startsWith('//')) return escapeHtml(trimmed);
   return escapeHtml(fallback);
 }
