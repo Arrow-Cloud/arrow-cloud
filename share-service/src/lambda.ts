@@ -4,6 +4,12 @@ import { fetchSessionData } from './services/session-data';
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { escapeHtml, safeUrl } from './utils/escape';
 
+// CSP for the public OG share pages. These pages only embed a single image
+// (the generated share PNG, served from our own infra) and inline <style>.
+// They never need to execute JavaScript, so script-src is locked to 'none'.
+// This is a defense-in-depth backstop on top of HTML escaping in the body.
+const SHARE_PAGE_CSP = "default-src 'none'; img-src https: data:; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'";
+
 const s3Client = new S3Client();
 
 export const handler = async (event: any) => {
@@ -76,6 +82,9 @@ async function handlePlayPage(event: any) {
     headers: {
       'Content-Type': 'text/html',
       'Cache-Control': 'public, max-age=3600',
+      'Content-Security-Policy': SHARE_PAGE_CSP,
+      'X-Content-Type-Options': 'nosniff',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
     },
     body: `<!DOCTYPE html>
 <html lang="en">
@@ -362,6 +371,9 @@ async function handleSessionPage(event: any) {
     headers: {
       'Content-Type': 'text/html',
       'Cache-Control': 'public, max-age=3600',
+      'Content-Security-Policy': SHARE_PAGE_CSP,
+      'X-Content-Type-Options': 'nosniff',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
     },
     body: `<!DOCTYPE html>
 <html lang="en">
