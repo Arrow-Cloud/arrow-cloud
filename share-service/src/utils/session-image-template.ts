@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { HARD_EX_SCORING_SYSTEM, EX_SCORING_SYSTEM, MONEY_SCORING_SYSTEM } from '@api/utils/scoring';
 import { JUDGMENT_COLORS } from '@api/utils/chartjs-timing-visualizer';
+import { escapeHtml, safeUrl } from './escape';
 
 // ITG-specific colors: all Fantastics are blue
 const ITG_JUDGMENT_COLORS: Record<string, string> = {
@@ -291,12 +292,12 @@ function generatePlayCardHTML(play: SessionPlayData, systemColor: string, scorin
       <!-- Column 1: Banner + Chart Info -->
       <div class="col-banner${hasBanner ? '' : ' no-banner'}">
         <div class="banner-container">
-          ${hasBanner ? `<img src="${play.chart.bannerUrl}" alt="${play.chart.title}" class="play-banner" />` : ''}
+          ${hasBanner ? `<img src="${safeUrl(play.chart.bannerUrl)}" alt="${escapeHtml(play.chart.title)}" class="play-banner" />` : ''}
           ${
             hasBanner && hasDifficultyInfo
               ? `
           <div class="difficulty-chip" style="background-color: ${diffColor};">
-            ${getStepsTypeAbbrev(play.chart.stepsType)}${getDifficultyAbbrev(play.chart.difficulty)} ${play.chart.meter}
+            ${escapeHtml(getStepsTypeAbbrev(play.chart.stepsType))}${escapeHtml(getDifficultyAbbrev(play.chart.difficulty))} ${escapeHtml(play.chart.meter)}
           </div>
           `
               : ''
@@ -307,20 +308,20 @@ function generatePlayCardHTML(play: SessionPlayData, systemColor: string, scorin
             !hasBanner && hasDifficultyInfo
               ? `
           <div class="difficulty-chip" style="background-color: ${diffColor};">
-            ${getStepsTypeAbbrev(play.chart.stepsType)}${getDifficultyAbbrev(play.chart.difficulty)} ${play.chart.meter}
+            ${escapeHtml(getStepsTypeAbbrev(play.chart.stepsType))}${escapeHtml(getDifficultyAbbrev(play.chart.difficulty))} ${escapeHtml(play.chart.meter)}
           </div>
           `
               : ''
           }
-          <div class="chart-title">${play.chart.title || 'Unknown'}</div>
-          <div class="chart-artist">${play.chart.artist || 'Unknown Artist'}</div>
+          <div class="chart-title">${escapeHtml(play.chart.title || 'Unknown')}</div>
+          <div class="chart-artist">${escapeHtml(play.chart.artist || 'Unknown Artist')}</div>
         </div>
       </div>
       
       <!-- Column 2: Score/Grade + Scatterplot -->
       <div class="col-score">
         <div class="score-grade">
-          <img src="${getGradeImage(gradeToShow || 'F')}" alt="${gradeToShow || 'F'}" class="grade-image" />
+          <img src="${safeUrl(getGradeImage(gradeToShow || 'F'))}" alt="${escapeHtml(gradeToShow || 'F')}" class="grade-image" />
           <div class="score-text">
             <div class="score-line">
               <span class="score-value" style="color: ${systemColor};">${scorePercent}%</span>
@@ -394,8 +395,8 @@ export function generateSessionImageHTML(session: SessionData): string {
   const topPacksHTML = topPacksForGrid
     .map(
       (pack) => `
-    <div class="pack-grid-item" title="${pack.packName} (${pack.chartCount} chart${pack.chartCount !== 1 ? 's' : ''})">
-      ${pack.bannerUrl ? `<img src="${pack.bannerUrl}" alt="${pack.packName}" class="pack-grid-banner" />` : `<div class="pack-grid-placeholder">📁</div>`}
+    <div class="pack-grid-item" title="${escapeHtml(`${pack.packName} (${pack.chartCount} chart${pack.chartCount !== 1 ? 's' : ''})`)}">
+      ${pack.bannerUrl ? `<img src="${safeUrl(pack.bannerUrl)}" alt="${escapeHtml(pack.packName)}" class="pack-grid-banner" />` : `<div class="pack-grid-placeholder">📁</div>`}
     </div>
   `,
     )
@@ -815,12 +816,12 @@ export function generateSessionImageHTML(session: SessionData): string {
   <div class="header">
     ${
       session.user.profileImageUrl
-        ? `<img src="${session.user.profileImageUrl}" alt="${session.user.alias}" class="avatar" />`
+        ? `<img src="${safeUrl(session.user.profileImageUrl)}" alt="${escapeHtml(session.user.alias)}" class="avatar" />`
         : `<div class="avatar" style="display: flex; align-items: center; justify-content: center; font-size: 18px;">👤</div>`
     }
     <div class="header-info">
       <div class="header-top-row">
-        <h1>${session.user.alias}</h1>
+        <h1>${escapeHtml(session.user.alias)}</h1>
         <span class="session-date">${new Date(session.startedAt).toLocaleDateString('en-US', {
           month: 'short',
           day: 'numeric',

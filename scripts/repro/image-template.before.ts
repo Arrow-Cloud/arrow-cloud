@@ -3,7 +3,6 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import { HARD_EX_SCORING_SYSTEM, EX_SCORING_SYSTEM, MONEY_SCORING_SYSTEM } from '@api/utils/scoring';
 import { JUDGMENT_COLORS } from '@api/utils/chartjs-timing-visualizer';
-import { escapeHtml, safeUrl } from './escape';
 
 // ITG-specific colors: all Fantastics are blue
 const ITG_JUDGMENT_COLORS: Record<string, string> = {
@@ -751,24 +750,24 @@ export async function generateImageHTML(play: PlayData): Promise<string> {
     <div class="left-column">
       ${
         play.chart.bannerUrl
-          ? `<img src="${safeUrl(play.chart.bannerUrl)}" alt="${escapeHtml(play.chart.title)}" class="header-banner" />`
+          ? `<img src="${play.chart.bannerUrl}" alt="${play.chart.title}" class="header-banner" />`
           : `<div class="header-banner" style="display: flex; align-items: center; justify-content: center; font-size: 48px; opacity: 0.3; background: rgba(255, 255, 255, 0.05); aspect-ratio: 2.56;">🎵</div>`
       }
       
       <div class="score-info">
         <div class="score-section">
-          ${play.primaryScore.grade ? `<img src="${safeUrl(getGradeImage(play.primaryScore.grade))}" alt="${escapeHtml(play.primaryScore.grade)}" class="grade" />` : ''}
+          ${play.primaryScore.grade ? `<img src="${getGradeImage(play.primaryScore.grade)}" alt="${play.primaryScore.grade}" class="grade" />` : ''}
           <div class="scores-container">
             <div class="score-row">
               <div class="score" style="color: ${primaryColor};">${primaryScorePercent}</div>
-              <span class="score-label" style="color: ${primaryColor};">${escapeHtml(play.primaryScore.system)}</span>
+              <span class="score-label" style="color: ${primaryColor};">${play.primaryScore.system}</span>
             </div>
             ${
               secondaryScorePercent
                 ? `
             <div class="score-row">
               <div class="score-secondary" style="color: ${secondaryColor};">${secondaryScorePercent}</div>
-              <span class="score-label" style="color: ${secondaryColor};">${escapeHtml(play.secondaryScore!.system)}</span>
+              <span class="score-label" style="color: ${secondaryColor};">${play.secondaryScore!.system}</span>
             </div>
             `
                 : ''
@@ -777,16 +776,16 @@ export async function generateImageHTML(play: PlayData): Promise<string> {
         </div>
         
         <div class="chart-info">
-          <div class="chart-title">${escapeHtml(play.chart.title)}</div>
-          <div class="chart-artist">${escapeHtml(play.chart.artist)}</div>
+          <div class="chart-title">${play.chart.title}</div>
+          <div class="chart-artist">${play.chart.artist}</div>
           <div class="chart-meta">
             ${
               play.chart.stepsType || play.chart.difficulty || play.chart.meter
-                ? `<span class="difficulty-badge" style="background-color: ${getDifficultyColor(play.chart.difficulty)};">${escapeHtml(getStepsTypeAbbrev(play.chart.stepsType))}${escapeHtml(getDifficultyAbbrev(play.chart.difficulty))} ${escapeHtml(play.chart.meter ?? '?')}</span>`
+                ? `<span class="difficulty-badge" style="background-color: ${getDifficultyColor(play.chart.difficulty)};">${getStepsTypeAbbrev(play.chart.stepsType)}${getDifficultyAbbrev(play.chart.difficulty)} ${play.chart.meter ?? '?'}</span>`
                 : ''
             }
-            ${play.chart.description ? `<span class="chart-description">${escapeHtml(play.chart.description)}</span>` : ''}
-            ${play.chart.credit ? `<span class="chart-credit">${escapeHtml(play.chart.credit)}</span>` : ''}
+            ${play.chart.description ? `<span class="chart-description">${play.chart.description}</span>` : ''}
+            ${play.chart.credit ? `<span class="chart-credit">${play.chart.credit}</span>` : ''}
           </div>
         </div>
       </div>
@@ -850,13 +849,13 @@ export async function generateImageHTML(play: PlayData): Promise<string> {
   
   <div class="user-section">
     <div class="user-info">
-      <h1>${escapeHtml(play.user.alias)}</h1>
+      <h1>${play.user.alias}</h1>
       <div class="date">${formattedDate}</div>
     </div>
     ${
       play.user.profileImageUrl
-        ? `<img src="${safeUrl(play.user.profileImageUrl)}" alt="${escapeHtml(play.user.alias)}" class="avatar" />`
-        : `<div class="avatar" style="display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; background: rgba(255, 255, 255, 0.2);">${escapeHtml(play.user.alias.charAt(0).toUpperCase())}</div>`
+        ? `<img src="${play.user.profileImageUrl}" alt="${play.user.alias}" class="avatar" />`
+        : `<div class="avatar" style="display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; background: rgba(255, 255, 255, 0.2);">${play.user.alias.charAt(0).toUpperCase()}</div>`
     }
   </div>
   
