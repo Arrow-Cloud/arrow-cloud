@@ -1,5 +1,6 @@
 import { scoreSubmission } from '../controllers/chart';
 import { getLeaderboardsForChart } from '../controllers/leaderboard';
+import { getBulkUserScores } from '../controllers/scores';
 import { Routes } from '../utils/types';
 
 export const apiRoutes: Routes = {
@@ -20,5 +21,11 @@ export const apiRoutes: Routes = {
         chartHash: /[a-f0-9]{16}/,
       },
     },
-  }
+  },
+  '/v1/retrieve-scores': {
+    POST: {
+      handler: getBulkUserScores,
+      requiresAuth: true,
+    },
+  },
 };
