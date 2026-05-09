@@ -2,6 +2,13 @@ import { generatePlayImage, generateSessionImage } from './services/image-genera
 import { fetchPlayData } from './services/play-data';
 import { fetchSessionData } from './services/session-data';
 import { S3Client, GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
+import { escapeHtml, safeUrl } from './utils/escape';
+
+// CSP for the public OG share pages. These pages only embed a single image
+// (the generated share PNG, served from our own infra) and inline <style>.
+// They never need to execute JavaScript, so script-src is locked to 'none'.
+// This is a defense-in-depth backstop on top of HTML escaping in the body.
+const SHARE_PAGE_CSP = "default-src 'none'; img-src https: data:; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'; form-action 'none'";
 
 const s3Client = new S3Client();
 
@@ -60,32 +67,39 @@ async function handlePlayPage(event: any) {
   const userName = playData.user.alias || 'Player';
 
   const title = `${userName} - ${songTitle} by ${artist}`;
+  const titleEscaped = escapeHtml(title);
+  const titleAndSiteEscaped = escapeHtml(`${title} - Arrow Cloud`);
 
   // Build image URL
   const baseUrl = event.requestContext?.domainName ? `https://${event.requestContext.domainName}/${event.requestContext.stage}` : '';
   const imageUrl = `${baseUrl}/image/${playId}?p=${primary}&s=${secondary}`;
+  const imageUrlEscaped = escapeHtml(imageUrl);
   const mainSiteUrl = process.env.MAIN_SITE_URL || 'https://arrowcloud.dance';
+  const playLinkEscaped = safeUrl(`${mainSiteUrl}/play/${playId}`);
 
   return {
     statusCode: 200,
     headers: {
       'Content-Type': 'text/html',
       'Cache-Control': 'public, max-age=3600',
+      'Content-Security-Policy': SHARE_PAGE_CSP,
+      'X-Content-Type-Options': 'nosniff',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
     },
     body: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title} - Arrow Cloud</title>
-  <meta property="og:image" content="${imageUrl}" />
+  <title>${titleAndSiteEscaped}</title>
+  <meta property="og:image" content="${imageUrlEscaped}" />
   <meta property="og:image:width" content="880" />
   <meta property="og:image:height" content="800" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="${title}" />
+  <meta property="og:title" content="${titleEscaped}" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="${imageUrl}" />
-  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:image" content="${imageUrlEscaped}" />
+  <meta name="twitter:title" content="${titleEscaped}" />
   <style>
     body {
       margin: 0;
@@ -123,9 +137,9 @@ async function handlePlayPage(event: any) {
 </head>
 <body>
   <div class="container">
-    <img src="${imageUrl}" alt="${title}" />
+    <img src="${imageUrlEscaped}" alt="${titleEscaped}" />
     <div class="link">
-      <a href="${mainSiteUrl}/play/${playId}">View on Arrow Cloud →</a>
+      <a href="${playLinkEscaped}">View on Arrow Cloud →</a>
     </div>
   </div>
 </body>
@@ -336,6 +350,8 @@ async function handleSessionPage(event: any) {
   const userName = sessionData.user.alias || 'Player';
   const sessionDate = new Date(sessionData.startedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   const title = `${userName} Session Highlights - ${sessionDate}`;
+  const titleEscaped = escapeHtml(title);
+  const titleAndSiteEscaped = escapeHtml(`${title} - Arrow Cloud`);
 
   // Calculate estimated image dimensions
   // Header ~68px, Info row varies by pack count, Play cards ~150px each + 12px gaps, Footer ~36px, Padding 40px
@@ -346,28 +362,33 @@ async function handleSessionPage(event: any) {
   // Build image URL
   const baseUrl = event.requestContext?.domainName ? `https://${event.requestContext.domainName}/${event.requestContext.stage}` : '';
   const imageUrl = `${baseUrl}/session/image/${sessionId}?plays=${playIds.join(',')}&system=${system}`;
+  const imageUrlEscaped = escapeHtml(imageUrl);
   const mainSiteUrl = process.env.MAIN_SITE_URL || 'https://arrowcloud.dance';
+  const sessionLinkEscaped = safeUrl(`${mainSiteUrl}/session/${sessionId}`);
 
   return {
     statusCode: 200,
     headers: {
       'Content-Type': 'text/html',
       'Cache-Control': 'public, max-age=3600',
+      'Content-Security-Policy': SHARE_PAGE_CSP,
+      'X-Content-Type-Options': 'nosniff',
+      'Referrer-Policy': 'strict-origin-when-cross-origin',
     },
     body: `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${title} - Arrow Cloud</title>
-  <meta property="og:image" content="${imageUrl}" />
+  <title>${titleAndSiteEscaped}</title>
+  <meta property="og:image" content="${imageUrlEscaped}" />
   <meta property="og:image:width" content="700" />
   <meta property="og:image:height" content="${estimatedHeight}" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="${title}" />
+  <meta property="og:title" content="${titleEscaped}" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:image" content="${imageUrl}" />
-  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:image" content="${imageUrlEscaped}" />
+  <meta name="twitter:title" content="${titleEscaped}" />
   <style>
     body {
       margin: 0;
@@ -405,9 +426,9 @@ async function handleSessionPage(event: any) {
 </head>
 <body>
   <div class="container">
-    <img src="${imageUrl}" alt="${title}" />
+    <img src="${imageUrlEscaped}" alt="${titleEscaped}" />
     <div class="link">
-      <a href="${mainSiteUrl}/session/${sessionId}">View on Arrow Cloud →</a>
+      <a href="${sessionLinkEscaped}">View on Arrow Cloud →</a>
     </div>
   </div>
 </body>
