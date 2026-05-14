@@ -22,7 +22,7 @@
     "jszip": "^3.10.1",
     "lucide-react": "^0.525.0",
     "react": "^19.1.0",
-    "react-chartjs-2": "^5.2.0",
+    "react-chartjs-2": "^5.3.1",
     "react-dom": "^19.1.0",
     "react-intl": "7.1.11",
     "react-router-dom": "^7.6.3",
