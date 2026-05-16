@@ -312,10 +312,12 @@ model Play {
   modifiers        Json?             // Play modifiers (speed, turn, appearance, etc.)
   engineName       String            @default("ITGMania")
   engineVersion    String?
+  playHash         String?           // SHA-256 of submission payload, used for deduplication
   PlayLeaderboard  PlayLeaderboard[]
 
   @@index([chartHash])
   @@index([chartHash, userId, createdAt(sort: Desc), id(sort: Desc)], map: "Play_chartHash_userId_createdAt_id_idx")
+  @@index([userId, playHash])
 }
 
 model Lifebar {
