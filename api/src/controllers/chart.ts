@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import type { AuthenticatedRouteHandler, AuthenticatedEvent, ExtendedAPIGatewayProxyEvent } from '../utils/types';
 import { PrismaClient, User } from '../../prisma/generated';
 import { PlaySubmission, validatePlaySubmission } from '../utils/scoring';
@@ -743,12 +744,33 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
       }
     }
 
+    // Compute a hash of the submission payload for deduplication.
+    // Two submissions with the same content for the same user within 30 days
+    // are treated as duplicates and silently ignored.
+    const submissionBody = JSON.stringify(scoreSubmission);
+    const playHash = createHash('sha256').update(submissionBody).digest('hex');
+
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const duplicate = await prisma.play.findFirst({
+      where: {
+        userId: user.id,
+        playHash,
+        createdAt: { gte: thirtyDaysAgo },
+      },
+      select: { id: true },
+    });
+
+    if (duplicate) {
+      console.log(`Duplicate score submission detected for user ${user.id} (playHash ${playHash}), play ${duplicate.id}. Returning success without saving.`);
+      return emptyResponse();
+    }
+
     // Prepare S3 upload
     const path = `scores/${hash}/${user.id}/${Date.now()}.json`;
     const s3UploadCommand = new PutObjectCommand({
       Bucket: BUCKET,
       Key: path,
-      Body: JSON.stringify(scoreSubmission),
+      Body: submissionBody,
       ContentType: 'application/json',
     });
 
@@ -793,6 +815,7 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
               modifiers: scoreSubmission.modifiers as object,
               engineName: scoreSubmission._engineName,
               engineVersion: scoreSubmission._engineVersion,
+              playHash,
               ...(pendingTimestamp && {
                 createdAt: pendingTimestamp,
                 updatedAt: pendingTimestamp,

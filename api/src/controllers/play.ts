@@ -103,6 +103,7 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
           modifiers: play.modifiers,
           engineName: play.engineName,
           engineVersion: play.engineVersion,
+          playHash: null,
         },
         s3Client,
       );

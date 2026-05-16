@@ -35,6 +35,7 @@ jest.mock('../../prisma/generated/client', () => ({
     },
     play: {
       create: jest.fn(),
+      findFirst: jest.fn().mockResolvedValue(null),
     },
     $transaction: jest.fn(),
   })),
@@ -184,6 +185,7 @@ describe('Chart Controller', () => {
             modifiers: expect.any(Object),
             engineName: 'ITGMania',
             engineVersion: undefined,
+            playHash: expect.any(String),
           },
         });
 
@@ -364,6 +366,7 @@ describe('Chart Controller', () => {
             modifiers: expect.any(Object),
             engineName: 'ITGMania',
             engineVersion: undefined,
+            playHash: expect.any(String),
             createdAt: expectedTimestamp,
             updatedAt: expectedTimestamp,
           },
@@ -421,6 +424,7 @@ describe('Chart Controller', () => {
             modifiers: expect.any(Object),
             engineName: 'ITGMania',
             engineVersion: undefined,
+            playHash: expect.any(String),
             createdAt: expectedTimestamp,
             updatedAt: expectedTimestamp,
           },
@@ -474,6 +478,7 @@ describe('Chart Controller', () => {
             modifiers: expect.any(Object),
             engineName: 'ITGMania',
             engineVersion: undefined,
+            playHash: expect.any(String),
           },
         });
       });
@@ -530,6 +535,7 @@ describe('Chart Controller', () => {
             modifiers: expect.any(Object),
             engineName: 'ITGMania',
             engineVersion: undefined,
+            playHash: expect.any(String),
           },
         });
       });
