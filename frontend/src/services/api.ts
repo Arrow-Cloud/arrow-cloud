@@ -899,6 +899,7 @@ export interface PerfectScoreItem {
 
 export interface GetPerfectScoresResponse {
   items: PerfectScoreItem[];
+  meterStats: { meter: number; count: number }[];
   meta: {
     total: number;
     page: number;
@@ -909,8 +910,23 @@ export interface GetPerfectScoresResponse {
   };
 }
 
-export const getUserPerfectScores = async (userId: string, type: PerfectScoreType, page = 1, limit = 50): Promise<GetPerfectScoresResponse> => {
+export interface PerfectScoresFilters {
+  search?: string;
+  meter?: number | null;
+  sort?: 'date-desc' | 'date-asc' | 'meter-desc' | 'meter-asc';
+}
+
+export const getUserPerfectScores = async (
+  userId: string,
+  type: PerfectScoreType,
+  page = 1,
+  limit = 50,
+  filters: PerfectScoresFilters = {},
+): Promise<GetPerfectScoresResponse> => {
   const params = new URLSearchParams({ type, page: String(page), limit: String(limit) });
+  if (filters.search) params.set('search', filters.search);
+  if (filters.meter != null) params.set('meter', String(filters.meter));
+  if (filters.sort) params.set('sort', filters.sort);
   const response = await api.get(`/user/${userId}/perfect-scores?${params.toString()}`);
   return response.data as GetPerfectScoresResponse;
 };

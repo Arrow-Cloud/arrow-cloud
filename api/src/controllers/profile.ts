@@ -1063,7 +1063,15 @@ const GetPerfectScoresQuerySchema = z.object({
     .string()
     .optional()
     .default('50')
-    .transform((v) => Math.min(200, Math.max(1, parseInt(v, 10) || 50))),
+    .transform((v) => Math.min(100, Math.max(1, parseInt(v, 10) || 50))),
+  meter: z
+    .string()
+    .optional()
+    .transform((v) => (v !== undefined && v !== '' ? parseInt(v, 10) : null))
+    .nullable()
+    .default(null),
+  search: z.string().optional().default(''),
+  sort: z.enum(['date-desc', 'date-asc', 'meter-desc', 'meter-asc']).optional().default('date-desc'),
 });
 
 /**
@@ -1079,7 +1087,7 @@ export const getUserPerfectScores = async (event: ExtendedAPIGatewayProxyEvent, 
     const queryResult = GetPerfectScoresQuerySchema.safeParse(event.queryStringParameters || {});
     if (!queryResult.success) return respond(400, { error: 'Invalid query parameters' });
 
-    const { type, page, limit } = queryResult.data;
+    const { type, page, limit, meter: meterParam, search, sort } = queryResult.data;
 
     const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, banned: true } });
     if (!user || user.banned) return respond(404, { error: 'User not found' });
@@ -1100,13 +1108,16 @@ export const getUserPerfectScores = async (event: ExtendedAPIGatewayProxyEvent, 
     // Single raw SQL query: DISTINCT ON gives the earliest qualifying play per chart.
     // stepsHit is derived by summing all non-Miss judgments from the ITG leaderboard JSON.
     // Uses Prisma.sql function-call form (not tagged template) so Prisma.sql fragments compose correctly.
-    type QualifyingRow = { chartHash: string; achievedAt: Date; playId: number };
+    type QualifyingRow = { chartHash: string; achievedAt: Date; playId: number; meter: number | null; songName: string | null; artist: string | null };
     const qualifying = await prisma.$queryRaw<QualifyingRow[]>(
       Prisma.sql`
       SELECT DISTINCT ON (p."chartHash")
         p."chartHash",
         p."createdAt" AS "achievedAt",
-        p."id"        AS "playId"
+        p."id"        AS "playId",
+        c."meter"     AS "meter",
+        c."songName"  AS "songName",
+        c."artist"    AS "artist"
       FROM "Play" p
       INNER JOIN "PlayLeaderboard" pl_target
         ON pl_target."playId" = p."id"
@@ -1130,15 +1141,46 @@ export const getUserPerfectScores = async (event: ExtendedAPIGatewayProxyEvent, 
     `,
     );
 
-    // Sort by most recently achieved first, then paginate in JS (row count is small — user's personal best list)
-    qualifying.sort((a, b) => b.achievedAt.getTime() - a.achievedAt.getTime() || a.chartHash.localeCompare(b.chartHash));
+    // Compute meter breakdown from ALL qualifying plays (before any search/meter filter)
+    const meterGroups = new Map<number, number>();
+    for (const row of qualifying) {
+      const m = row.meter ?? 0;
+      meterGroups.set(m, (meterGroups.get(m) ?? 0) + 1);
+    }
+    const meterStats = Array.from(meterGroups.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([meter, count]) => ({ meter, count }));
 
-    const total = qualifying.length;
-    const paginatedRows = qualifying.slice((page - 1) * limit, page * limit);
+    // Apply search and meter filters in JS
+    let filtered = qualifying as QualifyingRow[];
+    if (search) {
+      const q = search.toLowerCase();
+      filtered = filtered.filter((r) => r.songName?.toLowerCase().includes(q) || r.artist?.toLowerCase().includes(q));
+    }
+    if (meterParam !== null) {
+      filtered = filtered.filter((r) => r.meter === meterParam);
+    }
+
+    // Sort
+    filtered = [...filtered];
+    if (sort === 'date-asc') {
+      filtered.sort((a, b) => a.achievedAt.getTime() - b.achievedAt.getTime() || a.chartHash.localeCompare(b.chartHash));
+    } else if (sort === 'meter-desc') {
+      filtered.sort((a, b) => (b.meter ?? 0) - (a.meter ?? 0) || b.achievedAt.getTime() - a.achievedAt.getTime());
+    } else if (sort === 'meter-asc') {
+      filtered.sort((a, b) => (a.meter ?? 0) - (b.meter ?? 0) || b.achievedAt.getTime() - a.achievedAt.getTime());
+    } else {
+      // date-desc (default)
+      filtered.sort((a, b) => b.achievedAt.getTime() - a.achievedAt.getTime() || a.chartHash.localeCompare(b.chartHash));
+    }
+
+    const total = filtered.length;
+    const paginatedRows = filtered.slice((page - 1) * limit, page * limit);
 
     if (paginatedRows.length === 0) {
       return respond(200, {
         items: [],
+        meterStats,
         meta: { total, page, limit, totalPages: Math.ceil(total / limit) || 0, hasNextPage: false, hasPreviousPage: page > 1 },
       });
     }
@@ -1210,6 +1252,7 @@ export const getUserPerfectScores = async (event: ExtendedAPIGatewayProxyEvent, 
     const totalPages = Math.ceil(total / limit);
     return respond(200, {
       items,
+      meterStats,
       meta: {
         total,
         page,

@@ -67,13 +67,24 @@ export function isPlayEligibleForPerfectScores(chartPackIds: number[], meter: nu
   return chartInPack && !chartInExcludedPack && meterOk && enoughSteps;
 }
 
+export interface PerfectScoreAccumulator {
+  quads: Set<string>;
+  quints: Set<string>;
+  hexes: Set<string>;
+}
+
+export function makePerfectScoreAccumulator(): PerfectScoreAccumulator {
+  return { quads: new Set(), quints: new Set(), hexes: new Set() };
+}
+
 /**
  * Count quads/quints/hexes across an array of plays that include PlayLeaderboard entries.
+ * Pass `acc` to accumulate across multiple batches (preserves deduplication by chartHash).
  */
-export function countPerfectScores(plays: PlayForPerfectScoreCheck[]): PerfectScoreCounts {
-  const quadCharts = new Set<string>();
-  const quintCharts = new Set<string>();
-  const hexCharts = new Set<string>();
+export function countPerfectScores(plays: PlayForPerfectScoreCheck[], acc?: PerfectScoreAccumulator): PerfectScoreCounts {
+  const quadCharts = acc?.quads ?? new Set<string>();
+  const quintCharts = acc?.quints ?? new Set<string>();
+  const hexCharts = acc?.hexes ?? new Set<string>();
   for (const play of plays) {
     const itgData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
     const stepsHit = extractStepsHit(itgData);

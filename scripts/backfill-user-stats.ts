@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '../api/prisma/generated/client';
-import { ITG_LEADERBOARD_ID, extractStepsHit, countPerfectScores } from '../api/src/utils/stats-utils';
+import { ITG_LEADERBOARD_ID, extractStepsHit, countPerfectScores, makePerfectScoreAccumulator } from '../api/src/utils/stats-utils';
 
 const prisma = new PrismaClient();
 
@@ -55,9 +55,7 @@ async function backfillUserStats(targetUserId?: string): Promise<void> {
 
     // Page through ITG leaderboard entries for this user's plays (for stepsHit)
     let stepsHit = 0;
-    let quads = 0;
-    let quints = 0;
-    let hexes = 0;
+    const perfAcc = makePerfectScoreAccumulator();
     let cursor: number | undefined;
     let batchCount = 0;
 
@@ -94,10 +92,7 @@ async function backfillUserStats(targetUserId?: string): Promise<void> {
         stepsHit += extractStepsHit(itgData);
       }
 
-      const batch = countPerfectScores(plays);
-      quads += batch.quads;
-      quints += batch.quints;
-      hexes += batch.hexes;
+      countPerfectScores(plays, perfAcc);
 
       cursor = plays[plays.length - 1].id;
 
@@ -128,14 +123,14 @@ async function backfillUserStats(targetUserId?: string): Promise<void> {
           chartsPlayed,
           stepsHit,
           heatMap,
-          quads,
-          quints,
-          hexes,
+          quads: perfAcc.quads.size,
+          quints: perfAcc.quints.size,
+          hexes: perfAcc.hexes.size,
         } as any,
       },
     });
     console.log(
-      `Updated user ${user_id}: totalPlays=${totalPlays}, chartsPlayed=${chartsPlayed}, stepsHit=${stepsHit}, quads=${quads}, quints=${quints}, hexes=${hexes}, heatMapDays=${Object.keys(heatMap).length}, timezone=${userTimezone} (${batchCount} batches)`,
+      `Updated user ${user_id}: totalPlays=${totalPlays}, chartsPlayed=${chartsPlayed}, stepsHit=${stepsHit}, quads=${perfAcc.quads.size}, quints=${perfAcc.quints.size}, hexes=${perfAcc.hexes.size}, heatMapDays=${Object.keys(heatMap).length}, timezone=${userTimezone} (${batchCount} batches)`,
     );
   }
 
