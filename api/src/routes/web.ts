@@ -17,7 +17,15 @@ import { getPack, listPacks, getPackRecentPlays } from '../controllers/pack';
 import { listUsers } from '../controllers/users';
 import { getPackUploadUrl } from '../controllers/pack-upload';
 import { getSimfile, listSimfiles } from '../controllers/simfile';
-import { updateProfile, getUserById, updateUserPreferredLeaderboards, banUser, getUserTrophiesHandler, updateUserTrophyOrder } from '../controllers/profile';
+import {
+  updateProfile,
+  getUserById,
+  updateUserPreferredLeaderboards,
+  banUser,
+  getUserTrophiesHandler,
+  updateUserTrophyOrder,
+  getUserPerfectScores,
+} from '../controllers/profile';
 import { getProfileImageUploadUrl, updateProfileImage, deleteProfileImage } from '../controllers/profile-image';
 import { statsRenderer } from '../controllers/stats';
 import { Routes } from '../utils/types';
@@ -102,6 +110,15 @@ export const webRoutes: Routes = {
   '/user/{userId}': {
     GET: {
       handler: getUserById,
+      requiresAuth: false,
+      patternMatching: {
+        userId: /[a-f0-9-]{36}/,
+      },
+    },
+  },
+  '/user/{userId}/perfect-scores': {
+    GET: {
+      handler: getUserPerfectScores,
       requiresAuth: false,
       patternMatching: {
         userId: /[a-f0-9-]{36}/,

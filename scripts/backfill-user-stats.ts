@@ -69,6 +69,7 @@ async function backfillUserStats(targetUserId?: string): Promise<void> {
         },
         select: {
           id: true,
+          chartHash: true,
           chart: {
             select: {
               meter: true,

@@ -11,6 +11,14 @@ import { publishDiscordMessage } from '../utils/discordNotify';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { resolveChartBanner } from '../utils/chart-banner';
+import {
+  ITG_LEADERBOARD_ID,
+  EX_LEADERBOARD_ID,
+  HARD_EX_LEADERBOARD_ID,
+  MAX_METER_FOR_PERFECT_SCORES,
+  MIN_STEPS_FOR_PERFECT_SCORES,
+  EXCLUDED_PACK_IDS,
+} from '../utils/stats-utils';
 
 const sesClient = new SESClient({ region: process.env.AWS_REGION || 'us-east-2' });
 
@@ -1040,6 +1048,179 @@ export const updateUserTrophyOrder = async (event: AuthenticatedEvent, prisma: P
     return respond(200, { trophies });
   } catch (error) {
     console.error('Error updating trophy order:', error);
+    return internalServerErrorResponse();
+  }
+};
+
+const GetPerfectScoresQuerySchema = z.object({
+  type: z.enum(['quads', 'quints', 'hexes']),
+  page: z
+    .string()
+    .optional()
+    .default('1')
+    .transform((v) => Math.max(1, parseInt(v, 10) || 1)),
+  limit: z
+    .string()
+    .optional()
+    .default('50')
+    .transform((v) => Math.min(200, Math.max(1, parseInt(v, 10) || 50))),
+});
+
+/**
+ * GET /user/{userId}/perfect-scores?type=quads|quints|hexes
+ * Returns paginated list of unique charts the user has a perfect score on for the given type.
+ * Uses a raw SQL query with DISTINCT ON to efficiently find the first qualifying play per chart.
+ */
+export const getUserPerfectScores = async (event: ExtendedAPIGatewayProxyEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> => {
+  try {
+    const userId = event.routeParameters?.userId;
+    if (!userId) return respond(400, { error: 'User ID is required' });
+
+    const queryResult = GetPerfectScoresQuerySchema.safeParse(event.queryStringParameters || {});
+    if (!queryResult.success) return respond(400, { error: 'Invalid query parameters' });
+
+    const { type, page, limit } = queryResult.data;
+
+    const user = await prisma.user.findUnique({ where: { id: userId }, select: { id: true, banned: true } });
+    if (!user || user.banned) return respond(404, { error: 'User not found' });
+
+    const targetLeaderboardId = type === 'quads' ? ITG_LEADERBOARD_ID : type === 'quints' ? EX_LEADERBOARD_ID : HARD_EX_LEADERBOARD_ID;
+
+    // Build optional excluded-pack filter (avoids IN () when list is empty)
+    const excludedPackFilter =
+      EXCLUDED_PACK_IDS.length > 0
+        ? Prisma.sql`AND NOT EXISTS (
+            SELECT 1 FROM "SimfileChart" sc
+            INNER JOIN "Simfile" s ON s."id" = sc."simfileId"
+            WHERE sc."chartHash" = c."hash"
+            AND s."packId" IN (${Prisma.join(EXCLUDED_PACK_IDS.map((id) => Prisma.sql`${id}`))})
+          )`
+        : Prisma.sql``;
+
+    // Single raw SQL query: DISTINCT ON gives the earliest qualifying play per chart.
+    // stepsHit is derived by summing all non-Miss judgments from the ITG leaderboard JSON.
+    // Uses Prisma.sql function-call form (not tagged template) so Prisma.sql fragments compose correctly.
+    type QualifyingRow = { chartHash: string; achievedAt: Date; playId: number };
+    const qualifying = await prisma.$queryRaw<QualifyingRow[]>(
+      Prisma.sql`
+      SELECT DISTINCT ON (p."chartHash")
+        p."chartHash",
+        p."createdAt" AS "achievedAt",
+        p."id"        AS "playId"
+      FROM "Play" p
+      INNER JOIN "PlayLeaderboard" pl_target
+        ON pl_target."playId" = p."id"
+        AND pl_target."leaderboardId" = ${targetLeaderboardId}
+      INNER JOIN "PlayLeaderboard" pl_itg
+        ON pl_itg."playId" = p."id"
+        AND pl_itg."leaderboardId" = ${ITG_LEADERBOARD_ID}
+      INNER JOIN "Chart" c ON c."hash" = p."chartHash"
+      WHERE
+        p."userId" = ${userId}
+        AND c."meter" IS NOT NULL
+        AND c."meter" <= ${MAX_METER_FOR_PERFECT_SCORES}
+        AND (pl_target."data"->>'score') = '100.00'
+        AND (
+          SELECT COALESCE(SUM(val::int), 0)
+          FROM jsonb_each_text(pl_itg."data"->'judgments') AS j(key, val)
+          WHERE j.key <> 'Miss'
+        ) >= ${MIN_STEPS_FOR_PERFECT_SCORES}
+        ${excludedPackFilter}
+      ORDER BY p."chartHash", p."createdAt" ASC
+    `,
+    );
+
+    // Sort by most recently achieved first, then paginate in JS (row count is small — user's personal best list)
+    qualifying.sort((a, b) => b.achievedAt.getTime() - a.achievedAt.getTime() || a.chartHash.localeCompare(b.chartHash));
+
+    const total = qualifying.length;
+    const paginatedRows = qualifying.slice((page - 1) * limit, page * limit);
+
+    if (paginatedRows.length === 0) {
+      return respond(200, {
+        items: [],
+        meta: { total, page, limit, totalPages: Math.ceil(total / limit) || 0, hasNextPage: false, hasPreviousPage: page > 1 },
+      });
+    }
+
+    // Fetch chart details only for the current page
+    const playIds = paginatedRows.map((r) => r.playId);
+    const plays = await prisma.play.findMany({
+      where: { id: { in: playIds } },
+      select: {
+        id: true,
+        chartHash: true,
+        chart: {
+          select: {
+            songName: true,
+            artist: true,
+            stepsType: true,
+            difficulty: true,
+            meter: true,
+            simfiles: {
+              orderBy: { createdAt: 'asc' },
+              select: {
+                createdAt: true,
+                simfile: {
+                  select: {
+                    title: true,
+                    artist: true,
+                    bannerUrl: true,
+                    mdBannerUrl: true,
+                    smBannerUrl: true,
+                    bannerVariants: true,
+                    pack: {
+                      select: {
+                        bannerUrl: true,
+                        mdBannerUrl: true,
+                        smBannerUrl: true,
+                        bannerVariants: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const playMap = new Map(plays.map((p) => [p.id, p]));
+    const items = paginatedRows
+      .map(({ playId, achievedAt, chartHash }) => {
+        const play = playMap.get(playId);
+        if (!play) return null;
+        const chartBanner = resolveChartBanner(play.chart.simfiles);
+        const primarySimfile = play.chart.simfiles[0]?.simfile;
+        return {
+          playId,
+          chartHash,
+          achievedAt: achievedAt.toISOString(),
+          title: primarySimfile?.title ?? play.chart.songName ?? null,
+          artist: primarySimfile?.artist ?? play.chart.artist ?? null,
+          stepsType: play.chart.stepsType ?? null,
+          difficulty: play.chart.difficulty ?? null,
+          meter: play.chart.meter ?? null,
+          ...chartBanner,
+        };
+      })
+      .filter(Boolean);
+
+    const totalPages = Math.ceil(total / limit);
+    return respond(200, {
+      items,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching perfect scores:', error);
     return internalServerErrorResponse();
   }
 };

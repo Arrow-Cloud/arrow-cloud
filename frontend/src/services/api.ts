@@ -878,3 +878,39 @@ export const markNotificationRead = async (notificationId: number): Promise<void
 export const markAllNotificationsRead = async (): Promise<void> => {
   await api.put('/notifications/read-all');
 };
+
+// Perfect scores API
+export type PerfectScoreType = 'quads' | 'quints' | 'hexes';
+
+export interface PerfectScoreItem {
+  playId: number;
+  chartHash: string;
+  achievedAt: string;
+  title: string | null;
+  artist: string | null;
+  stepsType: string | null;
+  difficulty: string | null;
+  meter: number | null;
+  bannerUrl: string | null;
+  mdBannerUrl: string | null;
+  smBannerUrl: string | null;
+  bannerVariants?: Record<string, unknown> | null;
+}
+
+export interface GetPerfectScoresResponse {
+  items: PerfectScoreItem[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export const getUserPerfectScores = async (userId: string, type: PerfectScoreType, page = 1, limit = 50): Promise<GetPerfectScoresResponse> => {
+  const params = new URLSearchParams({ type, page: String(page), limit: String(limit) });
+  const response = await api.get(`/user/${userId}/perfect-scores?${params.toString()}`);
+  return response.data as GetPerfectScoresResponse;
+};

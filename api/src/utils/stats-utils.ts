@@ -47,6 +47,7 @@ export interface PerfectScoreCounts {
 }
 
 interface PlayForPerfectScoreCheck {
+  chartHash: string;
   chart: {
     meter: number | null;
     simfiles: Array<{ simfile: { packId: number } }>;
@@ -70,20 +71,20 @@ export function isPlayEligibleForPerfectScores(chartPackIds: number[], meter: nu
  * Count quads/quints/hexes across an array of plays that include PlayLeaderboard entries.
  */
 export function countPerfectScores(plays: PlayForPerfectScoreCheck[]): PerfectScoreCounts {
-  let quads = 0;
-  let quints = 0;
-  let hexes = 0;
+  const quadCharts = new Set<string>();
+  const quintCharts = new Set<string>();
+  const hexCharts = new Set<string>();
   for (const play of plays) {
     const itgData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
     const stepsHit = extractStepsHit(itgData);
     const chartPackIds = play.chart?.simfiles?.map((sc) => sc.simfile.packId) ?? [];
     if (isPlayEligibleForPerfectScores(chartPackIds, play.chart?.meter, stepsHit)) {
-      if (isPerfectScore(itgData)) quads++;
+      if (isPerfectScore(itgData)) quadCharts.add(play.chartHash);
       const exData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === EX_LEADERBOARD_ID)?.data;
-      if (isPerfectScore(exData)) quints++;
+      if (isPerfectScore(exData)) quintCharts.add(play.chartHash);
       const hexData = play.PlayLeaderboard.find((pl) => pl.leaderboardId === HARD_EX_LEADERBOARD_ID)?.data;
-      if (isPerfectScore(hexData)) hexes++;
+      if (isPerfectScore(hexData)) hexCharts.add(play.chartHash);
     }
   }
-  return { quads, quints, hexes };
+  return { quads: quadCharts.size, quints: quintCharts.size, hexes: hexCharts.size };
 }

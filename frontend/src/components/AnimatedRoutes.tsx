@@ -23,6 +23,7 @@ import PrivacyPolicyPage from '../pages/privacy/PrivacyPolicyPage';
 import HelpPage from '../pages/help/HelpPage';
 import OverallLeaderboardPage from '../pages/leaderboards/OverallLeaderboardPage';
 import DeviceLoginPage from '../pages/device-login/DeviceLoginPage';
+import { UserPerfectScoresPage } from '../pages/UserPerfectScoresPage';
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -56,6 +57,7 @@ const AnimatedRoutes = () => {
             }
           />
           <Route path="/user/:userId" element={<UserPage />} />
+          <Route path="/user/:userId/perfect-scores/:scoreType" element={<UserPerfectScoresPage />} />
           <Route path="/packs" element={<PacksPage />} />
           <Route path="/pack/:id" element={<PackPage />} />
           <Route path="/users" element={<UsersPage />} />

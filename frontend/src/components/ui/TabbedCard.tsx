@@ -3,8 +3,10 @@ import { type LucideIcon } from 'lucide-react';
 
 export interface Tab {
   id: string;
-  /** Label for the tab - must be a string for tabs-lift style */
+  /** Accessible string label (also used as visual label when labelNode is absent) */
   label: string;
+  /** Optional ReactNode for rich visual label content (e.g. with badge chips); `label` is still used for aria-label */
+  labelNode?: ReactNode;
   content: ReactNode;
 }
 
@@ -21,11 +23,13 @@ export interface TabbedCardProps {
   persistKey?: string;
   /** Optional additional controls to show next to tabs */
   headerControls?: (activeTab: string) => ReactNode;
+  /** Called when the active tab changes */
+  onTabChange?: (tabId: string) => void;
   /** Additional className for the container */
   className?: string;
 }
 
-export const TabbedCard: React.FC<TabbedCardProps> = ({ icon: Icon, title, tabs, defaultTab, persistKey, headerControls, className = '' }) => {
+export const TabbedCard: React.FC<TabbedCardProps> = ({ icon: Icon, title, tabs, defaultTab, persistKey, headerControls, onTabChange, className = '' }) => {
   const uniqueId = useId();
   const tabGroupName = `tabs_${uniqueId.replace(/:/g, '')}`;
 
@@ -40,6 +44,18 @@ export const TabbedCard: React.FC<TabbedCardProps> = ({ icon: Icon, title, tabs,
     }
     return defaultTab || tabs[0]?.id || '';
   });
+
+  // Sync activeTab when defaultTab changes externally (e.g. URL-driven navigation)
+  useEffect(() => {
+    if (defaultTab && defaultTab !== activeTab && tabs.some((t) => t.id === defaultTab)) {
+      setActiveTab(defaultTab);
+    }
+  }, [defaultTab]);
+
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+    onTabChange?.(tabId);
+  };
 
   // Persist active tab to localStorage
   useEffect(() => {
@@ -56,15 +72,22 @@ export const TabbedCard: React.FC<TabbedCardProps> = ({ icon: Icon, title, tabs,
       <div className="tabs tabs-lift w-full">
         {tabs.map((tab) => (
           <React.Fragment key={tab.id}>
-            <input
-              type="radio"
-              name={tabGroupName}
-              className="tab"
-              aria-label={tab.label}
-              checked={activeTab === tab.id}
-              onChange={() => setActiveTab(tab.id)}
-            />
-            <div className="tab-content bg-base-100 border-base-300 p-6">
+            {tab.labelNode ? (
+              <label className={`tab cursor-pointer select-none${activeTab === tab.id ? ' tab-active' : ''}`} aria-label={tab.label}>
+                <input type="radio" name={tabGroupName} className="sr-only" checked={activeTab === tab.id} onChange={() => handleTabChange(tab.id)} />
+                {tab.labelNode}
+              </label>
+            ) : (
+              <input
+                type="radio"
+                name={tabGroupName}
+                className="tab"
+                aria-label={tab.label}
+                checked={activeTab === tab.id}
+                onChange={() => handleTabChange(tab.id)}
+              />
+            )}
+            <div className="tab-content bg-base-100 border-base-300 p-6" style={activeTab !== tab.id ? { display: 'none' } : undefined}>
               {/* Header row with title and controls */}
               {(title || Icon || (headerControls && activeTab === tab.id)) && (
                 <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
