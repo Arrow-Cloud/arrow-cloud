@@ -145,7 +145,10 @@ const UserMetadataCard: React.FC<UserMetadataCardProps> = ({
                 </div>
               )}
               {user.stats.quads !== undefined && user.stats.quads > 0 && (
-                <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary">
+                <Link
+                  to={`/user/${user.id}/perfect-scores/quads`}
+                  className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary hover:bg-primary/10 transition-colors"
+                >
                   <span className="text-sm font-medium text-base-content/80 flex items-center gap-2">
                     <GradeImage grade="quad" className="w-4 h-4" />
                     <FormattedMessage
@@ -155,10 +158,13 @@ const UserMetadataCard: React.FC<UserMetadataCardProps> = ({
                     />
                   </span>
                   <span className="text-2xl font-bold text-base-content tabular-nums">{user.stats.quads.toLocaleString()}</span>
-                </div>
+                </Link>
               )}
               {user.stats.quints !== undefined && user.stats.quints > 0 && (
-                <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary">
+                <Link
+                  to={`/user/${user.id}/perfect-scores/quints`}
+                  className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary hover:bg-primary/10 transition-colors"
+                >
                   <span className="text-sm font-medium text-base-content/80 flex items-center gap-2">
                     <GradeImage grade="quint" className="w-4 h-4" />
                     <FormattedMessage
@@ -168,10 +174,13 @@ const UserMetadataCard: React.FC<UserMetadataCardProps> = ({
                     />
                   </span>
                   <span className="text-2xl font-bold text-base-content tabular-nums">{user.stats.quints.toLocaleString()}</span>
-                </div>
+                </Link>
               )}
               {user.stats.hexes !== undefined && user.stats.hexes > 0 && (
-                <div className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary">
+                <Link
+                  to={`/user/${user.id}/perfect-scores/hexes`}
+                  className="flex items-center justify-between px-3 py-2 bg-gradient-to-r from-primary/10 to-transparent rounded-lg border-l-4 border-primary hover:bg-primary/10 transition-colors"
+                >
                   <span className="text-sm font-medium text-base-content/80 flex items-center gap-2">
                     <GradeImage grade="hex" className="w-4 h-4" />
                     <FormattedMessage
@@ -181,7 +190,7 @@ const UserMetadataCard: React.FC<UserMetadataCardProps> = ({
                     />
                   </span>
                   <span className="text-2xl font-bold text-base-content tabular-nums">{user.stats.hexes.toLocaleString()}</span>
-                </div>
+                </Link>
               )}
             </div>
           </div>

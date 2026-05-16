@@ -6,6 +6,7 @@ import {
   ITG_LEADERBOARD_ID,
   EX_LEADERBOARD_ID,
   HARD_EX_LEADERBOARD_ID,
+  MIN_STEPS_FOR_PERFECT_SCORES,
   extractStepsHit,
   isPerfectScore,
   isPlayEligibleForPerfectScores,
@@ -149,9 +150,41 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
     let hexIncrement = 0;
 
     if (qualifiesForPerfectScores) {
-      if (isPerfectScore(itgLeaderboard?.data)) quadIncrement = 1;
-      if (isPerfectScore(exLeaderboard?.data)) quintIncrement = 1;
-      if (isPerfectScore(hexLeaderboard?.data)) hexIncrement = 1;
+      const isNewQuad = isPerfectScore(itgLeaderboard?.data);
+      const isNewQuint = isPerfectScore(exLeaderboard?.data);
+      const isNewHex = isPerfectScore(hexLeaderboard?.data);
+
+      if (isNewQuad || isNewQuint || isNewHex) {
+        // Only increment if no other qualifying play already counts for this chart's perfect score
+        const existingPerfectPlays = await prismaClient.play.findMany({
+          where: { userId, chartHash: event.chartHash, id: { not: playId } },
+          select: {
+            PlayLeaderboard: {
+              where: { leaderboardId: { in: [ITG_LEADERBOARD_ID, EX_LEADERBOARD_ID, HARD_EX_LEADERBOARD_ID] } },
+              select: { leaderboardId: true, data: true },
+            },
+          },
+        });
+
+        const alreadyHasQuad = existingPerfectPlays.some((p) => {
+          const itgData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+          return extractStepsHit(itgData) >= MIN_STEPS_FOR_PERFECT_SCORES && isPerfectScore(itgData);
+        });
+        const alreadyHasQuint = existingPerfectPlays.some((p) => {
+          const itgData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+          const exData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === EX_LEADERBOARD_ID)?.data;
+          return extractStepsHit(itgData) >= MIN_STEPS_FOR_PERFECT_SCORES && isPerfectScore(exData);
+        });
+        const alreadyHasHex = existingPerfectPlays.some((p) => {
+          const itgData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+          const hexData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === HARD_EX_LEADERBOARD_ID)?.data;
+          return extractStepsHit(itgData) >= MIN_STEPS_FOR_PERFECT_SCORES && isPerfectScore(hexData);
+        });
+
+        if (isNewQuad && !alreadyHasQuad) quadIncrement = 1;
+        if (isNewQuint && !alreadyHasQuint) quintIncrement = 1;
+        if (isNewHex && !alreadyHasHex) hexIncrement = 1;
+      }
     }
 
     // Update user stats with the current totals (stepsHit, heatMap, quads/quints/hexes are additive)
@@ -338,15 +371,51 @@ async function processScoreDeletion(event: ScoreDeletedEvent, prismaClient: Pris
     const wasQuint = event.wasQuint ?? false;
     const wasHex = event.wasHex ?? false;
 
+    let quadDecrement = 0;
+    let quintDecrement = 0;
+    let hexDecrement = 0;
+
+    if (wasQuad || wasQuint || wasHex) {
+      // Only decrement if no other qualifying play remains for this chart (deleted play is already gone)
+      const remainingPlays = await prismaClient.play.findMany({
+        where: { userId, chartHash: event.chartHash },
+        select: {
+          PlayLeaderboard: {
+            where: { leaderboardId: { in: [ITG_LEADERBOARD_ID, EX_LEADERBOARD_ID, HARD_EX_LEADERBOARD_ID] } },
+            select: { leaderboardId: true, data: true },
+          },
+        },
+      });
+
+      const stillHasQuad = remainingPlays.some((p) => {
+        const itgData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+        return extractStepsHit(itgData) >= MIN_STEPS_FOR_PERFECT_SCORES && isPerfectScore(itgData);
+      });
+      const stillHasQuint = remainingPlays.some((p) => {
+        const itgData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+        const exData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === EX_LEADERBOARD_ID)?.data;
+        return extractStepsHit(itgData) >= MIN_STEPS_FOR_PERFECT_SCORES && isPerfectScore(exData);
+      });
+      const stillHasHex = remainingPlays.some((p) => {
+        const itgData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === ITG_LEADERBOARD_ID)?.data;
+        const hexData = p.PlayLeaderboard.find((pl) => pl.leaderboardId === HARD_EX_LEADERBOARD_ID)?.data;
+        return extractStepsHit(itgData) >= MIN_STEPS_FOR_PERFECT_SCORES && isPerfectScore(hexData);
+      });
+
+      if (wasQuad && !stillHasQuad) quadDecrement = 1;
+      if (wasQuint && !stillHasQuint) quintDecrement = 1;
+      if (wasHex && !stillHasHex) hexDecrement = 1;
+    }
+
     // Update user stats
     const updatedStats: UserStats = {
       totalPlays,
       chartsPlayed,
       stepsHit: newStepsHit,
       heatMap: updatedHeatMap,
-      quads: Math.max(0, (existingStats.quads || 0) - (wasQuad ? 1 : 0)),
-      quints: Math.max(0, (existingStats.quints || 0) - (wasQuint ? 1 : 0)),
-      hexes: Math.max(0, (existingStats.hexes || 0) - (wasHex ? 1 : 0)),
+      quads: Math.max(0, (existingStats.quads || 0) - quadDecrement),
+      quints: Math.max(0, (existingStats.quints || 0) - quintDecrement),
+      hexes: Math.max(0, (existingStats.hexes || 0) - hexDecrement),
     };
 
     await prismaClient.user.update({
