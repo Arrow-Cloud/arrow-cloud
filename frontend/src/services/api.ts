@@ -878,3 +878,55 @@ export const markNotificationRead = async (notificationId: number): Promise<void
 export const markAllNotificationsRead = async (): Promise<void> => {
   await api.put('/notifications/read-all');
 };
+
+// Perfect scores API
+export type PerfectScoreType = 'quads' | 'quints' | 'hexes';
+
+export interface PerfectScoreItem {
+  playId: number;
+  chartHash: string;
+  achievedAt: string;
+  title: string | null;
+  artist: string | null;
+  stepsType: string | null;
+  difficulty: string | null;
+  meter: number | null;
+  bannerUrl: string | null;
+  mdBannerUrl: string | null;
+  smBannerUrl: string | null;
+  bannerVariants?: Record<string, unknown> | null;
+}
+
+export interface GetPerfectScoresResponse {
+  items: PerfectScoreItem[];
+  meterStats: { meter: number; count: number }[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
+  };
+}
+
+export interface PerfectScoresFilters {
+  search?: string;
+  meter?: number | null;
+  sort?: 'date-desc' | 'date-asc' | 'meter-desc' | 'meter-asc';
+}
+
+export const getUserPerfectScores = async (
+  userId: string,
+  type: PerfectScoreType,
+  page = 1,
+  limit = 50,
+  filters: PerfectScoresFilters = {},
+): Promise<GetPerfectScoresResponse> => {
+  const params = new URLSearchParams({ type, page: String(page), limit: String(limit) });
+  if (filters.search) params.set('search', filters.search);
+  if (filters.meter != null) params.set('meter', String(filters.meter));
+  if (filters.sort) params.set('sort', filters.sort);
+  const response = await api.get(`/user/${userId}/perfect-scores?${params.toString()}`);
+  return response.data as GetPerfectScoresResponse;
+};

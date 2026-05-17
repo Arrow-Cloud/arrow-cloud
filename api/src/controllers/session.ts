@@ -170,6 +170,7 @@ export async function getSession(event: ExtendedAPIGatewayProxyEvent, prisma: Pr
         createdAt: { gte: session.startedAt, lte: session.endedAt },
       },
       select: {
+        chartHash: true,
         chart: {
           select: {
             meter: true,

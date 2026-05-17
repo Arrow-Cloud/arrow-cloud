@@ -107,6 +107,7 @@ export async function fetchSessionData(sessionId: number, playIds: number[], sys
       createdAt: { gte: session.startedAt, lte: session.endedAt },
     },
     select: {
+      chartHash: true,
       chart: {
         select: {
           meter: true,
