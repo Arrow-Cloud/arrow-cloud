@@ -14,6 +14,8 @@ const PRESIGNED_URL_EXPIRY_SECONDS = 300; // 5 minutes
 // Only accept zip archives — chart packages are always zips
 const ALLOWED_CONTENT_TYPES = new Set(['application/zip', 'application/x-zip-compressed', 'application/x-zip', 'application/octet-stream']);
 
+const VALID_PACK_IDS = new Set(['quint-bait', 'stamina-stamtech', 'pride-demon']);
+
 interface FunctionUrlEvent {
   requestContext: { http: { method: string; path: string } };
   headers?: Record<string, string>;
@@ -32,14 +34,14 @@ export async function handler(event: FunctionUrlEvent) {
   const { method, path } = event.requestContext.http;
 
   if (method === 'POST' && path === '/upload-url') {
-    let body: { filename?: unknown; contentType?: unknown; userId?: unknown; userAlias?: unknown };
+    let body: { filename?: unknown; contentType?: unknown; userId?: unknown; userAlias?: unknown; packId?: unknown };
     try {
       body = JSON.parse(event.body ?? '{}');
     } catch {
       return respond(400, { error: 'Invalid JSON body' });
     }
 
-    const { filename, contentType, userId, userAlias } = body;
+    const { filename, contentType, userId, userAlias, packId } = body;
 
     console.log(
       '[submit-api] body received',
@@ -50,6 +52,7 @@ export async function handler(event: FunctionUrlEvent) {
         userIdType: typeof userId,
         hasUserAlias: userAlias !== undefined,
         userAliasType: typeof userAlias,
+        packId,
       }),
     );
 
@@ -59,6 +62,10 @@ export async function handler(event: FunctionUrlEvent) {
 
     if (typeof contentType !== 'string' || !ALLOWED_CONTENT_TYPES.has(contentType)) {
       return respond(400, { error: `Unsupported content type: ${contentType}` });
+    }
+
+    if (typeof packId !== 'string' || !VALID_PACK_IDS.has(packId)) {
+      return respond(400, { error: 'Invalid or missing packId' });
     }
 
     // Strip path components and sanitize — keep only safe characters
@@ -90,6 +97,7 @@ export async function handler(event: FunctionUrlEvent) {
           userId: typeof userId === 'string' ? userId.trim() : 'unknown',
           userAlias: typeof userAlias === 'string' ? userAlias.trim() : 'unknown',
           filename: safeName,
+          packId,
           submittedAt: new Date().toISOString(),
         },
       }),

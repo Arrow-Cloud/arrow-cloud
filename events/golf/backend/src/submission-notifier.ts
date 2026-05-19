@@ -11,6 +11,19 @@ const DISCORD_NOTIFY_QUEUE_URL = process.env.DISCORD_NOTIFY_QUEUE_URL!;
 const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID!;
 const SUBMISSIONS_CDN_DOMAIN = process.env.SUBMISSIONS_CDN_DOMAIN!;
 
+// Maps pack ID to the Discord channel that receives submissions for that pack
+const PACK_CHANNEL_MAP: Record<string, string> = {
+  'quint-bait': '1500528587261083658',
+  'stamina-stamtech': '1500503650714521670',
+  'pride-demon': '1500503116267655218',
+};
+
+const PACK_NAMES: Record<string, string> = {
+  'quint-bait': 'Quint Bait',
+  'stamina-stamtech': 'Stamina / StamTech',
+  'pride-demon': 'Pride Demon',
+};
+
 // Discord green
 const EMBED_COLOR = 0x57f287;
 
@@ -39,18 +52,22 @@ export const handler: S3Handler = async (event) => {
     console.log('submission record', submission);
     const userId = submission?.userId ?? 'unknown';
     const userAlias = submission?.userAlias ?? 'unknown';
+    const packId = submission?.packId as string | undefined;
+    const channelId = (packId && PACK_CHANNEL_MAP[packId]) ?? DISCORD_CHANNEL_ID;
+    const packName = (packId && PACK_NAMES[packId]) ?? 'Unknown Pack';
 
     const downloadUrl = `https://${SUBMISSIONS_CDN_DOMAIN}/${key}`;
 
     const message = {
       type: 'admin-event',
-      channelId: DISCORD_CHANNEL_ID,
+      channelId,
       embeds: [
         {
           title: 'New Golf Chart Submission',
           url: downloadUrl,
           color: EMBED_COLOR,
           fields: [
+            { name: 'Pack', value: packName, inline: false },
             { name: 'Submitted by', value: `[${userAlias}](https://arrowcloud.dance/user/${userId})`, inline: false },
             { name: 'File', value: `\`${displayName}\``, inline: false },
             { name: 'Size', value: `${sizeKb} KB`, inline: true },
