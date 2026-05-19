@@ -782,8 +782,15 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
           // Create the play record
           // If the submission was pending, use the pendingDate as the timestamp
           // pendingDate arrives as local time (no TZ offset) so convert using the user's profile timezone
-          const pendingTimestamp =
-            scoreSubmission.wasPending && scoreSubmission.pendingDate ? parseLocalDateToUTC(scoreSubmission.pendingDate, user.timezone) : undefined;
+          let pendingTimestamp: Date | undefined;
+          if (scoreSubmission.wasPending && scoreSubmission.pendingDate) {
+            const resolved = parseLocalDateToUTC(scoreSubmission.pendingDate, user.timezone);
+            const FUTURE_TOLERANCE_MS = 5 * 60 * 1000; // 5 minutes
+            if (resolved.getTime() > Date.now() + FUTURE_TOLERANCE_MS) {
+              return respond(422, { error: 'pendingDate cannot be in the future' });
+            }
+            pendingTimestamp = resolved;
+          }
 
           return tx.play.create({
             data: {
