@@ -767,6 +767,15 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
 
     // Prepare S3 upload
     const path = `scores/${hash}/${user.id}/${Date.now()}.json`;
+
+    // Validate and resolve pendingDate before entering the transaction
+    let pendingTimestamp: Date | undefined;
+    if (scoreSubmission.wasPending && scoreSubmission.pendingDate) {
+      const resolved = parseLocalDateToUTC(scoreSubmission.pendingDate, user.timezone);
+      const FUTURE_TOLERANCE_MS = 5 * 60 * 1000; // 5 minutes
+      pendingTimestamp = resolved.getTime() > Date.now() + FUTURE_TOLERANCE_MS ? new Date() : resolved;
+    }
+
     const s3UploadCommand = new PutObjectCommand({
       Bucket: BUCKET,
       Key: path,
@@ -804,8 +813,6 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
           // Create the play record
           // If the submission was pending, use the pendingDate as the timestamp
           // pendingDate arrives as local time (no TZ offset) so convert using the user's profile timezone
-          const pendingTimestamp =
-            scoreSubmission.wasPending && scoreSubmission.pendingDate ? parseLocalDateToUTC(scoreSubmission.pendingDate, user.timezone) : undefined;
 
           return tx.play.create({
             data: {

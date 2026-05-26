@@ -24,6 +24,17 @@ describe('chart hash calculation', () => {
     });
   });
 
+  test('parses charts for SSC files where note data starts on same line as #NOTES:', () => {
+    const sscFile = readFileSync(__dirname + '/fixtures/classix.ssc');
+    const simfile = new Simfile(sscFile.toString());
+
+    // classix.ssc has #NOTES:0000 (data on same line) - previously parsed 0 charts
+    expect(simfile.charts.length).toBe(1);
+
+    const notes = parseNotes(simfile.charts[0].noteData);
+    expect(notes.length).toBeGreaterThan(0);
+  });
+
   test('parses chart metadata correctly for destroy', () => {
     const sscFile = readFileSync(__dirname + '/fixtures/destroy.ssc');
     const simfile = new Simfile(sscFile.toString());

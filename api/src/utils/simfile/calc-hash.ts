@@ -298,7 +298,8 @@ export class Simfile {
       }
 
       // Extract note data - match everything from #NOTES: to end of section
-      const notesMatch = normalizedSection.match(/#NOTES2?:\s*\n([\s\S]*?)$/i);
+      // Use \s* (not \s*\n) to handle note data starting on the same line as #NOTES:
+      const notesMatch = normalizedSection.match(/#NOTES2?:\s*([\s\S]*?)$/i);
       if (!notesMatch) continue;
 
       const noteData = notesMatch[1]

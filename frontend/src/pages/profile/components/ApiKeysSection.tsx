@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Key, Plus, Trash2, Copy } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Key, Plus, Trash2, Copy, BookOpen } from 'lucide-react';
 import { listApiKeys as listKeysApi, createApiKey as createKeyApi, deleteApiKey as deleteKeyApi } from '../../../services/api';
 import { FormattedMessage } from 'react-intl';
 
@@ -80,6 +81,33 @@ const ApiKeysSection: React.FC = () => {
 
   return (
     <div>
+      <div className="alert alert-info mb-6">
+        <BookOpen className="w-5 h-5 shrink-0" />
+        <div className="flex-1 min-w-0">
+          <p className="font-semibold text-sm">
+            <FormattedMessage defaultMessage="New to Arrow Cloud?" id="wnaEgY" description="Heading for new player callout in API keys section" />
+          </p>
+          <p className="text-sm opacity-80">
+            <FormattedMessage
+              defaultMessage="Follow the setup guide to configure your game client to submit scores."
+              id="SV+ujZ"
+              description="Description for new player callout in API keys section"
+            />
+          </p>
+        </div>
+        <Link
+          to="/help#setup"
+          className="btn btn-sm btn-ghost shrink-0"
+          onClick={() => {
+            try {
+              sessionStorage.setItem('pendingHelpHash', '#setup');
+            } catch {}
+          }}
+        >
+          <FormattedMessage defaultMessage="Setup Guide" id="yzB6ow" description="Button linking to setup guide in API keys section" />
+        </Link>
+      </div>
+
       <p className="mb-4">
         <FormattedMessage
           defaultMessage="API Keys are used to connect your game client to our servers to submit scores."
