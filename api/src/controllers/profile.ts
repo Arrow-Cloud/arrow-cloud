@@ -922,7 +922,10 @@ export const banUser = async (event: AuthenticatedEvent, prisma: PrismaClient): 
     }
 
     if (deleteData) {
-      // Delete user data in correct order to respect foreign key constraints
+      // Stage 1: delete child records that have FKs into Play (no cascade on schema)
+      await Promise.all([prisma.playLeaderboard.deleteMany({ where: { play: { userId } } }), prisma.lifebar.deleteMany({ where: { play: { userId } } })]);
+
+      // Stage 2: delete user data in correct order to respect foreign key constraints
       await Promise.all([
         prisma.apiKey.deleteMany({ where: { userId } }),
         prisma.passkey.deleteMany({ where: { userId } }),

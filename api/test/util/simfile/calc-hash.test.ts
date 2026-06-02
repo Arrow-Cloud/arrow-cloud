@@ -6,6 +6,7 @@ describe('chart hash calculation', () => {
     ['powermove.ssc', 'dance-single', 'challenge', '40c0a18d3eb40bc2'],
     ['RAID.ssc', 'dance-single', 'challenge', '9b3b1ee2fc57d0cb'],
     ['gimme.sm', 'dance-single', 'challenge', 'aa27dec0f0736540'],
+    ['classix.ssc', 'dance-single', 'challenge', '728b5736af846a44'],
   ])('computes the correct hash for %s', async (fileName, stepsType, difficulty, expectedHash) => {
     const sscFile = readFileSync(__dirname + '/fixtures/' + fileName);
     const simfile = new Simfile(sscFile.toString());

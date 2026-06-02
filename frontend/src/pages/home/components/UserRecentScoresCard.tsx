@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, Footprints, Music } from 'lucide-react';
+import { Activity, Footprints, Music, Settings } from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { GradeImage, DifficultyChip } from '../../../components';
 import { BannerImage, TabbedCard, ScoreCard } from '../../../components/ui';
@@ -133,6 +133,36 @@ export const UserActivityCard: React.FC<UserActivityCardProps> = ({ scores, isLo
             })}
           </div>
         </>
+      ) : scores.length === 0 ? (
+        <div className="flex flex-col items-center gap-4 py-10 text-center">
+          <div className="p-3 rounded-full bg-secondary/15">
+            <Settings className="w-8 h-8 text-secondary" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="font-semibold text-base-content">
+              <FormattedMessage defaultMessage="No scores yet" id="8w2jI4" description="Heading in empty scores state for new players" />
+            </p>
+            <p className="text-sm text-base-content/60 max-w-xs">
+              <FormattedMessage
+                defaultMessage="Follow the setup guide to connect your game client and start submitting scores."
+                id="0Gu+MG"
+                description="Description in empty scores state for new players"
+              />
+            </p>
+          </div>
+          <Link
+            to="/help#setup"
+            className="btn btn-secondary btn-sm gap-2"
+            onClick={() => {
+              try {
+                sessionStorage.setItem('pendingHelpHash', '#setup');
+              } catch {}
+            }}
+          >
+            <Settings className="w-4 h-4" />
+            <FormattedMessage defaultMessage="Setup Guide" id="fyv7Ug" description="Button linking to setup guide in new player empty state" />
+          </Link>
+        </div>
       ) : (
         <div className="text-center py-8 text-base-content/60">
           <FormattedMessage defaultMessage="No recent scores yet. Get playing!" id="5E+RUr" description="empty state for user's recent scores" />
@@ -219,8 +249,34 @@ export const UserActivityCard: React.FC<UserActivityCardProps> = ({ scores, isLo
           </Link>
         ))
       ) : (
-        <div className="text-center py-8 text-base-content/60">
-          <FormattedMessage defaultMessage="No recent sessions yet. Get playing!" id="djn/1t" description="empty state for user's recent sessions" />
+        <div className="flex flex-col items-center gap-4 py-10 text-center">
+          <div className="p-3 rounded-full bg-secondary/15">
+            <Settings className="w-8 h-8 text-secondary" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="font-semibold text-base-content">
+              <FormattedMessage defaultMessage="No sessions yet" id="fgE8qV" description="Heading in empty sessions state for new players" />
+            </p>
+            <p className="text-sm text-base-content/60 max-w-xs">
+              <FormattedMessage
+                defaultMessage="Follow the setup guide to connect your game client and start submitting scores."
+                id="ExNV8o"
+                description="Description in empty sessions state for new players"
+              />
+            </p>
+          </div>
+          <Link
+            to="/help#setup"
+            className="btn btn-secondary btn-sm gap-2"
+            onClick={() => {
+              try {
+                sessionStorage.setItem('pendingHelpHash', '#setup');
+              } catch {}
+            }}
+          >
+            <Settings className="w-4 h-4" />
+            <FormattedMessage defaultMessage="Setup Guide" id="yWR42n" description="Button linking to setup guide in new player empty sessions state" />
+          </Link>
         </div>
       )}
     </div>
