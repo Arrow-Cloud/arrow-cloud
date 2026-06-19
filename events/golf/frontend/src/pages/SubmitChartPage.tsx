@@ -17,6 +17,7 @@ interface Pack {
   id: string;
   name: string;
   badge: string;
+  curators: string[];
   ruleSections: RuleSection[];
 }
 
@@ -25,6 +26,7 @@ const PACKS: Pack[] = [
     id: 'quint-bait',
     name: 'Quint Bait',
     badge: 'Blocks 8–10 · Length 1:30–2:15',
+    curators: ['Flicks', 'freyja', 'Wafles'],
     ruleSections: [
       {
         items: [
@@ -42,6 +44,7 @@ const PACKS: Pack[] = [
     id: 'stamina-stamtech',
     name: 'Stamina / StamTech',
     badge: 'Blocks 11–13 · Length 2:30–7:00',
+    curators: ['freyja'],
     ruleSections: [
       {
         heading: 'Stamina (Vanilla)',
@@ -57,7 +60,7 @@ const PACKS: Pack[] = [
         items: [
           'Difficulty 11–13; BPM range 120–165; length 2:30–7:00',
           '32 measures of stream recommended (does not need to be unbroken)',
-          'Most tech is acceptable, but keep XO relatively constrained if using. Otherwise just keep things readable and not too unhinged',
+          "Don't get too unhinged with tech, and keep XO to a minimum",
           'Keep chained tech to a minimum — avoid choke points',
           'Cool motifs are extremely important — bring a theme or unique pattern to the song',
         ],
@@ -68,6 +71,7 @@ const PACKS: Pack[] = [
     id: 'pride-demon',
     name: 'Pride Demon',
     badge: 'Blocks 9–11 · Length 1:30–2:15',
+    curators: ['DRILLBOT', 'valgrind'],
     ruleSections: [
       {
         items: [
@@ -100,21 +104,32 @@ const SubmitChartPage = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [progress, setProgress] = useState(0);
 
-  const handlePackSelect = (pack: Pack) => {
-    setSelectedPack(pack);
-    setFile(null);
-    setUploadState('idle');
-    setErrorMessage('');
-    setProgress(0);
-  };
-
-  const handleBack = () => {
+  const resetToStep1 = () => {
     setSelectedPack(null);
     setFile(null);
     setUploadState('idle');
     setErrorMessage('');
     setProgress(0);
     if (inputRef.current) inputRef.current.value = '';
+  };
+
+  const handlePackSelect = (pack: Pack) => {
+    setSelectedPack(pack);
+    setFile(null);
+    setUploadState('idle');
+    setErrorMessage('');
+    setProgress(0);
+    window.history.pushState({ step: 2 }, '');
+  };
+
+  useEffect(() => {
+    const onPopState = () => resetToStep1();
+    window.addEventListener('popstate', onPopState);
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
+
+  const handleBack = () => {
+    window.history.back();
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,12 +195,7 @@ const SubmitChartPage = () => {
   };
 
   const reset = () => {
-    setSelectedPack(null);
-    setFile(null);
-    setUploadState('idle');
-    setErrorMessage('');
-    setProgress(0);
-    if (inputRef.current) inputRef.current.value = '';
+    window.history.back();
   };
 
   // Step 1: pack selection
@@ -206,6 +216,35 @@ const SubmitChartPage = () => {
               />
             </p>
           </div>
+          {/* General Info & Charting Rules */}
+          <div className="card bg-base-200 p-5 flex flex-col gap-4">
+            <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">General Information</h2>
+            <ul className="flex flex-col gap-1 list-disc list-outside pl-4 marker:text-accent">
+              <li className="text-sm text-base-content/80 pl-1">
+                The event&apos;s theme and scoring system have not been announced yet, but shouldn&apos;t meaningfully impact how charts are written. These will be announced in the fall. The scoring system is accuracy oriented, with more timing windows that are less punishing regarding small mistakes.
+              </li>
+              <li className="text-sm text-base-content/80 pl-1">
+                The event will go live in December with 3 or 4 small packs with about 20 charts in each pack. More packs will be made available to submit charts to and will release after the initial event goes live.
+              </li>
+              <li className="text-sm text-base-content/80 pl-1">
+                The curators for the packs will review your chart submissions and may reach out to you for some small changes.
+              </li>
+            </ul>
+
+            <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">Charting Rules</h2>
+            <ul className="flex flex-col gap-1 list-disc list-outside pl-4 marker:text-accent">
+              <li className="text-sm text-base-content/80 pl-1">
+                Your chart <strong>MUST BE UNRELEASED</strong>. You may release your chart separately after your chart debuts in the event.
+              </li>
+              <li className="text-sm text-base-content/80 pl-1">
+                Your chart <strong>WILL BE REVIEWED ON MMOD</strong>. CMOD is not allowed in this event. If you need help normalizing scroll speed please ask in Discord.
+              </li>
+              <li className="text-sm text-base-content/80 pl-1">
+                Explicit content is allowed but it is up to the discretion of the curators if something crosses the line. Songs like WAP, Nissan Altima, are not likely to be accepted. Use your judgment.
+              </li>
+            </ul>
+          </div>
+
           <div className="flex flex-col gap-3">
             {PACKS.map((pack) => (
               <button
@@ -232,9 +271,12 @@ const SubmitChartPage = () => {
         <div className="flex flex-col items-center gap-2 text-center">
           <Flag className="w-10 h-10 text-accent" />
           <h1 className="text-2xl font-bold">{selectedPack.name}</h1>
+          <p className="text-sm text-base-content/60">
+            Curated by {selectedPack.curators.join(', ')}
+          </p>
         </div>
 
-        {/* Rules */}
+        {/* Pack-specific Rules */}
         <div className="card bg-base-200 p-5 flex flex-col gap-4">
           <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
             <FormattedMessage defaultMessage="Submission Rules" id="JHeC4d" description="Rules section heading on submit chart page" />
