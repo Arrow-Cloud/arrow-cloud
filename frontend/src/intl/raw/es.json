@@ -1,55 +1,55 @@
 {
   "+0hbIW": {
     "description": "Placeholder for new passkey name input",
-    "message": "Por ejemplo: Móvil, portátil de trabajo, dispositivo personal"
+    "message": "e.g., Mobile, Work Laptop, Personal Device"
   },
   "+9eRWt": {
     "description": "Percentage calculation step 1",
-    "message": "Cada nota contribuye a su peso en la ventana de timing en base al tiempo en que presionas dicha nota."
+    "message": "Each tap note contributes its window weight based on the offset of when you hit the tap note."
   },
   "+FgcFw": {
     "description": "label for the user profile field displaying their country",
-    "message": "País"
+    "message": "Country"
+  },
+  "+JMMEN": {
+    "description": "Button to navigate to trophy management settings",
+    "message": "Manage"
   },
   "+a1gOU": {
     "description": "alt text for the blue shift logo image",
-    "message": "Logo de Blue Shift"
-  },
-  "+gIWnk": {
-    "description": "displayed on a user profile when they haven't played any charts in the current event",
-    "message": "Aún no hay puntuaciones en esta categoría."
+    "message": "Blue Shift Logo"
   },
   "+h2LEI": {
     "description": "Message displayed while waiting for the pack data to load",
-    "message": "Por favor, espere mientras obtenemos los datos del pack"
+    "message": "Please wait while we fetch the pack data"
   },
   "+pLe/x": {
     "description": "Label for the user's best score on this chart",
-    "message": "Récord personal"
+    "message": "Personal Best"
+  },
+  "+t0i1m": {
+    "description": "Hard EX leaderboard abbreviation",
+    "message": "H.EX"
   },
   "+tpXd6": {
     "description": "Instruction to create account and verify email",
-    "message": "Regístrate en el sitio (Registrarse) y verifica tu email. Esto asociará futuras puntuaciones a tu perfil."
+    "message": "Sign up on the site (Register) and verify your email. This will associate future score submissions with your profile."
   },
   "/1csZt": {
     "description": "Displayed as an error to users while attempting to log in or register",
-    "message": "Registro fallido. Por favor, inténtelo de nuevo."
+    "message": "Registration failed. Please try again."
   },
-  "/CnYKe": {
-    "description": "section heading on the homepage",
-    "message": "Formato del evento"
+  "/74Al3": {
+    "description": "Button label for saving trophy order",
+    "message": "Save Order"
   },
   "/Cz20N": {
     "description": "Button label for saving profile changes",
-    "message": "Guardar cambios"
+    "message": "Save Changes"
   },
   "/GvRCG": {
     "description": "Message shown when there are no changes to save in profile update",
-    "message": "No hay cambios para guardar"
-  },
-  "/L5Ek3": {
-    "description": "sub-text explaining the 'not participating' label",
-    "message": "Este usuario no ha participado aún en el evento Beta de Blue Shift."
+    "message": "No changes to save"
   },
   "/MH50s": {
     "description": "Title for the standard deviation cubed stat on the timing chart",
@@ -57,67 +57,75 @@
   },
   "/UnDQ8": {
     "description": "message displayed on the submit button of the forgot password form while submission is in progress",
-    "message": "{loadingSpinner} Enviando link de reinicio..."
+    "message": "{loadingSpinner} Sending Reset Link..."
   },
   "/c0R5m": {
     "description": "Page title for the privacy policy page",
-    "message": "Política de privacidad"
+    "message": "Privacy Policy"
   },
   "/eiyYH": {
     "description": "label for the date a user earned a particular score",
-    "message": "Fecha"
+    "message": "Date"
+  },
+  "/tnCO4": {
+    "description": "Copy URL button text",
+    "message": "Copy URL"
   },
   "/yrXf9": {
     "description": "Description of FAQ section",
-    "message": "Respuestas rápidas / información miscelánea"
+    "message": "Common quick answers/miscellaneous information"
+  },
+  "00faeg": {
+    "description": "section heading for recent packs",
+    "message": "Recent Packs"
   },
   "01/J8T": {
     "description": "one item in a bulleted list of effects a ban will have for a user",
-    "message": "Ocultar su perfil a otros usuarios"
+    "message": "Hide their profile from other users"
   },
   "0273Op": {
     "description": "Table header for the number of songs",
-    "message": "Canciones"
+    "message": "Songs"
+  },
+  "02FqeE": {
+    "description": "Label for session start time",
+    "message": "Session Started"
   },
   "05hmF9": {
     "description": "Information about maximum file size for image upload",
-    "message": "Tamaño máximo de archivo: 5MB"
+    "message": "Maximum file size: 5MB"
   },
   "0CcN1Y": {
     "description": "Placeholder for new password input",
-    "message": "Introduzca una nueva contraseña"
+    "message": "Enter new password"
   },
   "0IbXta": {
     "description": "ARIA label for link to chart page from play page",
-    "message": "Ir a la página del chart"
+    "message": "Go to chart page"
   },
   "0OpKH3": {
     "description": "Label for the chart hash",
     "message": "Hash: {hash}"
   },
-  "0POvio": {
-    "description": "description of event structure",
-    "message": "Blue Shift se compone de tres fases distintas, cada una de las cuales dura tres semanas. Los jugadores compiten a través de tres distintas tablas de clasificación, cada una diseñada para poner a prueba distintas habilidades de ITG. Puntos serán dados en base a tu clasificación en cada tabla."
-  },
   "0Susv7": {
     "description": "section heading for the list of charts in the event",
-    "message": "Charts del evento"
+    "message": "Event Charts"
   },
   "0UKMwf": {
     "description": "A sub-heading displayed on the login page",
-    "message": "Iniciar sesión en tu cuenta de Arrow Cloud"
+    "message": "Sign in to your Arrow Cloud account"
   },
   "0ZhmWz": {
     "description": "Description for the mean offset stat on the timing chart",
-    "message": "Si has tardado (+) o te has adelantado (-)"
+    "message": "Did you avg. late (+) or early (-)"
   },
   "0k4n4s": {
     "description": "table column heading for descriptions of the timing windows and corresponding score weights",
-    "message": "Peso en EX"
+    "message": "EX Weight"
   },
   "11eEsx": {
     "description": "table column heading for descriptions of the timing windows and corresponding score weights",
-    "message": "Ventana (±ms)"
+    "message": "Window (±ms)"
   },
   "13SZgT": {
     "description": "Label for alias input field",
@@ -125,19 +133,27 @@
   },
   "1CBPXl": {
     "description": "Date when the privacy policy was last updated",
-    "message": "Última vez actualizado: {lastUpdated,date}"
-  },
-  "1Ig/74": {
-    "description": "start time of the event",
-    "message": "<strong>Comienza el 5 de diciembre de 2025</strong> <small>12:00 PM UTC</small>"
+    "message": "Last updated: {lastUpdated,date}"
   },
   "1IiFi6": {
     "description": "Indicates that a rival has been added",
-    "message": "Añadido"
+    "message": "Added"
+  },
+  "1JtbJO": {
+    "description": "Error message shown when loading trophies fails",
+    "message": "Failed to load trophies"
   },
   "1My/zA": {
     "description": "placeholder for when no grade is awarded for a score",
-    "message": "No hay"
+    "message": "N/A"
+  },
+  "1RY6iM": {
+    "description": "Title for the top packs section in session details",
+    "message": "Top Packs Played"
+  },
+  "1VjH1d": {
+    "description": "Label for mines dodged in radar data section",
+    "message": "Mines Dodged"
   },
   "1Y0sic": {
     "description": "A label for a field of the registration form",
@@ -145,15 +161,15 @@
   },
   "1cI8ug": {
     "description": "section heading on the homepage",
-    "message": "Cómo configurar"
+    "message": "Get Set Up"
   },
   "1nKpRW": {
     "description": "Label for preferences file path",
-    "message": "<label>Preferencias:</label> {prefsPath}"
+    "message": "<label>Preferences:</label> {prefsPath}"
   },
   "1nrTvx": {
     "description": "header displayed on the forgot password page",
-    "message": "¿Olvidaste tu contraseña?"
+    "message": "Forgot Password?"
   },
   "1qm9M9": {
     "description": "Option for single steps type in the filter",
@@ -161,7 +177,7 @@
   },
   "1t8tZ+": {
     "description": "Button label to upload the selected image file",
-    "message": "Subir imagen"
+    "message": "Upload Image"
   },
   "1y8iSP": {
     "description": "Title for the simfiles section",
@@ -169,99 +185,103 @@
   },
   "21hFSa": {
     "description": "A message displayed to a user after they have finished registering a new account",
-    "message": "Hemos enviado un correo electrónico de verificación a <strong>{email}</strong>. Has clic en su link en algún momento más tarde, ¡o no tendrás forma de recuperar tu cuenta!"
+    "message": "We've sent a verification email to <strong>{email}</strong>. Click that link sometime later, or else you'll have no way to recover your account!"
   },
   "2BwvtG": {
     "description": "Grade calculation step 2",
-    "message": "Algunos grados superiores (Sext / Quint) evalúan usando un sistema de puntuación más estricto (HardEX/EX)."
+    "message": "Some top grades (Sext / Quint) evaluate using a stricter scoring system override (HardEX/EX)."
   },
-  "2FRvLL": {
-    "description": "Description of grinding feature",
-    "message": "Cada 3 semanas subirás tus mejores puntajes en 20 charts elegidos. ¡Juega lo que más te guste!"
+  "2Hi91F": {
+    "description": "Title for the radar data section on the play page",
+    "message": "Radar Data"
   },
   "2IPNlq": {
     "description": "Navigation item label for API key management",
-    "message": "API keys"
+    "message": "API Keys"
   },
   "2Q+Z2n": {
     "description": "EX scoring system name",
     "message": "EX (15ms)"
   },
-  "2RNR4i": {
-    "description": "description of leaderboard dynamics on the homepage",
-    "message": "Toma puntos de tus competidores - a medida que rebases a otros jugadores en la tabla de clasificación, los puntos que ganes serán \"robados\" de ellos."
-  },
   "2TD5hu": {
     "description": "button label leading to the help page",
-    "message": "¿Qué es Arrow Cloud?"
+    "message": "What Is Arrow Cloud?"
   },
-  "2XL1fo": {
-    "description": "alt text for the logo image on the homepage",
-    "message": "Logo de Arrow Cloud Blue Shift"
+  "2cIaAb": {
+    "description": "Message when no plays in session",
+    "message": "No plays found"
   },
   "2d72YH": {
     "description": "Label for widget URL",
-    "message": "URL del widget"
+    "message": "Widget URL"
   },
   "2hFzLG": {
     "description": "Summary point about email usage",
-    "message": "Tu correo electrónico se utiliza solo para acciones de seguridad de la cuenta (como restablecer la contraseña) y anuncios ocasionales."
+    "message": "Your email is used only for account security actions (such as password resets), and occasional announcements."
   },
   "2sYnkh": {
     "description": "Instructions for copying configuration file",
-    "message": "Copia ArrowCloud.ini a la carpeta de tu perfil (ejemplo: {profileExample})."
+    "message": "Copy ArrowCloud.ini into your active profile folder (for example: {profileExample})."
   },
   "2uZtKR": {
     "description": "Link to help page",
-    "message": "Ayuda"
+    "message": "Help"
   },
   "2ywg8y": {
     "description": "Title for passkey setup suggestion",
-    "message": "Activar inicio de sesión sin contraseña"
+    "message": "Enable Passwordless Login"
   },
   "30056/": {
     "description": "Label for base configuration path",
     "message": "<label>Base:</label> {basePath}"
   },
-  "34xrFN": {
-    "description": "Navigation item label for streamer widget settings",
-    "message": "Widget de streamer"
-  },
-  "3N6cLw": {
-    "description": "secondary text setting up the primary label \"3 boards\"",
-    "message": "Compite a través de"
+  "3LF9Yy": {
+    "description": "Label for total plays in session",
+    "message": "Plays"
   },
   "3bG3Pw": {
     "description": "A placeholder value displayed within an empty input of the password reset form",
-    "message": "Introduce tu nueva contraseña"
+    "message": "Enter your new password"
   },
   "3gll2h": {
     "description": "A placeholder value displayed within an empty input of the registration form",
-    "message": "Crear una contraseña"
+    "message": "Create a password"
   },
   "3oeumn": {
     "description": "section heading on the homepage",
-    "message": "Soporte"
+    "message": "Support"
   },
   "3pJaQC": {
     "description": "a live status indicator displayed while waiting for email verification to finish processing",
-    "message": "Verificando mail..."
+    "message": "Verifying Email..."
   },
   "3rGlbG": {
     "description": "Label for confirm password input field",
-    "message": "Confirmar contraseña"
+    "message": "Confirm Password"
+  },
+  "40N/ij": {
+    "description": "Label for Monday in the activity heatmap",
+    "message": "Mon"
   },
   "41VgXE": {
     "description": "displayed on the password reset form as a link to return to the login page",
-    "message": "Volver a Iniciar sesión"
+    "message": "Back to Sign In"
   },
   "43jzOu": {
     "description": "displayed as a small chip next to the user on the user page to indicate it is the user currently logged in",
-    "message": "{userIcon} Tú"
+    "message": "{userIcon} You"
+  },
+  "46fZTI": {
+    "description": "Empty state for chart scores",
+    "message": "No scores available"
+  },
+  "4BH2f8": {
+    "description": "Close button text",
+    "message": "Close"
   },
   "4TmIV5": {
     "description": "Warning message about browser security flags",
-    "message": "Algunos navegadores pueden marcar la descarga de ArrowCloud.ini como sospechosa dado que es un archivo de configuración que solo contiene texto. Esto es normal y el archivo es seguro; puedes continuar con la descarga."
+    "message": "Some browsers may flag the ArrowCloud.ini download as suspicious because it is a plain-text configuration file. This is expected and the file is safe—you can proceed with the download."
   },
   "4XbcYZ": {
     "description": "Abbreviation for points",
@@ -269,67 +289,83 @@
   },
   "4cGAA6": {
     "description": "Navigation item description for API key management",
-    "message": "Administrar tus tokens de acceso API"
+    "message": "Manage your API access tokens"
   },
   "4cud4C": {
     "description": "Label for confirm password input",
-    "message": "Confirmar contraseña"
+    "message": "Confirm Password"
   },
   "4lKz1r": {
     "description": "Success message when profile image is updated",
-    "message": "¡La foto de perfil se ha actualizado correctamente!"
+    "message": "Profile image updated successfully!"
+  },
+  "4yGxz/": {
+    "description": "Empty state for no charts",
+    "message": "No charts available"
+  },
+  "51kB0H": {
+    "description": "X-axis label for difficulty chart",
+    "message": "Difficulty"
+  },
+  "56x/zY": {
+    "description": "table header for chart column",
+    "message": "Chart"
   },
   "5Bb8X7": {
     "description": "button label to cancel the process of banning a user",
-    "message": "Cancelar"
+    "message": "Cancel"
+  },
+  "5E+RUr": {
+    "description": "empty state for user's recent scores",
+    "message": "No recent scores yet. Get playing!"
   },
   "5K/3lA": {
     "description": "Title for the passkeys management section",
-    "message": "Claves de acceso"
-  },
-  "5UgsH1": {
-    "description": "points system description on the homepage",
-    "message": "Los puntos se distribuyen en función de tu posición en cada tabla de clasificación. Cada chart tiene 3 tablas de clasificación, cada fase tiene 3 tablas de clasificación, y los puntos que acumules en cada fase determinarán tu posición final en Blue Shift."
+    "message": "Passkeys"
   },
   "5WyHgs": {
     "description": "A heading displayed to a user after logging in",
-    "message": "¡Inicio de sesión exitoso!"
+    "message": "Successfully Signed In!"
   },
   "5X2Z64": {
     "description": "Description for the max error stat on the timing chart",
-    "message": "Tu peor judgment/error"
+    "message": "Your worst judgment/outlier"
   },
   "5XAAaa": {
     "description": "Statement about no affiliation with other services",
-    "message": "Arrow Cloud <semibold>no está afiliado</semibold> con GrooveStats, BoogieStats, ITC, ITGDB, SMO, u otros servicios. No colecciona, toma ni hace uso de tablas de clasificación o puntajes de plataformas externas."
+    "message": "Arrow Cloud is <semibold>not affiliated</semibold> with GrooveStats, BoogieStats, ITC, ITGDB, SMO, or other services. It does not scrape, proxy, or passthrough leaderboards or scores from external platforms."
   },
   "5ghtCO": {
     "description": "Percentage calculation step 3",
-    "message": "La suma de tu puntaje = peso de los taps + (helds terminados * peso de los held) + (rolls terminados * peso de los held) + (presiones de mina * penalización por mina)."
+    "message": "Score sum = tap weights + (held completions * heldWeight) + (roll completions * heldWeight) + (mine hits * minePenalty)."
+  },
+  "5i8EfE": {
+    "description": "Navigation item label for trophy management",
+    "message": "Trophies"
   },
   "5jGvbu": {
     "description": "table column header label for played charts on the user profile page, this column shows info about the song",
     "message": "Chart"
   },
-  "5leU4H": {
-    "description": "Blue Shift feature: rivals system",
-    "message": "Añadir rivales"
-  },
   "5mntyH": {
     "description": "Description shown when no rivals have been added",
-    "message": "No has añadido rivales aún"
+    "message": "No rivals added yet"
   },
   "5nutZC": {
     "description": "Section title about the purpose of Arrow Cloud",
-    "message": "Por qué existe"
+    "message": "Why It Exists"
+  },
+  "5sAIEv": {
+    "description": "Navigation menu item for users",
+    "message": "Users"
   },
   "628Yaq": {
     "description": "Loading message shown while leaderboards are being fetched",
-    "message": "Cargando tablas de clasificación..."
+    "message": "Loading leaderboards..."
   },
   "66nTwC": {
     "description": "Message displayed while the pack data is loading",
-    "message": "Cargando pack..."
+    "message": "Loading pack..."
   },
   "68hzlT": {
     "description": "Label for the stepartist column",
@@ -337,75 +373,75 @@
   },
   "6A/18S": {
     "description": "Button label to cancel the image selection",
-    "message": "Cancelar"
+    "message": "Cancel"
   },
   "6HwZWG": {
     "description": "Main heading for help page",
-    "message": "Centro de ayuda {bookIcon}"
+    "message": "{bookIcon} Help Center"
   },
   "6e+rCB": {
     "description": "fallback text when we have no data to display for the charts in the event",
-    "message": "No hay charts disponibles"
+    "message": "No charts available"
   },
   "6ey983": {
     "description": "Placeholder for current password input",
-    "message": "Introduce tu contraseña actual"
+    "message": "Enter current password"
   },
   "6mzOc6": {
     "description": "Message displayed when there are no songs in the pack",
-    "message": "No hay canciones disponibles en este pack"
+    "message": "No songs available in this pack"
   },
   "6oesOv": {
     "description": "A placeholder value displayed within an empty input of the login form",
-    "message": "Introduce tu email"
+    "message": "Enter your email"
   },
   "6t1Xf+": {
     "description": "Placeholder for the alias input field",
-    "message": "Ingresa tu alias"
+    "message": "Enter your alias"
   },
   "7/VMkx": {
     "description": "FAQ question about keyboard scores",
-    "message": "¿Puedo subir puntuaciones de teclado?"
+    "message": "Can I submit keyboard scores?"
   },
   "7/fQHG": {
     "description": "small header displayed above the list of available color themes for the site",
-    "message": "Seleccionar tema"
+    "message": "Select Theme"
   },
   "71hxBe": {
     "description": "OBS version requirement warning",
-    "message": "Nota: OBS Studio versión 31 o superior es requerido para una visualización adecuada."
+    "message": "Note: OBS Studio version 31 or higher is required for proper display."
   },
   "77/s9/": {
     "description": "Label to create account",
-    "message": "Crear cuenta"
+    "message": "Create Your Account"
   },
   "7JspJu": {
     "description": "User menu item for editing profile",
-    "message": "Editar perfil"
+    "message": "Edit Profile"
   },
   "7N0/GV": {
     "description": "Loading state text",
-    "message": "Cargando..."
+    "message": "Loading..."
   },
   "7Y3qMa": {
     "description": "Label for skip passkey setup button",
-    "message": "Omitir"
+    "message": "Skip"
   },
-  "7eDt6d": {
-    "description": "lable for the stat indicating a user's total number of charts played in an event",
-    "message": "Charts jugados"
-  },
-  "7ovwIG": {
-    "description": "secondary text describing the three phases (primary text)",
-    "message": "de 3 semanas cada una"
+  "7ivPDh": {
+    "description": "Phase 1 column header",
+    "message": "Phase 1"
   },
   "8+OFcD": {
     "description": "Label for the score of a score",
-    "message": "Puntaje"
+    "message": "Score"
+  },
+  "8/S5Tc": {
+    "description": "total steps in session",
+    "message": "{count} steps"
   },
   "80Vzt6": {
     "description": "Button label to retry loading",
-    "message": "Reintentar"
+    "message": "Retry"
   },
   "82xftT": {
     "description": "Alt text for chart banner image",
@@ -413,103 +449,119 @@
   },
   "85Sq9G": {
     "description": "ITG feature: penalty",
-    "message": "Way Off y Miss son fuertemente castigados"
-  },
-  "86A6Pn": {
-    "description": "label for the stat indicating a user's overall rank within an event",
-    "message": "Clasificación general"
+    "message": "Way Off & Miss heavily punished"
   },
   "89o0ZA": {
     "description": "Displayed as an error to users while attempting to log in or register",
-    "message": "Error al adquirir datos del usuario."
+    "message": "Failed to fetch user data."
+  },
+  "8IH2Xh": {
+    "description": "Displayed when there are no users available",
+    "message": "No users available"
   },
   "8OA9Ae": {
     "description": "User menu item for registering a new account",
-    "message": "Registrarse"
+    "message": "Register"
+  },
+  "8QTMIv": {
+    "description": "Fallback for unknown chart artist",
+    "message": "Unknown Artist"
   },
   "8ZispS": {
     "description": "Displayed as an error to users while attempting to log in or register",
-    "message": "Error al iniciar sesión. Inténtalo de nuevo."
+    "message": "Login failed. Please try again."
   },
   "8bdZjb": {
     "description": "Option for all steps types in the filter",
-    "message": "Todos los tipos"
+    "message": "All Types"
+  },
+  "8diw/q": {
+    "description": "Next button to proceed to preview",
+    "message": "Next"
   },
   "8i+1ZL": {
     "description": "label for an input field specifying the minimum block level to search for (prefer very short length)",
-    "message": "Mínimo"
+    "message": "Min"
+  },
+  "8iqCJI": {
+    "description": "Label for distinct charts played in session",
+    "message": "Charts"
   },
   "8x/8+a": {
     "description": "FAQ answer about keyboard scores",
-    "message": "<strong>No.</strong> Debes estar pensando en Etterna, en ese caso. Si subiste una puntuación de teclado por error es tu responsabilidad eliminarla. Si notamos que algún usuario tiene muchas puntuaciones de teclado, sus puntuaciones podrían ser borradas por un administrador sin aviso."
+    "message": "<strong>No.</strong> You're looking for Etterna instead. If you submitted a keyboard score by mistake it is your responsibility to delete it. If we notice users with too many keyboard scores, your scores may be wiped at an administrator's discretion."
   },
   "94Mbq6": {
     "description": "Navigation menu item for charts",
     "message": "Charts"
   },
+  "9CoJA4": {
+    "description": "Description shown when user has no trophies",
+    "message": "Your unlocked trophies will display here."
+  },
   "9F+o+P": {
     "description": "button label displayed on the forgot password page",
-    "message": "Volver a Iniciar sesión"
+    "message": "Back to Sign In"
   },
   "9HRRf6": {
     "description": "table column heading for descriptions of the timing windows and corresponding score weights",
-    "message": "Peso del HardEX"
-  },
-  "9K8zUV": {
-    "description": "Blue Shift feature: chart grinding",
-    "message": "Grind"
+    "message": "HardEX Weight"
   },
   "9KiYOr": {
     "description": "Statement about advertising and tracking scripts",
-    "message": "De momento, no utilizamos ninguna publicidad ni scripts de seguimiento de terceros, ni servicios de rastreo de terceros."
+    "message": "We currently use no advertising or third-party tracking scripts, or third-party tracking services."
   },
   "9KyB94": {
     "description": "Admin menu item for uploading packs",
-    "message": "Subir packs"
+    "message": "Pack Uploader"
   },
   "9PwMKb": {
     "description": "Placeholder for current password input field",
-    "message": "Introduce tu contraseña actual"
+    "message": "Enter current password"
   },
   "9gCla1": {
     "description": "FAQ question about failed score submission",
-    "message": "Mi puntuación no se pudo enviar, ¿qué hago?"
+    "message": "My score failed to submit, what do I do?"
   },
   "9hrAn3": {
     "description": "Label for the steps type filter",
-    "message": "Tipo de steps"
+    "message": "Steps Type"
   },
   "9kMeyR": {
     "description": "label next to a song's artist for a song in the event (mobile layout)",
-    "message": "Artista del chart"
+    "message": "Chart Artist"
   },
   "9pRwtR": {
     "description": "Mobile user menu item for registering a new account",
-    "message": "Registrarse"
+    "message": "Register"
   },
   "9tw8mS": {
     "description": "Heading for the leaderboards section",
-    "message": "Tablas de clasificación"
+    "message": "Leaderboards"
   },
-  "A02a/L": {
-    "description": "Description of rivals feature",
-    "message": "Tenemos soporte de rivales, para que puedas competir y ver el progreso de tus amigos."
+  "9wJH2E": {
+    "description": "Button title to share a score",
+    "message": "Share this score"
   },
   "A5yRgM": {
     "description": "Helper text for compatibility mode",
-    "message": "Usar colores alternativos para versiones más antiguas de OBS (desactiva selección de tema)"
+    "message": "Use fallback colors for older OBS versions (disables theme selection)"
   },
   "A8mipM": {
     "description": "Success message when password is updated",
-    "message": "¡Contraseña actualizada con éxito!"
+    "message": "Password updated successfully!"
+  },
+  "AAP0Lq": {
+    "description": "Placeholder text for the search input on the users page",
+    "message": "Search users..."
   },
   "AD4Gnq": {
     "description": "Title for passkey registration prompt",
-    "message": "Configurar inicio de sesión sin contraseña"
+    "message": "Set up Passwordless Login"
   },
   "AGRuvQ": {
     "description": "Label for the add rival input field",
-    "message": "Añadir rival"
+    "message": "Add Rival"
   },
   "AKJw1n": {
     "description": "A label for a field of the login form",
@@ -517,83 +569,103 @@
   },
   "AL/as5": {
     "description": "Error message displayed when simfiles fail to load",
-    "message": "Error al cargar simfiles: {error}"
+    "message": "Error loading simfiles: {error}"
   },
   "ANUZlc": {
     "description": "Access denied message for the Blue Shift event page during preview",
-    "message": "No tienes permiso para acceder a esta página. El evento Blue Shift está actualmente en vista previa."
+    "message": "You do not have permission to access this page. The Blue Shift event is currently in preview."
   },
   "AOeHCB": {
     "description": "Not available",
-    "message": "No disponible"
+    "message": "n/a"
+  },
+  "AW7bIo": {
+    "description": "Fallback text for unknown chart title",
+    "message": "Unknown"
+  },
+  "AbjsQp": {
+    "description": "Error message for when the users page fails to load",
+    "message": "Error loading users: {error}"
   },
   "AgADp0": {
     "description": "Navigation item label for profile settings",
-    "message": "Perfil"
+    "message": "Profile"
   },
   "AhjRKO": {
     "description": "Date when a rival was added",
-    "message": "Añadido el: {added,date}"
+    "message": "Added: {added,date}"
   },
   "Amu9qR": {
     "description": "Alert box heading",
-    "message": "Aviso:"
+    "message": "Heads up:"
   },
   "AqLiqA": {
     "description": "Button label showing cooldown time before resending verification email",
-    "message": "Reenviar en {seconds,number}s"
+    "message": "Resend in {seconds,number}s"
   },
   "AxjkbD": {
     "description": "Placeholder text for the search input in the recent scores section",
-    "message": "Buscar por canción, artista o jugador..."
+    "message": "Search by song, artist, or player..."
+  },
+  "AzxLjP": {
+    "description": "Tooltip showing play count",
+    "message": "{count, plural, one {# play} other {# plays}}"
   },
   "B067A3": {
     "description": "Introduction to the setup wizard",
-    "message": "Sigue este selector guiado para ver las instrucciones específicas de la plataforma."
+    "message": "Follow this guided selector to view platform-specific instructions."
   },
   "BAchyT": {
     "description": "Button text to copy URL",
-    "message": "Copiar URL"
+    "message": "Copy URL"
   },
   "BFIMJG": {
     "description": "A label for a checkbox on the login screen",
-    "message": "Recordarme"
+    "message": "Remember me"
   },
   "BHuTSI": {
     "description": "Grade calculation step 1",
-    "message": "Cada grado tiene un umbral mínimo de %."
+    "message": "Each grade has a minimum % threshold."
   },
   "BSsFlc": {
     "description": "link text leading to the dedicated leaderboard page; displayed next to radio-toggle style buttons for the three leaderboard types",
-    "message": "Ver completo"
+    "message": "View full"
+  },
+  "BTbrvn": {
+    "description": "button to go to user profile",
+    "message": "View Profile"
   },
   "BgdjiI": {
     "description": "Label for new password input",
-    "message": "Nueva contraseña"
+    "message": "New Password"
   },
   "BkGM9i": {
     "description": "Navigation menu item for help",
-    "message": "Ayuda"
+    "message": "Help"
+  },
+  "BkIenQ": {
+    "description": "Toggle to show only personal best plays",
+    "message": "PBs Only"
+  },
+  "BlBhJ7": {
+    "description": "when session started",
+    "message": "Started {time}"
   },
   "Bs3fyg": {
     "description": "Button label for removing all preferred leaderboards",
-    "message": "Eliminar preferencias"
+    "message": "Remove Preferences"
   },
   "Bt+/uG": {
     "description": "Table header for the rank column",
-    "message": "Clasificación"
+    "message": "Rank"
   },
   "BvJ1Nn": {
     "description": "Error message shown when saving preferred leaderboards fails",
-    "message": "Error al guardar las preferencias"
+    "message": "Failed to save preferences"
   },
   "By9s2f": {
     "description": "Message shown when user has no scores in the event",
-    "message": "Sin puntajes aún"
-  },
-  "ByVSO+": {
-    "description": "secondary text on a card, set up by \"Earn Points\"",
-    "message": "basado en tu posición en la tabla de clasificación"
+    "message": "No scores yet"
   },
   "C22vWu": {
     "description": "Mobile menu item for packs",
@@ -601,39 +673,35 @@
   },
   "C4dqyM": {
     "description": "Label for the grade of a score",
-    "message": "Grado"
+    "message": "Grade"
   },
   "C5CpiW": {
     "description": "Information about image cropping and resizing",
-    "message": "Las imágenes se recortarán automáticamente a un cuadrado y se redimensionarán en 400x400"
+    "message": "Images will be automatically cropped to square and resized to 400x400"
   },
   "C6tISW": {
     "description": "introductory header on the blueshift event page",
-    "message": "Bienvenido a Arrow Cloud"
+    "message": "Welcome to Arrow Cloud"
   },
   "C9Lob8": {
     "description": "Helper text for feature selection",
-    "message": "Elige que información mostrar en el widget"
+    "message": "Choose what information to display in the widget"
   },
   "CVXRUi": {
     "description": "Description for the standard deviation cubed stat on the timing chart",
-    "message": "El 99,7% de tus pasos estaban por debajo de este valor máximo"
+    "message": "99.7% of your steps were under this max. value"
   },
   "CbHUxa": {
     "description": "Label for Discord link that opens in new tab",
-    "message": "Únete a nuestro Discord (se abre en una nueva pestaña)"
+    "message": "Join our Discord (opens in new tab)"
   },
   "CcMJR2": {
     "description": "Helper text for leaderboard selection",
-    "message": "Selecciona que tablas de clasificación utilizaras (al menos una es requerida)"
-  },
-  "CgzUvb": {
-    "description": "heading section on the homepage",
-    "message": "Tablas de clasificación"
+    "message": "Select which leaderboards to cycle through (at least one required)"
   },
   "CnmIBg": {
     "description": "Error message when an image file is too large",
-    "message": "El archivo de imagen debe ser menor a 5MB"
+    "message": "Image file must be smaller than 5MB"
   },
   "CqHJWf": {
     "description": "Label for the chart stepartist or credit",
@@ -641,79 +709,91 @@
   },
   "Cqcs8A": {
     "description": "Footer section label",
-    "message": "Pie de página"
+    "message": "Footer"
   },
   "CtB3h2": {
     "description": "A message displayed to a user after successfully logging in",
-    "message": "¿Te gustaría configurar la autenticación sin contraseña para inicios de sesión futuros más rápidos?"
+    "message": "Would you like to set up passwordless authentication for faster future sign-ins?"
   },
   "Cy/UbI": {
     "description": "Placeholder text for the search input on the packs page",
-    "message": "Buscar packs..."
+    "message": "Search packs..."
   },
   "D43bLy": {
     "description": "Navigation item description for profile settings",
-    "message": "Administra tu nickname y país"
+    "message": "Manage your display name and country"
   },
   "DI/ILQ": {
     "description": "Button label to download configuration file",
-    "message": "Descargar ArrowCloud.ini"
+    "message": "Download ArrowCloud.ini"
   },
   "DNaobF": {
     "description": "Placeholder text for the search input in the simfiles table",
-    "message": "Buscar canciones..."
+    "message": "Search songs..."
   },
   "DOXSYq": {
     "description": "table column header label for played charts on the user profile page, this column displays the ITG grade earned",
-    "message": "Grado"
+    "message": "Grade"
   },
   "DPOFoY": {
     "description": "Label shown when an API key has never been used",
-    "message": "Nunca ha sido usado"
+    "message": "Never"
   },
   "DUbBkQ": {
     "description": "Table header for the score column",
-    "message": "Puntaje"
+    "message": "Score"
   },
   "DUif3G": {
     "description": "Title for the delete score confirmation modal",
-    "message": "Eliminar puntaje"
+    "message": "Delete Score"
   },
   "DVNpb1": {
     "description": "Loading message shown while countries are being fetched",
-    "message": "Cargando países..."
+    "message": "Loading countries..."
+  },
+  "DYQ8XL": {
+    "description": "table header for grade column",
+    "message": "Grade"
   },
   "DYk76o": {
     "description": "Label for points stat",
-    "message": "puntos"
+    "message": "points"
   },
   "DdEvZe": {
     "description": "Success message when profile image is removed",
-    "message": "¡Foto de perfil eliminada con éxito!"
+    "message": "Profile image removed successfully!"
   },
   "DdfLk1": {
     "description": "Error message when password update fails",
-    "message": "Error al actualizar la contraseña"
+    "message": "Failed to update password"
   },
   "DpZVFd": {
     "description": "FAQ answer about failed submission - part 2",
-    "message": "Si Arrow Cloud está caído, significa que probablemente ocurrió una de estas dos cosas: o AWS está teniendo un corte en nuestra región, o alguno de nuestros desarrolladores sacó una mala versión. Si esto sucede, puede que extendamos el tiempo en que finaliza el evento para dar comodidad a los jugadores afectados. De nuevo, haremos nuestro mejor esfuerzo en hacer un build de nuestro módulo y tema en el que se puedan resubir puntajes que no se pudieron subir, automáticamente."
+    "message": "If Arrow Cloud is actually down, it means one of two things probably happened: either AWS is having an outage in our region, or a developer pushed a bad release. If this happens we may extend event deadlines to accommodate affected players. Again, we'll do our best to build our module and theme to handle resubmitting your scores automatically."
+  },
+  "Dqs29A": {
+    "description": "Chart navigation indicator",
+    "message": "Chart {current} of {total}"
   },
   "Duq0nQ": {
     "description": "introductory paragraph on the event page",
-    "message": "Una plataforma moderna de ITG con integración de seguimiento de puntajes, tablas de clasificación, eventos, rivalidades y más."
+    "message": "A modern ITG platform for score tracking, leaderboards, events, rivalries, and more."
   },
   "Dya6QR": {
     "description": "Instructions heading",
-    "message": "Cómo usar en OBS:"
+    "message": "How to use in OBS:"
   },
   "E2Q8Ev": {
     "description": "Label for current password input",
-    "message": "Contraseña actual"
+    "message": "Current Password"
   },
   "E2VFjz": {
     "description": "Button label for dismissing the new API key display",
-    "message": "Descartar"
+    "message": "Dismiss"
+  },
+  "E4mZwn": {
+    "description": "Charts played column header",
+    "message": "Charts"
   },
   "EaTIYv": {
     "description": "Navigation menu item for packs",
@@ -721,79 +801,79 @@
   },
   "Eb0JQV": {
     "description": "Error message shown when clearing preferred leaderboards fails",
-    "message": "Error al borrar las preferencias"
+    "message": "Failed to clear preferences"
   },
   "EgWcdC": {
     "description": "Navigation item label for password settings",
-    "message": "Contraseña"
+    "message": "Password"
   },
   "Ejaumd": {
     "description": "Text shown while a delete operation is in progress",
-    "message": "Borrando..."
+    "message": "Deleting..."
   },
   "EnMoBC": {
     "description": "Label for the added date column",
-    "message": "Añadido"
+    "message": "Added"
   },
   "FBQiEB": {
     "description": "Loading message shown while API keys are being fetched",
-    "message": "Cargando API keys..."
+    "message": "Loading API keys..."
   },
   "FBujCk": {
     "description": "Confirmation of successful login",
-    "message": "Sesión iniciada como {userInfo}. Este paso ha sido completado."
+    "message": "Logged in as {userInfo}. This step is complete."
   },
   "FEaNa1": {
     "description": "FAQ answer about failed submission - part 1",
-    "message": "Si tu puntuación no ha podido enviarse, por favor comprueba tu conexión a internet. No aceptamos subidas de puntuaciones manuales. Trabajaremos para asegurarnos de que nuestro tema y las integraciones de módulos se encarguen de reintentar subidas fallidas, pero esta característica aún no está disponible."
+    "message": "If your score failed to submit, please check your internet connection. We do not accept manual score submissions. We will work to make sure our theme and module integrations handle retrying failed submissions, but that feature is currently not available."
   },
   "FXXCXg": {
     "description": "table heading for the list of charts in the event",
-    "message": "Artista del chart"
+    "message": "Chart Artist"
   },
   "FaknjP": {
     "description": "Shows the number of songs displayed out of the total",
-    "message": "Mostrando {shown,number} de {total,number} canciones"
+    "message": "Showing {shown,number} of {total,number} songs"
+  },
+  "FbtN0h": {
+    "description": "Toggle to show all scores",
+    "message": "All Scores"
   },
   "FdrJbE": {
     "description": "label indicating how many rows are being displayed in the table of played charts of the user profile page",
-    "message": "Mostrando {recentScores,number} de {total,number} partidas"
-  },
-  "FfCFxS": {
-    "description": "Description of Blue Shift event",
-    "message": "Blue Shift es nuestro evento inaugural de 9 semanas, que comienza a principios de diciembre."
+    "message": "Showing {recentScores,number} of {total,number} plays"
   },
   "FkqFg3": {
     "description": "Title for the mean offset stat on the timing chart",
-    "message": "Offset medio"
+    "message": "Mean Offset"
   },
   "FrimqV": {
     "description": "Message shown when no timing data is available for a play",
-    "message": "No hay datos de timing disponibles para esta partida."
+    "message": "No timing data available for this play."
   },
-  "G5D4zt": {
-    "description": "description paragraph on the homepage",
-    "message": "A partir del 5 de diciembre de 2025, Blue Shift es nuestro evento competitivo inaugural - un torneo multi-fase remoto/en línea donde puedes competir con jugadores de todo el mundo a través de múltiples categorías de habilidades y tablas de clasificación!"
+  "G6Bo2J": {
+    "description": "table column header for player",
+    "message": "Player"
+  },
+  "G6xjMl": {
+    "description": "Message when no personal best plays match the filter",
+    "message": "No PBs on this Leaderboard"
   },
   "G8u4NE": {
     "description": "Processing indicator when choosing an image file",
-    "message": "Procesando..."
+    "message": "Processing..."
   },
   "G9kRa2": {
     "description": "label for the user profile field displaying their registration date",
-    "message": "Miembro desde"
-  },
-  "GDC8y1": {
-    "description": "secondary descriptive text describing the three boards",
-    "message": "H.EX (10ms), EX e ITG"
+    "message": "Member Since"
   },
   "GHqL4U": {
     "description": "Passskey unsupported warning message",
-    "message": "Las claves de acceso no son compatibles con este dispositivo o navegador."
+    "message": "Passkeys are not supported on this device or browser."
   },
   "GNP6fs": {
     "description": "Uploading progress indicator",
-    "message": "Subiendo... {progress,number,::percent}"
+    "message": "Uploading... {progress,number,::percent}"
   },
   "GRui4y": {
     "description": "table heading for the list of charts in the event",
@@ -801,187 +881,239 @@
   },
   "GVb3Zo": {
     "description": "Error message displayed when recent scores fail to load",
-    "message": "Error al cargar puntuaciones recientes: {error}"
+    "message": "Error loading recent scores: {error}"
   },
   "GXkfPe": {
     "description": "Message displayed when no charts match the search criteria",
-    "message": "No se encontraron charts."
+    "message": "No charts found."
   },
   "GYz+Yc": {
     "description": "Title for the overall leaderboard page",
-    "message": "Tabla de clasificación general"
+    "message": "Overall Leaderboard"
   },
   "GamScG": {
     "description": "Description of Arrow Cloud service",
-    "message": "Arrow Cloud es un servicio en línea moderno de ITGMania con la intención de mantener seguimiento de puntuaciones, alojar tablas de clasificación y hacer eventos remotos en línea. Construido con una infraestructura fundamentalmente escalable, será de código abierto en 2026."
+    "message": "Arrow Cloud is a modern online service for ITGMania for tracking scores, hosting leaderboards, and running remote online events. Built with fundamentally scalable infrastructure, and will be open sourced in 2026."
+  },
+  "GbDfeL": {
+    "description": "tab label for recent scores",
+    "message": "Scores"
+  },
+  "Gdrt7M": {
+    "description": "H.EX scoring system name",
+    "message": "H.EX"
   },
   "GgX2r2": {
     "description": "EX feature: great value",
-    "message": "Los Greats aún conservan menor peso"
+    "message": "Greats still retain minor weight"
   },
   "GrJ6PI": {
     "description": "Label for next page button",
-    "message": "Siguiente"
+    "message": "Next"
   },
   "GrQeWz": {
     "description": "text on a disabled button, where resend cooldown is a number of seconds counting down",
-    "message": "Reenviar en {resendCooldown}s"
+    "message": "Resend in {resendCooldown}s"
+  },
+  "GxaXj9": {
+    "description": "Back button to return to play selection",
+    "message": "Back"
   },
   "Gxtt3v": {
     "description": "Alert message asking user to verify their email address",
-    "message": "Por favor verifica tu dirección de email para proteger tu cuenta."
+    "message": "Please verify your email address to secure your account."
   },
   "H/xdSH": {
     "description": "Section title explaining what Arrow Cloud is",
-    "message": "Lo que Arrow Cloud sí es"
+    "message": "What Arrow Cloud Is"
+  },
+  "H4R3Dg": {
+    "description": "Toggle to show only the current user's scores",
+    "message": "My Scores"
+  },
+  "H5m4gD": {
+    "description": "Score not available",
+    "message": "N/A"
+  },
+  "H7XAcz": {
+    "description": "Button to clear play selection",
+    "message": "Clear Selection"
+  },
+  "HCJHu+": {
+    "description": "Label for steps hit in session",
+    "message": "Steps Hit"
   },
   "HFZ2Dx": {
     "description": "Section title for scoring systems",
-    "message": "Sistemas de puntuación y grado"
+    "message": "Scoring & Grading Systems"
   },
   "HGJlNc": {
     "description": "Loading state for passkey authentication",
-    "message": "Autenticando..."
+    "message": "Authenticating..."
   },
   "HIvR8W": {
     "description": "Button to reset selection",
-    "message": "Restablecer"
+    "message": "Reset"
   },
   "HO0K0o": {
     "description": "Label for the rank of a score",
-    "message": "Clasificación"
+    "message": "Rank"
+  },
+  "HSLoUA": {
+    "description": "Text showing how many users are currently displayed out of the total available",
+    "message": "Showing {shown,number} of {total,number} users"
   },
   "HlcJcp": {
     "description": "Mobile menu section for theme selection",
-    "message": "Tema"
+    "message": "Theme"
   },
   "HmniJw": {
     "description": "Confirmation message when deleting profile image",
-    "message": "¿Estás seguro de que quieres eliminar tu foto de perfil?"
+    "message": "Are you sure you want to remove your profile image?"
   },
   "I/+lYe": {
     "description": "heading for a dialog element confirming a ban action",
-    "message": "Confirmar ban del usuario"
+    "message": "Confirm Ban User"
   },
   "ID1Yfr": {
     "description": "Error message when image processing fails",
-    "message": "Error al procesar la imagen"
+    "message": "Failed to process image"
   },
   "IFnUpt": {
     "description": "button label on the homepage",
-    "message": "Iniciar sesión"
+    "message": "Log In"
   },
   "IJIw7r": {
     "description": "button label on the homepage",
-    "message": "Regístrate ahora"
+    "message": "Sign Up Now"
   },
   "ITq0p4": {
     "description": "Link to privacy policy page",
-    "message": "Política de privacidad"
+    "message": "Privacy Policy"
+  },
+  "IXRHTg": {
+    "description": "number of plays in session",
+    "message": "{count} plays"
+  },
+  "J4DsUl": {
+    "description": "empty state for recent sessions",
+    "message": "No recent sessions available"
   },
   "J8Xk3g": {
     "description": "the primary button to submit the password reset form",
-    "message": "Restablecer contraseña"
+    "message": "Reset Password"
   },
   "JEZQFw": {
     "description": "table column header for player rank within the event",
-    "message": "Clasificación"
+    "message": "Rank"
   },
   "JKKkzS": {
     "description": "Button label for changing password",
-    "message": "Cambiar contraseña"
+    "message": "Change Password"
   },
   "JTD1xr": {
     "description": "Label for setting up passkey button",
-    "message": "Preparando clave de acceso..."
+    "message": "Setting up passkey..."
   },
   "JTnbHZ": {
     "description": "Button label for adding a new passkey",
-    "message": "Añadir clave de acceso"
+    "message": "Add Passkey"
   },
   "JVuqsu": {
     "description": "Instructions for adding host to preferences file",
-    "message": "Abre {prefsPath} mientras el juego está cerrado y añade el host a la lista de permitidos. Si ya tienes otras líneas en el archivo, simplemente añade {appendHost} al final de tu lista existente."
+    "message": "Open {prefsPath} while the game is closed and append the host to the allowed list. If you already have entries, simply add {appendHost} to the end of your existing list."
+  },
+  "JY41Vf": {
+    "description": "Title for session share dialog",
+    "message": "Share Session"
   },
   "Jf70Ja": {
     "description": "Subtitle for the edit profile page",
-    "message": "Administra los ajustes de tu cuenta y preferencias"
+    "message": "Manage your account settings and preferences"
   },
   "Jic09P": {
     "description": "sub-head followed by a bulleted list of effects a ban will have on a user",
-    "message": "¿Estás seguro de que quieres banear a <strong>{userAlias}</strong>? Esto hará lo siguiente:"
+    "message": "Are you sure you want to ban <strong>{userAlias}</strong>? This will:"
   },
   "Jy5dn1": {
     "description": "Table header for the points column",
-    "message": "Puntos"
+    "message": "Points"
   },
   "Jyhkfl": {
     "description": "sub-text under the username on the user profile page",
-    "message": "Perfil de usuario"
+    "message": "User Profile"
+  },
+  "K0gQHa": {
+    "description": "Phase 2 column header",
+    "message": "Phase 2"
   },
   "KBUN0h": {
     "description": "Table header for the date a pack was added",
-    "message": "Añadido el"
+    "message": "Added"
   },
   "KCXDwp": {
     "description": "Label for the artist column in the simfiles table",
-    "message": "Artista"
+    "message": "Artist"
   },
   "KV+29l": {
     "description": "Grade calculation step 4",
-    "message": "Si no se cumple la condición: se retrocede al grado mínimo de pass (D)."
+    "message": "If no thresholds met: fallback to minimum pass grade (D)."
+  },
+  "KYCIL1": {
+    "description": "section heading for user's activity",
+    "message": "Your Activity"
   },
   "Kc/AbT": {
     "description": "A placeholder value displayed within an empty input of the registration form",
-    "message": "Introduce tu email"
-  },
-  "KfBAeQ": {
-    "description": "primary text on event description card",
-    "message": "3 fases"
+    "message": "Enter your email"
   },
   "KpJJ7D": {
     "description": "a live status indicator displayed after email verification has been completed",
-    "message": "¡Email verificado!"
+    "message": "Email Verified!"
   },
   "Kz3cvi": {
     "description": "Label for setting up passkey button",
-    "message": "Preparando..."
+    "message": "Setting up..."
   },
   "L4UkwF": {
     "description": "Label for profiles folder path",
-    "message": "<label>Perfiles:</label> {profilesPath}"
+    "message": "<label>Profiles:</label> {profilesPath}"
   },
   "LGRXTs": {
     "description": "A placeholder value displayed within an empty input of the registration form",
-    "message": "Elige el nombre con el que te verán"
+    "message": "Choose your display name"
   },
   "LHEIOI": {
     "description": "Section heading for percentage calculation",
-    "message": "Cómo se calcula el porcentaje"
+    "message": "How Percentage Is Computed"
   },
   "LO3Rbr": {
     "description": "Button label to remove the profile image",
-    "message": "Eliminar imagen"
+    "message": "Remove Image"
   },
   "LPsP/k": {
     "description": "Section header for changing password",
-    "message": "Cambiar contraseña"
+    "message": "Change Password"
   },
   "Lgs0xB": {
     "description": "Error message when recent scores fail to load",
-    "message": "Error al cargar puntuaciones recientes"
+    "message": "Failed to load recent scores"
   },
   "LhgF30": {
     "description": "Mobile user menu item for editing profile",
-    "message": "Editar perfil"
+    "message": "Edit Profile"
   },
   "Lk4UgA": {
     "description": "placeholder text for a search input on a player's recent scores",
-    "message": "Buscar charts o artistas..."
+    "message": "Search charts or artists..."
   },
-  "LoJ0Ee": {
-    "description": "one of three bullet point items describing the event leaderboards",
-    "message": "<strong>ITG:</strong> Ventana de timing clásica para jugadores tradicionales."
+  "LnQ8ys": {
+    "description": "Option to show users from all countries",
+    "message": "All Countries"
+  },
+  "M/FX2E": {
+    "description": "Title for the pack leaderboard section",
+    "message": "Pack Leaderboard"
   },
   "M/hUW7": {
     "description": "Alt text for the Blue Shift logo",
@@ -989,7 +1121,7 @@
   },
   "M3DX4L": {
     "description": "Error message for when the packs page fails to load",
-    "message": "Error al cargar los packs: {error}"
+    "message": "Error loading packs: {error}"
   },
   "M4B3y1": {
     "description": "Label for the packs column",
@@ -997,75 +1129,87 @@
   },
   "M7sGOe": {
     "description": "Navigation item label for passkey settings",
-    "message": "Gestión de claves de acceso"
+    "message": "Passkey Management"
   },
   "MAcEmn": {
     "description": "Navigation item label for rivals management",
-    "message": "Rivales"
+    "message": "Rivals"
   },
   "MJfqi+": {
     "description": "text on a button to ban a user from the platform",
-    "message": "Banear usuario"
+    "message": "Ban User"
   },
   "MO8tb+": {
     "description": "Alt text for profile image",
-    "message": "Foto de perfil"
+    "message": "Profile image"
   },
   "MOf0nY": {
     "description": "Label for previous page button",
-    "message": "Anterior"
-  },
-  "MQb09O": {
-    "description": "label for the stat indicating a user's points earned on a single chart",
-    "message": "Puntos totales"
-  },
-  "MW8glP": {
-    "description": "Subtitle for help center hero section",
-    "message": "Tu lugar para entender Arrow Cloud — qué es, por qué existe, y cómo configurarlo en tu setup."
+    "message": "Previous"
   },
   "MZJzFb": {
     "description": "Label for rotation delay slider",
-    "message": "Retardo de la rotación"
+    "message": "Rotation Delay"
   },
   "MZaQAv": {
     "description": "Label showing the last time a passkey was used",
-    "message": "Última vez usado: {lastUsed}"
+    "message": "Last used: {lastUsed}"
+  },
+  "MfLQN4": {
+    "description": "Title shown when user has no trophies",
+    "message": "No Trophies Yet"
   },
   "MjDpNZ": {
     "description": "Button text for deleting a score",
-    "message": "Borrar puntuaje"
+    "message": "Delete Score"
+  },
+  "MnF0X2": {
+    "description": "thank you message for blue shift participants",
+    "message": "Thank you to everyone who participated in Blue Shift! Check out the final standings to see how you ranked. We've assigned trophies to participants, check your profile out to see yours!"
   },
   "MoIA9d": {
     "description": "Navigation item description for leaderboard preferences",
-    "message": "Selecciona qué tablas de clasificación quieres ver por defecto"
+    "message": "Select which leaderboards you want to see by default"
   },
   "MrInI2": {
     "description": "Title for the timing chart section on the play page",
-    "message": "Chart de timing"
+    "message": "Timing Chart"
+  },
+  "NF25+d": {
+    "description": "Alt text for session share image preview",
+    "message": "Session share preview"
   },
   "NIMaHT": {
     "description": "brief description of the D grade, which is awarded for any pass that does not meet the C- threshold or higher",
-    "message": "Piso de pass"
+    "message": "Pass Floor"
   },
   "NZZiZb": {
     "description": "Displayed when the chart title is not available",
-    "message": "Título desconocido"
+    "message": "Unknown Title"
   },
   "NbqIsv": {
     "description": "Detailed explanation of account deletion process",
-    "message": "Una solicitud de eliminación de cuenta requiere pruebas acerca del control sobre el email asociado a la cuenta (por ejemplo, respondiendo desde aquella cuenta de mail o completando un paso de verificación). Habiendose hecho la verificación y eliminación, tus datos personales serán borrados o irreversiblemente anonimizados sujeto a cualquier salvaguarda de integración de sistema o de anti-abuso. Si lo necesitas, puedes solicitar la eliminacion de tu cuenta mandando un email a support (arroba) arrowcloud (punto) dance, o contactando a alguno de nuestros administradores en nuestro server de Discord."
+    "message": "An account deletion request requires proof of control over the email associated with the account (for example, responding from that address or completing a verification step). Upon verified deletion request, personal data will be removed or irreversibly anonymized subject to any system integrity or anti-abuse safeguards. You may request account deletion by emailing support (at) arrowcloud (dot) dance, or reaching out to an administrator on our Discord Server."
   },
   "NcqsCp": {
     "description": "Button label to choose an image file",
-    "message": "Elegir imagen"
+    "message": "Choose Image"
   },
   "NgOmb9": {
     "description": "Mobile menu section for admin tools",
-    "message": "Administrador"
+    "message": "Admin"
+  },
+  "Nh4MbP": {
+    "description": "number of plays in session",
+    "message": "{count, plural, one {# play} other {# plays}}"
   },
   "No2aRz": {
     "description": "label next to the time a recent score was ",
-    "message": "Fecha"
+    "message": "Time"
+  },
+  "NsHg0w": {
+    "description": "heading for the user statistics section",
+    "message": "Statistics"
   },
   "NvFvI1": {
     "description": "Badge label indicating a feature is in beta",
@@ -1073,43 +1217,55 @@
   },
   "NvXgF1": {
     "description": "a heading displayed on the reset password page",
-    "message": "Restablecer contraseña"
+    "message": "Reset Password"
   },
   "Nx1LTA": {
     "description": "Loading message when saving password",
-    "message": "Guardando..."
+    "message": "Saving..."
   },
   "O6jEye": {
     "description": "Information about the selected image file ready for upload",
-    "message": "Seleccionado: {fileName} ({fileSize,number,::unit/kilobyte}) - 400x400 listo para su subida"
+    "message": "Selected: {fileName} ({fileSize,number,::unit/kilobyte}) - 400x400 ready for upload"
   },
   "O7TzM9": {
     "description": "Label for the number of participants in the overall leaderboard",
-    "message": "Participantes: {count,number}"
+    "message": "Participants: {count,number}"
   },
   "O93xq6": {
     "description": "descriptive text displayed after a successful password reset",
-    "message": "Serás redirigido a tu panel de control a la brevedad..."
+    "message": "You'll be redirected to your dashboard momentarily..."
   },
   "OWbRXA": {
     "description": "Button label to clear all active filters",
-    "message": "Borrar filtros"
+    "message": "Clear Filters"
   },
   "OfekCx": {
     "description": "displayed on the registration page below the main form, and below the 'or' separator",
-    "message": "¿Ya posees una cuenta? <button>Inicia sesión aquí</button>"
+    "message": "Already have an account? <button>Sign in here</button>"
+  },
+  "OolH+a": {
+    "description": "Overall leaderboard section title",
+    "message": "Overall Rankings"
   },
   "OrEocL": {
     "description": "Statement about how privacy policy updates are communicated",
-    "message": "Notificaciones acerca de actualizaciones a esta política de privacidad serán enviadas vía email, anunciadas en Discord, y publicadas en nuestro sitio web."
+    "message": "Notifications of updates to this privacy policy will be sent via email, announced on Discord, and posted on our website."
+  },
+  "OuTVaI": {
+    "description": "Title for the scoring system toggle section",
+    "message": "Scoring System"
+  },
+  "OwJKGB": {
+    "description": "Label for holds held in radar data section",
+    "message": "Holds Held"
   },
   "P+Gj+q": {
     "description": "Error message shown when profile update fails",
-    "message": "Error al actualizar el perfil"
+    "message": "Failed to update profile"
   },
   "P+UCmK": {
     "description": "Description for built-in security option",
-    "message": "Usa el sistema de seguridad integrado en tu dispositivo para iniciar sesión instantáneamente"
+    "message": "Use your device's built-in security to sign in instantly"
   },
   "P/vx2w": {
     "description": "displayed as a small chip next to the user on the user page to indicate it is someone added as a rival of the current user",
@@ -1121,31 +1277,39 @@
   },
   "PP8AC8": {
     "description": "text on a button that is used to remove a user from your list of rivals",
-    "message": "Quitar rival"
+    "message": "Remove Rival"
   },
   "PPXCI8": {
     "description": "an error message displayed after verification fails",
-    "message": "Falló la verificación del email. Por favor, inténtalo de nuevo o solicita un nuevo mail de verificación."
+    "message": "Email verification failed. Please try again or request a new verification email."
   },
   "PTMqr0": {
     "description": "Section heading for grade threshold table",
-    "message": "Condiciones de grado e insignias (ITG base + extensiones)"
+    "message": "Grade Thresholds & Badges (ITG base + extensions)"
+  },
+  "Pnpb2O": {
+    "description": "Phase leaderboard section title",
+    "message": "Phase Rankings"
   },
   "PttiTj": {
     "description": "Page title for editing the user profile",
-    "message": "Editar perfil"
+    "message": "Edit Profile"
+  },
+  "PuRP5k": {
+    "description": "badge for ongoing session",
+    "message": "Live"
   },
   "Q0d0pT": {
     "description": "Button label for creating a new API key",
-    "message": "Generar key"
+    "message": "Create Key"
   },
   "QF7nqo": {
     "description": "one item in a bulleted list of effects a ban will have for a user",
-    "message": "Se le enviará un correo de notificación de suspensión"
+    "message": "Send them a suspension notification email"
   },
   "QGutVM": {
     "description": "HardEX feature: precision focus",
-    "message": "Recompensa la precisión extrema"
+    "message": "Rewards extreme precision"
   },
   "QIi1Qb": {
     "description": "Rank of the player on the chart",
@@ -1153,95 +1317,103 @@
   },
   "QJ79vt": {
     "description": "Detailed explanation of data security and database access",
-    "message": "No vendemos ni rentamos datos personales. Las contraseñas se almacenan utilizando el hashing estándar de la industria. El acceso directo a la base de datos está restringido sólo a los administradores autorizados del sitio. De tanto en tanto, exportaciones de bases de datos anónimas (con identificadores directos eliminados) podrían ser publicadas o distribuidas con fines de copia de seguridad, archivo, análisis o restauración."
+    "message": "We do not sell or rent personal data. Passwords are stored using industry-standard salted hashing. Direct database access is restricted to authorized site administrators. From time to time, anonymized database exports (with direct identifiers removed) may be published or distributed for backup, archival, analytical, or restoration purposes."
   },
   "QOAp4b": {
     "description": "EX feature: window size",
-    "message": "Fantastic primario a ±15ms"
+    "message": "Primary Fantastic at ±15ms"
   },
   "QTkpuD": {
     "description": "Table header for the player column",
-    "message": "Jugador"
+    "message": "Player"
   },
   "QYJaeC": {
     "description": "OBS instruction step 4",
-    "message": "Dale click a 'Apagar fuente cuando no sea visible' y 'Actualizar el navegador cuando la escena se active'"
+    "message": "Check 'Shutdown source when not visible' and 'Refresh browser when scene becomes active'"
+  },
+  "Qhfqx5": {
+    "description": "Error message when session is not found",
+    "message": "Session not found"
+  },
+  "QnWYrL": {
+    "description": "Phase 3 column header",
+    "message": "Phase 3"
   },
   "Qo+oY5": {
     "description": "Title for the max error stat on the timing chart",
-    "message": "Error máximo"
+    "message": "Max Error"
   },
   "Qpj9Z+": {
     "description": "Placeholder for the add rival input field",
-    "message": "Buscar alias de usuario (min 2 caracteres)"
+    "message": "Search user alias (min 2 chars)"
   },
   "QreD4A": {
     "description": "Percentage calculation step 4",
-    "message": "Porcentaje = suma de puntaje / máximo."
+    "message": "Percent = score sum / max."
   },
   "RAgpSZ": {
     "description": "label next to a score in the recent scores section",
-    "message": "Puntaje"
+    "message": "Score"
   },
   "RDLRdD": {
     "description": "Button to navigate to registration page",
-    "message": "Registrarse"
+    "message": "Register"
   },
   "RHzXYw": {
     "description": "Displayed as an error to users while attempting to log in or register",
-    "message": "Error al reenviar el correo electrónico de verificación. Por favor, inténtalo de nuevo."
-  },
-  "RNhXT1": {
-    "description": "section heading on the homepage",
-    "message": "Estructura del evento"
+    "message": "Failed to resend verification email. Please try again."
   },
   "RWchvs": {
     "description": "Error message when failing to load passkey information",
-    "message": "Error al cargar la información de la clave de acceso"
+    "message": "Failed to load passkey information"
   },
   "Rfndrb": {
     "description": "Button to copy text to clipboard",
-    "message": "Copiar"
+    "message": "Copy"
   },
   "RoZdO3": {
     "description": "primary header on the homepage",
-    "message": "Bienvenido a Arrow Cloud"
+    "message": "Welcome to Arrow Cloud"
   },
   "Rp8OF+": {
     "description": "fallback case when no recent scores load for the event",
-    "message": "No hay puntuaciones recientes disponibles"
+    "message": "No recent scores available"
+  },
+  "S1Vv4x": {
+    "description": "table header for time column",
+    "message": "Time"
   },
   "S5AGlo": {
     "description": "Error message when failing to register a passkey",
-    "message": "Error al registrar la clave de acceso"
+    "message": "Failed to register passkey"
   },
   "SF7mNm": {
     "description": "HardEX feature: window size",
-    "message": "Fantastic interior más ajustado: ventana ±10ms"
+    "message": "Tight inner Fantastic: ±10ms window"
   },
   "SI6+yb": {
     "description": "table column heading for descriptions of the timing windows and corresponding score weights",
-    "message": "Peso en ITG"
+    "message": "ITG Weight"
+  },
+  "SNYJQP": {
+    "description": "Button label for resetting trophy order",
+    "message": "Reset"
   },
   "SSi3N2": {
     "description": "button label for the link to pack download",
-    "message": "Descargar pack"
+    "message": "Download Pack"
   },
   "STVQpe": {
     "description": "Access denied alert heading",
-    "message": "Acceso denegado"
+    "message": "Access Denied"
   },
   "SZ1Xar": {
     "description": "User menu item for logging in",
-    "message": "Iniciar sesión"
-  },
-  "Sgtmaw": {
-    "description": "Blue Shift feature: leaderboard selection",
-    "message": "Elige tus tablas de clasificación"
+    "message": "Login"
   },
   "SjGrX2": {
     "description": "displayed on a disabled button; replaces 'click here to resend'",
-    "message": "reenviar en {resendCooldown}s"
+    "message": "resend in {resendCooldown}s"
   },
   "SpD64Q": {
     "description": "Abbreviation for EX leaderboard mode",
@@ -1249,11 +1421,15 @@
   },
   "SsHyj8": {
     "description": "Placeholder for confirm new password input",
-    "message": "Confirma tu nueva contraseña"
+    "message": "Confirm new password"
   },
   "SsRETH": {
     "description": "OBS instruction step 3",
-    "message": "Establece ancho: {width}, altura: {height}"
+    "message": "Set Width: {width}, Height: {height}"
+  },
+  "SyigeG": {
+    "description": "label for the user profile field displaying their total play count",
+    "message": "Total Plays"
   },
   "T3ze71": {
     "description": "Abbreviation for Hard EX leaderboard mode",
@@ -1261,63 +1437,71 @@
   },
   "THr3aV": {
     "description": "Label for compatibility mode checkbox",
-    "message": "Modo de compatibilidad"
+    "message": "Compatibility Mode"
   },
   "TSz5Re": {
     "description": "table heading for the list of charts in the event",
-    "message": "Dificultad"
+    "message": "Difficulty"
   },
   "TV0vc/": {
     "description": "Heading for the associated simfiles section",
-    "message": "Simfiles asociados"
+    "message": "Associated Simfiles"
   },
   "TZbl8m": {
     "description": "Button label shown when preferred leaderboards are being saved",
-    "message": "Guardando..."
+    "message": "Saving..."
   },
   "TdWa2s": {
     "description": "Add Passkey button label",
-    "message": "Añadir"
+    "message": "Add"
+  },
+  "Tdcwjh": {
+    "description": "Label for user's placement",
+    "message": "Your Placement"
   },
   "TeiEDu": {
     "description": "Label for the date a pack was added",
-    "message": "Añadido el: {date}"
+    "message": "Added: {date}"
   },
   "TiJDoq": {
     "description": "Button text to delete a score",
-    "message": "Borrar puntaje"
+    "message": "Delete Score"
   },
   "TiVT6w": {
     "description": "Description for security key option",
-    "message": "Utilice una clave de seguridad para una autenticación segura"
+    "message": "Use a security key for secure authentication"
+  },
+  "TjZyeR": {
+    "description": "Helper text for timezone selection",
+    "message": "Used on activity heatmaps and generated share images to represent your local time."
   },
   "TtSTfd": {
     "description": "Error message shown when failing to delete a score",
-    "message": "Error al eliminar el puntaje"
+    "message": "Failed to delete score"
   },
   "TzNn9X": {
     "description": "Description for the profile image upload section on the profile page",
-    "message": "Sube una foto de perfil que se mostrará en tu perfil público y en las tablas de clasificación."
+    "message": "Upload a profile image that will be displayed on your public profile and in leaderboards."
   },
   "U0/54Q": {
     "description": "Mobile user menu item for logging out",
-    "message": "Cerrar sesión"
+    "message": "Logout"
   },
   "UCtdeR": {
     "description": "primary intro text on the homepage",
-    "message": "Arrow Cloud es una plataforma moderna diseñada para la comunidad ITG. Proporcionamos seguimiento de puntajes, tablas de clasificación, rivales y capacidad de alojamiento de eventos con un enfoque en la estabilidad, experiencia de usuario y juego competitivo."
-  },
-  "UTD+LX": {
-    "description": "sub-heading for a table of scores earned by a player in an event",
-    "message": "Puntuaciones en los charts"
+    "message": "Arrow Cloud is a modern platform designed for the ITG community. We provide score tracking, leaderboards, rivalries, and event hosting capabilities with a focus on stability, user experience, and competitive play."
   },
   "UcNrFr": {
     "description": "Navigation item description for passkey settings",
-    "message": "Configurar y administrar tus claves de acceso"
+    "message": "Set up and manage your passkeys"
   },
   "UekZ7j": {
     "description": "a status message displayed while email verification is in process",
-    "message": "Por favor, espera mientras verificamos tu dirección de email..."
+    "message": "Please wait while we verify your email address..."
+  },
+  "UgVhWr": {
+    "description": "FAQ question about Blue Shift",
+    "message": "Blue Shift?"
   },
   "UhnD7Q": {
     "description": "Abbreviation for ITG leaderboard mode",
@@ -1325,7 +1509,7 @@
   },
   "UoUeqp": {
     "description": "Error message when an invalid image file type is selected",
-    "message": "Por favor, selecciona un archivo de imagen válido (JPEG, PNG, GIF o WebP)"
+    "message": "Please select a valid image file (JPEG, PNG, GIF, or WebP)"
   },
   "VARle9": {
     "description": "Label for the charts column in the simfiles table",
@@ -1333,43 +1517,55 @@
   },
   "VDiUbH": {
     "description": "Table header for the grade column",
-    "message": "Grado"
+    "message": "Grade"
   },
   "VOJppc": {
     "description": "Message displayed when there are no scores for a chart",
-    "message": "Sin puntajes aún"
+    "message": "No scores yet"
+  },
+  "VPCWX3": {
+    "description": "Label for session duration",
+    "message": "Duration"
   },
   "VWSTaJ": {
     "description": "Error message when profile image upload fails",
-    "message": "Error al subir la foto de perfil"
+    "message": "Failed to upload profile image"
   },
   "VxHwC7": {
     "description": "Instructions for closing ITGMania",
-    "message": "ITGMania debe cerrarse antes de continuar. Si ITGMania está abierto, podría sobrescribir algunos cambios en los archivos de preferencia que editaremos."
+    "message": "ITGMania must be closed before continuing. If ITGMania is open it may overwrite some changes to preferences files we will be editing."
   },
   "VyKUu+": {
     "description": "Title for the recent scores section",
-    "message": "Puntuaciones recientes"
+    "message": "Recent Scores"
+  },
+  "VzU8H9": {
+    "description": "table header for player column",
+    "message": "Player"
   },
   "WBlsh8": {
     "description": "Disclaimer for naming a new passkey",
-    "message": "Dale un nombre memorable a esta clave de acceso para identificar el dispositivo o el autenticador."
+    "message": "Give this passkey a memorable name to identify the device or authenticator."
   },
   "WF72pO": {
     "description": "A label for a field of the registration form",
-    "message": "Contraseña"
+    "message": "Password"
   },
   "WFfotC": {
     "description": "displayed after a password reset link has been requested, but the page has been left open long enough that the link expired",
-    "message": "El enlace de restablecimiento caducó. Por favor, solicite uno nuevo."
+    "message": "The reset link has expired. Please request a new one."
   },
   "WJFQ54": {
     "description": "Placeholder for confirm new password input field",
-    "message": "Confirma tu nueva contraseña"
+    "message": "Confirm new password"
   },
   "WV6MM4": {
     "description": "Label for a checkbox on the registration form",
-    "message": "He leído y acepto la <privacyLink>Política de privacidad</privacyLink>."
+    "message": "I have read and agree to the <privacyLink>Privacy Policy</privacyLink>."
+  },
+  "WYDkuD": {
+    "description": "number of charts in a pack",
+    "message": "{count} charts"
   },
   "Wc2PQF": {
     "description": "Mobile menu item for charts",
@@ -1377,75 +1573,87 @@
   },
   "X/dxmZ": {
     "description": "Navigation item description for profile picture settings",
-    "message": "Sube y administra tu foto de perfil"
+    "message": "Upload and manage your profile picture"
+  },
+  "X0NEcW": {
+    "description": "badge for ongoing session",
+    "message": "Ongoing"
   },
   "X1K1PE": {
     "description": "Heading for the settings navigation sidebar",
-    "message": "Ajustes"
+    "message": "Settings"
   },
   "X2YpwH": {
     "description": "Shows widget dimensions",
-    "message": "Dimensiones del widget: {width}×{height}px"
+    "message": "Widget dimensions: {width}×{height}px"
   },
   "X6xwCH": {
     "description": "Button label for copying the new API key",
-    "message": "Copiar"
+    "message": "Copy"
   },
   "XBomKO": {
     "description": "Label for the song column",
-    "message": "Canción"
+    "message": "Song"
   },
   "XNTeAR": {
     "description": "Mobile user menu item for logging in",
-    "message": "Iniciar sesión"
+    "message": "Login"
   },
   "XNdbAr": {
     "description": "a subheading displayed on the password reset page",
-    "message": "Introduce tu nueva contraseña abajo"
+    "message": "Enter your new password below"
   },
   "XPK5q6": {
     "description": "small header displayed above the list of available languages for the site",
-    "message": "Seleccionar idioma"
+    "message": "Select Language"
   },
   "XRHhsa": {
     "description": "Mobile menu section for language selection",
-    "message": "Idioma"
+    "message": "Language"
   },
   "Xdhai4": {
     "description": "Button title to delete a score",
-    "message": "Eliminar este puntaje"
+    "message": "Delete this score"
   },
   "XgH7/X": {
     "description": "button label to confirm a ban action against a user",
-    "message": "Banear usuario"
+    "message": "Ban User"
+  },
+  "XnqSir": {
+    "description": "button to view blue shift results",
+    "message": "View Results"
   },
   "XrZn/3": {
     "description": "Button label to download module archive",
-    "message": "Descargar módulo"
+    "message": "Download Module"
   },
   "Y0Wd0B": {
     "description": "Note about platform availability for passkey setup",
-    "message": "Nota: Este dispositivo no soporta la autenticación integrada. De todas formas, aún puedes utilizar claves de seguridad externas."
+    "message": "Note: This device doesn't support built-in authentication. You can still use external security keys."
   },
   "YDRVsO": {
     "description": "displayed on the user profile page if they have no scores to display",
-    "message": "No hay puntuaciones recientes"
+    "message": "No recent scores"
   },
   "YEQ3/1": {
     "description": "Error message shown when the leaderboard fails to load",
-    "message": "Error al cargar la tabla de clasificación"
+    "message": "Failed to load leaderboard"
   },
   "YM+ci9": {
     "description": "Label for the country select field",
-    "message": "País"
+    "message": "Country"
+  },
+  "YORqn2": {
+    "description": "Chart scores section title",
+    "message": "Chart Scores"
   },
   "YOS6+m": {
     "description": "displayed on a disabled button with a loading spinner after submitting the registration form",
-    "message": "Creando cuenta..."
+    "message": "Creating Account..."
   },
   "YhyBsx": {
     "description": "Label for the title column in the simfiles table",
-    "message": "Título"
+    "message": "Title"
   },
   "YoJaPu": {
     "description": "Fallback chart title",
@@ -1453,39 +1661,47 @@
   },
   "YrqEwQ": {
     "description": "Message displayed when there is an error loading charts",
-    "message": "Error al cargar los charts: {error}"
+    "message": "Error loading charts: {error}"
+  },
+  "Yz+BKn": {
+    "description": "Label for Wednesday in the activity heatmap",
+    "message": "Wed"
   },
   "Z7jjH4": {
     "description": "Label for the last generated timestamp of the overall leaderboard",
-    "message": "Última vez generado: {date,date}"
+    "message": "Last generated: {date,date}"
   },
   "ZCWT6R": {
     "description": "message displayed after requesting a password reset. the mmssTime will be a number of minutes and seconds formatted like \"2:30\" which continually counts down every second",
-    "message": "Revisa tu bandeja de entrada para continuar. El link caducará en {mmssTime}"
+    "message": "Check your inbox to continue. The link will expire in {mmssTime}"
+  },
+  "ZG7hLb": {
+    "description": "Table header for the user name",
+    "message": "User"
   },
   "ZReS1Z": {
     "description": "Label for dismiss passkey setup suggestion button",
-    "message": "Por ahora no"
+    "message": "Not now"
   },
   "ZVs5zf": {
     "description": "subheader displayed on the registration page",
-    "message": "Crea tu cuenta y empieza a hacer seguimiento de tus puntuaciones"
+    "message": "Create your account and start tracking scores"
   },
   "ZWQXbX": {
     "description": "A placeholder value displayed within an empty input of the login form",
-    "message": "Introduce tu contraseña"
+    "message": "Enter your password"
   },
   "ZeU0+7": {
     "description": "Error message shown when play ID is missing",
-    "message": "Se requiere ID de partida"
+    "message": "Play ID is required"
   },
   "ZlE4+d": {
     "description": "Label for widget features selection",
-    "message": "Características del widget"
+    "message": "Widget Features"
   },
   "ZqM/Oi": {
     "description": "displayed on the user profile page while data is loading",
-    "message": "Cargando perfil de usuario..."
+    "message": "Loading user profile..."
   },
   "ZqrnQ+": {
     "description": "Option for double steps type in the filter",
@@ -1493,67 +1709,75 @@
   },
   "Zs0LJZ": {
     "description": "Encouragement message when no scores exist for a chart",
-    "message": "¡Sé el primero en subir una puntuación en este chart!"
+    "message": "Be the first to set a score on this chart!"
+  },
+  "Ztv8Vl": {
+    "description": "Instructions for reordering trophies",
+    "message": "Drag and drop to reorder your trophies. The first {count} trophies will be displayed on your profile."
   },
   "ZxiG3y": {
     "description": "Label for passkeys that have never been used",
-    "message": "Nunca antes usado"
-  },
-  "Zz+mxb": {
-    "description": "one of three bullet point items describing the event leaderboards",
-    "message": "<strong>EX:</strong> Ventana de timing estándar para juego competitivo."
+    "message": "Never used"
   },
   "a4zEIi": {
     "description": "Percentage calculation step 2",
-    "message": "Máximo total = (cantidad de taps * peso de los perfects) + (holds + rolls)*peso de los held."
+    "message": "Total max = (tap count * perfect weight) + (holds + rolls)*heldWeight."
   },
   "a89Mq1": {
     "description": "Label when user is logged in",
-    "message": "Cuenta lista"
+    "message": "Account Ready"
   },
   "aCiQRg": {
     "description": "A label for a field of the password reset form",
-    "message": "Nueva contraseña"
+    "message": "New Password"
+  },
+  "aNmvzp": {
+    "description": "Instructions for selecting plays to share",
+    "message": "Select up to {max} plays to highlight in your session share image"
   },
   "aS/YuY": {
     "description": "Button text after copying",
-    "message": "¡Copiado!"
+    "message": "Copied!"
+  },
+  "aSDNdQ": {
+    "description": "Count of trophies not shown on profile",
+    "message": "{count} trophies hidden from profile"
   },
   "acWNy9": {
     "description": "Displayed when no packs match the search query",
-    "message": "No se han encontrado packs que coincidan con \"{search}\""
+    "message": "No packs found matching \"{search}\""
   },
   "acZVz2": {
     "description": "text on a button that is used to add a user to your list of rivals",
-    "message": "Añadir rival"
+    "message": "Add Rival"
   },
   "adIw3h": {
     "description": "button label displayed with a loading spinner while a ban action is processing",
-    "message": "Baneando..."
+    "message": "Banning..."
   },
   "afF6i8": {
     "description": "label for a checkbox on the user profile list of played charts. when checked will include unregistered charts in the search results",
-    "message": "Incluir charts no registrados"
+    "message": "Include Unknown"
   },
   "aiXGAN": {
     "description": "ITG feature: weighting style",
-    "message": "Peso estilo ITG clásico"
+    "message": "Classic ITG style weighting"
   },
   "anoRJU": {
     "description": "Placeholder text for the search input in the chart recent scores section",
-    "message": "Buscar por jugador..."
+    "message": "Search by player..."
   },
-  "aq13An": {
-    "description": "Label for the steps type column",
-    "message": "Tipo de steps"
+  "apFDFw": {
+    "description": "section heading for global activity",
+    "message": "Global Activity"
   },
   "arUn+B": {
     "description": "displayed on a disabled button with a loading spinner",
-    "message": "Restableciendo contraseña..."
+    "message": "Resetting Password..."
   },
   "b497id": {
     "description": "Instruction to restart game and test",
-    "message": "Reinicia ITGMania para asegurarte de que la configuración está completa, luego juega cualquier chart."
+    "message": "Restart ITGMania to ensure configuration is loaded, then play any chart."
   },
   "bH4nBJ": {
     "description": "table column header for the recent scores on the event page",
@@ -1561,31 +1785,35 @@
   },
   "bXo9VG": {
     "description": "Badge label for upcoming features",
-    "message": "pronto"
+    "message": "soon"
   },
   "bb7dGv": {
     "description": "Title for the leaderboards section",
-    "message": "Tablas de clasificación"
+    "message": "Leaderboards"
+  },
+  "beNMGy": {
+    "description": "Subtitle explaining image generation delay",
+    "message": "Images may take a few seconds to generate for the first time"
   },
   "bmQJci": {
     "description": "Navigation item description for password settings",
-    "message": "Cambiar la contraseña de tu cuenta"
+    "message": "Change your account password"
   },
   "bxd/mE": {
     "description": "Loading rivals indicator",
-    "message": "Cargando rivales..."
+    "message": "Loading rivals..."
   },
   "by4q9+": {
     "description": "label for the submit button on the forgot password form",
-    "message": "Enviar enlace de restablecimiento {mailIcon}"
+    "message": "Send Reset Link {mailIcon}"
   },
   "byTjHq": {
     "description": "table column header for total points earned by a player within the event",
-    "message": "Puntos"
+    "message": "Points"
   },
   "byn6nd": {
     "description": "Label for the date of a score",
-    "message": "Fecha"
+    "message": "Date"
   },
   "c5lA7h": {
     "description": "HardEX scoring system name",
@@ -1593,55 +1821,59 @@
   },
   "cEZoTR": {
     "description": "Button label shown when creating a new API key",
-    "message": "Creando..."
+    "message": "Creating..."
   },
   "cNcvUb": {
     "description": "Verification instruction for successful submission",
-    "message": "Tu perfil de Arrow Cloud debería mostrar una nueva puntuación a la brevedad."
+    "message": "Your Arrow Cloud profile should show a new submission shortly after."
+  },
+  "cSQcQe": {
+    "description": "ITG leaderboard abbreviation",
+    "message": "ITG"
   },
   "cVRF/J": {
     "description": "a heading displayed after a successful password reset",
-    "message": "¡Contraseña restablecida con éxito!"
+    "message": "Password Reset Successfully!"
   },
   "cViiIu": {
     "description": "This separates the main login form from a section below it offering to switch to account registration",
-    "message": "o"
+    "message": "or"
   },
   "cetLzw": {
     "description": "Header displayed on the registration page",
-    "message": "Unirse a Arrow Cloud"
+    "message": "Join Arrow Cloud"
   },
   "ck1B/I": {
     "description": "Button label for resending verification email",
-    "message": "Reenviar"
+    "message": "Resend"
   },
   "cyaeNo": {
     "description": "Text showing the number of charts displayed out of the total available",
-    "message": "Mostrando {shown,number} de {total,number} charts"
+    "message": "Showing {shown,number} of {total,number} charts"
   },
   "czOkfs": {
     "description": "table column header for the recent scores on the event page",
-    "message": "Grado"
+    "message": "Grade"
   },
   "dDM60o": {
     "description": "Label for widget theme selector",
-    "message": "Apariencia del widget"
+    "message": "Widget Theme"
   },
   "dI5InQ": {
     "description": "Label for help section navigation",
-    "message": "Navegación de Ayuda"
+    "message": "Help navigation"
   },
   "dIRIMP": {
     "description": "a section header on the email verification page",
-    "message": "¿Necesitas ayuda?"
+    "message": "Need help?"
   },
   "dIunyv": {
     "description": "Disclaimer about hosted content",
-    "message": "No alojamos archivos de audio ni descargas de packs. Los packs y sus artes son sacados de lanzamientos públicos y no están sujetos a derechos de autor de Arrow Cloud."
+    "message": "We do not host audio files or pack downloads. Pack and chart graphics are scraped from public releases and are not subject to Arrow Cloud copyright."
   },
   "dPQaz6": {
     "description": "Label for leaderboard selection",
-    "message": "Tablas de clasificaciones a mostrar"
+    "message": "Leaderboards to Show"
   },
   "dQfrc/": {
     "description": "stat indicating a user's rank",
@@ -1649,15 +1881,19 @@
   },
   "dhBX9c": {
     "description": "section heading for event-related announcements",
-    "message": "Anuncios"
+    "message": "Announcement"
   },
   "di9f3h": {
     "description": "Helper text for rotation delay",
-    "message": "Cuánto tiempo quieres ver cada tabla de clasificación antes de cambiarla por otra (10-120 segundos)"
+    "message": "How long to show each leaderboard before switching (10-120 seconds)"
+  },
+  "djn/1t": {
+    "description": "empty state for user's recent sessions",
+    "message": "No recent sessions yet. Get playing!"
   },
   "dlu2Wl": {
     "description": "Navigation menu button to browse content",
-    "message": "Menú"
+    "message": "Browse"
   },
   "dpHkxV": {
     "description": "Ellipsis in pagination",
@@ -1665,39 +1901,47 @@
   },
   "dsUKTu": {
     "description": "Label for new API key display",
-    "message": "Nueva API key"
+    "message": "New API Key"
+  },
+  "dt96tJ": {
+    "description": "Label for rolls hit in radar data section",
+    "message": "Rolls Hit"
   },
   "e39ysx": {
     "description": "Displayed with a loading spinner while a login attempt is in progress",
-    "message": "Iniciando sesión..."
+    "message": "Signing In..."
   },
   "e3DPEo": {
     "description": "Label showing the creation date of a passkey",
-    "message": "Creado el: {createdAt}"
+    "message": "Created: {createdAt}"
   },
   "e8mHcE": {
     "description": "table column header for the recent scores on the event page",
-    "message": "Fecha"
+    "message": "Time"
   },
   "e9nfYa": {
     "description": "displayed as a visual separator between the registration form and text offering to switch to the login form",
-    "message": "o"
+    "message": "or"
   },
-  "eBxpab": {
-    "description": "displayed as a song's artist when data is missing",
-    "message": "Artista desconocido"
+  "eA3EeG": {
+    "description": "FAQ answer about failed submission - part 1",
+    "message": "Blue Shift was Arrow Cloud's inaugural event which ran from December 2025 to February 2026. You can view the results below."
   },
   "eE6UfK": {
     "description": "ITG feature: no split",
-    "message": "No hay división interna por Fantastic"
+    "message": "No inner Fantastic split"
+  },
+  "eLMJOK": {
+    "description": "Toggle to show rivals' scores",
+    "message": "Rivals' Scores"
   },
   "ePYk5e": {
     "description": "Error message when failing to delete a passkey",
-    "message": "Error al eliminar clave de acceso"
+    "message": "Failed to delete passkey"
   },
   "eRpp8o": {
     "description": "Label for widget preview section",
-    "message": "Vista previa"
+    "message": "Preview"
   },
   "eT8bPV": {
     "description": "Title for the packs page",
@@ -1705,79 +1949,83 @@
   },
   "eXmrrH": {
     "description": "Loading message for passkey section",
-    "message": "Cargando información de clave de acceso..."
+    "message": "Loading passkey information..."
   },
   "ebM7x5": {
     "description": "a confirmation message displayed after email verification succeeds",
-    "message": "¡Tu email ha sido verificado con éxito! Cuenta activada por completo."
+    "message": "Your email has been successfully verified! Your account is now fully activated."
   },
   "ebpbUs": {
     "description": "Helper text for widget URL",
-    "message": "Usa esta URL en OBS como una fuente de navegador"
+    "message": "Use this URL in OBS as a Browser Source"
+  },
+  "ecAIWs": {
+    "description": "Label for Blue Shift event phase tab",
+    "message": "Phase {phaseNumber}"
   },
   "eeAYHv": {
     "description": "Displayed as an error to users while attempting to log in or register",
-    "message": "Error al actualizar perfil. Vuelve a intentarlo."
-  },
-  "eezXdB": {
-    "description": "Description of available scoring systems",
-    "message": "Puedes competir en 10ms (HardEX), 15ms (EX), o con el sistema de puntuación de ITG."
+    "message": "Failed to update profile. Please try again."
   },
   "egg6+H": {
     "description": "table column header label for played charts on the user profile page, this column displays the score",
-    "message": "Puntaje"
-  },
-  "ejPmny": {
-    "description": "Navigation item description for streamer widget settings",
-    "message": "Configura y previsualiza tu widget de streaming"
+    "message": "Score"
   },
   "ejXDAu": {
     "description": "Description for the mean absolute error stat on the timing chart",
-    "message": "Promedio general de timing"
+    "message": "Overall timing average"
   },
   "eksVJn": {
     "description": "Navigation item description for rivals management",
-    "message": "Administra tus rivales"
+    "message": "Manage your rivals"
   },
   "eoVXEp": {
     "description": "A heading displayed to a user after they have finished registring a new account",
-    "message": "¡Revisa tu email!"
+    "message": "Check Your Email!"
+  },
+  "epvAVc": {
+    "description": "Points column header",
+    "message": "Points"
   },
   "euAGju": {
     "description": "Section title for frequently asked questions",
-    "message": "Preguntas frecuentes"
+    "message": "FAQ"
   },
   "eubUWO": {
     "description": "Note about setting up passkey later",
-    "message": "Siempre puedes configurar esto más adelante en la configuración de tu perfil."
+    "message": "You can always set this up later in your profile settings."
   },
   "f0wAIn": {
     "description": "Message shown when profile update is successful",
-    "message": "¡Perfil actualizado con éxito!"
+    "message": "Profile updated successfully!"
   },
   "f5pGyU": {
     "description": "Displayed when the chart artist is not available",
-    "message": "Artista desconocido"
+    "message": "Unknown Artist"
   },
   "f70c15": {
     "description": "Button label for saving preferred leaderboards",
-    "message": "Guardar preferencias"
+    "message": "Save Preferences"
   },
   "f78WCS": {
     "description": "A heading displayed on the login page",
-    "message": "Bienvenido de vuelta"
+    "message": "Welcome Back"
   },
   "fB9pUP": {
     "description": "Button label to download theme archive",
-    "message": "Descargar ZIP del tema"
+    "message": "Download Theme ZIP"
   },
   "fDZSZm": {
     "description": "Error message when profile image removal fails",
-    "message": "Error al eliminar foto de perfil"
+    "message": "Failed to remove profile image"
+  },
+  "fG8Uky": {
+    "description": "Disclaimer about recent packs on the homepage, indicating that these are based on indexing date.",
+    "message": "Note: these are packs recently indexed by Arrow Cloud and does not reflect the release date of those packs necessarily."
   },
   "fhz3KS": {
     "description": "Message shown when there is no leaderboard data",
-    "message": "No hay datos de tabla de clasificación disponibles"
+    "message": "No leaderboard data available"
   },
   "fjW29i": {
     "description": "Label for the alias input field",
@@ -1785,147 +2033,175 @@
   },
   "fpEyF4": {
     "description": "Error message when a chart is not found",
-    "message": "Chart no encontrado"
+    "message": "Chart not found"
   },
   "frfVZq": {
     "description": "Mobile admin menu item for pack uploader",
-    "message": "Subir packs"
+    "message": "Pack Uploader"
   },
   "g/VjGs": {
     "description": "a label for a bulleted list of password requirements",
-    "message": "Requerimientos de contraseña:"
+    "message": "Password requirements:"
   },
   "g0JMrv": {
     "description": "Message shown when there are no API keys created",
-    "message": "Aún no hay API keys creadas"
+    "message": "No API keys created yet"
+  },
+  "g8JAUX": {
+    "description": "Displayed when no users match the search query",
+    "message": "No users found matching \"{search}\""
+  },
+  "gE+yeP": {
+    "description": "EX scoring system name",
+    "message": "EX"
   },
   "gJs2Fl": {
     "description": "Summary point about data collection",
-    "message": "Solo recolectamos: tu dirección de email, el alias que has elegido (nombre que se muestra a los demás), y tu país, si es que has decidido proveerlo."
+    "message": "We collect only: your email address, your chosen alias (display name), and your country if you optionally provide it."
   },
   "gKcS+F": {
     "description": "button label on the homepage",
-    "message": "Unirse a nuestro Discord"
+    "message": "Join Discord"
+  },
+  "gVeY2y": {
+    "description": "Fallback text for unknown chart artist",
+    "message": "Unknown Artist"
   },
   "gW2PUA": {
     "description": "Explanation of Arrow Cloud as alternative to GrooveStats",
-    "message": "GrooveStats introdujo tablas de clasificación en línea a la comunidad ITG hace más de 20 años y ha sido una herramienta extremadamente valiosa a lo largo de la historia del juego. El objetivo de este proyecto es ofrecer una plataforma alternativa con un diseño modernizado, flexible, y una tabla de clasificación con un diseño abierto."
+    "message": "GrooveStats introduced online leaderboards to the ITG community over 20 years ago and has been an extremely valuable tool throughout the game's history. This project aims to offer an alternative platform with a modernized, flexible, and open leaderboard design."
+  },
+  "gXxTKr": {
+    "description": "Alt text for share image preview",
+    "message": "Share preview"
   },
   "gpHicE": {
     "description": "ARIA label for the link to view the chart",
-    "message": "Ver chart"
-  },
-  "gpep2X": {
-    "description": "Explanation of failed play scoring",
-    "message": "Blue Shift es el único sistema que acepta puntajes fallidos (puntajes que no terminaron el chart completo) y les asigna un <semibold>grado F</semibold>. Tu puntaje de cualquier manera, seguirá representando el progreso que hiciste antes de fallar el chart, permitiendote competir incluso con intentos en los que no terminaste. Esto, te ayuda a poder hacer un seguimiento de tu progreso y te da crédito por ir progresando parcialmente."
+    "message": "View chart"
   },
   "guUuZ7": {
     "description": "Confirmation message for deleting a score",
-    "message": "¿Estás seguro/a de que quieres borrar este puntaje? Esta acción no se puede deshacer."
+    "message": "Are you sure you want to delete this score? This action cannot be undone."
   },
   "gyhSf+": {
     "description": "Confirmation text after copying",
-    "message": "Copiado"
+    "message": "Copied"
+  },
+  "gzpqYg": {
+    "description": "label for the user profile field displaying the number of steps (arrows) they have hit",
+    "message": "Steps Hit"
   },
   "h1j+Ft": {
     "description": "Detailed explanation of data processing and retention",
-    "message": "Arrow Cloud (el 'servicio') procesa mínima información personal. Los únicos datos personales que se conservan son: (1) dirección de email, (2) el alias seleccionado por el usuario, y (3) el país asignado por el usuario (opcional). Los mails son usados exclusivamente para propósitos de seguridad y ciclos de vida de cuenta, incluyendo los flujos de trabajo que conllevan el reinicio de contraseñas y verificación. Los alias son mostrados públicamente en las interfaces del sitio web y dentro del juego en las tablas de clasificación. La información sobre el país, si es que ha sido proveída, se muestra únicamente en la página de perfil del usuario y en ninguna otra parte más."
+    "message": "Arrow Cloud (the 'Service') processes minimal personal data. The only personal data categories retained are: (1) email address, (2) user-selected alias, and (3) optional country designation. Email addresses are used exclusively for security and account lifecycle purposes, including password reset and verification workflows. Aliases are publicly displayed on site interfaces and in in-game leaderboard integrations. Country information, when provided, is displayed solely on the user’s profile page and not elsewhere."
   },
   "hFlOxo": {
     "description": "Text showing how many packs are currently displayed out of the total available",
-    "message": "Mostrando {shown,number} de {total,number} packs"
+    "message": "Showing {shown,number} of {total,number} packs"
   },
   "hHNj31": {
     "description": "Cancel button text",
-    "message": "Cancelar"
+    "message": "Cancel"
   },
   "hQi+5B": {
     "description": "Error message shown when countries fail to load",
-    "message": "Error al cargar países: {error}"
+    "message": "Failed to load countries: {error}"
+  },
+  "hZH12I": {
+    "description": "Mobile menu item for users",
+    "message": "Users"
   },
   "haBkmP": {
     "description": "Label for the filters button on the charts page",
-    "message": "Filtros"
-  },
-  "hc2MNy": {
-    "description": "Section title for Blue Shift event information",
-    "message": "Evento Blue Shift"
+    "message": "Filters"
   },
   "hdelcO": {
     "description": "Alert message about account recovery without verified email",
-    "message": "Sin un email verificado tu cuenta no es recuperable."
+    "message": "Without a verified email your account is not recoverable."
   },
   "hfv1JL": {
     "description": "Label for dismiss alert button",
-    "message": "Descartar alerta"
+    "message": "Dismiss alert"
   },
   "hllRnT": {
     "description": "Value display for milliseconds",
     "message": "{value,number, ::.00} ms"
   },
-  "hxETKG": {
-    "description": "one of three bullet point items describing the event leaderboards",
-    "message": "<strong>H.EX (10ms):</strong> Para jugadores que usan modificadores de alta precisión, enfocados en timing preciso."
-  },
   "i+E6a3": {
     "description": "Navigation section in footer",
-    "message": "Navegación de pie de página"
+    "message": "Footer navigation"
   },
-  "i3ORY6": {
-    "description": "primary text on a card",
-    "message": "Gana puntos"
+  "i/TsED": {
+    "description": "section text on the homepage",
+    "message": "Ready to start tracking your scores? Get set up now to connect your game and start competing on the leaderboards!"
+  },
+  "i0NYF+": {
+    "description": "EX leaderboard abbreviation",
+    "message": "EX"
+  },
+  "i8w9+X": {
+    "description": "Error message for failed data load",
+    "message": "Failed to load results: {error}"
   },
   "iN/fQj": {
     "description": "Introduction to scoring systems",
-    "message": "Arrow Cloud soporta tres interpretaciones de puntuación paralelas. Los raw judgments (secuencia de offsets y misses) son inmutables; los sistemas de puntuación solo cambian la forma en que esos eventos en bruto se ponderan en un porcentaje y se añaden a un grado."
+    "message": "Arrow Cloud supports three parallel scoring interpretations. Raw judgments (the sequence of offsets and misses) are immutable; scoring systems only change how those raw events are weighted into a percentage and mapped to a grade."
+  },
+  "iPg/Z+": {
+    "description": "Pagination info showing current range",
+    "message": "Showing {start}-{end} of {total}"
   },
   "iQ5NMV": {
     "description": "Step 4 title for summary and instructions",
-    "message": "Resumen e instrucciones"
+    "message": "Summary & Instructions"
   },
   "iXITn8": {
     "description": "Displayed to users waiting to confirm their email address. Button text may be replaced with 'sending...' or 'resend in Xs'",
-    "message": "¿No has recibido el mail?{linebreak}Revisa tu carpeta de spam o <button>haz clic aquí para reenviar</button>"
+    "message": "Didn't receive the email?{linebreak}Check your spam folder or <button>click here to resend</button>"
   },
   "iYUlUC": {
     "description": "section header for the recent scores card",
-    "message": "Puntajes recientes"
+    "message": "Recent Scores"
   },
   "iYr7vn": {
     "description": "button label on the homepage, links to setup help",
-    "message": "Instrucciones de configuración"
+    "message": "Setup Instructions"
   },
   "iZ8ydz": {
     "description": "Label for the player of a score",
-    "message": "Jugador"
+    "message": "Player"
   },
   "iaN1LS": {
     "description": "Label showing the last used date of an API key",
-    "message": "Última vez usado: {lastUsed,date}"
+    "message": "Last used: {lastUsed,date}"
   },
   "iaPSEH": {
     "description": "Navigation item label for leaderboard preferences",
-    "message": "Tablas de clasificación"
+    "message": "Leaderboards"
   },
   "ibF5yl": {
     "description": "OBS instruction step 2",
-    "message": "Pega la URL del widget arriba"
+    "message": "Paste the Widget URL above"
   },
   "ieFeXy": {
     "description": "Error message displayed when pack data fails to load",
-    "message": "Error al cargar datos del pack"
+    "message": "Failed to load pack data"
   },
   "if82ki": {
     "description": "User menu item for logging out",
-    "message": "Cerrar sesión"
+    "message": "Logout"
+  },
+  "injFaU": {
+    "description": "Badge indicating the session is currently active",
+    "message": "Live Session"
   },
   "ioJOJl": {
     "description": "Label for current password input field",
-    "message": "Contraseña actual"
+    "message": "Current Password"
   },
   "iqbsz+": {
     "description": "Label for dismiss passkey setup prompt button",
-    "message": "No por ahora"
+    "message": "Not now"
   },
   "it89I1": {
     "description": "Label showing the API key fingerprint",
@@ -1933,151 +2209,175 @@
   },
   "j6SWIB": {
     "description": "aria label for a group of buttons that toggle between the different leaderboard types",
-    "message": "Visualizar tablas"
+    "message": "Leaderboard Toggle"
+  },
+  "j6cl8r": {
+    "description": "when session ended",
+    "message": "Ended {time}"
+  },
+  "j87Gi0": {
+    "description": "Table header for the join date",
+    "message": "Joined"
   },
   "jFD+sg": {
     "description": "Success message shown when profile is updated",
-    "message": "¡Perfil actualizado con éxito!"
+    "message": "Profile updated successfully!"
+  },
+  "jGmBu3": {
+    "description": "Message when pack leaderboard has no scores",
+    "message": "No scores yet"
   },
   "jIZqAg": {
     "description": "Warning message shown when displaying a new API key",
-    "message": "Esta clave solo será mostrada una vez. Cópiala y guárdala en un lugar seguro."
+    "message": "This key will only be shown once. Copy and store it securely."
   },
   "jMoAT4": {
     "description": "A label for a field of the password reset form",
-    "message": "Confirmar nueva contraseña"
+    "message": "Confirm New Password"
+  },
+  "jna5bk": {
+    "description": "link to view all packs",
+    "message": "View All"
   },
   "js1oVo": {
     "description": "Section title about what Arrow Cloud is not",
-    "message": "Lo que Arrow Cloud NO es"
+    "message": "What Arrow Cloud Is NOT"
   },
   "jsxVw/": {
     "description": "Explanation of installation options",
-    "message": "Ofrecemos una integración completa con ITGMania a través de nuestro tema personalizado, o una alternativa ligera en el módulo Simply Love."
+    "message": "We offer a full integration with ITGMania via our custom theme, or a light-weight alternative drop in Simply Love module."
+  },
+  "k20lzD": {
+    "description": "Blue Shift results page title",
+    "message": "Final Results"
   },
   "kYDZI0": {
     "description": "Button text to navigate back to the home page",
-    "message": "Volver a Inicio"
+    "message": "Back to Home"
   },
   "kYKyoa": {
     "description": "EX feature: precision range",
-    "message": "Recompensa precisión ligeramente más amplia"
+    "message": "Slightly broader precision reward"
   },
   "kebfPM": {
     "description": "Title for the mean absolute error stat on the timing chart",
-    "message": "Error medio absoluto"
+    "message": "Mean absolute error"
   },
   "kgCmwz": {
     "description": "Label for set up passkey button",
-    "message": "Configurar tu clave de acceso"
+    "message": "Set up Passkey"
   },
   "kjF7Lj": {
     "description": "Label showing the creation date of an API key",
-    "message": "Creado el: {created,date}"
+    "message": "Created: {created,date}"
   },
   "kuM6D7": {
     "description": "Error message shown when a play is not found",
-    "message": "Partida no encontrada"
+    "message": "Play not found"
   },
   "l8uwY9": {
     "description": "Label for the rating column",
     "message": "Rating"
   },
+  "lWmuWi": {
+    "description": "empty state for recent scores",
+    "message": "No recent scores available"
+  },
   "lcVOiv": {
     "description": "button label on the homepage",
-    "message": "Ayuda y preguntas frecuentes"
+    "message": "Help & FAQs"
   },
   "lmpJF6": {
     "description": "Button label shown when saving profile changes",
-    "message": "Guardando..."
+    "message": "Saving..."
+  },
+  "lz1Jbz": {
+    "description": "Count of selected plays",
+    "message": "{count} of {max} plays selected"
   },
   "lzqhT9": {
     "description": "Description of the rivals section on the profile page",
-    "message": "Los rivales son otros jugadores a quienes les quieres mantener puesto un ojo, y/o competir con ellos. Los rivales serán destacados y priorizados cuando estés viendo las varias tablas de clasificación."
+    "message": "Rivals are other players you want to keep a close eye on, and/or compete with. Rivals will be highlighted and prioritized when viewing various leaderboards."
   },
   "m4RRvP": {
     "description": "Label for copyable host configuration snippet",
-    "message": "Añadir a AllowedHosts / HttpAllowHosts"
+    "message": "Append to AllowedHosts / HttpAllowHosts"
   },
   "m4U7BZ": {
     "description": "Error message when image loading fails",
-    "message": "Error al cargar imagen"
+    "message": "Failed to load image"
   },
   "mFXNP+": {
     "description": "OBS instruction step 1",
-    "message": "Añade una nueva fuente de navegador en OBS"
+    "message": "Add a new Browser Source in OBS"
   },
   "mOHkCr": {
     "description": "one of our password requirements, displayed in a bulleted list",
-    "message": "Longitud de al menos 6 caracteres"
+    "message": "At least 6 characters long"
+  },
+  "mSiBrQ": {
+    "description": "Label for Friday in the activity heatmap",
+    "message": "Fri"
   },
   "mVwWst": {
     "description": "Description for passkey setup suggestion",
-    "message": "Configura una clave de acceso para inicios de sesión más rápidos y seguros"
+    "message": "Set up a passkey for faster, more secure sign-ins"
+  },
+  "mb1qgo": {
+    "description": "label for the user profile field displaying the number of unique charts they have played",
+    "message": "Charts Played"
   },
   "meazlj": {
     "description": "A placeholder value displayed within an empty input of the password reset form",
-    "message": "Confirma tu nueva contraseña"
+    "message": "Confirm your new password"
   },
   "mmiM0/": {
     "description": "Information about supported image formats",
-    "message": "Formatos soportados: JPEG, PNG, GIF, WebP"
+    "message": "Supported formats: JPEG, PNG, GIF, WebP"
   },
-  "mtGCKz": {
-    "description": "description of event structure",
-    "message": "Cada fase contendrá ~25 charts, abarcando una variedad de dificultades entre 7 y 14. Ten fe en que cada fase te desafiará de distintas maneras a medida que compites en las tablas de clasificación."
+  "ms2BeF": {
+    "description": "welcome message for logged in users",
+    "message": "Welcome back, {name}!"
   },
   "mvXRqN": {
     "description": "Hint shown when user has no scores",
-    "message": "¡Juega algunas canciones para comenzar!"
-  },
-  "n46TSr": {
-    "description": "primary card text set up previously by \"compete across\"",
-    "message": "3 tableros"
+    "message": "Play some songs to get started!"
   },
   "n4o4oJ": {
     "description": "table column header for the recent scores on the event page",
-    "message": "Jugador"
-  },
-  "nEmRDi": {
-    "description": "label for the stat indicating a user's total points earned in an event",
-    "message": "Puntos totales"
-  },
-  "nTaq/y": {
-    "description": "Feature for accepting failed chart attempts",
-    "message": "Las partidas fallidas son bienvenidas"
+    "message": "Player"
   },
   "nWbnaE": {
     "description": "Message displayed when there are no recent scores",
-    "message": "No hay puntuaciones recientes"
-  },
-  "o2nv5R": {
-    "description": "section heading on the homepage",
-    "message": "Dinámicas de la tabla de clasificación"
+    "message": "No recent scores"
   },
   "o7+BG1": {
     "description": "Message shown after a score is successfully deleted",
-    "message": "Puntaje eliminado con éxito"
+    "message": "Score deleted successfully"
   },
   "oGL1Ha": {
     "description": "label for the score a user earned on a particular chart",
-    "message": "Puntaje"
+    "message": "Score"
+  },
+  "oJibSl": {
+    "description": "tab label for recent sessions",
+    "message": "Sessions"
   },
   "oeCoFG": {
     "description": "Section title for installation setup guide",
-    "message": "Guía de configuración"
+    "message": "Setup Guide"
   },
   "oiaphe": {
     "description": "HardEX feature: miss penalty",
-    "message": "Los Greats son equivalentes a un miss"
+    "message": "Greats are equivalent to a miss"
   },
   "oid8be": {
     "description": "section heading for the leaderboard card",
-    "message": "Tabla de clasificación general"
+    "message": "Overall Leaderboard"
   },
   "olipRr": {
     "description": "one item in a bulleted list of effects a ban will have for a user",
-    "message": "Borrar todos sus datos (partidas, API keys, etc.)"
+    "message": "Delete all their data (plays, API keys, etc.)"
   },
   "on6x6P": {
     "description": "A label for a field of the registration form",
@@ -2085,35 +2385,39 @@
   },
   "opIE4F": {
     "description": "Instructions to download theme or module files",
-    "message": "Utiliza los botones de abajo para descargar los archivos necesarios para tu setup."
+    "message": "Use the buttons below to download the required files for your setup."
   },
   "oueHUv": {
     "description": "button label appearing for anonymous users",
-    "message": "Crear cuenta"
+    "message": "Create Account"
   },
   "p4n4Yc": {
     "description": "text on a button to resend a verification email",
-    "message": "Reenviar email de verificación"
+    "message": "Resend Verification Email"
   },
   "pB9pg4": {
     "description": "Label for the last played song section",
-    "message": "Últimas canciones jugadas"
+    "message": "Last Played"
   },
-  "pdMp3j": {
-    "description": "description of leaderboard dynamics on the homepage",
-    "message": "Cada chart vale el mismo número de puntos en general - tu posición en el contenido más fácil en las tablas de clasificación es tan importante como tu posición en el más difícil."
+  "pBUB3k": {
+    "description": "Score column header",
+    "message": "Score"
   },
-  "pdQ9u+": {
-    "description": "section text on the homepage",
-    "message": "¿Estás listo para participar en la competencia? ¡Prepara todo ahora para estar listo para el evento del 5 de diciembre!"
+  "pLlCUm": {
+    "description": "Navigation item description for trophy management",
+    "message": "Arrange and display your earned trophies"
   },
   "pfIZz9": {
     "description": "table column header for the recent scores on the event page",
-    "message": "Puntaje"
+    "message": "Score"
+  },
+  "puPEAC": {
+    "description": "Share session button text",
+    "message": "Share"
   },
   "pveInw": {
     "description": "Description about API keys usage",
-    "message": "Los API keys son usados para conectar tu cliente de juego a nuestros servidores y poder subir puntuaciones."
+    "message": "API Keys are used to connect your game client to our servers to submit scores."
   },
   "q0JHzH": {
     "description": "Page title for the charts page",
@@ -2121,47 +2425,43 @@
   },
   "qC1meP": {
     "description": "Displayed on the primary submit button for the account registration page",
-    "message": "Crear cuenta"
+    "message": "Create Account"
   },
   "qMbYfC": {
     "description": "Table header for the name of a pack",
-    "message": "Nombre del pack"
+    "message": "Pack Name"
   },
   "qORdj/": {
     "description": "Label for new password input field",
-    "message": "Nueva contraseña"
+    "message": "New Password"
   },
   "qYK6Ec": {
     "description": "Summary point about tracking technologies",
-    "message": "No usamos cookies para hacer seguimiento ni tecnologías similares."
+    "message": "We do not use any tracking cookies or similar technologies."
   },
   "qYn7lJ": {
     "description": "Button label for saving the profile",
-    "message": "Guardar perfil"
+    "message": "Save Profile"
   },
   "qbwjLM": {
     "description": "Cancel adding a new passkey button label",
-    "message": "Cancelar"
-  },
-  "qh8IGh": {
-    "description": "label for the stat indicating a user's rank on a single chart",
-    "message": "Clasificación"
-  },
-  "qkpyHk": {
-    "description": "section heading on the homepage",
-    "message": "Sistema de puntos"
+    "message": "Cancel"
   },
   "qoCB1e": {
     "description": "Button label for sending verification email",
-    "message": "Enviando..."
+    "message": "Sending..."
   },
   "qpvO54": {
     "description": "Section header for configuration file paths",
-    "message": "Rutas de configuración"
+    "message": "Configuration Paths"
   },
   "qyoslL": {
     "description": "descriptive text displayed after a successful password reset",
-    "message": "Tu contraseña ha sido restablecida y has iniciado sesión automáticamente."
+    "message": "Your password has been reset and you've been automatically signed in."
+  },
+  "qz9XeG": {
+    "description": "Cancel button",
+    "message": "Cancel"
   },
   "r2gihF": {
     "description": "Alt text for Blue Shift logo",
@@ -2169,87 +2469,103 @@
   },
   "r3HlFt": {
     "description": "Mobile menu header",
-    "message": "Menú"
+    "message": "Menu"
   },
   "rBoPpa": {
     "description": "Displayed when there are no packs available",
-    "message": "No hay packs disponibles"
+    "message": "No packs available"
   },
   "rHQoq4": {
     "description": "Message displayed when there are no charts to show",
-    "message": "No hay charts disponibles."
+    "message": "No charts available."
   },
   "rPy5Tt": {
     "description": "fallback text when we have no credit info for the artist of a song",
-    "message": "Desconocido"
+    "message": "Unknown"
   },
   "rYdDW0": {
     "description": "placeholder value for the text input on the forgot password form",
-    "message": "Dirección de email"
+    "message": "Email address"
   },
   "rbGD0/": {
     "description": "Table header for the date column",
-    "message": "Fecha"
+    "message": "Date"
   },
   "ruTh1W": {
     "description": "displayed on a disabled button with a loading spinner; replaces 'click here to resend'",
-    "message": "enviando..."
+    "message": "sending..."
   },
   "ryU59V": {
     "description": "brief description of the F grade, which is awarded if the lifebar reaches zero during play",
-    "message": "Partida fallida"
+    "message": "Failed Play"
   },
   "s4GvEu": {
     "description": "label on a CTA button sending a user to the help page",
-    "message": "Terminar la configuración y subir una puntuación"
+    "message": "Finish Setup & Submit a Score"
   },
   "s5gLzo": {
     "description": "one item in a bulleted list of effects a ban will have for a user",
-    "message": "Evitar que puedan iniciar sesión"
+    "message": "Prevent them from logging in"
   },
   "sCaEgz": {
     "description": "Grade calculation step 3",
-    "message": "Atado al umbral resuelto por el sistema de prioridad de precisión: HardEX > EX > ITG."
+    "message": "Ties on threshold resolved by system precision priority: HardEX > EX > ITG."
+  },
+  "sKHFB+": {
+    "description": "Fallback for unknown chart title",
+    "message": "Unknown"
   },
   "sL/xaE": {
     "description": "Message displayed when the pack is not found",
-    "message": "Pack no encontrado"
+    "message": "Pack not found"
+  },
+  "sQcEY7": {
+    "description": "checkbox to filter scores to only show rivals",
+    "message": "Show Rivals Only"
   },
   "sU24/r": {
     "description": "Unknown difficulty for difficulty badge/chip",
-    "message": "Desconocido"
+    "message": "Unknown"
   },
   "sWELJA": {
     "description": "The primary button on the login form",
-    "message": "Iniciar sesión"
+    "message": "Sign In"
   },
   "siD2Ie": {
     "description": "Displayed as an error to users while attempting to log in or register",
-    "message": "Falló la verificación del correo. Por favor, inténtalo de nuevo."
+    "message": "Email verification failed. Please try again."
   },
   "stf0NS": {
     "description": "table column header for player within the event",
-    "message": "Jugador"
+    "message": "Player"
   },
   "suj+gY": {
     "description": "Step 3 title for method selection",
-    "message": "Elige tu método de instalación"
+    "message": "Choose Your Installation Method"
   },
   "sxhZC7": {
     "description": "Table header for the popularity of a pack",
-    "message": "Popularidad"
+    "message": "Popularity"
+  },
+  "t29u+f": {
+    "description": "Button text to share a score",
+    "message": "Share"
   },
   "tApE2N": {
     "description": "Label for the chart added date",
-    "message": "Añadido el: {date}"
+    "message": "Added: {date}"
   },
   "tJZWpJ": {
     "description": "Loading indicator text for auth status",
-    "message": "Comprobando estado de inicio de sesión…"
+    "message": "Checking login status…"
+  },
+  "tR3UGU": {
+    "description": "Title for the plays section",
+    "message": "Plays"
   },
   "tmuyhy": {
     "description": "Alt text for profile avatar image",
-    "message": "Perfil de {alias}"
+    "message": "{alias}'s profile"
   },
   "tn3SH1": {
     "description": "stat indicating a user's overall rank in an event",
@@ -2257,119 +2573,163 @@
   },
   "uC7RSq": {
     "description": "displayed on the user profile page if the user was not found",
-    "message": "Usuario no encontrado"
+    "message": "User not found"
   },
   "uLqMrt": {
     "description": "Placeholder for new password input field",
-    "message": "Introduzca una nueva contraseña"
-  },
-  "uQSgr8": {
-    "description": "secondary text on a card",
-    "message": "Compite"
+    "message": "Enter new password"
   },
   "uUa2U9": {
     "description": "Error message when passkey name is empty",
-    "message": "Por favor, introduce un nombre para tu clave de acceso"
+    "message": "Please enter a name for your passkey"
   },
-  "uc7Ibp": {
-    "description": "secondary text on event description cards",
-    "message": "Comienza el 5 de diciembre"
+  "up/yoE": {
+    "description": "table column header for player rank",
+    "message": "Rank"
   },
   "upYb9D": {
     "description": "label for an input field specifying the maximum block level to search for (prefer very short length)",
-    "message": "Máximo"
+    "message": "Max"
+  },
+  "urteJe": {
+    "description": "Label for primary leaderboard",
+    "message": "Primary"
+  },
+  "uui9sw": {
+    "description": "empty state for recent packs",
+    "message": "No packs available"
   },
   "v0nWNk": {
     "description": "Button label shown when profile is being saved",
-    "message": "Guardando..."
+    "message": "Saving..."
   },
   "v9EcKC": {
     "description": "Fallback artist name when none is provided",
-    "message": "Artista desconocido"
+    "message": "Unknown Artist"
+  },
+  "vGgqg5": {
+    "description": "Table header for the country",
+    "message": "Country"
+  },
+  "vLwO8K": {
+    "description": "Title for the trophy case section",
+    "message": "Trophy Case"
   },
   "vQNNhl": {
     "description": "stat indicating total number of participants in an event",
-    "message": "de {total,number}"
+    "message": "of {total,number}"
   },
   "ve/RaJ": {
     "description": "Placeholder for alias input field",
-    "message": "Ingresa tu alias"
+    "message": "Enter your alias"
+  },
+  "vgg5G0": {
+    "description": "ITG scoring system name",
+    "message": "ITG"
   },
   "vgnvnd": {
     "description": "Error message shown when failing to load a play",
-    "message": "Error al cargar la partida"
+    "message": "Failed to load play"
   },
   "viVXqx": {
     "description": "Alt text for the Arrow Cloud logo in the navigation bar",
-    "message": "Logo de Arrow Cloud"
+    "message": "Arrow Cloud Logo"
   },
   "vpARAu": {
     "description": "Confirmation message for deleting a passkey",
-    "message": "¿Estás seguro de que deseas eliminar esta clave de acceso? Esta acción no se puede deshacer."
+    "message": "Are you sure you want to delete this passkey? This action cannot be undone."
   },
-  "vwT2r7": {
-    "description": "displayed as a song's title when data is missing",
-    "message": "Desconocido"
+  "vqkjSf": {
+    "description": "heading for the user activity heatmap section",
+    "message": "Activity"
   },
   "vzcP0o": {
     "description": "one of our password requirements, displayed in a bulleted list",
-    "message": "Ambas contraseñas deben coincidir"
+    "message": "Both passwords must match"
   },
   "w2zB1o": {
     "description": "header displayed on the forgot password page after a successful submission",
-    "message": "Revisa tu email"
+    "message": "Check Your Email"
   },
   "w69Aiw": {
     "description": "Label for progress",
-    "message": "Subiendo..."
+    "message": "Uploading..."
+  },
+  "wGZZ+M": {
+    "description": "Description shown when user has no trophies",
+    "message": "Unlocked trophies will display here."
+  },
+  "wIu1Zm": {
+    "description": "Displayed when a chart has no judgment data available",
+    "message": "Chart Not Passed"
   },
   "wK4IU8": {
     "description": "Provides the option to switch from the login page to the registration page",
-    "message": "¿No tienes una cuenta? <createLink>Crea una aquí</createLink>"
+    "message": "Don't have an account? <createLink>Create one here</createLink>"
   },
   "wMXZJe": {
     "description": "Section heading for grade calculation",
-    "message": "Cómo se calculan los grados"
+    "message": "How Grade Is Computed"
   },
   "wMsd+n": {
     "description": "Instructional text for selecting preferred leaderboard styles",
-    "message": "Elige qué estilo de tabla de clasificación preferirías ver en el juego. Las tablas del evento siempre serán mostradas."
+    "message": "Choose which leaderboard styles you would prefer to see in game. Event leaderboards will always be shown."
   },
   "wVs4V5": {
     "description": "fallback case for the event leaderboard table",
-    "message": "No hay datos de tabla de clasificación disponibles"
+    "message": "No leaderboard data available"
+  },
+  "waqPQd": {
+    "description": "Y-axis label for difficulty chart",
+    "message": "Plays"
   },
   "wgc2MU": {
     "description": "label for a button on the password reset page, after a successful submission",
-    "message": "Volver a Iniciar sesión"
+    "message": "Back to Sign In"
   },
   "wkKwRk": {
     "description": "A label for a field of the login form",
-    "message": "Contraseña"
+    "message": "Password"
+  },
+  "wl0L1c": {
+    "description": "Link text to view Blue Shift results",
+    "message": "View Blue Shift Results"
   },
   "wun7o3": {
     "description": "A label on a button, on the login screen",
-    "message": "¿Olvidaste tu contraseña?"
+    "message": "Forgot password?"
   },
   "wuzSwY": {
     "description": "Step 2 title for OS selection",
-    "message": "Elige tu sistema operativo"
+    "message": "Choose Your Operating System"
   },
   "wvZ6ln": {
     "description": "Placeholder text for the search input on the charts page",
-    "message": "Buscar charts..."
+    "message": "Search charts..."
   },
-  "wzpW2W": {
-    "description": "description of leaderboards on the homepage",
-    "message": "Compite en tres tablas de clasificación separadas diseñadas para probar diferentes aspectos de habilidad:"
+  "x7nBF5": {
+    "description": "table header for score column",
+    "message": "Score"
   },
   "x8tDS+": {
     "description": "Placeholder option for the country select field",
-    "message": "Selecciona un país"
+    "message": "Select a country"
+  },
+  "xGl07L": {
+    "description": "Title for share dialog",
+    "message": "Share Play"
+  },
+  "xH7Yfe": {
+    "description": "Button label while saving trophy order",
+    "message": "Saving..."
+  },
+  "xJMUKT": {
+    "description": "Out of total participants",
+    "message": "of {total}"
   },
   "xJhO/K": {
     "description": "Mobile menu item for help",
-    "message": "Ayuda"
+    "message": "Help"
   },
   "xM1sJc": {
     "description": "Title for the judgments section on the play page",
@@ -2377,23 +2737,31 @@
   },
   "xe01xK": {
     "description": "a live status indicator displayed if email verification failed",
-    "message": "Verificación fallida"
+    "message": "Verification Failed"
   },
   "xfRlae": {
     "description": "table column header label for played charts on the user profile page, this column displays the date played",
-    "message": "Fecha"
+    "message": "Date"
+  },
+  "xjRuiz": {
+    "description": "Label for the greater end of the activity heatmap legend",
+    "message": "More"
   },
   "xl7GRC": {
     "description": "Message displayed when no songs match the search query",
-    "message": "No se han encontrado canciones"
+    "message": "No songs found"
   },
   "xqsuVH": {
     "description": "Message shown when no timing stats are available for a play",
-    "message": "No hay estadísticas de timing disponibles."
+    "message": "No timing stats available."
   },
-  "y3KL2j": {
-    "description": "label indicating a user hasn't participated in an event",
-    "message": "No ha participado"
+  "y3vXzI": {
+    "description": "Message when no pack leaderboard data exists",
+    "message": "No leaderboard data available"
+  },
+  "y67Nsv": {
+    "description": "Title for the difficulty distribution chart",
+    "message": "Difficulty Distribution"
   },
   "y8RU5Y": {
     "description": "ITG scoring system name",
@@ -2401,38 +2769,62 @@
   },
   "yBJ1AB": {
     "description": "Title for the add new passkey form",
-    "message": "Añadir nueva clave de acceso"
-  },
-  "yBsO+y": {
-    "description": "Subtext indicating the judgments are from the selected leaderboard",
-    "message": "Desde la tabla de clasificación seleccionada"
+    "message": "Add New Passkey"
   },
   "yM3blP": {
     "description": "Mobile menu section for browsing content",
-    "message": "Menú"
+    "message": "Browse"
   },
   "yMAjYZ": {
     "description": "Error message shown when loading preferred leaderboards fails",
-    "message": "Error al cargar preferencias"
+    "message": "Failed to load preferences"
   },
   "yMETLb": {
     "description": "Navigation item label for profile picture settings",
-    "message": "Imagen"
+    "message": "Picture"
   },
   "ybp4xd": {
     "description": "alt text for the image representing an earned grade",
-    "message": "Grado {grade}"
+    "message": "{grade} grade"
   },
-  "yqWLeE": {
-    "description": "secondary header on the homepage",
-    "message": "Blue Shift"
+  "yhBoww": {
+    "description": "Text shown after copying",
+    "message": "Copied!"
+  },
+  "ypbD+D": {
+    "description": "Label for secondary leaderboard",
+    "message": "Secondary"
   },
   "z+1C0a": {
     "description": "text displayed on a button to return to the site homepage",
-    "message": "Ir a Inicio"
+    "message": "Go to Home"
+  },
+  "zA4z8x": {
+    "description": "Error message shown when saving trophy order fails",
+    "message": "Failed to save trophy order"
+  },
+  "zBg9VK": {
+    "description": "Label for the lesser end of the activity heatmap legend",
+    "message": "Less"
+  },
+  "zEaIY3": {
+    "description": "Label for the timezone select field",
+    "message": "Timezone"
+  },
+  "zPreo/": {
+    "description": "Grade column header",
+    "message": "Grade"
+  },
+  "zXp6Z2": {
+    "description": "Empty state message",
+    "message": "No data available"
+  },
+  "zb/rKC": {
+    "description": "Title for the users page",
+    "message": "Users"
   },
   "zhxMFg": {
     "description": "Label for copyable example configuration line",
-    "message": "Línea completa de ejemplo"
+    "message": "Example complete line"
   }
 }
