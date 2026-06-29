@@ -8,6 +8,7 @@ import {
   updateProfile as apiUpdateProfile,
 } from '../services/api';
 import { authenticateWithPasskey } from '../services/passkey';
+import { getStoredToken, storeSession, storeUser, clearSession } from '../services/authStorage';
 import { UpdateProfileRequest } from '../types/api';
 import { User, AuthResponse } from '../schemas/apiSchemas';
 import { FormattedMessage } from 'react-intl';
@@ -17,7 +18,7 @@ interface AuthContextType {
   token: string | null;
   permissions: string[];
   login: (email: string, password: string, rememberMe?: boolean) => Promise<AuthResponse>;
-  loginWithPasskey: () => Promise<AuthResponse>;
+  loginWithPasskey: (options?: { suppressError?: boolean }) => Promise<AuthResponse>;
   register: (email: string, alias: string, password: string) => Promise<AuthResponse>;
   verifyEmail: (token: string) => Promise<AuthResponse>;
   resendVerificationEmail: () => Promise<void>;
@@ -61,8 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setToken(null);
     setPermissions([]);
     setError(null);
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    clearSession();
   }, []);
 
   const fetchUserData = useCallback(async (): Promise<void> => {
@@ -70,7 +70,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const data = await apiGetUser();
       setUser(data.user);
       setPermissions(data.user.permissions ?? []);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      storeUser(data.user);
     } catch (error) {
       console.error('Failed to fetch user:', error);
       logout();
@@ -100,7 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   useEffect(() => {
     const initializeAuth = async () => {
-      const storedToken = localStorage.getItem('authToken');
+      const storedToken = getStoredToken();
 
       if (storedToken) {
         setToken(storedToken);
@@ -141,8 +141,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(data.user);
       setPermissions(data.permissions ?? []);
 
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      // Persist in localStorage when "remember me" is set, otherwise sessionStorage (cleared on tab close).
+      storeSession(data.token, data.user, rememberMe);
       // Immediately hydrate full user (includes rivalUserIds, prefs, permissions)
       try {
         await fetchUserData();
@@ -166,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const loginWithPasskey = async (): Promise<AuthResponse> => {
+  const loginWithPasskey = async (options?: { suppressError?: boolean }): Promise<AuthResponse> => {
     setIsLoading(true);
     setError(null);
 
@@ -182,8 +182,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(data.user);
       setPermissions(data.permissions ?? []);
 
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      storeSession(data.token, data.user, true);
       // Hydrate full user after passkey login
       try {
         await fetchUserData();
@@ -193,7 +192,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       return data;
     } catch (err: any) {
-      setError(err.message || 'Passkey login failed. Please try again.');
+      if (!options?.suppressError) {
+        setError(err.message || 'Passkey login failed. Please try again.');
+      }
       throw err;
     } finally {
       setIsLoading(false);
@@ -211,8 +212,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(data.user);
       setPermissions(data.permissions ?? []);
 
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      storeSession(data.token, data.user, true);
       // Hydrate full user after registration
       try {
         await fetchUserData();
@@ -247,8 +247,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(data.user);
       setPermissions(data.permissions ?? []);
 
-      localStorage.setItem('authToken', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
+      storeSession(data.token, data.user, true);
       // Hydrate full user after email verification
       try {
         await fetchUserData();
@@ -300,7 +299,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Update user in state and localStorage
       setUser(response.user);
-      localStorage.setItem('user', JSON.stringify(response.user));
+      storeUser(response.user);
 
       return response.user;
     } catch (err) {
@@ -319,15 +318,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const updateUser = useCallback((userData: User): void => {
     setUser(userData);
-    localStorage.setItem('user', JSON.stringify(userData));
+    storeUser(userData);
   }, []);
 
   const setAuthFromResponse = (authResponse: AuthResponse): void => {
     setToken(authResponse.token);
     setUser(authResponse.user);
     setPermissions(authResponse.permissions ?? []);
-    localStorage.setItem('authToken', authResponse.token);
-    localStorage.setItem('user', JSON.stringify(authResponse.user));
+    storeSession(authResponse.token, authResponse.user, true);
     // Hydrate in the background for flows that call this directly (e.g., reset password)
     fetchUserData().catch((e) => console.warn('Post-auth hydrate failed:', e));
   };

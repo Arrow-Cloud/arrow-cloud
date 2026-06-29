@@ -148,7 +148,7 @@ interface LoginPageProps {
 export const LoginPage: React.FC<LoginPageProps> = ({ eventMode = false }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [showPasskeySetup, setShowPasskeySetup] = useState(false);
   const [preventRedirect, setPreventRedirect] = useState(false);
   const navigate = useNavigate();
@@ -320,7 +320,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ eventMode = false }) => {
                   <LoginSubmitButton isLoading={isLoading} />
                 </form>
 
-                {!eventMode && <PasskeyButton onSuccess={() => navigate(from, { replace: true })} disabled={isLoading} className="mb-4" />}
+                {!eventMode && <PasskeyButton onSuccess={() => navigate(from, { replace: true })} disabled={isLoading} autoPrompt className="mb-4" />}
 
                 <div className="divider text-base-content/50">
                   <FormattedMessage

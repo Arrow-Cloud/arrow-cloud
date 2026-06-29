@@ -1,5 +1,6 @@
 import React from 'react';
 import { Swords, User as UserIcon } from 'lucide-react';
+import { getStoredUserJson } from '../services/authStorage';
 
 export interface HighlightInfo {
   isSelf: boolean;
@@ -12,12 +13,12 @@ export interface HighlightInfo {
 }
 
 /**
- * Safely retrieve the stored authenticated user (and rivals) from localStorage.
+ * Safely retrieve the stored authenticated user (and rivals) from the active session store.
  */
 export function getStoredUser(): { id?: string; rivalUserIds?: string[] } | null {
   if (typeof window === 'undefined') return null;
   try {
-    const json = localStorage.getItem('user');
+    const json = getStoredUserJson();
     if (!json) return null;
     return JSON.parse(json);
   } catch {
