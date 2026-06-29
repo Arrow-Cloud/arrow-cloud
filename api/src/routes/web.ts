@@ -1,5 +1,6 @@
 import {
   login,
+  renewToken,
   register,
   verifyEmail,
   resendVerificationEmail,
@@ -49,6 +50,12 @@ export const webRoutes: Routes = {
     POST: {
       handler: login,
       requiresAuth: false,
+    },
+  },
+  '/auth/renew': {
+    POST: {
+      handler: renewToken,
+      requiresAuth: true,
     },
   },
   '/register': {

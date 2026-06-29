@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, JSX } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, ReactNode, useCallback, JSX } from 'react';
 import {
   login as apiLogin,
   register as apiRegister,
@@ -6,9 +6,10 @@ import {
   resendVerificationEmail as apiResendVerificationEmail,
   getUser as apiGetUser,
   updateProfile as apiUpdateProfile,
+  renewToken as apiRenewToken,
 } from '../services/api';
 import { authenticateWithPasskey } from '../services/passkey';
-import { getStoredToken, storeSession, storeUser, clearSession } from '../services/authStorage';
+import { getStoredToken, storeSession, storeUser, storeToken, clearSession, isPersistentSession, shouldRenewToken } from '../services/authStorage';
 import { UpdateProfileRequest } from '../types/api';
 import { User, AuthResponse } from '../schemas/apiSchemas';
 import { FormattedMessage } from 'react-intl';
@@ -129,6 +130,48 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       window.removeEventListener('auth:logout', handleLogout);
     };
   }, [fetchUserData, logout]);
+
+  const isRenewingRef = useRef(false);
+
+  const renewSessionIfNeeded = useCallback(async () => {
+    const current = getStoredToken();
+    if (!current || !shouldRenewToken(current) || isRenewingRef.current) {
+      return;
+    }
+
+    isRenewingRef.current = true;
+    try {
+      // Preserve the session's persistence (localStorage vs sessionStorage) so the renewed token keeps the same lifetime.
+      const { token: fresh, permissions: freshPermissions } = await apiRenewToken(isPersistentSession());
+      storeToken(fresh);
+      setToken(fresh);
+      if (freshPermissions) {
+        setPermissions(freshPermissions);
+      }
+    } catch (e) {
+      // Non-fatal: a truly expired token is handled by the 401 flow on the next request.
+      console.warn('Token renewal failed:', e);
+    } finally {
+      isRenewingRef.current = false;
+    }
+  }, []);
+
+  // Activity-based session renewal: extend the token on app load and whenever the
+  // tab becomes visible again (covers long-lived sessions that never fully reload).
+  useEffect(() => {
+    if (!user) return;
+
+    renewSessionIfNeeded();
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') {
+        renewSessionIfNeeded();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => document.removeEventListener('visibilitychange', handleVisibility);
+  }, [user, renewSessionIfNeeded]);
 
   const login = async (email: string, password: string, rememberMe: boolean = true): Promise<AuthResponse> => {
     setIsLoading(true);

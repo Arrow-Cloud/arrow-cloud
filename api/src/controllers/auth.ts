@@ -33,6 +33,11 @@ const VerifyEmailRequestSchema = z.object({
   token: z.string().min(1, 'Token is required'),
 });
 
+const RenewTokenSchema = z.object({
+  // Mirrors the "remember me" choice so the renewed token keeps the same lifetime.
+  rememberMe: z.boolean().optional().default(true),
+});
+
 const RequestPasswordResetSchema = z.object({
   email: z.string().email('Invalid email format'),
 });
@@ -159,6 +164,34 @@ export const login = async (event: APIGatewayProxyEvent, prisma: PrismaClient): 
     return respond(200, response);
   } catch (error) {
     console.error('Login error:', error);
+    return internalServerErrorResponse();
+  }
+};
+
+/**
+ * Issue a fresh JWT for an already-authenticated user. Used by the client to
+ * extend an active session (activity-based renewal) without forcing a re-login.
+ */
+export const renewToken = async (event: AuthenticatedEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> => {
+  try {
+    let rememberMe = true;
+    if (event.body) {
+      const validationResult = RenewTokenSchema.safeParse(JSON.parse(event.body));
+      if (!validationResult.success) {
+        return respond(422, {
+          error: 'Validation failed',
+          issues: validationResult.error?.issues,
+        });
+      }
+      rememberMe = validationResult.data.rememberMe;
+    }
+
+    const token = await generateJwtToken(event.user.id, event.user.email, rememberMe);
+    const permissions = await resolveUserPermissions(prisma, event.user.id);
+
+    return respond(200, { token, permissions });
+  } catch (error) {
+    console.error('Token renewal error:', error);
     return internalServerErrorResponse();
   }
 };

@@ -14,6 +14,7 @@ import {
   authResponseSchema,
   updateProfileResponseSchema,
   passkeysResponseSchema,
+  renewTokenResponseSchema,
   successResponseSchema,
   listPacksResponseSchema,
   listUsersResponseSchema,
@@ -138,6 +139,11 @@ export const verifyEmail = async (data: { token: string }): Promise<ValidatedAut
 
 export const resendVerificationEmail = async (): Promise<void> => {
   await api.post('/resend-verification');
+};
+
+export const renewToken = async (rememberMe: boolean): Promise<{ token: string; permissions?: string[] }> => {
+  const response = await api.post('/auth/renew', { rememberMe });
+  return validateResponse(renewTokenResponseSchema, response.data, '/auth/renew');
 };
 
 export const getUser = async (): Promise<GetUserResponse> => {
