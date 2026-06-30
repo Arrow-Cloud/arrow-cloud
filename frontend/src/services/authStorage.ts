@@ -39,6 +39,39 @@ export const storeUser = (user: unknown): void => {
   activeStore().setItem(USER_KEY, JSON.stringify(user));
 };
 
+/** Replace only the token, in whichever store currently holds the session. */
+export const storeToken = (token: string): void => {
+  activeStore().setItem(TOKEN_KEY, token);
+};
+
+/** Whether the active session is persistent (localStorage / "remember me") vs tab-scoped (sessionStorage). */
+export const isPersistentSession = (): boolean => localStorage.getItem(TOKEN_KEY) !== null;
+
+const decodeJwt = (token: string): { iat?: number; exp?: number } | null => {
+  try {
+    const payload = token.split('.')[1];
+    if (!payload) return null;
+    const json = atob(payload.replace(/-/g, '+').replace(/_/g, '/'));
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+};
+
+/**
+ * Whether a token is past the halfway point of its lifetime (and not yet expired),
+ * i.e. worth renewing. Self-scaling: a 30d token renews after 15d, a 12h token after 6h.
+ */
+export const shouldRenewToken = (token: string): boolean => {
+  const claims = decodeJwt(token);
+  if (!claims?.iat || !claims?.exp) return false;
+  const nowSec = Date.now() / 1000;
+  if (nowSec >= claims.exp) return false; // already expired — let the normal 401 flow handle it
+  const lifetime = claims.exp - claims.iat;
+  const elapsed = nowSec - claims.iat;
+  return elapsed >= lifetime / 2;
+};
+
 export const clearSession = (): void => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);

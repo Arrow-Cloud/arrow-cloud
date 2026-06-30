@@ -27,6 +27,11 @@ export const authResponseSchema = z.object({
   permissions: z.array(z.string()).optional(),
 });
 
+export const renewTokenResponseSchema = z.object({
+  token: z.string(),
+  permissions: z.array(z.string()).optional(),
+});
+
 export const getUserResponseSchema = z.object({
   user: userSchema.extend({
     preferredLeaderboards: z.array(z.number()).optional(),
