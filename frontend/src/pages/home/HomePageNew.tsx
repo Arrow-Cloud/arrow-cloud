@@ -16,7 +16,15 @@ import {
 } from '../../services/api';
 import { type PackListItem, type UserRecentPlay } from '../../schemas/apiSchemas';
 
-import { WelcomeBackCard, AboutCard, UserRecentScoresCard, GlobalActivityCard, RecentPacksCard, SetupAndSupportCards } from './components';
+import {
+  WelcomeBackCard,
+  AboutCard,
+  UserRecentScoresCard,
+  GlobalActivityCard,
+  RecentPacksCard,
+  SetupAndSupportCards,
+  NewPackLeaderboardsCard,
+} from './components';
 
 const PAGE_SIZE = 10;
 const MAX_PAGES = 10;
@@ -199,6 +207,9 @@ export const HomePageNew: React.FC = () => {
 
             {/* About Card - Only show for logged out users */}
             {!user && <AboutCard />}
+
+            {/* New pack leaderboards announcement — expires 2026-07-14 */}
+            <NewPackLeaderboardsCard />
 
             {/* User's Own Recent Scores Card - Only show for logged in users */}
             {user && (
