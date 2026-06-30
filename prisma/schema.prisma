@@ -241,8 +241,9 @@ model SimfileChart {
   description String?
   difficulty   String?  // beginner, easy, medium, hard, challenge, edit
   meter       Int?     // difficulty rating from simfile
-  credit      String?  // stepartist from simfile
-  simfile     Simfile  @relation(fields: [simfileId], references: [id], onDelete: Cascade)
+  credit         String?  // stepartist from simfile
+  cmodIneligible Boolean  @default(false)
+  simfile        Simfile  @relation(fields: [simfileId], references: [id], onDelete: Cascade)
   chart       Chart    @relation(fields: [chartHash], references: [hash], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt

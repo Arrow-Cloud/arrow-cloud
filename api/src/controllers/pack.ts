@@ -9,6 +9,7 @@ import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 const s3Client = new S3Client();
 import { resolveChartBanner } from '../utils/chart-banner';
 import { GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID, GLOBAL_HARD_EX_LEADERBOARD_ID } from '../utils/leaderboard';
+import { ELIGIBLE_PACK_IDS } from '../utils/pack-leaderboard';
 
 // Query parameter schemas for validation
 const ListPacksQuerySchema = z.object({
@@ -26,6 +27,10 @@ const ListPacksQuerySchema = z.object({
 
   // Filtering
   search: z.string().optional(), // Search in pack name
+  eligibleOnly: z
+    .string()
+    .optional()
+    .transform((v) => v === 'true'),
 
   // Ordering
   orderBy: z.enum(['name', 'createdAt', 'updatedAt', 'simfileCount', 'popularity']).optional().default('popularity'),
@@ -65,7 +70,7 @@ export async function listPacks(event: ExtendedAPIGatewayProxyEvent, prisma: Pri
     const queryParams = event.queryStringParameters || {};
     const validatedQuery = ListPacksQuerySchema.parse(queryParams);
 
-    const { page, limit, search, orderBy, orderDirection } = validatedQuery;
+    const { page, limit, search, eligibleOnly, orderBy, orderDirection } = validatedQuery;
     const skip = (page - 1) * limit;
 
     // Build where clause for filtering
@@ -75,6 +80,9 @@ export async function listPacks(event: ExtendedAPIGatewayProxyEvent, prisma: Pri
         contains: search,
         mode: 'insensitive', // Case-insensitive search
       };
+    }
+    if (eligibleOnly) {
+      where.id = { in: ELIGIBLE_PACK_IDS };
     }
 
     // Build orderBy clause

@@ -1,5 +1,17 @@
 # Arrow Cloud Frontend
 
+## Environment / Build Setup
+
+Vite bakes `VITE_*` variables into the bundle at **build time**. Create a `.env.production` (gitignored) from `.env.example` before running `npm run build` for a production deployment:
+
+```
+VITE_API_BASE_URL=https://api.arrowcloud.dance
+VITE_SHARE_SERVICE_URL=https://share.arrowcloud.dance
+VITE_WEBSOCKET_URL=wss://<id>.execute-api.<region>.amazonaws.com/prod
+```
+
+The WebSocket URL comes from the `WebSocketApiUrl` CDK stack output (`ApiStack`). Without it, the streamer widget renders correctly but won't receive live score-refresh events.
+
 ## Localization
 
 We use `react-intl` for localization and Crowdin as a TMS.

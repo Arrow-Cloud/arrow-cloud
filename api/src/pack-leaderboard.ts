@@ -2,13 +2,9 @@ import type { SQSEvent, SQSHandler, SQSBatchResponse } from 'aws-lambda';
 import { PrismaClient } from '../prisma/generated/client';
 import { ScoreSubmissionEvent, EVENT_TYPES } from './utils/events';
 import { getDatabaseUrl } from './utils/secrets';
-import { calculatePackLeaderboards, type PackLeaderboardOutput } from './utils/pack-leaderboard';
+import { calculatePackLeaderboards, type PackLeaderboardOutput, ELIGIBLE_PACK_IDS } from './utils/pack-leaderboard';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-
-// ---------------------------------------------------------------------------
-// Hard-coded eligible pack IDs — only these packs get leaderboards computed.
-// ---------------------------------------------------------------------------
-const ELIGIBLE_PACK_IDS: number[] = [131];
+import { sendToUser } from './services/websocket';
 
 let prisma: PrismaClient | undefined;
 const s3Client = new S3Client();
@@ -88,6 +84,9 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
 
       const s3Url = await uploadPackLeaderboard(packId, result);
       console.log(`Pack ${packId} leaderboard uploaded to ${s3Url}`);
+      await sendToUser(userId, { type: 'refresh', data: { userId, reason: 'Pack leaderboard updated', packId, timestamp: new Date().toISOString() } }).catch(
+        (err) => console.error(`[WebSocket] Failed to notify user ${userId} for pack ${packId}:`, err),
+      );
     } catch (error) {
       console.error(`Failed to calculate/upload leaderboard for pack ${packId}:`, error);
       throw error; // Let it bubble up so the SQS message is retried

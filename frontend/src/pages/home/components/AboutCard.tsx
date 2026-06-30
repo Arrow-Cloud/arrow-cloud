@@ -27,7 +27,7 @@ export const AboutCard: React.FC = () => {
             </p>
           </div>
 
-          <div className="pt-4">
+          <div className="pt-3">
             <div className="flex flex-wrap gap-4 justify-center">
               <Link
                 to="/register"
