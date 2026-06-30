@@ -1112,51 +1112,53 @@ export type SessionPlay = z.infer<typeof sessionPlaySchema>;
 export type SessionDetails = z.infer<typeof sessionDetailsSchema>;
 
 // Widget schemas
-export const widgetLeaderboardEntrySchema = z.object({
-  rank: z.number(),
-  alias: z.string(),
-  points: z.number(),
-  profileImageUrl: z.string().nullable(),
-  chartsPlayed: z.number(),
-  isSelf: z.boolean(),
-  isRival: z.boolean(),
+export const widgetUserStatsSchema = z
+  .object({
+    totalPlays: z.number().optional(),
+    chartsPlayed: z.number().optional(),
+    stepsHit: z.number().optional(),
+    quads: z.number().optional(),
+    quints: z.number().optional(),
+    hexes: z.number().optional(),
+  })
+  .nullable()
+  .optional();
+
+export const widgetRecentPlaySchema = z.object({
+  playId: z.number().optional(),
+  chart: z.object({
+    hash: z.string(),
+    title: z.string().nullable(),
+    artist: z.string().nullable(),
+    bannerUrl: z.string().nullable().optional(),
+    mdBannerUrl: z.string().nullable().optional(),
+    smBannerUrl: z.string().nullable().optional(),
+    bannerVariants: bannerVariantsSchema,
+    stepsType: z.string().nullable(),
+    difficulty: z.string().nullable(),
+    meter: z.number().nullable(),
+  }),
+  leaderboards: z.array(
+    z.object({
+      leaderboard: z.string(),
+      data: z.object({
+        score: z.string(),
+        grade: z.string().optional(),
+      }),
+    }),
+  ),
+  createdAt: z.union([z.string(), z.date()]),
 });
 
-export const widgetUserStatsSchema = z.object({
+export const widgetPackLeaderboardEntrySchema = z.object({
   rank: z.number(),
-  totalPoints: z.number(),
-  chartsPlayed: z.number(),
+  totalScore: z.number(),
   totalParticipants: z.number(),
 });
 
-export const widgetLeaderboardDataSchema = z.object({
-  stats: widgetUserStatsSchema,
-  entries: z.array(widgetLeaderboardEntrySchema),
-});
-
-export const widgetLastPlayedChartSchema = z.object({
-  title: z.string(),
-  artist: z.string(),
-  bannerUrl: z.string(),
-  mdBannerUrl: z.string().nullable().optional(),
-  smBannerUrl: z.string().nullable().optional(),
-  bannerVariants: bannerVariantsSchema,
-  hash: z.string(),
-  difficulty: z.string(),
-  meter: z.number().nullable(),
-});
-
-export const widgetLastPlayedScoreSchema = z.object({
-  lastScore: z.object({
-    score: z.number(),
-    grade: z.string(),
-  }),
-  pbScore: z.object({
-    score: z.number(),
-    grade: z.string(),
-    rank: z.number(),
-    totalPlayers: z.number(),
-  }),
+export const widgetPackLeaderboardSchema = z.object({
+  packName: z.string(),
+  leaderboards: z.record(z.string(), widgetPackLeaderboardEntrySchema),
 });
 
 export const widgetDataResponseSchema = z.object({
@@ -1165,32 +1167,14 @@ export const widgetDataResponseSchema = z.object({
     alias: z.string(),
     profileImageUrl: z.string().nullable(),
   }),
-  leaderboards: z
-    .object({
-      HardEX: widgetLeaderboardDataSchema,
-      EX: widgetLeaderboardDataSchema,
-      ITG: widgetLeaderboardDataSchema,
-    })
-    .optional(),
-  lastPlayed: z
-    .object({
-      chart: widgetLastPlayedChartSchema,
-      scores: z.object({
-        HardEX: widgetLastPlayedScoreSchema,
-        EX: widgetLastPlayedScoreSchema,
-        ITG: widgetLastPlayedScoreSchema,
-      }),
-    })
-    .nullable()
-    .optional(),
+  recentPlays: z.array(widgetRecentPlaySchema).optional(),
+  packLeaderboards: z.record(z.string(), widgetPackLeaderboardSchema).optional(),
 });
 
-export type WidgetLeaderboardEntry = z.infer<typeof widgetLeaderboardEntrySchema>;
-export type WidgetUserStats = z.infer<typeof widgetUserStatsSchema>;
-export type WidgetLeaderboardData = z.infer<typeof widgetLeaderboardDataSchema>;
-export type WidgetLastPlayedChart = z.infer<typeof widgetLastPlayedChartSchema>;
-export type WidgetLastPlayedScore = z.infer<typeof widgetLastPlayedScoreSchema>;
 export type WidgetDataResponse = z.infer<typeof widgetDataResponseSchema>;
+export type WidgetRecentPlay = z.infer<typeof widgetRecentPlaySchema>;
+export type WidgetPackLeaderboard = z.infer<typeof widgetPackLeaderboardSchema>;
+export type WidgetPackLeaderboardEntry = z.infer<typeof widgetPackLeaderboardEntrySchema>;
 
 // ----- Notification schemas -----
 

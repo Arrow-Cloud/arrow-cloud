@@ -12,7 +12,7 @@ import { publishScoreSubmissionEvent, EVENT_TYPES } from '../utils/events';
 import { GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID, GLOBAL_HARD_EX_LEADERBOARD_ID } from '../utils/leaderboard';
 import { EventRegistry, EventLeaderboardResponse } from '../utils/events/base';
 import { EventLeaderboardService } from '../services/eventLeaderboards';
-import { notifyWidgetRefresh } from '../utils/websocket';
+import { sendToUser } from '../services/websocket';
 import { resolveChartBanner } from '../utils/chart-banner';
 import { parseLocalDateToUTC } from '../utils/date';
 
@@ -833,16 +833,12 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
       ]);
 
       // Send immediate WebSocket notification for this user's widgets
-      const WEBSOCKET_API_URL = process.env.WEBSOCKET_API_URL;
-      const CONNECTIONS_TABLE_NAME = process.env.CONNECTIONS_TABLE_NAME || 'arrow-cloud-websocket-connections';
-      if (WEBSOCKET_API_URL) {
-        try {
-          await notifyWidgetRefresh(WEBSOCKET_API_URL, CONNECTIONS_TABLE_NAME, user.id, 'New score submitted');
-          console.log(`[WebSocket] Sent refresh notification for user ${user.id}`);
-        } catch (error) {
-          console.error('[WebSocket] Failed to send refresh notification:', error);
-          // Don't fail the request if WebSocket notification fails
-        }
+      try {
+        await sendToUser(user.id, { type: 'refresh', data: { userId: user.id, reason: 'New score submitted', timestamp: new Date().toISOString() } });
+        console.log(`[WebSocket] Sent refresh notification for user ${user.id}`);
+      } catch (error) {
+        console.error('[WebSocket] Failed to send refresh notification:', error);
+        // Don't fail the request if WebSocket notification fails
       }
 
       // Process the play for leaderboards (pass submission data to avoid S3 fetch)

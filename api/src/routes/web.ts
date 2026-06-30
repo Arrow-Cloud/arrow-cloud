@@ -419,7 +419,7 @@ export const webRoutes: Routes = {
       },
     },
   },
-  '/widget/blueshift/data': {
+  '/widget/data': {
     GET: {
       handler: getWidgetData,
       requiresAuth: false,

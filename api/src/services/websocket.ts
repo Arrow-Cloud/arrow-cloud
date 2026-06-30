@@ -6,7 +6,8 @@ const dynamoClient = new DynamoDBClient({});
 const docClient = DynamoDBDocumentClient.from(dynamoClient);
 
 const CONNECTIONS_TABLE_NAME = process.env.CONNECTIONS_TABLE_NAME || '';
-const WEBSOCKET_API_URL = process.env.WEBSOCKET_API_URL || '';
+// CDK's webSocketApi.apiEndpoint returns wss:// — management API needs https://
+const WEBSOCKET_API_URL = (process.env.WEBSOCKET_API_URL || '').replace(/^wss:\/\//i, 'https://').replace(/^ws:\/\//i, 'http://');
 
 interface WebSocketMessage {
   type: string;

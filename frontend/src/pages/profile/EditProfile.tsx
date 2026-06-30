@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { User as UserIcon, Lock, Fingerprint, Key, Users, Camera, SlidersHorizontal, XCircle, Trophy } from 'lucide-react';
+import { User as UserIcon, Lock, Fingerprint, Key, Users, Camera, SlidersHorizontal, XCircle, Trophy, MonitorPlay } from 'lucide-react';
 import { updatePreferredLeaderboards, getUser } from '../../services/api';
 import { AppPageLayout } from '../../components';
 import {
@@ -71,26 +71,22 @@ const navigationItems: NavigationItem[] = [
       />
     ),
   },
-  // HIDDEN: Streamer Widget section temporarily disabled
-  // {
-  //   id: 'widget',
-  //   label: (
-  //     <span className="flex items-center gap-2">
-  //       <FormattedMessage defaultMessage="Streamer Widget" description="Navigation item label for streamer widget settings" id="34xrFN" />
-  //       <span className="badge badge-primary badge-xs">
-  //         <FormattedMessage defaultMessage="Beta" description="Badge label indicating a feature is in beta" id="NvFvI1" />
-  //       </span>
-  //     </span>
-  //   ),
-  //   icon: MonitorPlay,
-  //   description: (
-  //     <FormattedMessage
-  //       defaultMessage="Configure and preview your streaming widget"
-  //       description="Navigation item description for streamer widget settings"
-  //       id="ejPmny"
-  //     />
-  //   ),
-  // },
+  {
+    id: 'widget',
+    label: (
+      <span className="flex items-center gap-2">
+        <FormattedMessage defaultMessage="Streamer Widget" description="Navigation item label for streamer widget settings" id="34xrFN" />
+      </span>
+    ),
+    icon: MonitorPlay,
+    description: (
+      <FormattedMessage
+        defaultMessage="Configure and preview your streaming widget"
+        description="Navigation item description for streamer widget settings"
+        id="ejPmny"
+      />
+    ),
+  },
   {
     id: 'password',
     label: <FormattedMessage defaultMessage="Password" description="Navigation item label for password settings" id="EgWcdC" />,

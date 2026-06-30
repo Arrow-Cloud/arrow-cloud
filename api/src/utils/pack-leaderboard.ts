@@ -6,6 +6,9 @@ import { assetS3UrlToCloudFrontUrl } from './s3';
 // Types
 // ---------------------------------------------------------------------------
 
+/** Pack IDs that have pack leaderboards enabled. */
+export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348];
+
 /** The difficulty slots we compute pack leaderboards for. */
 export const PACK_LEADERBOARD_DIFFICULTIES = ['medium', 'hard', 'challenge'] as const;
 export type PackLeaderboardDifficulty = (typeof PACK_LEADERBOARD_DIFFICULTIES)[number];
@@ -95,27 +98,63 @@ interface BestScoreRow {
  * For a given set of chart hashes and leaderboard IDs, fetch each user's single
  * best score per chart per leaderboard. "Best" is determined by the PlayLeaderboard
  * sortKey (DESC) which already encodes score + tie-break.
+ *
+ * Charts in cmodIneligibleHashes exclude plays where the player used CMOD
+ * (modifiers.speed.type = 'C').
  */
-async function getBestScoresForCharts(prisma: PrismaClient, chartHashes: string[], leaderboardIds: number[]): Promise<BestScoreRow[]> {
+async function getBestScoresForCharts(
+  prisma: PrismaClient,
+  chartHashes: string[],
+  leaderboardIds: number[],
+  cmodIneligibleHashes: Set<string>,
+): Promise<BestScoreRow[]> {
   if (chartHashes.length === 0) return [];
 
-  const rows: any[] = await prisma.$queryRaw`
-    SELECT DISTINCT ON (p."userId", p."chartHash", pl."leaderboardId")
-      p."userId"               AS "userId",
-      u.alias                  AS "userAlias",
-      u."profileImageUrl"      AS "userProfileImageUrl",
-      p."chartHash"            AS "chartHash",
-      pl."leaderboardId"       AS "leaderboardId",
-      (pl.data->>'score')::double precision AS score
-    FROM "PlayLeaderboard" pl
-    JOIN "Play" p  ON pl."playId" = p.id
-    JOIN "User" u  ON p."userId" = u.id
-    WHERE p."chartHash" = ANY(${chartHashes})
-      AND pl."leaderboardId" = ANY(${leaderboardIds})
-      AND u.banned = false
-      AND u."shadowBanned" = false
-    ORDER BY p."userId", p."chartHash", pl."leaderboardId", pl."sortKey" DESC
-  `;
+  const ineligibleArray = [...cmodIneligibleHashes];
+
+  let rows: any[];
+
+  if (ineligibleArray.length === 0) {
+    rows = await prisma.$queryRaw`
+      SELECT DISTINCT ON (p."userId", p."chartHash", pl."leaderboardId")
+        p."userId"               AS "userId",
+        u.alias                  AS "userAlias",
+        u."profileImageUrl"      AS "userProfileImageUrl",
+        p."chartHash"            AS "chartHash",
+        pl."leaderboardId"       AS "leaderboardId",
+        (pl.data->>'score')::double precision AS score
+      FROM "PlayLeaderboard" pl
+      JOIN "Play" p  ON pl."playId" = p.id
+      JOIN "User" u  ON p."userId" = u.id
+      WHERE p."chartHash" = ANY(${chartHashes})
+        AND pl."leaderboardId" = ANY(${leaderboardIds})
+        AND u.banned = false
+        AND u."shadowBanned" = false
+      ORDER BY p."userId", p."chartHash", pl."leaderboardId", pl."sortKey" DESC
+    `;
+  } else {
+    rows = await prisma.$queryRaw`
+      SELECT DISTINCT ON (p."userId", p."chartHash", pl."leaderboardId")
+        p."userId"               AS "userId",
+        u.alias                  AS "userAlias",
+        u."profileImageUrl"      AS "userProfileImageUrl",
+        p."chartHash"            AS "chartHash",
+        pl."leaderboardId"       AS "leaderboardId",
+        (pl.data->>'score')::double precision AS score
+      FROM "PlayLeaderboard" pl
+      JOIN "Play" p  ON pl."playId" = p.id
+      JOIN "User" u  ON p."userId" = u.id
+      WHERE p."chartHash" = ANY(${chartHashes})
+        AND pl."leaderboardId" = ANY(${leaderboardIds})
+        AND u.banned = false
+        AND u."shadowBanned" = false
+        AND (
+          NOT (p."chartHash" = ANY(${ineligibleArray}))
+          OR (p.modifiers->'speed'->>'type') IS DISTINCT FROM 'C'
+        )
+      ORDER BY p."userId", p."chartHash", pl."leaderboardId", pl."sortKey" DESC
+    `;
+  }
 
   return rows.map((r) => ({
     userId: r.userId,
@@ -155,6 +194,7 @@ export async function calculatePackLeaderboards(prisma: PrismaClient, packId: nu
     select: {
       chartHash: true,
       difficulty: true,
+      cmodIneligible: true,
     },
   });
 
@@ -163,6 +203,7 @@ export async function calculatePackLeaderboards(prisma: PrismaClient, packId: nu
   for (const d of PACK_LEADERBOARD_DIFFICULTIES) {
     hashesByDifficulty[d] = [];
   }
+  const cmodIneligibleHashes = new Set<string>();
   for (const sc of simfileCharts) {
     if (sc.difficulty && sc.difficulty in hashesByDifficulty) {
       // Avoid duplicates (a chart hash can appear in multiple simfiles within the pack)
@@ -170,14 +211,17 @@ export async function calculatePackLeaderboards(prisma: PrismaClient, packId: nu
         hashesByDifficulty[sc.difficulty].push(sc.chartHash);
       }
     }
+    if (sc.cmodIneligible) {
+      cmodIneligibleHashes.add(sc.chartHash);
+    }
   }
 
   // 3. Collect all unique chart hashes across all difficulties for one DB round-trip
   const allHashes = [...new Set(Object.values(hashesByDifficulty).flat())];
   const allLeaderboardIds = Object.values(SCORING_SYSTEMS) as number[];
 
-  // 4. Fetch best scores
-  const bestScores = await getBestScoresForCharts(prisma, allHashes, allLeaderboardIds);
+  // 4. Fetch best scores (CMOD plays excluded for flagged charts)
+  const bestScores = await getBestScoresForCharts(prisma, allHashes, allLeaderboardIds, cmodIneligibleHashes);
 
   // 5. Build the users dictionary and the leaderboard results
   const users: Record<string, { alias: string; profileImageUrl: string | null }> = {};

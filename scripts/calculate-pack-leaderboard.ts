@@ -5,11 +5,12 @@
  * Produces a matrix of 9 leaderboards: 3 difficulty slots × 3 scoring systems.
  *
  * Usage:
- *   npx tsx scripts/calculate-pack-leaderboard.ts <packId> [outputPath]
+ *   npx tsx scripts/calculate-pack-leaderboard.ts <packId> [outputPath] [--user <userId>]
  *
  * Examples:
  *   npx tsx scripts/calculate-pack-leaderboard.ts 42
  *   npx tsx scripts/calculate-pack-leaderboard.ts 42 ./output/pack-42-leaderboards.json
+ *   npx tsx scripts/calculate-pack-leaderboard.ts 42 --user abc-123
  */
 
 import * as fs from 'fs';
@@ -19,10 +20,89 @@ import { calculatePackLeaderboards, PACK_LEADERBOARD_DIFFICULTIES, SCORING_SYSTE
 
 const prisma = new PrismaClient();
 
+async function printUserChartBreakdown(packId: number, userId: string) {
+  console.log(`\n${'='.repeat(60)}`);
+  console.log(`Per-chart breakdown for user ${userId}`);
+  console.log('='.repeat(60));
+
+  // Fetch all charts in the pack with their CMOD flag
+  const simfileCharts = await prisma.simfileChart.findMany({
+    where: {
+      simfile: { packId },
+      difficulty: { in: ['medium', 'hard', 'challenge'] },
+    },
+    select: { chartHash: true, difficulty: true, cmodIneligible: true },
+    orderBy: { difficulty: 'asc' },
+  });
+
+  // Dedupe by chartHash+difficulty
+  const seen = new Set<string>();
+  const charts = simfileCharts.filter((sc) => {
+    const key = `${sc.chartHash}:${sc.difficulty}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  // Fetch user's best play per chart across all leaderboard IDs, with modifiers
+  const rows = await prisma.$queryRaw<
+    Array<{
+      chartHash: string;
+      leaderboardId: number;
+      score: number;
+      speedType: string | null;
+      playId: number;
+    }>
+  >`
+    SELECT DISTINCT ON (p."chartHash", pl."leaderboardId")
+      p."chartHash"                           AS "chartHash",
+      pl."leaderboardId"                      AS "leaderboardId",
+      (pl.data->>'score')::double precision   AS score,
+      (p.modifiers->'speed'->>'type')         AS "speedType",
+      p.id                                    AS "playId"
+    FROM "PlayLeaderboard" pl
+    JOIN "Play" p ON pl."playId" = p.id
+    WHERE p."userId" = ${userId}
+      AND p."chartHash" = ANY(${charts.map((c) => c.chartHash)})
+    ORDER BY p."chartHash", pl."leaderboardId", pl."sortKey" DESC
+  `;
+
+  // Index rows by chartHash+leaderboardId
+  const rowIndex = new Map<string, (typeof rows)[0]>();
+  for (const row of rows) {
+    rowIndex.set(`${row.chartHash}:${row.leaderboardId}`, row);
+  }
+
+  const leaderboardIds: Record<string, number> = { HardEX: 4, EX: 2, ITG: 3 };
+
+  for (const diff of ['medium', 'hard', 'challenge'] as const) {
+    const diffCharts = charts.filter((c) => c.difficulty === diff);
+    if (diffCharts.length === 0) continue;
+    console.log(`\n--- ${diff} ---`);
+
+    for (const sc of diffCharts) {
+      const flag = sc.cmodIneligible ? '[CMOD-INELIGIBLE]' : '              ';
+      console.log(`  ${sc.chartHash}  ${flag}`);
+
+      for (const [system, lbId] of Object.entries(leaderboardIds)) {
+        const row = rowIndex.get(`${sc.chartHash}:${lbId}`);
+        if (!row) {
+          console.log(`    ${system.padEnd(8)} no score`);
+          continue;
+        }
+        const excluded = sc.cmodIneligible && row.speedType === 'C';
+        const status = excluded ? 'EXCLUDED (CMOD)' : 'included';
+        console.log(`    ${system.padEnd(8)} score=${row.score.toFixed(2).padStart(6)}  speedType=${(row.speedType ?? 'null').padEnd(4)}  ${status}`);
+      }
+    }
+  }
+}
+
 (async () => {
-  const packIdArg = process.argv[2];
+  const args = process.argv.slice(2);
+  const packIdArg = args[0];
   if (!packIdArg) {
-    console.error('Usage: npx tsx scripts/calculate-pack-leaderboard.ts <packId> [outputPath]');
+    console.error('Usage: npx tsx scripts/calculate-pack-leaderboard.ts <packId> [outputPath] [--user <userId>]');
     process.exit(1);
   }
 
@@ -31,6 +111,10 @@ const prisma = new PrismaClient();
     console.error(`Invalid pack ID: ${packIdArg}`);
     process.exit(1);
   }
+
+  const userFlagIdx = args.indexOf('--user');
+  const debugUserId = userFlagIdx !== -1 ? args[userFlagIdx + 1] : null;
+  const outputPath = args.find((a) => !a.startsWith('--') && a !== packIdArg && a !== debugUserId) ?? null;
 
   try {
     console.log(`Calculating pack leaderboards for pack ${packId}...\n`);
@@ -63,17 +147,19 @@ const prisma = new PrismaClient();
       }
     }
 
-    // Write JSON output
-    const defaultOutputPath = path.join('output', `pack-${packId}-leaderboards.json`);
-    const outputPath = process.argv[3] || defaultOutputPath;
-
-    const outputDir = path.dirname(outputPath);
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
+    if (debugUserId) {
+      await printUserChartBreakdown(packId, debugUserId);
     }
 
-    fs.writeFileSync(outputPath, JSON.stringify(result, null, 2));
-    console.log(`JSON written to ${outputPath}`);
+    if (outputPath) {
+      const resolvedOutputPath = path.resolve(outputPath);
+      const outputDir = path.dirname(resolvedOutputPath);
+      if (!fs.existsSync(outputDir)) {
+        fs.mkdirSync(outputDir, { recursive: true });
+      }
+      fs.writeFileSync(resolvedOutputPath, JSON.stringify(result, null, 2));
+      console.log(`\nJSON written to ${resolvedOutputPath}`);
+    }
   } catch (error) {
     console.error('Error calculating pack leaderboards:', error);
     process.exit(1);

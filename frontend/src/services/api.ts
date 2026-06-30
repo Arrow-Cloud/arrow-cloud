@@ -339,6 +339,7 @@ export interface ListPacksParams {
   page?: number;
   limit?: number;
   search?: string;
+  eligibleOnly?: boolean;
   orderBy?: 'name' | 'createdAt' | 'updatedAt' | 'simfileCount' | 'popularity';
   orderDirection?: 'asc' | 'desc';
 }
@@ -349,6 +350,7 @@ export const listPacks = async (params: ListPacksParams = {}): Promise<ListPacks
   if (params.page) searchParams.append('page', params.page.toString());
   if (params.limit) searchParams.append('limit', params.limit.toString());
   if (params.search) searchParams.append('search', params.search);
+  if (params.eligibleOnly) searchParams.append('eligibleOnly', 'true');
   if (params.orderBy) searchParams.append('orderBy', params.orderBy);
   if (params.orderDirection) searchParams.append('orderDirection', params.orderDirection);
 
@@ -852,13 +854,13 @@ export const approveDeviceLoginSession = async (sessionId: string): Promise<Devi
 };
 
 // Widget data
-export const getWidgetData = async (userId: string, features?: string): Promise<WidgetDataResponse> => {
+export const getWidgetData = async (userId: string, config?: string): Promise<WidgetDataResponse> => {
   const params = new URLSearchParams({ userId });
-  if (features) {
-    params.append('features', features);
+  if (config) {
+    params.append('config', config);
   }
-  const response = await api.get(`/widget/blueshift/data?${params.toString()}`);
-  return validateResponse(widgetDataResponseSchema, response.data, '/widget/blueshift/data');
+  const response = await api.get(`/widget/data?${params.toString()}`);
+  return validateResponse(widgetDataResponseSchema, response.data, '/widget/data');
 };
 
 // Notifications
