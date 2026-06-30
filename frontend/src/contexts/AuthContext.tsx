@@ -18,7 +18,7 @@ interface AuthContextType {
   token: string | null;
   permissions: string[];
   login: (email: string, password: string, rememberMe?: boolean) => Promise<AuthResponse>;
-  loginWithPasskey: (options?: { suppressError?: boolean }) => Promise<AuthResponse>;
+  loginWithPasskey: () => Promise<AuthResponse>;
   register: (email: string, alias: string, password: string) => Promise<AuthResponse>;
   verifyEmail: (token: string) => Promise<AuthResponse>;
   resendVerificationEmail: () => Promise<void>;
@@ -166,7 +166,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const loginWithPasskey = async (options?: { suppressError?: boolean }): Promise<AuthResponse> => {
+  const loginWithPasskey = async (): Promise<AuthResponse> => {
     setIsLoading(true);
     setError(null);
 
@@ -192,9 +192,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       return data;
     } catch (err: any) {
-      if (!options?.suppressError) {
-        setError(err.message || 'Passkey login failed. Please try again.');
-      }
+      setError(err.message || 'Passkey login failed. Please try again.');
       throw err;
     } finally {
       setIsLoading(false);
