@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { getStoredToken, clearSession } from './authStorage';
 import {
   LoginRequest,
   RegisterRequest,
@@ -79,7 +80,7 @@ const validateResponse = <T>(schema: any, data: unknown, endpoint: string): T =>
 // Request interceptor to include auth token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    const token = getStoredToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -93,8 +94,7 @@ api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
+      clearSession();
       window.dispatchEvent(new CustomEvent('auth:logout'));
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';

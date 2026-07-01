@@ -148,7 +148,7 @@ interface LoginPageProps {
 export const LoginPage: React.FC<LoginPageProps> = ({ eventMode = false }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [rememberMe, setRememberMe] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
   const [showPasskeySetup, setShowPasskeySetup] = useState(false);
   const [preventRedirect, setPreventRedirect] = useState(false);
   const navigate = useNavigate();

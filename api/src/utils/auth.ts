@@ -18,8 +18,8 @@ export const generateJwtToken = async (userId: string, email: string, rememberMe
     iat: Math.floor(Date.now() / 1000),
   };
 
-  // If remember me is false, token expires in 4 hours. If true, expires in 7 days.
-  const expiresIn = rememberMe ? '7d' : '4h';
+  // If remember me is false, token expires in 12 hours. If true, expires in 30 days.
+  const expiresIn = rememberMe ? '30d' : '12h';
 
   return jwt.sign(payload, secret, { expiresIn });
 };
