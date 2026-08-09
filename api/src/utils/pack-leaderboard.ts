@@ -7,7 +7,7 @@ import { assetS3UrlToCloudFrontUrl } from './s3';
 // ---------------------------------------------------------------------------
 
 /** Pack IDs that have pack leaderboards enabled. */
-export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348];
+export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371];
 
 /** The difficulty slots we compute pack leaderboards for. */
 export const PACK_LEADERBOARD_DIFFICULTIES = ['medium', 'hard', 'challenge'] as const;
