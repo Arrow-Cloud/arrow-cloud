@@ -706,7 +706,7 @@ export const PackPage: React.FC = () => {
           {/* Left Column - Pack Metadata + Leaderboard */}
           <div className="lg:col-span-1 space-y-6">
             <PackMetadataCard pack={pack} />
-            <PackLeaderboard data={pack.packLeaderboard} />
+            <PackLeaderboard data={pack.packLeaderboard} packId={pack.id} />
           </div>
 
           {/* Right Column - Recent Scores */}

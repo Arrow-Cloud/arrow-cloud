@@ -1,5 +1,5 @@
 import { APIGatewayProxyResult } from 'aws-lambda';
-import { PrismaClient } from '../../prisma/generated/client';
+import { PrismaClient, Prisma } from '../../prisma/generated/client';
 import { ExtendedAPIGatewayProxyEvent } from '../utils/types';
 import { z } from 'zod';
 import { assetS3UrlToCloudFrontUrl, toCfVariantSet, S3_BUCKET_ASSETS } from '../utils/s3';
@@ -580,6 +580,173 @@ export async function getPack(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
   } catch (error) {
     console.error('Error getting pack:', error);
 
+    return respond(500, { error: 'Internal server error' });
+  }
+}
+
+/**
+ * Get all chart scores for one or more players in a pack
+ * GET /v1/pack/{packId}/player-scores?userId=...&userId=...
+ */
+export async function getPackPlayerScores(event: ExtendedAPIGatewayProxyEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> {
+  try {
+    if (!event.routeParameters?.packId) {
+      return respond(400, { error: 'Pack ID is required' });
+    }
+
+    const packId = parseInt(event.routeParameters.packId, 10);
+    if (isNaN(packId)) {
+      return respond(400, { error: 'Invalid pack ID' });
+    }
+
+    // userIds passed as comma-separated: ?userIds=id1,id2,...
+    const rawUserIds = event.queryStringParameters?.userIds ?? '';
+    const userIds = rawUserIds
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
+    if (userIds.length === 0) {
+      return respond(400, { error: 'At least one userId is required' });
+    }
+
+    // Verify pack exists
+    const pack = await prisma.pack.findUnique({ where: { id: packId }, select: { id: true } });
+    if (!pack) {
+      return respond(404, { error: 'Pack not found' });
+    }
+
+    // Fetch simfiles in the pack with their medium/hard/challenge charts
+    const simfilesRaw = await prisma.simfile.findMany({
+      where: { packId },
+      select: {
+        id: true,
+        title: true,
+        artist: true,
+        bannerUrl: true,
+        mdBannerUrl: true,
+        smBannerUrl: true,
+        bannerVariants: true,
+        charts: {
+          where: { difficulty: { in: ['medium', 'hard', 'challenge'] } },
+          select: {
+            difficulty: true,
+            chartHash: true,
+            meter: true,
+            stepsType: true,
+          },
+        },
+      },
+      orderBy: { title: 'asc' },
+    });
+
+    // Build simfiles structure
+    const simfiles = simfilesRaw.map((sf) => {
+      const charts: Record<string, { hash: string; meter: number | null; stepsType: string | null }> = {};
+      for (const sc of sf.charts) {
+        if (sc.difficulty) {
+          charts[sc.difficulty] = {
+            hash: sc.chartHash,
+            meter: sc.meter ?? null,
+            stepsType: sc.stepsType ?? null,
+          };
+        }
+      }
+      return {
+        simfileId: sf.id,
+        title: sf.title,
+        artist: sf.artist,
+        bannerUrl: sf.bannerUrl ? assetS3UrlToCloudFrontUrl(sf.bannerUrl) : null,
+        mdBannerUrl: sf.mdBannerUrl ? assetS3UrlToCloudFrontUrl(sf.mdBannerUrl) : null,
+        smBannerUrl: sf.smBannerUrl ? assetS3UrlToCloudFrontUrl(sf.smBannerUrl) : null,
+        bannerVariants: toCfVariantSet(sf.bannerVariants) || undefined,
+        charts,
+      };
+    });
+
+    // Collect all chart hashes from this pack
+    const allChartHashes = simfilesRaw.flatMap((sf) => sf.charts.map((sc) => sc.chartHash));
+
+    // Leaderboard ID → key mapping
+    const LEADERBOARD_KEY_MAP: Record<number, 'ITG' | 'EX' | 'HardEX'> = {
+      [GLOBAL_MONEY_LEADERBOARD_ID]: 'ITG',
+      [GLOBAL_EX_LEADERBOARD_ID]: 'EX',
+      [GLOBAL_HARD_EX_LEADERBOARD_ID]: 'HardEX',
+    };
+
+    // Perfect grade override per leaderboard key
+    const PERFECT_GRADE: Record<string, string> = {
+      ITG: 'quad',
+      EX: 'quint',
+      HardEX: 'hex',
+    };
+
+    const lbIds = [GLOBAL_MONEY_LEADERBOARD_ID, GLOBAL_EX_LEADERBOARD_ID, GLOBAL_HARD_EX_LEADERBOARD_ID];
+
+    // Query best scores per user/chart/leaderboard
+    const bestScores = await prisma.$queryRaw<
+      Array<{
+        userId: string;
+        chartHash: string;
+        leaderboardId: number;
+        data: any;
+      }>
+    >(
+      Prisma.sql`
+        SELECT DISTINCT ON (p."userId", p."chartHash", pl."leaderboardId")
+          p."userId",
+          p."chartHash",
+          pl."leaderboardId",
+          pl.data
+        FROM "Play" p
+        JOIN "PlayLeaderboard" pl ON pl."playId" = p.id
+        WHERE p."userId"::text IN (${Prisma.join(userIds.map((id) => Prisma.sql`${id}`))})
+          AND p."chartHash" IN (${Prisma.join(allChartHashes.map((h) => Prisma.sql`${h}`))})
+          AND pl."leaderboardId" IN (${Prisma.join(lbIds.map((id) => Prisma.sql`${id}`))})
+        ORDER BY p."userId", p."chartHash", pl."leaderboardId", pl."sortKey" DESC
+      `,
+    );
+
+    // Build per-player score maps
+    type ScoreEntry = { score: string; grade: string };
+    type ChartScores = { EX?: ScoreEntry; ITG?: ScoreEntry; HardEX?: ScoreEntry };
+    const playerScoreMap: Record<string, Record<string, ChartScores>> = {};
+
+    for (const row of bestScores) {
+      const lbKey = LEADERBOARD_KEY_MAP[row.leaderboardId];
+      if (!lbKey) continue;
+      const userId = row.userId;
+      if (!playerScoreMap[userId]) playerScoreMap[userId] = {};
+      if (!playerScoreMap[userId][row.chartHash]) playerScoreMap[userId][row.chartHash] = {};
+
+      const data = row.data as { score?: string; grade?: string } | null;
+      const score = data?.score ?? '';
+      let grade = data?.grade ?? '';
+
+      // Perfect score override
+      if (data?.score === '100.00') {
+        grade = PERFECT_GRADE[lbKey];
+      }
+
+      playerScoreMap[userId][row.chartHash][lbKey] = { score, grade };
+    }
+
+    // Fetch user info
+    const users = await prisma.user.findMany({
+      where: { id: { in: userIds } },
+      select: { id: true, alias: true, profileImageUrl: true },
+    });
+
+    const players = users.map((u) => ({
+      userId: u.id,
+      alias: u.alias,
+      profileImageUrl: u.profileImageUrl ? assetS3UrlToCloudFrontUrl(u.profileImageUrl) : null,
+      scores: playerScoreMap[u.id] ?? {},
+    }));
+
+    return respond(200, { simfiles, players });
+  } catch (error) {
+    console.error('Error getting pack player scores:', error);
     return respond(500, { error: 'Internal server error' });
   }
 }

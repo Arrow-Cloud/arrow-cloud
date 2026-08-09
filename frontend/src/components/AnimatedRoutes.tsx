@@ -4,6 +4,7 @@ import PageTransition from './PageTransition';
 import { ProtectedRoute } from './';
 import { PacksPage } from '../pages/packs/PacksPage';
 import { PackPage } from '../pages/packs/PackPage';
+import { PackScoresPage } from '../pages/packs/PackScoresPage';
 import { UsersPage } from '../pages/users';
 import { ChartsPage } from '../pages/charts';
 import { ChartPage } from '../pages/charts';
@@ -60,6 +61,8 @@ const AnimatedRoutes = () => {
           <Route path="/user/:userId/perfect-scores/:scoreType" element={<UserPerfectScoresPage />} />
           <Route path="/packs" element={<PacksPage />} />
           <Route path="/pack/:id" element={<PackPage />} />
+          <Route path="/pack/:packId/player/:userId" element={<PackScoresPage />} />
+          <Route path="/pack/:packId/compare" element={<PackScoresPage />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/charts" element={<ChartsPage />} />
           <Route path="/chart/:chartHash" element={<ChartPage />} />

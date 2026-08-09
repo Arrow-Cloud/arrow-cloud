@@ -47,6 +47,8 @@ import {
   type BlueShiftAllPhasesResponse,
   type BlueShiftOverallSummary,
   type PackRecentPlay,
+  packPlayerScoresResponseSchema,
+  type PackPlayerScoresResponse,
   listApiKeysResponseSchema,
   createApiKeyResponseSchema,
   type ListApiKeysResponse,
@@ -417,6 +419,11 @@ export const getPackRecentPlays = async (packId: number, params: GetPackRecentPl
 
   const response = await api.get(`/pack/${packId}/recent-plays?${searchParams.toString()}`);
   return response.data as GetPackRecentPlaysResponse;
+};
+
+export const getPackPlayerScores = async (packId: number | string, userIds: string[]): Promise<PackPlayerScoresResponse> => {
+  const response = await api.get(`/pack/${packId}/player-scores?userIds=${userIds.join(',')}`);
+  return validateResponse<PackPlayerScoresResponse>(packPlayerScoresResponseSchema, response.data, `/pack/${packId}/player-scores`);
 };
 
 // Chart API functions

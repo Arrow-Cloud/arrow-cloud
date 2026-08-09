@@ -3,12 +3,25 @@ import { useSearchParams } from 'react-router-dom';
 import { getWidgetData } from '../../services/api';
 import type { WidgetDataResponse } from '../../schemas/apiSchemas';
 import { useWebSocket } from '../../hooks/useWebSocket';
-import { decodeWidgetConfig, getWidgetDimensions, type WidgetConfig } from '../../utils/widgetConfig';
+import {
+  decodeWidgetConfig,
+  getWidgetDimensions,
+  type WidgetConfig,
+  type LeaderboardKey,
+  PANEL_WIDTH,
+  PANEL_HEIGHT,
+  PROFILE_HEADER_H,
+} from '../../utils/widgetConfig';
 import { ProfileStatsPanel } from './panels/ProfileStatsPanel';
 import { RecentPlaysPanel } from './panels/RecentPlaysPanel';
 import { PackLeaderboardPanel } from './panels/PackLeaderboardPanel';
+import { SessionPanel } from './panels/SessionPanel';
 
-const WIDGET_KEYFRAMES = `@keyframes widgetFadeIn { from { opacity: 0 } to { opacity: 1 } }`;
+const WIDGET_KEYFRAMES = `
+  html, body, #root { background: transparent !important; background-color: transparent !important; }
+  @keyframes widgetFadeIn { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes aliasMarquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+`;
 
 export const StreamerWidgetPage: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -21,7 +34,7 @@ export const StreamerWidgetPage: React.FC = () => {
   const compatMode = searchParams.get('compat') === 'true';
 
   const config: WidgetConfig | null = configParam ? decodeWidgetConfig(configParam) : null;
-  const { width: totalWidth, height: totalHeight } = config ? getWidgetDimensions(config) : { width: 235, height: 300 };
+  const { width: totalWidth, height: totalHeight } = config ? getWidgetDimensions(config) : { width: PANEL_WIDTH, height: PANEL_HEIGHT + PROFILE_HEADER_H };
 
   const WS_URL = (import.meta as any).env?.VITE_WEBSOCKET_URL || '';
   const { isConnected: wsConnected, lastMessage } = useWebSocket({
@@ -51,7 +64,12 @@ export const StreamerWidgetPage: React.FC = () => {
 
   useEffect(() => {
     if (!lastMessage || !userIdParam) return;
-    if (lastMessage.type === 'refresh' || lastMessage.type === 'widgetUpdate') {
+    const isRelevantEvent =
+      lastMessage.type === 'playSubmitted' || // play written — refresh recent plays
+      lastMessage.type === 'sessionUpdate' || // session written — refresh session panel
+      lastMessage.type === 'refresh' || // generic refresh (e.g. pack leaderboard)
+      lastMessage.type === 'widgetUpdate';
+    if (isRelevantEvent) {
       const messageUserId = (lastMessage as any).userId ?? (lastMessage as any).data?.userId;
       if (!messageUserId || messageUserId === userIdParam) {
         getWidgetData(userIdParam, configParam || undefined)
@@ -117,17 +135,37 @@ export const StreamerWidgetPage: React.FC = () => {
     } else {
       document.documentElement.setAttribute('data-theme', themeParam || 'arrow-blue');
     }
-    document.body.style.backgroundColor = 'transparent';
-    document.documentElement.style.backgroundColor = 'transparent';
+    // Strip the bg-base-200 class that index.html puts on #root, then force all
+    // ancestor elements to transparent so the OBS scene shows through on any theme.
+    const makeTransparent = (el: HTMLElement) => {
+      el.style.setProperty('background', 'transparent', 'important');
+      el.style.setProperty('background-color', 'transparent', 'important');
+    };
+    const clearTransparent = (el: HTMLElement) => {
+      el.style.removeProperty('background');
+      el.style.removeProperty('background-color');
+    };
+    makeTransparent(document.body);
+    makeTransparent(document.documentElement);
+    const rootEl = document.getElementById('root');
+    if (rootEl) {
+      rootEl.classList.remove('bg-base-200');
+      makeTransparent(rootEl);
+    }
     return () => {
-      document.body.style.backgroundColor = '';
-      document.documentElement.style.backgroundColor = '';
+      clearTransparent(document.body);
+      clearTransparent(document.documentElement);
+      if (rootEl) {
+        rootEl.classList.add('bg-base-200');
+        clearTransparent(rootEl);
+      }
     };
   }, [themeParam, compatMode]);
 
   if (loading) {
     return (
       <div className="w-full h-screen bg-transparent flex items-center justify-center">
+        <style>{WIDGET_KEYFRAMES}</style>
         <div style={{ width: totalWidth, height: totalHeight }} className="bg-base-200 flex items-center justify-center">
           <div className="loading loading-spinner loading-lg text-primary" />
         </div>
@@ -137,8 +175,16 @@ export const StreamerWidgetPage: React.FC = () => {
 
   if (!widgetData) return null;
 
-  const features = config?.features ?? [{ type: 'profile' as const }];
-  const isHorizontal = config?.orientation === 'horizontal';
+  const orientation = config?.orientation ?? 'horizontal';
+  const isHorizontal = orientation === 'horizontal';
+
+  // Strip legacy 'profile' entries from old encoded configs — profile is now always-on at the top
+  const rawFeatures = config?.features ?? [];
+  const filteredFeatures = rawFeatures.filter((f) => (f as any).type !== 'profile');
+  const activeFeatures =
+    filteredFeatures.length > 0
+      ? filteredFeatures
+      : [{ type: 'currentSession' as const }, { type: 'recentPlays' as const, leaderboards: ['EX' as LeaderboardKey] }];
 
   return (
     <div className="w-full h-screen flex items-center justify-center p-0 bg-transparent">
@@ -152,31 +198,37 @@ export const StreamerWidgetPage: React.FC = () => {
         </div>
       )}
 
-      <div style={{ width: totalWidth, height: totalHeight }} className={`flex ${isHorizontal ? 'flex-row' : 'flex-col'} overflow-hidden`}>
-        {features.map((feature, i) => {
-          const orientation = config?.orientation ?? 'vertical';
-          if (feature.type === 'profile') {
-            return <ProfileStatsPanel key={i} user={widgetData.user} orientation={orientation} />;
-          }
-          if (feature.type === 'recentPlays') {
-            return <RecentPlaysPanel key={i} plays={widgetData.recentPlays ?? []} leaderboards={feature.leaderboards} orientation={orientation} />;
-          }
-          if (feature.type === 'packLeaderboard') {
-            const packData = widgetData.packLeaderboards?.[feature.packId];
-            if (!packData) return null;
-            return (
-              <PackLeaderboardPanel
-                key={i}
-                packName={feature.packName}
-                bannerUrl={feature.bannerUrl}
-                data={packData}
-                leaderboards={feature.leaderboards}
-                orientation={orientation}
-              />
-            );
-          }
-          return null;
-        })}
+      <div style={{ width: totalWidth, height: totalHeight, backgroundColor: 'transparent' }} className="flex flex-col overflow-hidden">
+        {/* Profile is always rendered at the top, full width, transparent */}
+        <ProfileStatsPanel user={widgetData.user} />
+
+        {/* Feature panels below — side by side (horizontal) or stacked (vertical) */}
+        <div className={`flex ${isHorizontal ? 'flex-row' : 'flex-col'} flex-1 overflow-hidden`}>
+          {activeFeatures.map((feature, i) => {
+            if (feature.type === 'recentPlays') {
+              return <RecentPlaysPanel key={i} plays={widgetData.recentPlays ?? []} leaderboards={feature.leaderboards} orientation={orientation} />;
+            }
+            if (feature.type === 'packLeaderboard') {
+              const packData = widgetData.packLeaderboards?.[feature.packId];
+              if (!packData) return null;
+              return (
+                <PackLeaderboardPanel
+                  key={i}
+                  packName={feature.packName}
+                  bannerUrl={feature.bannerUrl}
+                  difficulty={feature.difficulty}
+                  data={packData}
+                  leaderboards={feature.leaderboards}
+                  orientation={orientation}
+                />
+              );
+            }
+            if (feature.type === 'currentSession') {
+              return <SessionPanel key={i} session={widgetData.currentSession} orientation={orientation} />;
+            }
+            return null;
+          })}
+        </div>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import {
   isPlayEligibleForPerfectScores,
 } from './utils/stats-utils';
 import { checkAndAssignPerfectScoreTrophies } from './utils/trophy-assignment';
+import { sendToUser } from './services/websocket';
 
 let prisma: PrismaClient | undefined;
 
@@ -62,7 +63,7 @@ function getDateStringInTimezone(date: Date = new Date(), timezone: string = 'UT
 }
 
 // Session gap threshold (2 hours in milliseconds)
-const SESSION_GAP_MS = 2 * 60 * 60 * 1000;
+const SESSION_GAP_MS = 1 * 60 * 60 * 1000;
 
 /**
  * Process a single score submission event and update user stats
@@ -289,6 +290,7 @@ async function updateUserSession(
       });
 
       console.log(`Updated session ${latestSession.id} for user ${userId}: playCount=${latestSession.playCount + 1}, distinctCharts=${distinctCharts}`);
+      await sendToUser(userId, { type: 'sessionUpdate', data: { userId } }).catch(() => {});
       return;
     }
   }
@@ -313,6 +315,7 @@ async function updateUserSession(
   });
 
   console.log(`Created new session ${newSession.id} for user ${userId}`);
+  await sendToUser(userId, { type: 'sessionUpdate', data: { userId } }).catch(() => {});
 }
 
 // Minimum session requirements

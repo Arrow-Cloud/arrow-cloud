@@ -1,43 +1,45 @@
 import React from 'react';
 import { ProfileAvatar } from '../../../components';
 import type { WidgetDataResponse } from '../../../schemas/apiSchemas';
-import { PANEL_WIDTH, PANEL_HEIGHT, COMPACT_HEIGHTS, HORIZONTAL_WIDTHS } from '../../../utils/widgetConfig';
+import { PROFILE_HEADER_H } from '../../../utils/widgetConfig';
 
 interface Props {
   user: WidgetDataResponse['user'];
-  orientation: 'horizontal' | 'vertical';
 }
 
-export const ProfileStatsPanel: React.FC<Props> = ({ user, orientation }) => {
-  if (orientation === 'vertical') {
-    return (
-      <div
-        style={{ width: PANEL_WIDTH, height: COMPACT_HEIGHTS.profile }}
-        className="relative flex items-center gap-3 px-3 overflow-hidden bg-gradient-to-r from-base-200 via-base-300 to-base-200 border-b border-base-300/30"
-      >
-        <div className="absolute left-0 top-0 h-full w-0.5 bg-gradient-to-b from-transparent via-primary/50 to-transparent" />
-        <div className="relative flex-shrink-0">
-          <div className="absolute inset-0 bg-primary/20 rounded-full blur-md" />
-          <ProfileAvatar alias={user.alias} profileImageUrl={user.profileImageUrl ?? null} size="sm" />
-        </div>
-        <span className="text-sm font-bold text-primary truncate z-10">{user.alias}</span>
-      </div>
-    );
-  }
+const SHADOW = '0 1px 4px rgba(0,0,0,0.9), 0 0 12px rgba(0,0,0,0.5)';
+const MARQUEE_THRESHOLD = 16;
+
+export const ProfileStatsPanel: React.FC<Props> = ({ user }) => {
+  const isMarquee = user.alias.length > MARQUEE_THRESHOLD;
 
   return (
-    <div
-      style={{ width: HORIZONTAL_WIDTHS.profile, height: PANEL_HEIGHT }}
-      className="relative flex flex-col items-center justify-center gap-4 overflow-hidden bg-gradient-to-br from-base-200 via-base-300 to-base-200"
-    >
-      <div className="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-      <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
-      <div className="absolute inset-0 bg-gradient-to-tr from-primary/5 via-transparent to-accent/5 pointer-events-none" />
-      <div className="relative z-10">
-        <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl" />
-        <ProfileAvatar alias={user.alias} profileImageUrl={user.profileImageUrl ?? null} size="lg" />
+    <div style={{ height: PROFILE_HEADER_H, background: 'transparent' }} className="w-full flex items-center pl-2 pr-4 gap-2 flex-shrink-0">
+      {/* Avatar — ring gives definition on any OBS background */}
+      <div className="flex-shrink-0 ring-2 ring-white/20 rounded-full">
+        <ProfileAvatar alias={user.alias} profileImageUrl={user.profileImageUrl ?? null} size="sm" />
       </div>
-      <div className="text-xl font-bold text-primary drop-shadow-lg text-center truncate w-full px-4 z-10">{user.alias}</div>
+
+      {/* Alias — marquee for long names */}
+      <div className="flex-1 min-w-0 overflow-hidden">
+        {isMarquee ? (
+          <div className="overflow-hidden" style={{ WebkitMaskImage: 'linear-gradient(to right, black 80%, transparent 100%)' }}>
+            <span
+              className="inline-block whitespace-nowrap text-sm font-bold text-white"
+              style={{ animation: 'aliasMarquee 14s linear infinite', textShadow: SHADOW }}
+            >
+              {user.alias}
+              <span className="inline-block w-12" aria-hidden="true" />
+              {user.alias}
+              <span className="inline-block w-12" aria-hidden="true" />
+            </span>
+          </div>
+        ) : (
+          <span className="block truncate text-sm font-bold text-white" style={{ textShadow: SHADOW }}>
+            {user.alias}
+          </span>
+        )}
+      </div>
     </div>
   );
 };

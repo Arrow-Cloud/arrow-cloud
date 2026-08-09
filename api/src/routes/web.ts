@@ -13,7 +13,7 @@ import {
   getUserPasskeys,
   deletePasskey,
 } from '../controllers/auth';
-import { getPack, listPacks, getPackRecentPlays } from '../controllers/pack';
+import { getPack, listPacks, getPackRecentPlays, getPackPlayerScores } from '../controllers/pack';
 import { listUsers } from '../controllers/users';
 import { getPackUploadUrl } from '../controllers/pack-upload';
 import { getSimfile, listSimfiles } from '../controllers/simfile';
@@ -221,6 +221,15 @@ export const webRoutes: Routes = {
   '/pack/{packId}/recent-plays': {
     GET: {
       handler: getPackRecentPlays,
+      requiresAuth: false,
+      patternMatching: {
+        packId: /\d+/,
+      },
+    },
+  },
+  '/pack/{packId}/player-scores': {
+    GET: {
+      handler: getPackPlayerScores,
       requiresAuth: false,
       patternMatching: {
         packId: /\d+/,

@@ -4,7 +4,7 @@ import { Trophy } from 'lucide-react';
 import { ProfileAvatar, Pagination } from '../ui';
 import { LeaderboardToggle } from '../leaderboards/LeaderboardToggle';
 import { useLeaderboardView } from '../../contexts/LeaderboardViewContext';
-import { FormattedMessage, FormattedNumber } from 'react-intl';
+import { FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
 import { getStoredUser, computeHighlight, HighlightedAlias } from '../../utils/rivalHighlight';
 import type { PackLeaderboardData } from '../../schemas/apiSchemas';
 
@@ -42,9 +42,11 @@ interface LeaderboardTableProps {
   users: PackLeaderboardData['users'];
   page: number;
   onPageChange: (page: number) => void;
+  packId: number;
 }
 
-const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ leaderboard, users, page, onPageChange }) => {
+const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ leaderboard, users, page, onPageChange, packId }) => {
+  const { formatMessage } = useIntl();
   const storedUser = getStoredUser();
   const rivalIds: string[] = storedUser?.rivalUserIds || [];
 
@@ -81,7 +83,12 @@ const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ leaderboard, users,
           return (
             <Link
               key={entry.userId}
-              to={`/user/${entry.userId}`}
+              to={`/pack/${packId}/player/${entry.userId}`}
+              title={formatMessage({
+                defaultMessage: 'View scores in this pack',
+                id: '7gwiId',
+                description: "Tooltip on a pack leaderboard row linking to a player's scores in the pack",
+              })}
               className={`flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-base-200/50 transition-colors group ${highlight.rowGradientClass}`}
             >
               <div className="w-7 text-center shrink-0">
@@ -113,9 +120,10 @@ const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ leaderboard, users,
 
 interface PackLeaderboardProps {
   data?: PackLeaderboardData | null;
+  packId: number;
 }
 
-export const PackLeaderboard: React.FC<PackLeaderboardProps> = ({ data }) => {
+export const PackLeaderboard: React.FC<PackLeaderboardProps> = ({ data, packId }) => {
   const { activeLeaderboard } = useLeaderboardView();
   const [activeDifficulty, setActiveDifficultyState] = useState<string>(() => localStorage.getItem(DIFFICULTY_LS_KEY) || 'challenge');
   const [page, setPage] = useState(1);
@@ -172,7 +180,7 @@ export const PackLeaderboard: React.FC<PackLeaderboardProps> = ({ data }) => {
 
         {/* Leaderboard content */}
         {currentLeaderboard ? (
-          <LeaderboardTable leaderboard={currentLeaderboard} users={data.users} page={page} onPageChange={setPage} />
+          <LeaderboardTable leaderboard={currentLeaderboard} users={data.users} page={page} onPageChange={setPage} packId={packId} />
         ) : (
           <div className="text-center py-8 text-base-content/50">
             <Trophy size={32} className="mx-auto mb-2 text-base-content/30" />
