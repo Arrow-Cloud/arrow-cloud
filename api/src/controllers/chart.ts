@@ -8,11 +8,11 @@ import { APIGatewayProxyResult } from 'aws-lambda';
 import { assetS3UrlToCloudFrontUrl, toCfVariantSet } from '../utils/s3';
 import { z } from 'zod';
 import { processSinglePlay } from '../utils/play-processor';
+import { sendToUser } from '../services/websocket';
 import { publishScoreSubmissionEvent, EVENT_TYPES } from '../utils/events';
 import { GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID, GLOBAL_HARD_EX_LEADERBOARD_ID } from '../utils/leaderboard';
 import { EventRegistry, EventLeaderboardResponse } from '../utils/events/base';
 import { EventLeaderboardService } from '../services/eventLeaderboards';
-import { sendToUser } from '../services/websocket';
 import { resolveChartBanner } from '../utils/chart-banner';
 import { parseLocalDateToUTC } from '../utils/date';
 
@@ -832,16 +832,10 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
         }),
       ]);
 
-      // Send immediate WebSocket notification for this user's widgets
-      try {
-        await sendToUser(user.id, { type: 'refresh', data: { userId: user.id, reason: 'New score submitted', timestamp: new Date().toISOString() } });
-        console.log(`[WebSocket] Sent refresh notification for user ${user.id}`);
-      } catch (error) {
-        console.error('[WebSocket] Failed to send refresh notification:', error);
-        // Don't fail the request if WebSocket notification fails
-      }
+      // Notify widgets immediately — play is in the DB, recent plays can refresh now
+      sendToUser(user.id, { type: 'playSubmitted', data: { userId: user.id } }).catch(() => {});
 
-      // Process the play for leaderboards (pass submission data to avoid S3 fetch)
+      // Process the play for leaderboards
       try {
         await processSinglePlay(newPlay, prisma, s3Client, scoreSubmission);
       } catch (error) {
@@ -849,6 +843,7 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
         // Don't return an error response here - the play was created successfully,
         // we just failed to process leaderboards. This can be retried later.
       }
+      // sessionUpdate is broadcast by the user-stats SQS consumer after writing the session.
 
       // Publish score submission event to SNS
       try {

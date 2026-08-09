@@ -222,6 +222,52 @@ export type SuccessResponse = z.infer<typeof successResponseSchema>;
 export type PackListItem = z.infer<typeof packListItemSchema>;
 export type ListPacksResponse = z.infer<typeof listPacksResponseSchema>;
 
+// Pack player scores schemas
+export const packPlayerScoreEntrySchema = z.object({
+  score: z.string(),
+  grade: z.string(),
+});
+
+export const packPlayerChartScoresSchema = z.record(
+  z.string(),
+  z.object({
+    EX: packPlayerScoreEntrySchema.optional(),
+    ITG: packPlayerScoreEntrySchema.optional(),
+    HardEX: packPlayerScoreEntrySchema.optional(),
+  }),
+);
+
+export const packPlayerScoreSimfileSchema = z.object({
+  simfileId: z.string(),
+  title: z.string(),
+  artist: z.string().nullable(),
+  bannerUrl: z.string().nullable(),
+  mdBannerUrl: z.string().nullable().optional(),
+  smBannerUrl: z.string().nullable().optional(),
+  bannerVariants: bannerVariantsSchema,
+  charts: z.object({
+    medium: z.object({ hash: z.string(), meter: z.number().nullable(), stepsType: z.string().nullable() }).optional(),
+    hard: z.object({ hash: z.string(), meter: z.number().nullable(), stepsType: z.string().nullable() }).optional(),
+    challenge: z.object({ hash: z.string(), meter: z.number().nullable(), stepsType: z.string().nullable() }).optional(),
+  }),
+});
+
+export const packPlayerScoresPlayerSchema = z.object({
+  userId: z.string(),
+  alias: z.string(),
+  profileImageUrl: z.string().nullable(),
+  scores: packPlayerChartScoresSchema,
+});
+
+export const packPlayerScoresResponseSchema = z.object({
+  simfiles: z.array(packPlayerScoreSimfileSchema),
+  players: z.array(packPlayerScoresPlayerSchema),
+});
+
+export type PackPlayerScoresResponse = z.infer<typeof packPlayerScoresResponseSchema>;
+export type PackPlayerScoreSimfile = z.infer<typeof packPlayerScoreSimfileSchema>;
+export type PackPlayerScoresPlayer = z.infer<typeof packPlayerScoresPlayerSchema>;
+
 // User list schemas (for Browse Users)
 export const userListItemSchema = z.object({
   id: z.string(),
@@ -1150,15 +1196,38 @@ export const widgetRecentPlaySchema = z.object({
   createdAt: z.union([z.string(), z.date()]),
 });
 
+export const widgetPackLeaderboardNearbyEntrySchema = z.object({
+  userId: z.string(),
+  alias: z.string(),
+  rank: z.number(),
+  totalScore: z.number(),
+  isRival: z.boolean(),
+  isSelf: z.boolean(),
+});
+
 export const widgetPackLeaderboardEntrySchema = z.object({
   rank: z.number(),
   totalScore: z.number(),
   totalParticipants: z.number(),
+  nearby: z.array(widgetPackLeaderboardNearbyEntrySchema).optional(),
 });
 
 export const widgetPackLeaderboardSchema = z.object({
   packName: z.string(),
+  difficulty: z.string().optional(),
   leaderboards: z.record(z.string(), widgetPackLeaderboardEntrySchema),
+});
+
+export const widgetSessionSchema = z.object({
+  startedAt: z.string(),
+  endedAt: z.string(),
+  playCount: z.number(),
+  distinctCharts: z.number(),
+  stepsHit: z.number(),
+  isOngoing: z.boolean(),
+  quads: z.number().optional().default(0),
+  quints: z.number().optional().default(0),
+  hexes: z.number().optional().default(0),
 });
 
 export const widgetDataResponseSchema = z.object({
@@ -1166,14 +1235,17 @@ export const widgetDataResponseSchema = z.object({
     id: z.string(),
     alias: z.string(),
     profileImageUrl: z.string().nullable(),
+    countryCode: z.string().nullable().optional(),
   }),
   recentPlays: z.array(widgetRecentPlaySchema).optional(),
   packLeaderboards: z.record(z.string(), widgetPackLeaderboardSchema).optional(),
+  currentSession: widgetSessionSchema.nullable().optional(),
 });
 
 export type WidgetDataResponse = z.infer<typeof widgetDataResponseSchema>;
 export type WidgetRecentPlay = z.infer<typeof widgetRecentPlaySchema>;
 export type WidgetPackLeaderboard = z.infer<typeof widgetPackLeaderboardSchema>;
+export type WidgetSession = z.infer<typeof widgetSessionSchema>;
 export type WidgetPackLeaderboardEntry = z.infer<typeof widgetPackLeaderboardEntrySchema>;
 
 // ----- Notification schemas -----

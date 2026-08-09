@@ -395,7 +395,7 @@ export class ApiStack extends cdk.Stack {
       events: [
         new lambdaEventSources.SqsEventSource(userStatsQueue, {
           batchSize: 10,
-          maxBatchingWindow: cdk.Duration.seconds(5),
+          maxBatchingWindow: cdk.Duration.seconds(0),
           reportBatchItemFailures: true,
         }),
       ],
@@ -627,6 +627,12 @@ export class ApiStack extends cdk.Stack {
     apiLambda.addEnvironment('CONNECTIONS_TABLE_NAME', websocketConnectionsTable.tableName);
     apiLambda.addToRolePolicy(wsApiManagementPolicy);
     websocketConnectionsTable.grantReadData(apiLambda);
+
+    // Add to user stats Lambda so it can broadcast sessionUpdate after writing the session
+    userStatsLambda.addEnvironment('WEBSOCKET_API_URL', wsApiUrl);
+    userStatsLambda.addEnvironment('CONNECTIONS_TABLE_NAME', websocketConnectionsTable.tableName);
+    userStatsLambda.addToRolePolicy(wsApiManagementPolicy);
+    websocketConnectionsTable.grantReadData(userStatsLambda);
 
     new cdk.CfnOutput(this, 'WebSocketApiUrl', {
       value: wsApiUrl,
