@@ -435,9 +435,10 @@ const getRivalsQuery = (prisma: PrismaClient, userId: string) => {
 
 export const getUser = async (event: AuthenticatedEvent, prisma: PrismaClient): Promise<APIGatewayProxyResult> => {
   try {
-    const [user, preferredIds, rivalRows, permissions] = await Promise.all([
+    const [user, preferredIds, preferredWebsiteIds, rivalRows, permissions] = await Promise.all([
       getUserQuery(prisma, event.user.id),
-      getUserPreferredLeaderboardIds(prisma, event.user.id),
+      getUserPreferredLeaderboardIds(prisma, event.user.id, 'GAME'),
+      getUserPreferredLeaderboardIds(prisma, event.user.id, 'WEBSITE'),
       getRivalsQuery(prisma, event.user.id),
       resolveUserPermissions(prisma, event.user.id),
     ]);
@@ -472,6 +473,7 @@ export const getUser = async (event: AuthenticatedEvent, prisma: PrismaClient): 
         ...user,
         profileImageUrl: user.profileImageUrl ? assetS3UrlToCloudFrontUrl(user.profileImageUrl) : null,
         preferredLeaderboards: preferredIds,
+        preferredLeaderboardsWebsite: preferredWebsiteIds,
         rivalUserIds,
         permissions,
         userHasSubmittedScore,

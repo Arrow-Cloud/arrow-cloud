@@ -30,6 +30,7 @@ export const authResponseSchema = z.object({
 export const getUserResponseSchema = z.object({
   user: userSchema.extend({
     preferredLeaderboards: z.array(z.number()).optional(),
+    preferredLeaderboardsWebsite: z.array(z.number()).optional(),
     rivalUserIds: z.array(z.string()).optional(),
     permissions: z.array(z.string()).optional(),
     userHasSubmittedScore: z.boolean().optional(),
@@ -1107,6 +1108,7 @@ export const sessionPlaySchema = z.object({
       score: z.string(),
       grade: z.string().nullable(),
       judgments: z.record(z.string(), z.number()),
+      musicRate: z.number().nullable().optional(),
       isPB: z.boolean().optional(),
       delta: z.number().nullable().optional(),
     }),
@@ -1201,6 +1203,8 @@ export const widgetPackLeaderboardNearbyEntrySchema = z.object({
   alias: z.string(),
   rank: z.number(),
   totalScore: z.number(),
+  // Positive: this player is ahead of the streaming user by this many points. Negative: behind.
+  delta: z.number().optional(),
   isRival: z.boolean(),
   isSelf: z.boolean(),
 });

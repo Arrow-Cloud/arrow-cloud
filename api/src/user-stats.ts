@@ -63,7 +63,7 @@ function getDateStringInTimezone(date: Date = new Date(), timezone: string = 'UT
 }
 
 // Session gap threshold (2 hours in milliseconds)
-const SESSION_GAP_MS = 1 * 60 * 60 * 1000;
+const SESSION_GAP_MS = 2 * 60 * 60 * 1000;
 
 /**
  * Process a single score submission event and update user stats

@@ -7,9 +7,22 @@ import type { WidgetRecentPlay } from '../../../schemas/apiSchemas';
 import { PANEL_WIDTH, PANEL_HEIGHT, COMPACT_HEIGHTS, HORIZONTAL_WIDTHS, type LeaderboardKey } from '../../../utils/widgetConfig';
 import { useRotatingIndex } from './useRotatingIndex';
 
-const LB_LABELS: Record<LeaderboardKey, string> = { HardEX: 'H.EX', EX: 'EX', ITG: 'ITG' };
-const LB_COLORS: Record<LeaderboardKey, string> = { HardEX: '#FF69B4', EX: '#21CCE8', ITG: '#ffffff' };
-const LB_KEY_FOR_TYPE: Record<string, LeaderboardKey> = { HardEX: 'HardEX', EX: 'EX', Money: 'ITG', ITG: 'ITG' };
+const LB_LABELS: Record<LeaderboardKey, string> = { HardEX: 'H.EX', EX: 'EX', ITG: 'ITG', ITGRate: 'ITG (Rate)', EXRate: 'EX (Rate)' };
+const LB_COLORS: Record<LeaderboardKey, string> = {
+  HardEX: '#FF69B4',
+  EX: '#21CCE8',
+  ITG: '#ffffff',
+  ITGRate: '#C9C9FF',
+  EXRate: '#7BE0F0',
+};
+const LB_KEY_FOR_TYPE: Record<string, LeaderboardKey> = {
+  HardEX: 'HardEX',
+  EX: 'EX',
+  Money: 'ITG',
+  ITG: 'ITG',
+  'ITG (Rate Eligible)': 'ITGRate',
+  'EX (Rate Eligible)': 'EXRate',
+};
 
 const MAX_PLAYS = 3;
 const HEADER_H = 28;

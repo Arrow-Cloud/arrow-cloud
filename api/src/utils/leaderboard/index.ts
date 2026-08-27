@@ -24,6 +24,10 @@ type LeaderboardData = {
     rollsHit: number;
     rollsTotal: number;
   };
+  // Music rate the play was performed at (1 = unmodded). Always 1 for the standard leaderboards
+  // (musicRate === 1 is required for eligibility there), but can be >= 1 for the rate-eligible
+  // leaderboard variants.
+  musicRate: number;
 };
 
 // We want earlier plays to win ties. We sort overall by sortKey DESC.
@@ -59,6 +63,14 @@ export class BaseLeaderboard {
   // Base class can have common functionality for all leaderboards
   // e.g. fetching leaderboard metadata, common validation, etc.
 
+  // For the standard leaderboards ArrowCloud does not accept rate modded plays.
+  // As a timing focused platform, speeding up a chart and getting a better score as a result
+  // just means that the player is doing worse at timing slowly. Rate-eligible leaderboard
+  // variants (see ITGRateLeaderboard/EXRateLeaderboard) relax this to musicRate >= 1.
+  protected isRateEligible(): boolean {
+    return this.submissionData.musicRate === 1;
+  }
+
   isEligible(): boolean {
     // Old submissions before schema was finalized are not eligible
     if (parseFloat(this.submissionData._arrowCloudBodyVersion) < 1.2) {
@@ -72,11 +84,7 @@ export class BaseLeaderboard {
       return false;
     }
 
-    // For now ArrowCloud does not accept rate modded leaderboards
-    // As a timing focused platform, speeding up a chart and getting a better score as a result
-    // just means that the player is doing worse at timing slowly. That does not mean that
-    // future leaderboards may wish to accept rate mods, but for now it's not a thing.
-    if (this.submissionData.musicRate !== 1) {
+    if (!this.isRateEligible()) {
       return false;
     }
 
@@ -114,6 +122,7 @@ export class BaseLeaderboard {
         rollsHit: rollCount,
         rollsTotal: totalRolls,
       },
+      musicRate: this.submissionData.musicRate,
     };
   }
 
@@ -156,7 +165,44 @@ export class ITGLeaderboard extends BaseLeaderboard implements ILeaderboard {
   }
 }
 
+// Rate-eligible variants: same scoring/grading as their standard counterparts, but plays with
+// musicRate >= 1 (rate mods) are eligible too. Not part of DEFAULT_LEADERBOARDS - these are not
+// shown in default frontend leaderboard views, but are computed for every score submission so
+// rate-modded players still have complete data available (e.g. session stats).
+export class ITGRateLeaderboard extends BaseLeaderboard implements ILeaderboard {
+  protected isRateEligible(): boolean {
+    return this.submissionData.musicRate >= 1;
+  }
+
+  getName() {
+    return 'ITG (Rate Eligible)';
+  }
+
+  getId() {
+    return GLOBAL_ITG_RATE_LEADERBOARD_ID;
+  }
+}
+
+export class EXRateLeaderboard extends BaseLeaderboard implements ILeaderboard {
+  protected isRateEligible(): boolean {
+    return this.submissionData.musicRate >= 1;
+  }
+
+  getName() {
+    return 'EX (Rate Eligible)';
+  }
+
+  getId() {
+    return GLOBAL_EX_RATE_LEADERBOARD_ID;
+  }
+}
+
 export const GLOBAL_EX_LEADERBOARD_ID = 2;
 export const GLOBAL_MONEY_LEADERBOARD_ID = 3;
 export const GLOBAL_HARD_EX_LEADERBOARD_ID = 4;
+export const GLOBAL_ITG_RATE_LEADERBOARD_ID = 18;
+export const GLOBAL_EX_RATE_LEADERBOARD_ID = 19;
 export const DEFAULT_LEADERBOARDS = [GLOBAL_HARD_EX_LEADERBOARD_ID, GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID];
+// Every global leaderboard that gets computed on each score submission (includes non-default,
+// rate-eligible variants). Used by full-recalculation tooling.
+export const ALL_GLOBAL_LEADERBOARDS = [...DEFAULT_LEADERBOARDS, GLOBAL_ITG_RATE_LEADERBOARD_ID, GLOBAL_EX_RATE_LEADERBOARD_ID];

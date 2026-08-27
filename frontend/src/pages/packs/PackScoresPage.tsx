@@ -9,7 +9,7 @@ import { useLeaderboardView } from '../../contexts/LeaderboardViewContext';
 import { getPackPlayerScores, getPack } from '../../services/api';
 import { FormattedNumber } from 'react-intl';
 import type { PackPlayerScoresResponse, PackPlayerScoreSimfile, PackPlayerScoresPlayer } from '../../schemas/apiSchemas';
-import type { LeaderboardId } from '../../types/leaderboards';
+import { baseLeaderboardId } from '../../types/leaderboards';
 
 type DifficultyKey = 'medium' | 'hard' | 'challenge';
 
@@ -33,7 +33,7 @@ interface ScoreCellProps {
   player: PackPlayerScoresPlayer;
   simfile: PackPlayerScoreSimfile;
   diffKey: DifficultyKey;
-  lbKey: LeaderboardId;
+  lbKey: 'HardEX' | 'EX' | 'ITG';
   ctx: ScoreContext;
 }
 
@@ -74,7 +74,7 @@ function getScoreContext(
   allPlayers: PackPlayerScoresPlayer[],
   player: PackPlayerScoresPlayer,
   chartHash: string | undefined,
-  lbKey: LeaderboardId,
+  lbKey: 'HardEX' | 'EX' | 'ITG',
 ): ScoreContext {
   if (!chartHash) return { state: 'none', diff: null };
   const playerScores = allPlayers
@@ -96,7 +96,9 @@ export const PackScoresPage: React.FC = () => {
   const { packId, userId: routeUserId } = useParams<{ packId: string; userId?: string }>();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { activeLeaderboard } = useLeaderboardView();
+  const { activeLeaderboard: rawActiveLeaderboard } = useLeaderboardView();
+  // Player-score comparisons don't have rate-eligible data yet - collapse to the base leaderboard.
+  const activeLeaderboard = baseLeaderboardId(rawActiveLeaderboard);
 
   // Normalise playerIds from either route param or query param
   const playerIds = useMemo(() => {

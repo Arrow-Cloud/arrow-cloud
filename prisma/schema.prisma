@@ -330,15 +330,20 @@ model Lifebar {
   updatedAt DateTime @updatedAt
 }
 
+// scope distinguishes which surface a preference applies to:
+// - "GAME": what the in-game engine shows on various screens
+// - "WEBSITE": website-side defaults (currently: Streamer Widget leaderboard panel defaults)
+// A user can have independent preferences per scope; a leaderboard id may appear in both.
 model UserPreferredLeaderboard {
   userId        String
   leaderboardId Int
+  scope         String      @default("GAME")
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   leaderboard   Leaderboard @relation(fields: [leaderboardId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now())
 
-  @@id([userId, leaderboardId])
-  @@index([userId])
+  @@id([userId, leaderboardId, scope])
+  @@index([userId, scope])
   @@index([leaderboardId])
 }
 

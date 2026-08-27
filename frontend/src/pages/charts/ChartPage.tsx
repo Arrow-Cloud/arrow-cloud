@@ -4,6 +4,7 @@ import { Calendar, Loader2, Hash, User, Award, Trophy, Search } from 'lucide-rea
 import { AppPageLayout, Alert, GradeImage, DifficultyChip, Pagination, InteractiveCard } from '../../components';
 import { LeaderboardToggle } from '../../components/leaderboards/LeaderboardToggle';
 import { useLeaderboardView } from '../../contexts/LeaderboardViewContext';
+import { baseLeaderboardId } from '../../types/leaderboards';
 import { useAuth } from '../../contexts/AuthContext';
 import { BannerImage } from '../../components/ui';
 import { getChart, getChartLeaderboards } from '../../services/api';
@@ -808,7 +809,9 @@ const LeaderboardSection: React.FC<{
 const BlueShiftLeaderboardSection: React.FC<{
   blueShiftLeaderboards?: ChartLeaderboardResponse['blueShiftLeaderboards'];
 }> = ({ blueShiftLeaderboards }) => {
-  const { activeLeaderboard } = useLeaderboardView();
+  const { activeLeaderboard: rawActiveLeaderboard } = useLeaderboardView();
+  // Blue Shift is a separate event leaderboard system without rate-eligible entries.
+  const activeLeaderboard = baseLeaderboardId(rawActiveLeaderboard);
   const { hasPermission } = useAuth();
   const { formatNumber } = useIntl();
   const { formatMessage } = useIntl();

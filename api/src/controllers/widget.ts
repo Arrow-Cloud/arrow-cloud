@@ -5,13 +5,19 @@ import { respond } from '../utils/responses';
 import { assetS3UrlToCloudFrontUrl, S3_BUCKET_ASSETS } from '../utils/s3';
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { resolveChartBanner } from '../utils/chart-banner';
-import { GLOBAL_HARD_EX_LEADERBOARD_ID, GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID } from '../utils/leaderboard';
+import {
+  GLOBAL_HARD_EX_LEADERBOARD_ID,
+  GLOBAL_EX_LEADERBOARD_ID,
+  GLOBAL_MONEY_LEADERBOARD_ID,
+  GLOBAL_ITG_RATE_LEADERBOARD_ID,
+  GLOBAL_EX_RATE_LEADERBOARD_ID,
+} from '../utils/leaderboard';
 import { type ScoringSystemKey, type PackLeaderboardDifficulty } from '../utils/pack-leaderboard';
 import { countPerfectScores } from '../utils/stats-utils';
 
 const s3Client = new S3Client();
 
-type LeaderboardKey = 'HardEX' | 'EX' | 'ITG';
+type LeaderboardKey = 'HardEX' | 'EX' | 'ITG' | 'ITGRate' | 'EXRate';
 
 type WidgetFeatureConfig =
   | { type: 'profile' }
@@ -29,6 +35,8 @@ const LB_KEY_TO_ID: Record<LeaderboardKey, number> = {
   HardEX: GLOBAL_HARD_EX_LEADERBOARD_ID,
   EX: GLOBAL_EX_LEADERBOARD_ID,
   ITG: GLOBAL_MONEY_LEADERBOARD_ID,
+  ITGRate: GLOBAL_ITG_RATE_LEADERBOARD_ID,
+  EXRate: GLOBAL_EX_RATE_LEADERBOARD_ID,
 };
 
 function decodeConfig(encoded: string): WidgetConfig | null {
@@ -163,6 +171,8 @@ function buildNearbyPlayers(
       alias: users[r.userId]?.alias ?? 'Unknown',
       rank: r.rank,
       totalScore: r.totalScore,
+      // Positive: this player is ahead of the streaming user by this many points. Negative: behind.
+      delta: r.totalScore - userEntry.totalScore,
       isRival: rivalIds.has(r.userId),
       isSelf: r.userId === userId,
     }));

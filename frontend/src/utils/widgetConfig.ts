@@ -1,4 +1,4 @@
-export type LeaderboardKey = 'HardEX' | 'EX' | 'ITG';
+export type LeaderboardKey = 'HardEX' | 'EX' | 'ITG' | 'ITGRate' | 'EXRate';
 export type PackLeaderboardDifficulty = 'medium' | 'hard' | 'challenge';
 
 export type WidgetFeatureConfig =

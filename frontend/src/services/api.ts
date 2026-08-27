@@ -183,8 +183,11 @@ export const getUserById = async (
   return validateResponse(userProfileResponseSchema, response.data, `/user/${userId}`) as UserProfileResponse;
 };
 
-export const updatePreferredLeaderboards = async (leaderboardIds: PreferredLeaderboards): Promise<GetUserResponse['user']> => {
-  const response = await api.put('/user/leaderboards', { leaderboardIds });
+export const updatePreferredLeaderboards = async (
+  leaderboardIds: PreferredLeaderboards,
+  scope: 'GAME' | 'WEBSITE' = 'GAME',
+): Promise<GetUserResponse['user']> => {
+  const response = await api.put('/user/leaderboards', { leaderboardIds, scope });
   const parsed = getUserResponseSchema.safeParse(response.data);
   if (parsed.success) {
     return parsed.data.user;
@@ -575,7 +578,7 @@ export interface GetSessionParams {
   page?: number;
   limit?: number;
   pbOnly?: boolean;
-  leaderboard?: 'EX' | 'ITG' | 'HardEX';
+  leaderboard?: 'EX' | 'ITG' | 'HardEX' | 'ITGRate' | 'EXRate';
 }
 
 export const getSession = async (sessionId: number, params: GetSessionParams = {}): Promise<SessionDetails> => {

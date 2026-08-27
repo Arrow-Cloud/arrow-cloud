@@ -498,7 +498,7 @@ export const getUserById = async (event: ExtendedAPIGatewayProxyEvent, prisma: P
           updatedAt: true,
         },
       }),
-      getUserPreferredLeaderboardIds(prisma, userId),
+      getUserPreferredLeaderboardIds(prisma, userId, 'GAME'),
     ]);
 
     const [{ plays: recentPlays, totalCount }, blueShiftData, trophies] = await Promise.all([
@@ -752,8 +752,10 @@ export const updateUserPreferredLeaderboards = async (event: AuthenticatedEvent,
     if (!parsed.success) {
       return respond(422, { error: 'Validation failed', issues: parsed.error.issues });
     }
-    const leaderboardIds = parsed.data.leaderboardIds;
-    const updated = await setUserPreferredLeaderboards(prisma, event.user.id, leaderboardIds);
+    const { leaderboardIds, scope } = parsed.data;
+    const updated = await setUserPreferredLeaderboards(prisma, event.user.id, leaderboardIds, scope);
+    const otherScope = scope === 'GAME' ? 'WEBSITE' : 'GAME';
+    const otherScopeIds = await getUserPreferredLeaderboardIds(prisma, event.user.id, otherScope);
 
     // Fetch current user (same shape as getUser) so client can update without extra roundtrip
     const user = await prisma.user.findUnique({
@@ -781,7 +783,8 @@ export const updateUserPreferredLeaderboards = async (event: AuthenticatedEvent,
       user: {
         ...user,
         profileImageUrl: user.profileImageUrl ? assetS3UrlToCloudFrontUrl(user.profileImageUrl) : null,
-        preferredLeaderboards: updated,
+        preferredLeaderboards: scope === 'GAME' ? updated : otherScopeIds,
+        preferredLeaderboardsWebsite: scope === 'WEBSITE' ? updated : otherScopeIds,
       },
     });
   } catch (err) {

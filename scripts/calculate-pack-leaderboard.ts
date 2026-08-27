@@ -2,7 +2,7 @@
  * Calculate Pack Leaderboards
  *
  * Computes overall pack leaderboards for a given pack ID.
- * Produces a matrix of 9 leaderboards: 3 difficulty slots × 3 scoring systems.
+ * Produces a matrix of 15 leaderboards: 3 difficulty slots × 5 scoring systems.
  *
  * Usage:
  *   npx tsx scripts/calculate-pack-leaderboard.ts <packId> [outputPath] [--user <userId>]
@@ -73,7 +73,7 @@ async function printUserChartBreakdown(packId: number, userId: string) {
     rowIndex.set(`${row.chartHash}:${row.leaderboardId}`, row);
   }
 
-  const leaderboardIds: Record<string, number> = { HardEX: 4, EX: 2, ITG: 3 };
+  const leaderboardIds: Record<string, number> = { HardEX: 4, EX: 2, ITG: 3, ITGRate: 18, EXRate: 19 };
 
   for (const diff of ['medium', 'hard', 'challenge'] as const) {
     const diffCharts = charts.filter((c) => c.difficulty === diff);

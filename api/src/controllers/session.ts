@@ -14,6 +14,14 @@ const SESSION_GAP_MS = 2 * 60 * 60 * 1000;
 const LEADERBOARD_EX = 2;
 const LEADERBOARD_ITG = 3;
 const LEADERBOARD_HARDEX = 4;
+const LEADERBOARD_ITG_RATE = 18;
+const LEADERBOARD_EX_RATE = 19;
+
+// Fallback set of leaderboard entries to include per play when a caller doesn't specify which
+// single leaderboard it wants via the `leaderboard` query param (matches pre-rate-eligible
+// behavior). Intentionally excludes rate-eligible leaderboards - and is unrelated to the
+// quads/quints/hexes perfect score count below, which is specific to standard leaderboards.
+const DEFAULT_DISPLAY_LEADERBOARD_IDS = [LEADERBOARD_ITG, LEADERBOARD_EX, LEADERBOARD_HARDEX];
 
 const querySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
@@ -22,7 +30,7 @@ const querySchema = z.object({
     .enum(['true', 'false'])
     .optional()
     .transform((v) => v === 'true'),
-  leaderboard: z.enum(['EX', 'ITG', 'HardEX']).optional(),
+  leaderboard: z.enum(['EX', 'ITG', 'HardEX', 'ITGRate', 'EXRate']).optional(),
 });
 
 const listSessionsQuerySchema = z.object({
@@ -80,6 +88,7 @@ interface SessionPlay {
     score: string;
     grade: string | null;
     judgments: Record<string, number>;
+    musicRate: number | null; // Rate the play was performed at; null for plays recorded before this was captured
     isPB: boolean;
     delta: number | null; // Score delta vs previous best (null if first play on chart)
   }>;
@@ -133,9 +142,26 @@ export async function getSession(event: ExtendedAPIGatewayProxyEvent, prisma: Pr
     }
     const { page, limit, pbOnly, leaderboard } = queryResult.data;
 
-    // Determine which leaderboard ID to filter for PBs
-    const pbLeaderboardId =
-      leaderboard === 'EX' ? LEADERBOARD_EX : leaderboard === 'ITG' ? LEADERBOARD_ITG : leaderboard === 'HardEX' ? LEADERBOARD_HARDEX : null;
+    // Determine which leaderboard ID the client is asking about. This is used both to scope the
+    // PB-only filter and to limit which PlayLeaderboard entries get fetched/returned per play -
+    // the client only ever displays one leaderboard at a time (see the leaderboard toggle), so
+    // there's no reason to fetch entries for leaderboards it isn't currently showing.
+    const requestedLeaderboardId =
+      leaderboard === 'EX'
+        ? LEADERBOARD_EX
+        : leaderboard === 'ITG'
+          ? LEADERBOARD_ITG
+          : leaderboard === 'HardEX'
+            ? LEADERBOARD_HARDEX
+            : leaderboard === 'ITGRate'
+              ? LEADERBOARD_ITG_RATE
+              : leaderboard === 'EXRate'
+                ? LEADERBOARD_EX_RATE
+                : null;
+    const pbLeaderboardId = requestedLeaderboardId;
+    // Callers that don't specify a leaderboard (e.g. not yet updated) still get the pre-existing
+    // set of standard leaderboards rather than a single arbitrary one.
+    const displayLeaderboardIds = requestedLeaderboardId ? [requestedLeaderboardId] : DEFAULT_DISPLAY_LEADERBOARD_IDS;
 
     // Fetch session with user info
     const session = await prisma.userSession.findUnique({
@@ -384,7 +410,7 @@ export async function getSession(event: ExtendedAPIGatewayProxyEvent, prisma: Pr
         PlayLeaderboard: {
           where: {
             leaderboardId: {
-              in: [LEADERBOARD_EX, LEADERBOARD_ITG, LEADERBOARD_HARDEX],
+              in: displayLeaderboardIds,
             },
           },
           select: {
@@ -489,13 +515,14 @@ export async function getSession(event: ExtendedAPIGatewayProxyEvent, prisma: Pr
           ...chartBanner,
         },
         leaderboards: play.PlayLeaderboard.map((pl) => {
-          const data = pl.data as { score?: string; grade?: string; judgments?: Record<string, number> } | null;
+          const data = pl.data as { score?: string; grade?: string; judgments?: Record<string, number>; musicRate?: number } | null;
           const mapKey = `${play.id}-${pl.leaderboardId}`;
           return {
             type: pl.leaderboard.type || 'Unknown',
             score: data?.score || '0',
             grade: data?.grade || null,
             judgments: data?.judgments || {},
+            musicRate: typeof data?.musicRate === 'number' ? data.musicRate : null,
             isPB: pbStatusMap.get(mapKey) ?? false,
             delta: deltaMap.get(mapKey) ?? null,
           };
