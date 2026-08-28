@@ -6,7 +6,7 @@ import { DifficultyChip } from '../DifficultyChip';
 import { BannerImage } from '../ui';
 import { getSession } from '../../services/api';
 import { useLeaderboardView } from '../../contexts/LeaderboardViewContext';
-import { backendNameFor, type LeaderboardId } from '../../types/leaderboards';
+import { backendNameFor, baseLeaderboardId, type LeaderboardId } from '../../types/leaderboards';
 import type { SessionPlay } from '../../schemas/apiSchemas';
 
 interface SessionShareModalProps {
@@ -25,8 +25,15 @@ type ModalStep = 'select' | 'preview';
  */
 function getActiveLeaderboardEntry(play: SessionPlay, activeLeaderboard: 'HardEX' | 'EX' | 'ITG') {
   const names = backendNameFor(activeLeaderboard as LeaderboardId);
+  // Prefer an exact type match first - a play can also carry a rate-eligible entry (e.g. "ITG
+  // (Rate Eligible)") which contains the base name as a substring, so substring matching alone
+  // could pick the wrong entry.
   for (const n of names) {
-    const entry = play.leaderboards.find((lb) => lb.type === n || lb.type.toLowerCase().includes(n.toLowerCase()));
+    const exact = play.leaderboards.find((lb) => lb.type === n);
+    if (exact) return exact;
+  }
+  for (const n of names) {
+    const entry = play.leaderboards.find((lb) => lb.type.toLowerCase().includes(n.toLowerCase()));
     if (entry) return entry;
   }
   const short = activeLeaderboard === 'ITG' ? 'Money' : activeLeaderboard;
@@ -133,25 +140,26 @@ export const SessionShareModal: React.FC<SessionShareModalProps> = ({ sessionId,
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
-  // Fetch all plays when modal opens
+  // Fetch all plays when modal opens, and again if the active leaderboard changes while it's
+  // open - the backend only returns entries for the requested leaderboard, so a stale fetch
+  // would otherwise leave allPlays holding the previous leaderboard's data.
   useEffect(() => {
-    if (isOpen && allPlays.length === 0 && !playsLoading) {
-      const fetchAllPlays = async () => {
-        setPlaysLoading(true);
-        setPlaysError(null);
-        try {
-          const data = await getSession(sessionId, { limit: 100 });
-          setAllPlays(data.plays);
-        } catch (err) {
-          console.error('Error fetching session plays:', err);
-          setPlaysError('Failed to load plays');
-        } finally {
-          setPlaysLoading(false);
-        }
-      };
-      fetchAllPlays();
-    }
-  }, [isOpen, sessionId, allPlays.length, playsLoading]);
+    if (!isOpen) return;
+    const fetchAllPlays = async () => {
+      setPlaysLoading(true);
+      setPlaysError(null);
+      try {
+        const data = await getSession(sessionId, { limit: 100, leaderboard: activeLeaderboard });
+        setAllPlays(data.plays);
+      } catch (err) {
+        console.error('Error fetching session plays:', err);
+        setPlaysError('Failed to load plays');
+      } finally {
+        setPlaysLoading(false);
+      }
+    };
+    fetchAllPlays();
+  }, [isOpen, sessionId, activeLeaderboard]);
 
   // Reset state when modal closes
   useEffect(() => {
@@ -183,7 +191,7 @@ export const SessionShareModal: React.FC<SessionShareModalProps> = ({ sessionId,
 
   // Build share URL with selected plays using active leaderboard
   const playIdsParam = selectedPlayIds.join(',');
-  const systemParam = toShareSystem(activeLeaderboard);
+  const systemParam = toShareSystem(baseLeaderboardId(activeLeaderboard));
   const shareUrl = `${SHARE_SERVICE_URL}/session/${sessionId}?plays=${playIdsParam}&system=${systemParam}`;
   const imageUrl = `${SHARE_SERVICE_URL}/session/image/${sessionId}?plays=${playIdsParam}&system=${systemParam}`;
 
@@ -268,7 +276,7 @@ export const SessionShareModal: React.FC<SessionShareModalProps> = ({ sessionId,
                       isSelected={isSelected}
                       onToggle={() => togglePlay(play.id)}
                       disabled={!canSelect}
-                      activeLeaderboard={activeLeaderboard}
+                      activeLeaderboard={baseLeaderboardId(activeLeaderboard)}
                     />
                   );
                 })

@@ -10,6 +10,7 @@ const mockPrisma = {
   userPreferredLeaderboard: {
     deleteMany: jest.fn(),
     createMany: jest.fn(),
+    findMany: jest.fn(),
   },
   leaderboard: {
     findMany: jest.fn(),
@@ -66,6 +67,9 @@ describe('updateUserPreferredLeaderboards', () => {
     mockPrisma.user.findUnique = jest.fn().mockResolvedValue(baseUser);
     (mockPrisma.userPreferredLeaderboard.deleteMany as any).mockResolvedValue({});
     (mockPrisma.userPreferredLeaderboard.createMany as any).mockResolvedValue({});
+    // Controller fetches the other scope's ids (e.g. WEBSITE when saving GAME) to return alongside
+    // the scope that was just saved.
+    (mockPrisma.userPreferredLeaderboard.findMany as any).mockResolvedValue([]);
   });
 
   it('returns 400 when body missing', async () => {

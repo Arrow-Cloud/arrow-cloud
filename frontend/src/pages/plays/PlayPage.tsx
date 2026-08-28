@@ -8,7 +8,7 @@ import { useLeaderboardView } from '../../contexts/LeaderboardViewContext';
 import { useAuth } from '../../contexts/AuthContext';
 import { getPlay, deletePlay } from '../../services/api';
 import { type PlayDetails } from '../../schemas/apiSchemas';
-import { backendNameFor, type LeaderboardId } from '../../types/leaderboards';
+import { backendNameFor, baseLeaderboardId, type LeaderboardId } from '../../types/leaderboards';
 import { Calendar, User, Activity, Loader2, Sigma, BarChart3, Maximize2, Trash2, Share2 } from 'lucide-react';
 
 // Chart.js setup
@@ -26,7 +26,10 @@ Tooltip.positioners.mouse = function (elements, eventPosition) {
   };
 };
 
-function useActiveLeaderboard(play: PlayDetails | null, global: 'HardEX' | 'EX' | 'ITG') {
+function useActiveLeaderboard(play: PlayDetails | null, globalId: LeaderboardId) {
+  // This page hasn't been extended to fetch rate-eligible leaderboard entries yet - fall back to
+  // the base leaderboard so the shared global selection degrades gracefully here.
+  const global = baseLeaderboardId(globalId);
   return useMemo(() => {
     if (!play) return null;
     // Prefer exact short type first
@@ -170,7 +173,7 @@ const PlayHeader: React.FC<{ play: PlayDetails; onShare: () => void }> = ({ play
 
 const RadarDataSection: React.FC<{ play: PlayDetails }> = ({ play }) => {
   const { activeLeaderboard } = useLeaderboardView();
-  const entry = useActiveLeaderboard(play, activeLeaderboard as any);
+  const entry = useActiveLeaderboard(play, activeLeaderboard);
   const radar = (entry?.data as any)?.radar;
 
   if (!radar) return null;
@@ -219,7 +222,7 @@ const RadarDataSection: React.FC<{ play: PlayDetails }> = ({ play }) => {
 
 const JudgmentsSection: React.FC<{ play: PlayDetails }> = ({ play }) => {
   const { activeLeaderboard } = useLeaderboardView();
-  const entry = useActiveLeaderboard(play, activeLeaderboard as any);
+  const entry = useActiveLeaderboard(play, activeLeaderboard);
   const j = entry?.data.judgments || {};
   const orderedFromApi = (entry?.data as any)?.judgmentsOrdered as { name: string; value: number }[] | undefined;
 
@@ -232,7 +235,7 @@ const JudgmentsSection: React.FC<{ play: PlayDetails }> = ({ play }) => {
         <h3 className="card-title text-lg mb-2">
           <FormattedMessage defaultMessage="Judgments" id="xM1sJc" description="Title for the judgments section on the play page" />
         </h3>
-        <JudgmentList judgments={judgments} modifiers={play.modifiers} variant="compact" scoringSystem={activeLeaderboard} />
+        <JudgmentList judgments={judgments} modifiers={play.modifiers} variant="compact" scoringSystem={baseLeaderboardId(activeLeaderboard)} />
       </div>
     </div>
   );
@@ -276,7 +279,8 @@ const ITG_SYS: ScoringSystem = {
 // Use shared JUDGMENT_COLORS above
 
 const TimingChartSection: React.FC<{ play: PlayDetails }> = ({ play }) => {
-  const { activeLeaderboard } = useLeaderboardView();
+  const { activeLeaderboard: rawActiveLeaderboard } = useLeaderboardView();
+  const activeLeaderboard = baseLeaderboardId(rawActiveLeaderboard);
   const timing = play.timingData || [];
 
   // Compute statistics from numeric offsets (exclude Miss entries)

@@ -1,5 +1,11 @@
 import type { PrismaClient } from '../../prisma/generated/client';
-import { GLOBAL_HARD_EX_LEADERBOARD_ID, GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID } from './leaderboard';
+import {
+  GLOBAL_HARD_EX_LEADERBOARD_ID,
+  GLOBAL_EX_LEADERBOARD_ID,
+  GLOBAL_MONEY_LEADERBOARD_ID,
+  GLOBAL_ITG_RATE_LEADERBOARD_ID,
+  GLOBAL_EX_RATE_LEADERBOARD_ID,
+} from './leaderboard';
 import { assetS3UrlToCloudFrontUrl } from './s3';
 
 // ---------------------------------------------------------------------------
@@ -18,6 +24,8 @@ export const SCORING_SYSTEMS = {
   HardEX: GLOBAL_HARD_EX_LEADERBOARD_ID,
   EX: GLOBAL_EX_LEADERBOARD_ID,
   ITG: GLOBAL_MONEY_LEADERBOARD_ID,
+  ITGRate: GLOBAL_ITG_RATE_LEADERBOARD_ID,
+  EXRate: GLOBAL_EX_RATE_LEADERBOARD_ID,
 } as const;
 export type ScoringSystemKey = keyof typeof SCORING_SYSTEMS;
 export const SCORING_SYSTEM_KEYS = Object.keys(SCORING_SYSTEMS) as ScoringSystemKey[];
@@ -173,8 +181,8 @@ async function getBestScoresForCharts(
 /**
  * Calculate pack leaderboards for a single pack.
  *
- * Returns a fully-serialisable {@link PackLeaderboardOutput} containing 9
- * leaderboards (3 difficulties × 3 scoring systems) with a de-duplicated
+ * Returns a fully-serialisable {@link PackLeaderboardOutput} containing 15
+ * leaderboards (3 difficulties × 5 scoring systems) with a de-duplicated
  * users dictionary.
  */
 export async function calculatePackLeaderboards(prisma: PrismaClient, packId: number): Promise<PackLeaderboardOutput> {

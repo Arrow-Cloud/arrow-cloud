@@ -49,10 +49,10 @@ const AVAILABLE_THEMES = [
   { id: 'bumblebee', label: 'Bumblebee' },
 ];
 
-const LB_LABELS: Record<LeaderboardKey, string> = { HardEX: 'H.EX', EX: 'EX', ITG: 'ITG' };
-const ALL_LB_KEYS: LeaderboardKey[] = ['HardEX', 'EX', 'ITG'];
+const LB_LABELS: Record<LeaderboardKey, string> = { HardEX: 'H.EX', EX: 'EX', ITG: 'ITG', ITGRate: 'ITG (Rate)', EXRate: 'EX (Rate)' };
+const ALL_LB_KEYS: LeaderboardKey[] = ['HardEX', 'EX', 'ITG', 'ITGRate', 'EXRate'];
 const DIFF_LABELS: Record<PackLeaderboardDifficulty, string> = { medium: 'Medium', hard: 'Hard', challenge: 'Challenge' };
-const LB_ID_MAP: Record<number, LeaderboardKey> = { 4: 'HardEX', 2: 'EX', 3: 'ITG' };
+const LB_ID_MAP: Record<number, LeaderboardKey> = { 4: 'HardEX', 2: 'EX', 3: 'ITG', 18: 'ITGRate', 19: 'EXRate' };
 
 const FEATURE_DESCRIPTIONS: Record<WidgetFeatureConfig['type'], string> = {
   recentPlays: 'Cycles through your 3 most recent scores',
@@ -61,7 +61,7 @@ const FEATURE_DESCRIPTIONS: Record<WidgetFeatureConfig['type'], string> = {
 };
 
 function getDefaultLeaderboards(user: any): LeaderboardKey[] {
-  const prefs: number[] = user?.preferredLeaderboards ?? [];
+  const prefs: number[] = user?.preferredLeaderboardsWebsite ?? [];
   const mapped = prefs.map((id: number) => LB_ID_MAP[id]).filter(Boolean) as LeaderboardKey[];
   return mapped.length > 0 ? mapped : ['EX'];
 }
@@ -707,7 +707,10 @@ export const WidgetSection: React.FC = () => {
   const [step, setStep] = useState<WizardStep>(1);
   const [selectedTheme, setSelectedTheme] = useState('arrow-blue');
   const [compatMode, setCompatMode] = useState(false);
-  const [features, setFeatures] = useState<WidgetFeatureConfig[]>([{ type: 'currentSession' }, { type: 'recentPlays', leaderboards: ['EX'] }]);
+  const [features, setFeatures] = useState<WidgetFeatureConfig[]>([
+    { type: 'currentSession' },
+    { type: 'recentPlays', leaderboards: getDefaultLeaderboards(user) },
+  ]);
   const [orientation, setOrientation] = useState<'horizontal' | 'vertical'>('horizontal');
   const [packs, setPacks] = useState<PackListItem[]>([]);
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { User as UserIcon, Lock, Fingerprint, Key, Users, Camera, SlidersHorizontal, XCircle, Trophy, MonitorPlay } from 'lucide-react';
+import { User as UserIcon, Lock, Fingerprint, Key, Users, Camera, SlidersHorizontal, XCircle, Trophy, MonitorPlay, AlertTriangle, Info } from 'lucide-react';
 import { updatePreferredLeaderboards, getUser } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 import { AppPageLayout } from '../../components';
 import {
   EmailVerificationAlert,
@@ -132,17 +133,33 @@ const NavigationItem: React.FC<{
 };
 
 const AVAILABLE_LEADERBOARDS: { id: number; label: string }[] = [
-  { id: 4, label: 'HardEX' },
+  { id: 3, label: 'ITG' },
   { id: 2, label: 'EX' },
-  { id: 3, label: 'Money' },
+  { id: 4, label: 'H.EX' },
+  { id: 18, label: 'ITG (Rate)' },
+  { id: 19, label: 'EX (Rate)' },
 ];
 
-const LeaderboardsSection: React.FC = () => {
+type LeaderboardPreferenceScope = 'GAME' | 'WEBSITE';
+
+const SCOPE_FIELD: Record<LeaderboardPreferenceScope, 'preferredLeaderboards' | 'preferredLeaderboardsWebsite'> = {
+  GAME: 'preferredLeaderboards',
+  WEBSITE: 'preferredLeaderboardsWebsite',
+};
+
+const LeaderboardPreferenceCard: React.FC<{
+  scope: LeaderboardPreferenceScope;
+  title: React.ReactNode;
+  description: React.ReactNode;
+  disclaimer?: React.ReactNode;
+}> = ({ scope, title, description, disclaimer }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<number[]>([]);
   const { formatMessage } = useIntl();
+  const { user: authUser, updateUser } = useAuth();
+  const field = SCOPE_FIELD[scope];
 
   useEffect(() => {
     let mounted = true;
@@ -150,7 +167,7 @@ const LeaderboardsSection: React.FC = () => {
       try {
         const userResp = await getUser();
         if (mounted) {
-          const prefs = (userResp.user as any).preferredLeaderboards || [];
+          const prefs = (userResp.user as any)[field] || [];
           setSelected(prefs);
         }
       } catch (e: any) {
@@ -170,7 +187,7 @@ const LeaderboardsSection: React.FC = () => {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [field, formatMessage]);
 
   const toggle = (id: number) => {
     setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
@@ -180,8 +197,9 @@ const LeaderboardsSection: React.FC = () => {
     setSaving(true);
     setError(null);
     try {
-      const user = await updatePreferredLeaderboards(selected); // returns full user
-      setSelected((user as any).preferredLeaderboards || []);
+      const user = await updatePreferredLeaderboards(selected, scope); // returns full user
+      setSelected((user as any)[field] || []);
+      updateUser({ ...(authUser as any), ...(user as any) });
     } catch (e: any) {
       setError(
         e.message ||
@@ -200,8 +218,9 @@ const LeaderboardsSection: React.FC = () => {
     setSaving(true);
     setError(null);
     try {
-      const user = await updatePreferredLeaderboards([]);
-      setSelected((user as any).preferredLeaderboards || []);
+      const user = await updatePreferredLeaderboards([], scope);
+      setSelected((user as any)[field] || []);
+      updateUser({ ...(authUser as any), ...(user as any) });
     } catch (e: any) {
       setError(
         e.message ||
@@ -216,50 +235,95 @@ const LeaderboardsSection: React.FC = () => {
     }
   };
 
-  if (loading)
-    return (
-      <div className="animate-pulse text-sm">
-        <FormattedMessage defaultMessage="Loading leaderboards..." description="Loading message shown while leaderboards are being fetched" id="628Yaq" />
-      </div>
-    );
-  if (error) return <div className="text-error text-sm">{error}</div>;
-
   return (
-    <div className="space-y-4">
-      <div className="text-sm text-base-content/70">
-        <FormattedMessage
-          defaultMessage="Choose which leaderboard styles you would prefer to see in game. Event leaderboards will always be shown."
-          description="Instructional text for selecting preferred leaderboard styles"
-          id="wMsd+n"
-        />
+    <div className="border border-base-300/40 rounded-xl p-4 space-y-4">
+      <div>
+        <h3 className="font-semibold text-base-content">{title}</h3>
+        <div className="text-sm text-base-content/70">{description}</div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {AVAILABLE_LEADERBOARDS.map((lb) => {
-          const checked = selected.includes(lb.id);
-          return (
-            <label
-              key={lb.id}
-              className={`border rounded-lg p-3 cursor-pointer flex items-center gap-2 transition ${checked ? 'bg-primary text-primary-content border-primary' : 'bg-base-200/50 hover:bg-base-200 border-base-300/40'}`}
-            >
-              <input type="checkbox" className="checkbox checkbox-sm" checked={checked} onChange={() => toggle(lb.id)} />
-              <span className="text-sm font-medium">{lb.label}</span>
-            </label>
-          );
-        })}
+      {disclaimer && (
+        <div className="flex items-start gap-2 rounded-lg border border-warning/40 bg-warning/10 p-3 text-sm text-base-content">
+          <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0 text-warning" />
+          <div>{disclaimer}</div>
+        </div>
+      )}
+      {loading ? (
+        <div className="animate-pulse text-sm">
+          <FormattedMessage defaultMessage="Loading leaderboards..." description="Loading message shown while leaderboards are being fetched" id="628Yaq" />
+        </div>
+      ) : error ? (
+        <div className="text-error text-sm">{error}</div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {AVAILABLE_LEADERBOARDS.map((lb) => {
+              const checked = selected.includes(lb.id);
+              return (
+                <label
+                  key={lb.id}
+                  className={`border rounded-lg p-3 cursor-pointer flex items-center gap-2 transition ${checked ? 'bg-primary text-primary-content border-primary' : 'bg-base-200/50 hover:bg-base-200 border-base-300/40'}`}
+                >
+                  <input type="checkbox" className="checkbox checkbox-sm" checked={checked} onChange={() => toggle(lb.id)} />
+                  <span className="text-sm font-medium">{lb.label}</span>
+                </label>
+              );
+            })}
+          </div>
+          <div className="flex gap-3">
+            <button className="btn btn-sm btn-primary" onClick={save} disabled={saving}>
+              {saving ? (
+                <FormattedMessage defaultMessage="Saving..." description="Button label shown when preferred leaderboards are being saved" id="TZbl8m" />
+              ) : (
+                <FormattedMessage defaultMessage="Save Preferences" description="Button label for saving preferred leaderboards" id="f70c15" />
+              )}
+            </button>
+            <button className="btn btn-sm btn-outline" onClick={clearAll} disabled={saving || selected.length === 0}>
+              <XCircle className="w-4 h-4 mr-1" />
+              <FormattedMessage defaultMessage="Remove Preferences" description="Button label for removing all preferred leaderboards" id="Bs3fyg" />
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+const LeaderboardsSection: React.FC = () => {
+  return (
+    <div className="space-y-6">
+      <div className="flex items-start gap-2 rounded-lg border border-info/40 bg-info/10 p-3 text-sm text-base-content">
+        <Info className="w-4 h-4 mt-0.5 flex-shrink-0 text-info" />
+        <div>
+          <FormattedMessage
+            defaultMessage="Leaderboards marked <b>(Rate)</b> include scores played with a rate mod of 1.00x or faster, in addition to unmodded (1.00x) scores. Standard leaderboards only include unmodded (1.00x) scores."
+            description="Info callout explaining what the (Rate) leaderboard suffix means"
+            id="aQUTKN"
+            values={{ b: (chunks: React.ReactNode) => <strong>{chunks}</strong> }}
+          />
+        </div>
       </div>
-      <div className="flex gap-3">
-        <button className="btn btn-sm btn-primary" onClick={save} disabled={saving}>
-          {saving ? (
-            <FormattedMessage defaultMessage="Saving..." description="Button label shown when preferred leaderboards are being saved" id="TZbl8m" />
-          ) : (
-            <FormattedMessage defaultMessage="Save Preferences" description="Button label for saving preferred leaderboards" id="f70c15" />
-          )}
-        </button>
-        <button className="btn btn-sm btn-outline" onClick={clearAll} disabled={saving || selected.length === 0}>
-          <XCircle className="w-4 h-4 mr-1" />
-          <FormattedMessage defaultMessage="Remove Preferences" description="Button label for removing all preferred leaderboards" id="Bs3fyg" />
-        </button>
-      </div>
+      <LeaderboardPreferenceCard
+        scope="GAME"
+        title={<FormattedMessage defaultMessage="In-Game" description="Heading for in-game leaderboard preferences" id="/10P1u" />}
+        description={
+          <FormattedMessage
+            defaultMessage="Choose which leaderboard styles you would prefer to see in game"
+            description="Instructional text for selecting in-game preferred leaderboard styles"
+            id="X5K83v"
+          />
+        }
+      />
+      <LeaderboardPreferenceCard
+        scope="WEBSITE"
+        title={<FormattedMessage defaultMessage="Website" description="Heading for website leaderboard preferences" id="eySTYM" />}
+        description={
+          <FormattedMessage
+            defaultMessage="Choose which leaderboard styles you want to see across the website — leaderboard toggles on chart, play, pack, session, and other pages will only show your chosen styles — and as defaults in your Streamer Widget."
+            description="Instructional text for selecting website preferred leaderboard styles"
+            id="IOYCVY"
+          />
+        }
+      />
     </div>
   );
 };

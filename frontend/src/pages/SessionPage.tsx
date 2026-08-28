@@ -8,7 +8,7 @@ import type { PaginationMeta } from '../components/ui/Pagination';
 import { BannerImage } from '../components/ui';
 import { LeaderboardToggle } from '../components/leaderboards/LeaderboardToggle';
 import { useLeaderboardView } from '../contexts/LeaderboardViewContext';
-import { backendNameFor, type LeaderboardId } from '../types/leaderboards';
+import { backendNameFor, baseLeaderboardId, type LeaderboardId } from '../types/leaderboards';
 import { getSession } from '../services/api';
 import type { SessionDetails, SessionPlay } from '../schemas/apiSchemas';
 
@@ -20,6 +20,14 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 // localStorage key for persisting PBs only filter
 const PB_ONLY_LS_KEY = 'sessionPBsOnly';
+
+const LEADERBOARD_COLORS: Record<LeaderboardId, string> = {
+  HardEX: '#FF69B4',
+  EX: '#21CCE8',
+  ITG: '#FFFFFF',
+  ITGRate: '#C9C9FF',
+  EXRate: '#7BE0F0',
+};
 
 /**
  * Format duration in milliseconds to a human-readable string
@@ -360,12 +368,22 @@ interface PlayCardProps {
 /**
  * Get the active leaderboard entry matching global preference
  */
-function useActiveLeaderboard(play: SessionPlay, global: 'HardEX' | 'EX' | 'ITG') {
+function useActiveLeaderboard(play: SessionPlay, global: LeaderboardId) {
   return useMemo(() => {
-    // Try to find an exact match using backend names
-    const names = backendNameFor(global as LeaderboardId);
+    const names = backendNameFor(global);
+
+    // Prefer an exact type match first. This matters once rate-eligible leaderboards are in the
+    // mix: a play can have both an "ITG" and an "ITG (Rate Eligible)" entry, and the latter
+    // contains "itg" as a substring, so a substring-only search could pick the wrong one
+    // depending on array order.
     for (const n of names) {
-      const entry = play.leaderboards.find((lb) => lb.type === n || lb.type.toLowerCase().includes(n.toLowerCase()));
+      const exact = play.leaderboards.find((lb) => lb.type === n);
+      if (exact) return exact;
+    }
+
+    // Fall back to substring matching only if no exact match was found at all
+    for (const n of names) {
+      const entry = play.leaderboards.find((lb) => lb.type.toLowerCase().includes(n.toLowerCase()));
       if (entry) return entry;
     }
 
@@ -391,6 +409,8 @@ const PlayCard: React.FC<PlayCardProps> = ({ play }) => {
   const grade = entry?.grade;
   const score = entry?.score;
   const delta = entry?.delta;
+  const isRateLeaderboard = activeLeaderboard === 'ITGRate' || activeLeaderboard === 'EXRate';
+  const rateDisplay = isRateLeaderboard && typeof entry?.musicRate === 'number' ? `${entry.musicRate.toFixed(2)}x` : null;
 
   // Format delta for display
   const formatDelta = (d: number | null | undefined): { text: string; color: string } | null => {
@@ -441,7 +461,7 @@ const PlayCard: React.FC<PlayCardProps> = ({ play }) => {
                     <div>
                       <div
                         className="text-2xl font-extrabold tabular-nums drop-shadow-lg flex items-baseline gap-2"
-                        style={{ color: activeLeaderboard === 'HardEX' ? '#FF69B4' : activeLeaderboard === 'EX' ? '#21CCE8' : '#FFFFFF' }}
+                        style={{ color: LEADERBOARD_COLORS[activeLeaderboard] }}
                       >
                         {score ? (
                           <>
@@ -458,15 +478,32 @@ const PlayCard: React.FC<PlayCardProps> = ({ play }) => {
                         )}
                       </div>
                       <div
-                        className="text-xs uppercase tracking-wide font-semibold drop-shadow-md"
-                        style={{ color: activeLeaderboard === 'HardEX' ? '#FF69B4' : activeLeaderboard === 'EX' ? '#21CCE8' : '#FFFFFF', opacity: 0.8 }}
+                        className="text-xs uppercase tracking-wide font-semibold drop-shadow-md flex items-center gap-1.5"
+                        style={{ color: LEADERBOARD_COLORS[activeLeaderboard], opacity: 0.8 }}
                       >
                         {activeLeaderboard === 'HardEX' ? (
                           <FormattedMessage defaultMessage="H.EX" id="+t0i1m" description="Hard EX leaderboard abbreviation" />
                         ) : activeLeaderboard === 'EX' ? (
                           <FormattedMessage defaultMessage="EX" id="i0NYF+" description="EX leaderboard abbreviation" />
+                        ) : activeLeaderboard === 'ITGRate' ? (
+                          <FormattedMessage defaultMessage="ITG (Rate)" id="0bpom/" description="Rate-eligible ITG leaderboard abbreviation" />
+                        ) : activeLeaderboard === 'EXRate' ? (
+                          <FormattedMessage defaultMessage="EX (Rate)" id="lXtboF" description="Rate-eligible EX leaderboard abbreviation" />
                         ) : (
                           <FormattedMessage defaultMessage="ITG" id="cSQcQe" description="ITG leaderboard abbreviation" />
+                        )}
+                        {rateDisplay && (
+                          <span
+                            className="px-1.5 py-0.5 rounded bg-black/40 border border-white/20 normal-case tracking-normal"
+                            title={formatMessage({
+                              defaultMessage: 'Music rate this score was played at',
+                              id: 'mdzIJw',
+                              description: 'Tooltip explaining the rate badge shown next to a rate-eligible leaderboard score',
+                            })}
+                          >
+                            {}
+                            {rateDisplay}
+                          </span>
                         )}
                       </div>
                     </div>
@@ -484,7 +521,7 @@ const PlayCard: React.FC<PlayCardProps> = ({ play }) => {
           {/* Right side: Judgments */}
           <div className="flex-1 flex flex-col justify-center min-w-0">
             {hasJudgments ? (
-              <JudgmentList judgments={judgments} modifiers={play.modifiers} variant="compact" scoringSystem={activeLeaderboard} />
+              <JudgmentList judgments={judgments} modifiers={play.modifiers} variant="compact" scoringSystem={baseLeaderboardId(activeLeaderboard)} />
             ) : (
               <div className="flex items-center justify-center h-full p-3" style={{ backgroundColor: 'rgba(20, 20, 30, 0.95)' }}>
                 <span className="text-base-content/50 text-sm uppercase tracking-wide">
@@ -526,9 +563,11 @@ export const SessionPage: React.FC = () => {
   const parsedSessionId = sessionId ? parseInt(sessionId, 10) : NaN;
 
   // Map frontend leaderboard names to backend API values
-  const getBackendLeaderboard = (lb: string): 'EX' | 'ITG' | 'HardEX' => {
+  const getBackendLeaderboard = (lb: string): 'EX' | 'ITG' | 'HardEX' | 'ITGRate' | 'EXRate' => {
     if (lb === 'HardEX') return 'HardEX';
     if (lb === 'Money' || lb === 'ITG') return 'ITG';
+    if (lb === 'ITGRate') return 'ITGRate';
+    if (lb === 'EXRate') return 'EXRate';
     return 'EX';
   };
 
@@ -547,7 +586,10 @@ export const SessionPage: React.FC = () => {
           page,
           limit: 5,
           pbOnly: showOnlyPBs,
-          leaderboard: showOnlyPBs ? getBackendLeaderboard(activeLeaderboard) : undefined,
+          // Always send the active leaderboard, not just when filtering PBs - the backend uses
+          // it to scope which leaderboard's data it fetches per play, since this page only ever
+          // displays one leaderboard at a time.
+          leaderboard: getBackendLeaderboard(activeLeaderboard),
         });
         setSession(data);
       } catch (err) {
@@ -630,7 +672,7 @@ export const SessionPage: React.FC = () => {
                     <FormattedMessage defaultMessage="PBs Only" id="BkIenQ" description="Toggle to show only personal best plays" />
                   </span>
                 </label>
-                <LeaderboardToggle options={['HardEX', 'EX', 'ITG']} />
+                <LeaderboardToggle options={['HardEX', 'EX', 'ITG', 'ITGRate', 'EXRate']} />
                 <span className="text-sm text-base-content/60">
                   <FormattedMessage
                     defaultMessage="Showing {start}-{end} of {total}"

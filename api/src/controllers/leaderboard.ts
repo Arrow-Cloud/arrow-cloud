@@ -312,7 +312,7 @@ export const getLeaderboardsForChart: AuthenticatedRouteHandler = async (event: 
     // Resolve preferred leaderboard ids for this user
     let ids: number[] = DEFAULT_LEADERBOARDS;
     try {
-      const prefIds = await getUserPreferredLeaderboardIds(prisma, event.user.id);
+      const prefIds = await getUserPreferredLeaderboardIds(prisma, event.user.id, 'GAME');
       if (prefIds.length) {
         // Ensure stable ordering by id ascending
         const rows = await prisma.leaderboard.findMany({

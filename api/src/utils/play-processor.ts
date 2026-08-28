@@ -4,9 +4,13 @@ import {
   EXLeaderboard,
   ITGLeaderboard,
   HardEXLeaderboard,
+  ITGRateLeaderboard,
+  EXRateLeaderboard,
   GLOBAL_HARD_EX_LEADERBOARD_ID,
   GLOBAL_EX_LEADERBOARD_ID,
   GLOBAL_MONEY_LEADERBOARD_ID,
+  GLOBAL_ITG_RATE_LEADERBOARD_ID,
+  GLOBAL_EX_RATE_LEADERBOARD_ID,
 } from './leaderboard';
 import { loadTimingDataFromPlay } from './s3';
 import {
@@ -79,6 +83,9 @@ export async function processSinglePlay(play: Play, prisma: PrismaClient, s3Clie
     rollsTotal: totalRolls,
   };
 
+  // Music rate the play was performed at (same across all leaderboards for a given play).
+  const musicRate = timingData.musicRate;
+
   const toProcess = [
     {
       system: new HardEXLeaderboard(play, timingData, HARD_EX_SCORING_SYSTEM, HARD_EX_GRADING_SYSTEM, prisma, calculator),
@@ -88,6 +95,7 @@ export async function processSinglePlay(play: Play, prisma: PrismaClient, s3Clie
         grade: hardExGrade,
         judgments: hardExJudgments,
         radar: radarData,
+        musicRate,
       },
       sortKey:
         hardExScore.score.toFixed(2).replace('.', '').padStart(5, '0') + '-' + buildTieBreakComponent(play.createdAt) + '-' + play.createdAt.toISOString(),
@@ -100,6 +108,7 @@ export async function processSinglePlay(play: Play, prisma: PrismaClient, s3Clie
         grade: exGrade,
         judgments: exJudgments,
         radar: radarData,
+        musicRate,
       },
       sortKey: exScore.score.toFixed(2).replace('.', '').padStart(5, '0') + '-' + buildTieBreakComponent(play.createdAt) + '-' + play.createdAt.toISOString(),
     },
@@ -111,9 +120,35 @@ export async function processSinglePlay(play: Play, prisma: PrismaClient, s3Clie
         grade: moneyGrade,
         judgments: moneyJudgments,
         radar: radarData,
+        musicRate,
       },
       sortKey:
         moneyScore.score.toFixed(2).replace('.', '').padStart(5, '0') + '-' + buildTieBreakComponent(play.createdAt) + '-' + play.createdAt.toISOString(),
+    },
+    {
+      system: new ITGRateLeaderboard(play, timingData, MONEY_SCORING_SYSTEM, ITG_GRADING_SYSTEM, prisma, calculator),
+      leaderboardId: GLOBAL_ITG_RATE_LEADERBOARD_ID,
+      precomputedData: {
+        score: moneyScore.score.toFixed(2),
+        grade: moneyGrade,
+        judgments: moneyJudgments,
+        radar: radarData,
+        musicRate,
+      },
+      sortKey:
+        moneyScore.score.toFixed(2).replace('.', '').padStart(5, '0') + '-' + buildTieBreakComponent(play.createdAt) + '-' + play.createdAt.toISOString(),
+    },
+    {
+      system: new EXRateLeaderboard(play, timingData, EX_SCORING_SYSTEM, EX_GRADING_SYSTEM, prisma, calculator),
+      leaderboardId: GLOBAL_EX_RATE_LEADERBOARD_ID,
+      precomputedData: {
+        score: exScore.score.toFixed(2),
+        grade: exGrade,
+        judgments: exJudgments,
+        radar: radarData,
+        musicRate,
+      },
+      sortKey: exScore.score.toFixed(2).replace('.', '').padStart(5, '0') + '-' + buildTieBreakComponent(play.createdAt) + '-' + play.createdAt.toISOString(),
     },
   ];
 

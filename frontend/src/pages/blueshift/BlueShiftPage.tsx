@@ -10,7 +10,7 @@ import { BlueShiftResponse, BlueShiftRecentPlay } from '../../schemas/apiSchemas
 import { LeaderboardToggle } from '../../components/leaderboards/LeaderboardToggle';
 import { useLeaderboardView } from '../../contexts/LeaderboardViewContext';
 import { findLeaderboardData, isScoreInLeaderboard } from '../../utils/leaderboards';
-import { type LeaderboardId } from '../../types/leaderboards';
+import { baseLeaderboardId, type LeaderboardId } from '../../types/leaderboards';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { isPhase1Active } from '../../utils/blueshift';
 
@@ -305,7 +305,10 @@ const OverallLeaderboard: React.FC<{ activeFilter: 'HardEX' | 'EX' | 'Money'; bl
 export const BlueShiftPage: React.FC<{ limit?: number | null }> = ({ limit }) => {
   const { formatMessage } = useIntl();
   const { user, isInitializing, hasPermission } = useAuth();
-  const { activeLeaderboard } = useLeaderboardView();
+  const { activeLeaderboard: rawActiveLeaderboard } = useLeaderboardView();
+  // Blue Shift is a separate event leaderboard system that doesn't have rate-eligible entries -
+  // collapse to the base leaderboard before mapping ITG -> Money naming.
+  const activeLeaderboard = baseLeaderboardId(rawActiveLeaderboard);
   const activeLeaderboardFilter = activeLeaderboard === 'ITG' ? 'Money' : activeLeaderboard; // map ITG -> Money naming
   const activeRecentFilter = activeLeaderboardFilter;
   const [blueShiftData, setBlueShiftData] = useState<BlueShiftResponse | null>(null);
