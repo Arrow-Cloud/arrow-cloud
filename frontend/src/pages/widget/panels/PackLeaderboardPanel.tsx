@@ -173,7 +173,7 @@ export const PackLeaderboardPanel: React.FC<Props> = ({ packName, bannerUrl, dif
                 </span>
                 {p.isRival && <Swords className="w-3 h-3 flex-shrink-0 text-error" />}
                 <span className="text-[13px] text-base-content/50 flex-shrink-0 tabular-nums">{fmtScore(p.totalScore)}</span>
-                {p.isRival && typeof p.delta === 'number' && (
+                {!p.isSelf && typeof p.delta === 'number' && (
                   <span className="text-[12px] font-bold flex-shrink-0 tabular-nums" style={{ color: fmtDelta(p.delta).color }}>
                     {fmtDelta(p.delta).text}
                   </span>
