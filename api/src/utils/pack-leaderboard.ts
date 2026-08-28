@@ -1,12 +1,17 @@
-import type { PrismaClient } from '../../prisma/generated/client';
+import type { PrismaClient, Play } from '../../prisma/generated/client';
+import { Prisma } from '../../prisma/generated/client';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import {
   GLOBAL_HARD_EX_LEADERBOARD_ID,
   GLOBAL_EX_LEADERBOARD_ID,
   GLOBAL_MONEY_LEADERBOARD_ID,
   GLOBAL_ITG_RATE_LEADERBOARD_ID,
   GLOBAL_EX_RATE_LEADERBOARD_ID,
+  DEFAULT_LEADERBOARDS,
 } from './leaderboard';
-import { assetS3UrlToCloudFrontUrl } from './s3';
+import { assetS3UrlToCloudFrontUrl, S3_BUCKET_ASSETS, CLOUDFRONT_ASSETS_URL } from './s3';
+import { getUserPreferredLeaderboardIds } from '../services/userPreferredLeaderboards';
+import type { PackResultImageData, PackResultImageEntry } from './pack-result-image';
 
 // ---------------------------------------------------------------------------
 // Types
@@ -53,6 +58,54 @@ export interface PackLeaderboardOutput {
   users: Record<string, { alias: string; profileImageUrl: string | null }>;
   /** difficulty → scoringSystem → leaderboard */
   leaderboards: Record<string, Record<string, PackScoringLeaderboard>>;
+}
+
+/** A pack-leaderboard-eligible pack this chart belongs to, and which difficulty slot it's in. */
+export interface EligiblePackMatch {
+  packId: number;
+  packName: string;
+  difficulty: PackLeaderboardDifficulty;
+  meter: number | null;
+  chartTitle: string;
+  chartArtist: string;
+}
+
+/**
+ * Given a chart hash, find every pack-leaderboard-eligible pack it belongs to (and the difficulty
+ * slot it's in within each). A chart can appear under different difficulty labels in different
+ * simfiles of the same pack (rare), so this can return more than one match per pack.
+ */
+export async function getEligiblePacksForChart(prisma: PrismaClient, chartHash: string): Promise<EligiblePackMatch[]> {
+  const simfileCharts = await prisma.simfileChart.findMany({
+    where: {
+      chartHash,
+      difficulty: { in: [...PACK_LEADERBOARD_DIFFICULTIES] },
+    },
+    select: {
+      difficulty: true,
+      meter: true,
+      simfile: { select: { packId: true, title: true, artist: true, pack: { select: { name: true } } } },
+    },
+  });
+
+  const seen = new Set<string>();
+  const matches: EligiblePackMatch[] = [];
+  for (const sc of simfileCharts) {
+    const packId = sc.simfile.packId;
+    if (!sc.difficulty || !ELIGIBLE_PACK_IDS.includes(packId)) continue;
+    const key = `${packId}:${sc.difficulty}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    matches.push({
+      packId,
+      packName: sc.simfile.pack.name,
+      difficulty: sc.difficulty as PackLeaderboardDifficulty,
+      meter: sc.meter,
+      chartTitle: sc.simfile.title,
+      chartArtist: sc.simfile.artist,
+    });
+  }
+  return matches;
 }
 
 // ---------------------------------------------------------------------------
@@ -115,54 +168,36 @@ async function getBestScoresForCharts(
   chartHashes: string[],
   leaderboardIds: number[],
   cmodIneligibleHashes: Set<string>,
+  userId?: string,
 ): Promise<BestScoreRow[]> {
   if (chartHashes.length === 0) return [];
 
   const ineligibleArray = [...cmodIneligibleHashes];
+  const cmodFilter =
+    ineligibleArray.length === 0
+      ? Prisma.empty
+      : Prisma.sql`AND (NOT (p."chartHash" = ANY(${ineligibleArray})) OR (p.modifiers->'speed'->>'type') IS DISTINCT FROM 'C')`;
+  const userFilter = userId ? Prisma.sql`AND p."userId" = ${userId}` : Prisma.empty;
 
-  let rows: any[];
-
-  if (ineligibleArray.length === 0) {
-    rows = await prisma.$queryRaw`
-      SELECT DISTINCT ON (p."userId", p."chartHash", pl."leaderboardId")
-        p."userId"               AS "userId",
-        u.alias                  AS "userAlias",
-        u."profileImageUrl"      AS "userProfileImageUrl",
-        p."chartHash"            AS "chartHash",
-        pl."leaderboardId"       AS "leaderboardId",
-        (pl.data->>'score')::double precision AS score
-      FROM "PlayLeaderboard" pl
-      JOIN "Play" p  ON pl."playId" = p.id
-      JOIN "User" u  ON p."userId" = u.id
-      WHERE p."chartHash" = ANY(${chartHashes})
-        AND pl."leaderboardId" = ANY(${leaderboardIds})
-        AND u.banned = false
-        AND u."shadowBanned" = false
-      ORDER BY p."userId", p."chartHash", pl."leaderboardId", pl."sortKey" DESC
-    `;
-  } else {
-    rows = await prisma.$queryRaw`
-      SELECT DISTINCT ON (p."userId", p."chartHash", pl."leaderboardId")
-        p."userId"               AS "userId",
-        u.alias                  AS "userAlias",
-        u."profileImageUrl"      AS "userProfileImageUrl",
-        p."chartHash"            AS "chartHash",
-        pl."leaderboardId"       AS "leaderboardId",
-        (pl.data->>'score')::double precision AS score
-      FROM "PlayLeaderboard" pl
-      JOIN "Play" p  ON pl."playId" = p.id
-      JOIN "User" u  ON p."userId" = u.id
-      WHERE p."chartHash" = ANY(${chartHashes})
-        AND pl."leaderboardId" = ANY(${leaderboardIds})
-        AND u.banned = false
-        AND u."shadowBanned" = false
-        AND (
-          NOT (p."chartHash" = ANY(${ineligibleArray}))
-          OR (p.modifiers->'speed'->>'type') IS DISTINCT FROM 'C'
-        )
-      ORDER BY p."userId", p."chartHash", pl."leaderboardId", pl."sortKey" DESC
-    `;
-  }
+  const rows: any[] = await prisma.$queryRaw`
+    SELECT DISTINCT ON (p."userId", p."chartHash", pl."leaderboardId")
+      p."userId"               AS "userId",
+      u.alias                  AS "userAlias",
+      u."profileImageUrl"      AS "userProfileImageUrl",
+      p."chartHash"            AS "chartHash",
+      pl."leaderboardId"       AS "leaderboardId",
+      (pl.data->>'score')::double precision AS score
+    FROM "PlayLeaderboard" pl
+    JOIN "Play" p  ON pl."playId" = p.id
+    JOIN "User" u  ON p."userId" = u.id
+    WHERE p."chartHash" = ANY(${chartHashes})
+      AND pl."leaderboardId" = ANY(${leaderboardIds})
+      AND u.banned = false
+      AND u."shadowBanned" = false
+      ${cmodFilter}
+      ${userFilter}
+    ORDER BY p."userId", p."chartHash", pl."leaderboardId", pl."sortKey" DESC
+  `;
 
   return rows.map((r) => ({
     userId: r.userId,
@@ -172,6 +207,40 @@ async function getBestScoresForCharts(
     leaderboardId: Number(r.leaderboardId),
     score: Number(r.score),
   }));
+}
+
+/**
+ * Rank one (difficulty, scoringSystem) pack leaderboard from a pre-indexed set of best scores.
+ * `scoreIndex` is keyed by `${chartHash}:${leaderboardId}` (see `calculatePackLeaderboards`'s and
+ * `computePackResultImages`'s index-building code) - this is the shared core of both the full
+ * all-users batch computation and the single-`(pack, difficulty)`-scoped live lookup, so they can
+ * never drift apart from each other.
+ */
+function rankPackScoring(scoreIndex: Map<string, BestScoreRow[]>, chartHashes: string[], leaderboardId: number): PackScoringLeaderboard {
+  const userTotals = new Map<string, { totalScore: number; chartsPlayed: number }>();
+
+  for (const chartHash of chartHashes) {
+    const rows = scoreIndex.get(`${chartHash}:${leaderboardId}`) ?? [];
+    for (const row of rows) {
+      const curvedPoints = scoreToCurvedPoints(row.score);
+      const existing = userTotals.get(row.userId);
+      if (existing) {
+        existing.totalScore += curvedPoints;
+        existing.chartsPlayed += 1;
+      } else {
+        userTotals.set(row.userId, { totalScore: curvedPoints, chartsPlayed: 1 });
+      }
+    }
+  }
+
+  const sorted = Array.from(userTotals.entries())
+    .map(([userId, data]) => ({ userId, ...data }))
+    .sort((a, b) => b.totalScore - a.totalScore);
+
+  return {
+    totalParticipants: sorted.length,
+    rankings: sorted.map((entry, idx) => ({ rank: idx + 1, userId: entry.userId, totalScore: entry.totalScore, chartsPlayed: entry.chartsPlayed })),
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -255,40 +324,7 @@ export async function calculatePackLeaderboards(prisma: PrismaClient, packId: nu
     leaderboards[difficulty] = {};
 
     for (const [systemKey, leaderboardId] of Object.entries(SCORING_SYSTEMS)) {
-      // Accumulate per-user totals for this difficulty + scoring system
-      const userTotals = new Map<string, { totalScore: number; chartsPlayed: number }>();
-
-      for (const chartHash of diffHashes) {
-        const key = `${chartHash}:${leaderboardId}`;
-        const rows = scoreIndex.get(key) ?? [];
-        for (const row of rows) {
-          const curvedPoints = scoreToCurvedPoints(row.score);
-          const existing = userTotals.get(row.userId);
-          if (existing) {
-            existing.totalScore += curvedPoints;
-            existing.chartsPlayed += 1;
-          } else {
-            userTotals.set(row.userId, { totalScore: curvedPoints, chartsPlayed: 1 });
-          }
-        }
-      }
-
-      // Sort descending by totalScore
-      const sorted = Array.from(userTotals.entries())
-        .map(([userId, data]) => ({ userId, ...data }))
-        .sort((a, b) => b.totalScore - a.totalScore);
-
-      const rankings: PackLeaderboardRanking[] = sorted.map((entry, idx) => ({
-        rank: idx + 1,
-        userId: entry.userId,
-        totalScore: entry.totalScore,
-        chartsPlayed: entry.chartsPlayed,
-      }));
-
-      leaderboards[difficulty][systemKey] = {
-        totalParticipants: rankings.length,
-        rankings,
-      };
+      leaderboards[difficulty][systemKey] = rankPackScoring(scoreIndex, diffHashes, leaderboardId);
     }
   }
 
@@ -299,4 +335,148 @@ export async function calculatePackLeaderboards(prisma: PrismaClient, packId: nu
     users,
     leaderboards,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Live, synchronous, single-play result images
+// ---------------------------------------------------------------------------
+
+const SCORING_SYSTEM_LABELS: Record<ScoringSystemKey, string> = {
+  HardEX: 'H.EX',
+  EX: 'EX',
+  ITG: 'ITG',
+  ITGRate: 'ITG (Rate)',
+  EXRate: 'EX (Rate)',
+};
+
+/**
+ * After a score submission on a pack-leaderboard-eligible chart, synchronously render one
+ * results-card PNG per matched pack (per `getEligiblePacksForChart`), showing this play's
+ * delta vs. the player's own previous best and live rank, for each scoring system the player
+ * has configured as preferred in-game (falling back to `DEFAULT_LEADERBOARDS`). Uploads each
+ * image to the existing assets bucket/CDN and returns their fully-qualified URLs.
+ *
+ * Fully stateless/re-derivable from `play` alone (`play.id`/`play.createdAt` are immutable), so
+ * there's nothing to persist - see the "Revised architecture" section of the approved plan.
+ * No-op (single cheap query, no added latency) for the common case of a non-pack-eligible chart.
+ */
+// TEMPORARY: gate this feature to a single test account while it's being validated in production.
+// Remove this (and the check below) once we're ready to roll it out to everyone.
+const RESULT_IMAGE_TEST_USER_ID = '27cfc687-8d10-4132-bd29-da3b4ef54dfb';
+
+export async function computePackResultImages(prisma: PrismaClient, s3Client: S3Client, play: Play): Promise<string[]> {
+  if (play.userId !== RESULT_IMAGE_TEST_USER_ID) return [];
+
+  const matches = await getEligiblePacksForChart(prisma, play.chartHash);
+  if (matches.length === 0) return [];
+
+  const preferredIds = await getUserPreferredLeaderboardIds(prisma, play.userId, 'GAME');
+  const allScoringIds = Object.values(SCORING_SYSTEMS) as number[];
+  const selectedIds = (preferredIds.length ? preferredIds : DEFAULT_LEADERBOARDS).filter((id) => allScoringIds.includes(id));
+  if (selectedIds.length === 0) return [];
+
+  // This play's own scores, per leaderboard - only leaderboards the play was actually eligible
+  // for (e.g. rate boards) will have a row here.
+  const ownScores = await prisma.playLeaderboard.findMany({
+    where: { playId: play.id, leaderboardId: { in: selectedIds } },
+    select: { leaderboardId: true, data: true },
+  });
+  const ownScoreByLeaderboardId = new Map<number, number>();
+  for (const row of ownScores) {
+    const data = row.data as { score?: string } | null;
+    const score = data?.score ? parseFloat(data.score) : null;
+    if (score !== null) ownScoreByLeaderboardId.set(row.leaderboardId, score);
+  }
+  if (ownScoreByLeaderboardId.size === 0) return [];
+
+  const urls: string[] = [];
+
+  for (const match of matches) {
+    const simfileCharts = await prisma.simfileChart.findMany({
+      where: { simfile: { packId: match.packId }, difficulty: match.difficulty },
+      select: { chartHash: true, cmodIneligible: true },
+    });
+    const diffHashes = [...new Set(simfileCharts.map((sc) => sc.chartHash))];
+    const cmodIneligibleHashes = new Set(simfileCharts.filter((sc) => sc.cmodIneligible).map((sc) => sc.chartHash));
+    const otherHashes = diffHashes.filter((h) => h !== play.chartHash);
+
+    const entries: PackResultImageEntry[] = [];
+
+    for (const [leaderboardId, score] of ownScoreByLeaderboardId) {
+      const systemKey = (Object.keys(SCORING_SYSTEMS) as ScoringSystemKey[]).find((k) => SCORING_SYSTEMS[k] === leaderboardId);
+      if (!systemKey) continue;
+
+      // Previous best on this chart, strictly before this play (session.ts's PB-lookup pattern).
+      const previousBest = await prisma.playLeaderboard.findFirst({
+        where: { leaderboardId, play: { userId: play.userId, chartHash: play.chartHash, createdAt: { lt: play.createdAt } } },
+        orderBy: { sortKey: 'desc' },
+        select: { data: true },
+      });
+      const previousData = previousBest?.data as { score?: string } | null;
+      const previousScore = previousData?.score ? parseFloat(previousData.score) : 0;
+
+      const chartPoints = scoreToCurvedPoints(score);
+      const chartPointsBefore = scoreToCurvedPoints(previousScore);
+      const chartPointsDelta = Math.round(chartPoints - chartPointsBefore);
+
+      // This user's best on every OTHER chart in the difficulty slot (unaffected by this play).
+      const [otherBestScores, allBestScores] = await Promise.all([
+        getBestScoresForCharts(prisma, otherHashes, [leaderboardId], cmodIneligibleHashes, play.userId),
+        getBestScoresForCharts(prisma, diffHashes, [leaderboardId], cmodIneligibleHashes),
+      ]);
+      const otherPoints = otherBestScores.reduce((sum, row) => sum + scoreToCurvedPoints(row.score), 0);
+      const packTotal = Math.round(otherPoints + chartPoints);
+
+      const scoreIndex = new Map<string, BestScoreRow[]>();
+      for (const row of allBestScores) {
+        const key = `${row.chartHash}:${row.leaderboardId}`;
+        if (!scoreIndex.has(key)) scoreIndex.set(key, []);
+        scoreIndex.get(key)!.push(row);
+      }
+      const ranked = rankPackScoring(scoreIndex, diffHashes, leaderboardId);
+      const userRanking = ranked.rankings.find((r) => r.userId === play.userId);
+
+      entries.push({
+        leaderboardKey: systemKey,
+        label: SCORING_SYSTEM_LABELS[systemKey],
+        score,
+        scoreDelta: Math.round((score - previousScore) * 100) / 100,
+        chartPoints: Math.round(chartPoints),
+        chartPointsDelta,
+        packTotal,
+        rank: userRanking?.rank ?? 1,
+        totalParticipants: ranked.totalParticipants,
+      });
+    }
+
+    if (entries.length === 0) continue;
+
+    const imageData: PackResultImageData = {
+      chartTitle: match.chartTitle,
+      chartArtist: match.chartArtist,
+      packName: match.packName,
+      difficulty: match.difficulty,
+      meter: match.meter ?? 0,
+      entries,
+    };
+
+    // Imported dynamically (not at module scope) so that a load-time failure in the satori/resvg
+    // native-module chain can only ever break this one call - not apiLambda's cold start, and not
+    // the pack-leaderboard SQS consumer, which imports this same file for unrelated helpers.
+    const { renderPackResultImage } = await import('./pack-result-image');
+    const png = await renderPackResultImage(imageData);
+    const key = `result/play/${play.id}/${match.packId}.png`;
+    await s3Client.send(
+      new PutObjectCommand({
+        Bucket: S3_BUCKET_ASSETS,
+        Key: key,
+        Body: png,
+        ContentType: 'image/png',
+        CacheControl: 'max-age=31536000',
+      }),
+    );
+    urls.push(`${CLOUDFRONT_ASSETS_URL}/${key}`);
+  }
+
+  return urls;
 }

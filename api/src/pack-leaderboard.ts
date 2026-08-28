@@ -2,7 +2,7 @@ import type { SQSEvent, SQSHandler, SQSBatchResponse } from 'aws-lambda';
 import { PrismaClient } from '../prisma/generated/client';
 import { ScoreSubmissionEvent, EVENT_TYPES } from './utils/events';
 import { getDatabaseUrl } from './utils/secrets';
-import { calculatePackLeaderboards, type PackLeaderboardOutput, ELIGIBLE_PACK_IDS } from './utils/pack-leaderboard';
+import { calculatePackLeaderboards, type PackLeaderboardOutput, getEligiblePacksForChart } from './utils/pack-leaderboard';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { sendToUser } from './services/websocket';
 
@@ -22,23 +22,6 @@ async function getPrismaClient(): Promise<PrismaClient> {
     });
   }
   return prisma;
-}
-
-/**
- * Given a chart hash, find all pack IDs it belongs to that are eligible.
- */
-async function getEligiblePackIdsForChart(prismaClient: PrismaClient, chartHash: string): Promise<number[]> {
-  const simfileCharts = await prismaClient.simfileChart.findMany({
-    where: { chartHash },
-    select: {
-      simfile: {
-        select: { packId: true },
-      },
-    },
-  });
-
-  const packIds = [...new Set(simfileCharts.map((sc) => sc.simfile.packId))];
-  return packIds.filter((id) => ELIGIBLE_PACK_IDS.includes(id));
 }
 
 /**
@@ -68,7 +51,7 @@ async function processScoreSubmission(event: ScoreSubmissionEvent, prismaClient:
   const { chartHash, userId } = event;
   console.log(`Processing pack leaderboard update for chart ${chartHash} (user ${userId})`);
 
-  const packIds = await getEligiblePackIdsForChart(prismaClient, chartHash);
+  const packIds = [...new Set((await getEligiblePacksForChart(prismaClient, chartHash)).map((m) => m.packId))];
 
   if (packIds.length === 0) {
     console.log(`Chart ${chartHash} does not belong to any eligible pack, skipping`);
