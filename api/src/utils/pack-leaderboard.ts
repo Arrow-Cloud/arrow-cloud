@@ -11,14 +11,14 @@ import {
 } from './leaderboard';
 import { assetS3UrlToCloudFrontUrl, S3_BUCKET_ASSETS, CLOUDFRONT_ASSETS_URL } from './s3';
 import { getUserPreferredLeaderboardIds } from '../services/userPreferredLeaderboards';
-import type { PackResultImageData, PackResultImageEntry } from './pack-result-image';
+import type { PackResultImageData, PackResultImageEntry, LeaderboardPageData, LeaderboardPageEntry } from './pack-result-image';
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
 /** Pack IDs that have pack leaderboards enabled. */
-export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371];
+export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371, 380];
 
 /** The difficulty slots we compute pack leaderboards for. */
 export const PACK_LEADERBOARD_DIFFICULTIES = ['medium', 'hard', 'challenge'] as const;
@@ -349,6 +349,48 @@ const SCORING_SYSTEM_LABELS: Record<ScoringSystemKey, string> = {
   EXRate: 'EX (Rate)',
 };
 
+// Same "top + rivals + nearby-you" convention already used by the in-game/site leaderboard
+// endpoint (api/src/controllers/leaderboard.ts) and the streamer widget's buildNearbyPlayers
+// (api/src/controllers/widget.ts), rather than a flat top-N: top 2, your own row, your immediate
+// neighbors (rank ±1), your top-ranked rival, your nearest-by-rank rival, then filled out to a
+// target size with whatever's closest to your rank.
+const LEADERBOARD_PAGE_TOP_N = 2;
+const LEADERBOARD_PAGE_TARGET_SIZE = 7;
+
+function selectNearbyRankings(rankings: LeaderboardPageEntry[]): LeaderboardPageEntry[] {
+  const selfEntry = rankings.find((r) => r.isSelf);
+  const top = rankings.filter((r) => r.rank <= LEADERBOARD_PAGE_TOP_N);
+  const neighbors = selfEntry ? rankings.filter((r) => r.rank === selfEntry.rank - 1 || r.rank === selfEntry.rank + 1) : [];
+
+  const rivalsByRank = rankings.filter((r) => r.isRival).sort((a, b) => a.rank - b.rank);
+  const topRival = rivalsByRank[0];
+  let nearestRival: LeaderboardPageEntry | undefined;
+  if (selfEntry && rivalsByRank.length) {
+    const byDistance = [...rivalsByRank].sort((a, b) => Math.abs(a.rank - selfEntry.rank) - Math.abs(b.rank - selfEntry.rank));
+    nearestRival = byDistance[0] === topRival && byDistance.length > 1 ? byDistance[1] : byDistance[0];
+  }
+
+  const byAlias = new Map<string, LeaderboardPageEntry>();
+  const add = (r?: LeaderboardPageEntry) => {
+    if (r && !byAlias.has(r.alias)) byAlias.set(r.alias, r);
+  };
+  top.forEach(add);
+  add(selfEntry);
+  neighbors.forEach(add);
+  add(topRival);
+  add(nearestRival);
+
+  if (byAlias.size < LEADERBOARD_PAGE_TARGET_SIZE && selfEntry) {
+    const remaining = rankings.filter((r) => !byAlias.has(r.alias)).sort((a, b) => Math.abs(a.rank - selfEntry.rank) - Math.abs(b.rank - selfEntry.rank));
+    for (const r of remaining) {
+      if (byAlias.size >= LEADERBOARD_PAGE_TARGET_SIZE) break;
+      byAlias.set(r.alias, r);
+    }
+  }
+
+  return Array.from(byAlias.values()).sort((a, b) => a.rank - b.rank);
+}
+
 /**
  * After a score submission on a pack-leaderboard-eligible chart, synchronously render one
  * results-card PNG per matched pack (per `getEligiblePacksForChart`), showing this play's
@@ -360,19 +402,27 @@ const SCORING_SYSTEM_LABELS: Record<ScoringSystemKey, string> = {
  * there's nothing to persist - see the "Revised architecture" section of the approved plan.
  * No-op (single cheap query, no added latency) for the common case of a non-pack-eligible chart.
  */
-// TEMPORARY: gate this feature to a single test account while it's being validated in production.
-// Remove this (and the check below) once we're ready to roll it out to everyone.
-const RESULT_IMAGE_TEST_USER_ID = '27cfc687-8d10-4132-bd29-da3b4ef54dfb';
+// TEMPORARY: gate this feature to a handful of test accounts while it's being validated in
+// production. Remove this (and the check below) once we're ready to roll it out to everyone.
+const RESULT_IMAGE_TEST_USER_IDS = new Set(['27cfc687-8d10-4132-bd29-da3b4ef54dfb', '3ac37479-c87f-459c-b3aa-c17e95c1a0d8']);
 
 export async function computePackResultImages(prisma: PrismaClient, s3Client: S3Client, play: Play): Promise<string[]> {
-  if (play.userId !== RESULT_IMAGE_TEST_USER_ID) return [];
+  if (!RESULT_IMAGE_TEST_USER_IDS.has(play.userId)) return [];
 
   const matches = await getEligiblePacksForChart(prisma, play.chartHash);
   if (matches.length === 0) return [];
 
-  const preferredIds = await getUserPreferredLeaderboardIds(prisma, play.userId, 'GAME');
+  const [preferredIds, rivalRows] = await Promise.all([
+    getUserPreferredLeaderboardIds(prisma, play.userId, 'GAME'),
+    prisma.userRival.findMany({ where: { userId: play.userId }, select: { rivalUserId: true } }),
+  ]);
+  const rivalIds = new Set(rivalRows.map((r) => r.rivalUserId));
   const allScoringIds = Object.values(SCORING_SYSTEMS) as number[];
-  const selectedIds = (preferredIds.length ? preferredIds : DEFAULT_LEADERBOARDS).filter((id) => allScoringIds.includes(id));
+  // Capped at 3 - the card's layout was only ever designed to comfortably fit 3 leaderboard tiles.
+  const MAX_RESULT_IMAGE_LEADERBOARDS = 3;
+  const selectedIds = (preferredIds.length ? preferredIds : DEFAULT_LEADERBOARDS)
+    .filter((id) => allScoringIds.includes(id))
+    .slice(0, MAX_RESULT_IMAGE_LEADERBOARDS);
   if (selectedIds.length === 0) return [];
 
   // This play's own scores, per leaderboard - only leaderboards the play was actually eligible
@@ -389,7 +439,22 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
   }
   if (ownScoreByLeaderboardId.size === 0) return [];
 
-  const urls: string[] = [];
+  // Imported once, dynamically (not at module scope), so that a load-time failure in the
+  // satori/resvg native-module chain can only ever break this one call - not apiLambda's cold
+  // start, and not the pack-leaderboard SQS consumer, which imports this same file for unrelated
+  // helpers.
+  const { renderPackResultImage, renderLeaderboardPage } = await import('./pack-result-image');
+
+  // Every image (the summary card + one page per selected leaderboard, per matched pack) is
+  // independent of every other, so render+upload them all concurrently rather than one at a time
+  // - that's the main latency lever here beyond the already-batched DB queries below.
+  const uploadTasks: Promise<string>[] = [];
+  const upload = (key: string, png: Promise<Buffer>): Promise<string> =>
+    png.then((body) =>
+      s3Client
+        .send(new PutObjectCommand({ Bucket: S3_BUCKET_ASSETS, Key: key, Body: body, ContentType: 'image/png', CacheControl: 'max-age=31536000' }))
+        .then(() => `${CLOUDFRONT_ASSETS_URL}/${key}`),
+    );
 
   for (const match of matches) {
     const simfileCharts = await prisma.simfileChart.findMany({
@@ -398,9 +463,31 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
     });
     const diffHashes = [...new Set(simfileCharts.map((sc) => sc.chartHash))];
     const cmodIneligibleHashes = new Set(simfileCharts.filter((sc) => sc.cmodIneligible).map((sc) => sc.chartHash));
-    const otherHashes = diffHashes.filter((h) => h !== play.chartHash);
+    const leaderboardIds = [...ownScoreByLeaderboardId.keys()];
+
+    // Scans every chart in the difficulty slot across every participant - batched once across
+    // every selected leaderboard for this pack instead of once per leaderboard, since repeating a
+    // full-pack scan per leaderboard was the most expensive redundant cost in this function.
+    // rankPackScoring below still ranks one leaderboard at a time, it just reads from this shared,
+    // pre-fetched index instead of re-querying per leaderboard. This is also the single source of
+    // truth for "your current pack total" (via rankPackScoring's userRanking.totalScore below) -
+    // it reflects each user's true best per chart regardless of whether this specific play happens
+    // to be one of them, so there's no separate "this user's other charts" query needed either.
+    const allBestScoresAll = await getBestScoresForCharts(prisma, diffHashes, leaderboardIds, cmodIneligibleHashes);
+    const scoreIndex = new Map<string, BestScoreRow[]>();
+    for (const row of allBestScoresAll) {
+      const key = `${row.chartHash}:${row.leaderboardId}`;
+      if (!scoreIndex.has(key)) scoreIndex.set(key, []);
+      scoreIndex.get(key)!.push(row);
+    }
+
+    // Every row across every leaderboard came from the same batched query above, so this is
+    // free - no extra query needed just to know who everyone is.
+    const aliasByUserId = new Map<string, string>();
+    for (const row of allBestScoresAll) aliasByUserId.set(row.userId, row.userAlias);
 
     const entries: PackResultImageEntry[] = [];
+    const leaderboardPages: LeaderboardPageData[] = [];
 
     for (const [leaderboardId, score] of ownScoreByLeaderboardId) {
       const systemKey = (Object.keys(SCORING_SYSTEMS) as ScoringSystemKey[]).find((k) => SCORING_SYSTEMS[k] === leaderboardId);
@@ -415,37 +502,56 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
       const previousData = previousBest?.data as { score?: string } | null;
       const previousScore = previousData?.score ? parseFloat(previousData.score) : 0;
 
-      const chartPoints = scoreToCurvedPoints(score);
-      const chartPointsBefore = scoreToCurvedPoints(previousScore);
-      const chartPointsDelta = Math.round(chartPoints - chartPointsBefore);
+      // "Chart points"/"pack total" track your BEST-EVER score on this chart, not necessarily
+      // this specific play's score - a replay that didn't improve on your existing best must not
+      // make either of those look like they went down. scoreDelta (below) is the one place that's
+      // allowed to go negative, since it's reporting this attempt's performance, not your standing.
+      const effectiveScore = Math.max(score, previousScore);
 
-      // This user's best on every OTHER chart in the difficulty slot (unaffected by this play).
-      const [otherBestScores, allBestScores] = await Promise.all([
-        getBestScoresForCharts(prisma, otherHashes, [leaderboardId], cmodIneligibleHashes, play.userId),
-        getBestScoresForCharts(prisma, diffHashes, [leaderboardId], cmodIneligibleHashes),
-      ]);
-      const otherPoints = otherBestScores.reduce((sum, row) => sum + scoreToCurvedPoints(row.score), 0);
-      const packTotal = Math.round(otherPoints + chartPoints);
+      // Points are always floored, never rounded to nearest - a player should never see more
+      // points than they've actually earned. chartPoints/chartPointsBefore are floored first and
+      // the delta computed from those already-floored values, so displayed numbers always agree
+      // (after - before === delta) instead of drifting from rounding the delta separately.
+      const chartPoints = Math.floor(scoreToCurvedPoints(effectiveScore));
+      const chartPointsBefore = Math.floor(scoreToCurvedPoints(previousScore));
+      const chartPointsDelta = chartPoints - chartPointsBefore;
 
-      const scoreIndex = new Map<string, BestScoreRow[]>();
-      for (const row of allBestScores) {
-        const key = `${row.chartHash}:${row.leaderboardId}`;
-        if (!scoreIndex.has(key)) scoreIndex.set(key, []);
-        scoreIndex.get(key)!.push(row);
-      }
       const ranked = rankPackScoring(scoreIndex, diffHashes, leaderboardId);
       const userRanking = ranked.rankings.find((r) => r.userId === play.userId);
+      // The user's true current pack total, straight from the live ranking data (built from every
+      // user's actual best per chart) - not reconstructed from this play's own score, which could
+      // understate it if this play wasn't actually an improvement.
+      const packTotal = Math.floor(userRanking?.totalScore ?? 0);
 
       entries.push({
         leaderboardKey: systemKey,
         label: SCORING_SYSTEM_LABELS[systemKey],
         score,
         scoreDelta: Math.round((score - previousScore) * 100) / 100,
-        chartPoints: Math.round(chartPoints),
+        chartPoints,
         chartPointsDelta,
         packTotal,
         rank: userRanking?.rank ?? 1,
         totalParticipants: ranked.totalParticipants,
+      });
+
+      const rankingsWithMeta: LeaderboardPageEntry[] = ranked.rankings.map((r) => ({
+        rank: r.rank,
+        alias: aliasByUserId.get(r.userId) ?? 'Unknown',
+        totalScore: Math.floor(r.totalScore),
+        isSelf: r.userId === play.userId,
+        isRival: rivalIds.has(r.userId),
+      }));
+      leaderboardPages.push({
+        leaderboardKey: systemKey,
+        label: SCORING_SYSTEM_LABELS[systemKey],
+        packName: match.packName,
+        chartTitle: match.chartTitle,
+        chartArtist: match.chartArtist,
+        difficulty: match.difficulty,
+        meter: match.meter ?? 0,
+        totalParticipants: ranked.totalParticipants,
+        rankings: selectNearbyRankings(rankingsWithMeta),
       });
     }
 
@@ -460,23 +566,13 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
       entries,
     };
 
-    // Imported dynamically (not at module scope) so that a load-time failure in the satori/resvg
-    // native-module chain can only ever break this one call - not apiLambda's cold start, and not
-    // the pack-leaderboard SQS consumer, which imports this same file for unrelated helpers.
-    const { renderPackResultImage } = await import('./pack-result-image');
-    const png = await renderPackResultImage(imageData);
-    const key = `result/play/${play.id}/${match.packId}.png`;
-    await s3Client.send(
-      new PutObjectCommand({
-        Bucket: S3_BUCKET_ASSETS,
-        Key: key,
-        Body: png,
-        ContentType: 'image/png',
-        CacheControl: 'max-age=31536000',
-      }),
-    );
-    urls.push(`${CLOUDFRONT_ASSETS_URL}/${key}`);
+    // Summary card first (image 1), then one page per selected leaderboard (images 2..n) -
+    // queued in order but all rendered/uploaded concurrently via the shared uploadTasks array.
+    uploadTasks.push(upload(`result/play/${play.id}/${match.packId}.png`, renderPackResultImage(imageData)));
+    for (const pageData of leaderboardPages) {
+      uploadTasks.push(upload(`result/play/${play.id}/${match.packId}-${pageData.leaderboardKey}.png`, renderLeaderboardPage(pageData)));
+    }
   }
 
-  return urls;
+  return Promise.all(uploadTasks);
 }

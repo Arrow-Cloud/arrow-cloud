@@ -12,8 +12,12 @@ import * as path from 'path';
 import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
-const CARD_WIDTH = 480;
-const CARD_HEIGHT = 600;
+// Rendered at 2x the original 480x600 design so it stays sharp on high-DPI displays (client just
+// scales the image down to fit) - same 1:1.25 aspect ratio, every layout value below scaled via s().
+const SCALE = 2;
+const s = (n: number) => n * SCALE;
+const CARD_WIDTH = s(480);
+const CARD_HEIGHT = s(600);
 
 const LEADERBOARD_COLORS: Record<string, string> = {
   HardEX: '#FF69B4',
@@ -40,16 +44,24 @@ const ASSETS_DIR = path.join(__dirname, 'assets');
 // __dirname-relative asset paths only resolve correctly post-webpack-build (see ASSETS_DIR above),
 // so eagerly reading them at import time would throw in any context that imports this module
 // without going through that build (e.g. jest, which compiles from source via ts-jest).
-let fonts: { name: string; data: Buffer; weight: 400 | 700; style: 'normal' }[] | undefined;
+// Same two fonts the live site uses for its own "share-style" renders (see share-service's
+// image-template.ts and frontend/index.html) - Miso for flashy display/label text, Nunito for
+// body/numeric content. Nunito's static weight files come straight from Google Fonts (its
+// variable-font build isn't supported by satori/opentype.js); Miso's static file is already local
+// (share-service/assets/fonts/miso-light.woff2, converted to .ttf - satori can't load .woff2 either).
+let fonts: { name: string; data: Buffer; weight: 400 | 700 | 800; style: 'normal' }[] | undefined;
 function loadFonts() {
   if (!fonts) {
-    const [regularData, boldData] = [
-      readFileSync(path.join(ASSETS_DIR, 'fonts', 'DejaVuSans.ttf')),
-      readFileSync(path.join(ASSETS_DIR, 'fonts', 'DejaVuSans-Bold.ttf')),
+    const [nunitoRegular, nunitoBold, miso] = [
+      readFileSync(path.join(ASSETS_DIR, 'fonts', 'nunito-400.woff')),
+      readFileSync(path.join(ASSETS_DIR, 'fonts', 'nunito-800.woff')),
+      readFileSync(path.join(ASSETS_DIR, 'fonts', 'miso-light.ttf')),
     ];
     fonts = [
-      { name: 'Body', data: regularData, weight: 400, style: 'normal' },
-      { name: 'Body', data: boldData, weight: 700, style: 'normal' },
+      { name: 'Nunito', data: nunitoRegular, weight: 400, style: 'normal' },
+      { name: 'Nunito', data: nunitoBold, weight: 700, style: 'normal' },
+      { name: 'Miso', data: miso, weight: 700, style: 'normal' },
+      { name: 'Miso', data: miso, weight: 800, style: 'normal' },
     ];
   }
   return fonts;
@@ -84,6 +96,28 @@ export interface PackResultImageData {
   entries: PackResultImageEntry[];
 }
 
+export interface LeaderboardPageEntry {
+  rank: number;
+  alias: string;
+  totalScore: number;
+  isSelf: boolean;
+  isRival: boolean;
+}
+
+export interface LeaderboardPageData {
+  leaderboardKey: keyof typeof LEADERBOARD_COLORS;
+  label: string;
+  packName: string;
+  chartTitle: string;
+  chartArtist: string;
+  difficulty: 'medium' | 'hard' | 'challenge';
+  meter: number;
+  totalParticipants: number;
+  // Already curated (top + rivals + nearby-you) by the caller - see pack-leaderboard.ts's
+  // selectNearbyRankings. This module only renders, it doesn't decide who to show.
+  rankings: LeaderboardPageEntry[];
+}
+
 // --- Tiny hyperscript helper (mirrors scripts/satori-poc.ts - no JSX/tsconfig changes needed) ---
 type Node = { type: string; props: Record<string, unknown> };
 type Child = Node | string | null | undefined | false;
@@ -92,11 +126,13 @@ function h(type: string, props: Record<string, unknown> = {}, ...children: (Chil
   return { type, props: { ...props, children: flatChildren.length === 1 ? flatChildren[0] : flatChildren } };
 }
 
+// Always floors, never rounds to nearest - a player should never see more points than earned,
+// and this needs to agree with the (already-floored) raw values computed in pack-leaderboard.ts.
 function fmtPoints(n: number): string {
-  const abs = Math.abs(n);
-  if (abs >= 100000) return `${Math.round(n / 1000)}k`;
-  if (abs >= 10000) return `${(n / 1000).toFixed(1)}k`;
-  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  const floored = Math.floor(n);
+  if (floored >= 100000) return `${Math.floor(floored / 1000)}k`;
+  if (floored >= 10000) return `${Math.floor(floored / 100) / 10}k`;
+  return floored.toLocaleString();
 }
 
 function fmtPointsDelta(delta: number): { text: string; color: string } {
@@ -112,7 +148,7 @@ function fmtScoreDelta(delta: number): { text: string; color: string } {
 }
 
 function buildCard(data: PackResultImageData, logoDataUri: string) {
-  const LOGO_SIZE = 340;
+  const LOGO_SIZE = s(340);
   return h(
     'div',
     {
@@ -121,9 +157,9 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
         flexDirection: 'column',
         width: CARD_WIDTH,
         height: CARD_HEIGHT,
-        backgroundColor: '#1a1a24',
-        padding: 20,
-        fontFamily: 'Body',
+        backgroundColor: '#141414',
+        padding: s(20),
+        fontFamily: 'Nunito',
         color: '#ffffff',
         position: 'relative',
         overflow: 'hidden',
@@ -143,20 +179,23 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
     }),
     h(
       'div',
-      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 16 } },
+      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: s(16) } },
       // Flashy eyebrow title: gradient-filled text flanked by matching gradient bars.
       h(
         'div',
-        { style: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 } },
-        h('div', { style: { display: 'flex', width: 28, height: 2, backgroundImage: `linear-gradient(90deg, transparent, ${TITLE_GRADIENT[1]})` } }),
+        { style: { display: 'flex', alignItems: 'center', gap: s(10), marginBottom: s(8) } },
+        h('div', {
+          style: { display: 'flex', width: s(28), height: s(2), backgroundImage: `linear-gradient(90deg, transparent, ${TITLE_GRADIENT[1]})` },
+        }),
         h(
           'div',
           {
             style: {
               display: 'flex',
-              fontSize: 22,
+              fontFamily: 'Miso',
+              fontSize: s(26),
               fontWeight: 800,
-              letterSpacing: 3,
+              letterSpacing: s(3),
               textTransform: 'uppercase',
               backgroundImage: `linear-gradient(90deg, ${TITLE_GRADIENT[0]}, ${TITLE_GRADIENT[1]})`,
               backgroundClip: 'text',
@@ -165,12 +204,14 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
           },
           'Pack Leaderboard',
         ),
-        h('div', { style: { display: 'flex', width: 28, height: 2, backgroundImage: `linear-gradient(270deg, transparent, ${TITLE_GRADIENT[0]})` } }),
+        h('div', {
+          style: { display: 'flex', width: s(28), height: s(2), backgroundImage: `linear-gradient(270deg, transparent, ${TITLE_GRADIENT[0]})` },
+        }),
       ),
-      h('div', { style: { display: 'flex', fontSize: 19, fontWeight: 700 } }, data.packName),
+      h('div', { style: { display: 'flex', fontSize: s(19), fontWeight: 700 } }, data.packName),
       h(
         'div',
-        { style: { display: 'flex', fontSize: 12, color: 'rgba(255,255,255,0.5)', gap: 6, marginTop: 2 } },
+        { style: { display: 'flex', fontSize: s(12), color: 'rgba(255,255,255,0.5)', gap: s(6), marginTop: s(2) } },
         h('span', {}, data.chartTitle),
         h('span', {}, '·'),
         h('span', {}, data.chartArtist),
@@ -180,7 +221,7 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
     ),
     h(
       'div',
-      { style: { display: 'flex', flexDirection: 'column', gap: 10 } },
+      { style: { display: 'flex', flexDirection: 'column', gap: s(10) } },
       ...data.entries.map((entry) => {
         const scoreDelta = fmtScoreDelta(entry.scoreDelta);
         const chartPointsDelta = fmtPointsDelta(entry.chartPointsDelta);
@@ -191,12 +232,19 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
           h(
             'div',
             { style: { display: 'flex', flexDirection: 'column', flex: 1, alignItems: align === 'right' ? 'flex-end' : 'flex-start' } },
-            h('div', { style: { display: 'flex', fontSize: 10, fontWeight: 700, letterSpacing: 1, color: 'rgba(255,255,255,0.4)' } }, label),
             h(
               'div',
-              { style: { display: 'flex', alignItems: 'baseline', gap: 6 } },
-              h('div', { style: { display: 'flex', fontSize: 20, fontWeight: 700 } }, value),
-              delta && h('div', { style: { display: 'flex', fontSize: 12, fontWeight: 700, color: delta.color } }, delta.text),
+              { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(13), fontWeight: 700, letterSpacing: s(1), color: 'rgba(255,255,255,0.6)' } },
+              label,
+            ),
+            h(
+              'div',
+              // satori's 'baseline' alignment doesn't line up cleanly when both children are
+              // themselves flex containers wrapping plain text (each one's own div wrapper), so
+              // align on the bottom edge instead - the two font sizes share a bottom-heavy look.
+              { style: { display: 'flex', alignItems: 'flex-end', gap: s(6) } },
+              h('div', { style: { display: 'flex', fontSize: s(20), fontWeight: 700 } }, value),
+              delta && h('div', { style: { display: 'flex', fontSize: s(12), fontWeight: 700, color: delta.color, marginBottom: s(3) } }, delta.text),
             ),
           );
 
@@ -207,9 +255,9 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'rgba(255,255,255,0.05)',
-              borderRadius: 10,
-              padding: 12,
-              gap: 10,
+              borderRadius: s(0),
+              padding: s(12),
+              gap: s(10),
             },
           },
           // Top row: scoring system name (+ rank tucked underneath) | score + delta
@@ -219,15 +267,15 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
             h(
               'div',
               { style: { display: 'flex', flexDirection: 'column', flex: 1 } },
-              h('div', { style: { display: 'flex', fontSize: 16, fontWeight: 700, color } }, entry.label),
-              h('div', { style: { display: 'flex', fontSize: 11, color: 'rgba(255,255,255,0.5)' } }, `#${entry.rank} of ${entry.totalParticipants}`),
+              h('div', { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(24), fontWeight: 700, color } }, entry.label),
+              h('div', { style: { display: 'flex', fontSize: s(11), color: 'rgba(255,255,255,0.5)' } }, `#${entry.rank} of ${entry.totalParticipants}`),
             ),
             stat('SCORE', `${entry.score.toFixed(2)}%`, scoreDelta, 'right'),
           ),
           // Bottom row: pack total | chart points + delta
           h(
             'div',
-            { style: { display: 'flex', paddingTop: 8, borderTop: '1px solid rgba(255,255,255,0.08)' } },
+            { style: { display: 'flex', paddingTop: s(8), borderTop: `${s(1)}px solid rgba(255,255,255,0.08)` } },
             stat('PACK TOTAL', fmtPoints(entry.packTotal)),
             stat('CHART PTS', `${fmtPoints(entry.chartPoints)} / 1k`, chartPointsDelta, 'right'),
           ),
@@ -237,8 +285,123 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
   );
 }
 
+const RIVAL_COLOR = DELTA_DOWN; // reuse the existing red rather than invent a new accent
+
+function buildLeaderboardPage(data: LeaderboardPageData, logoDataUri: string) {
+  const LOGO_SIZE = s(340);
+  const color = LEADERBOARD_COLORS[data.leaderboardKey];
+  return h(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: CARD_WIDTH,
+        height: CARD_HEIGHT,
+        backgroundColor: '#141414',
+        padding: s(20),
+        fontFamily: 'Nunito',
+        color: '#ffffff',
+        position: 'relative',
+        overflow: 'hidden',
+      },
+    },
+    h('img', {
+      src: logoDataUri,
+      width: LOGO_SIZE,
+      height: LOGO_SIZE,
+      style: { position: 'absolute', top: (CARD_HEIGHT - LOGO_SIZE) / 2, left: (CARD_WIDTH - LOGO_SIZE) / 2, opacity: 0.06 },
+    }),
+    h(
+      'div',
+      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: s(16) } },
+      h(
+        'div',
+        { style: { display: 'flex', alignItems: 'center', gap: s(10), marginBottom: s(8) } },
+        h('div', {
+          style: { display: 'flex', width: s(28), height: s(2), backgroundImage: `linear-gradient(90deg, transparent, ${TITLE_GRADIENT[1]})` },
+        }),
+        h(
+          'div',
+          {
+            style: {
+              display: 'flex',
+              fontFamily: 'Miso',
+              fontSize: s(26),
+              fontWeight: 800,
+              letterSpacing: s(3),
+              textTransform: 'uppercase',
+              backgroundImage: `linear-gradient(90deg, ${TITLE_GRADIENT[0]}, ${TITLE_GRADIENT[1]})`,
+              backgroundClip: 'text',
+              color: 'transparent',
+            },
+          },
+          'Pack Leaderboard',
+        ),
+        h('div', {
+          style: { display: 'flex', width: s(28), height: s(2), backgroundImage: `linear-gradient(270deg, transparent, ${TITLE_GRADIENT[0]})` },
+        }),
+      ),
+      h('div', { style: { display: 'flex', fontSize: s(19), fontWeight: 700 } }, data.packName),
+      h(
+        'div',
+        { style: { display: 'flex', fontSize: s(12), color: 'rgba(255,255,255,0.5)', gap: s(6), marginTop: s(2) } },
+        h('span', {}, data.chartTitle),
+        h('span', {}, '·'),
+        h('span', {}, data.chartArtist),
+        h('span', {}, '·'),
+        h('span', {}, `${DIFFICULTY_LABELS[data.difficulty]} ${data.meter}`),
+      ),
+    ),
+    // Which leaderboard this page shows.
+    h(
+      'div',
+      { style: { display: 'flex', marginBottom: s(10), paddingBottom: s(10), borderBottom: `${s(1)}px solid rgba(255,255,255,0.08)` } },
+      h('div', { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(28), fontWeight: 700, color } }, data.label),
+    ),
+    h(
+      'div',
+      { style: { display: 'flex', flexDirection: 'column' } },
+      ...data.rankings.map((r, i) => {
+        const nameColor = r.isSelf ? color : r.isRival ? RIVAL_COLOR : '#ffffff';
+        return h(
+          'div',
+          {
+            style: {
+              display: 'flex',
+              alignItems: 'center',
+              padding: `${s(10)}px ${s(8)}px`,
+              backgroundColor: r.isSelf ? 'rgba(255,255,255,0.06)' : 'transparent',
+              borderBottom: i < data.rankings.length - 1 ? `${s(1)}px solid rgba(255,255,255,0.06)` : 'none',
+            },
+          },
+          h(
+            'div',
+            { style: { display: 'flex', width: s(36), fontSize: s(18), fontWeight: 700, color: r.isSelf ? color : 'rgba(255,255,255,0.5)' } },
+            `${r.rank}`,
+          ),
+          h('div', { style: { display: 'flex', flex: 1, fontSize: s(18), fontWeight: r.isSelf || r.isRival ? 700 : 400, color: nameColor } }, r.alias),
+          h('div', { style: { display: 'flex', fontSize: s(18), fontWeight: 700 } }, fmtPoints(r.totalScore)),
+        );
+      }),
+      h(
+        'div',
+        { style: { display: 'flex', justifyContent: 'center', marginTop: s(14), fontSize: s(12), color: 'rgba(255,255,255,0.4)' } },
+        `${data.totalParticipants} participants`,
+      ),
+    ),
+  );
+}
+
 export async function renderPackResultImage(data: PackResultImageData): Promise<Buffer> {
   const tree = buildCard(data, loadLogoDataUri());
+  const svg = await satori(tree as never, { width: CARD_WIDTH, height: CARD_HEIGHT, fonts: loadFonts() });
+  const resvgInstance = new Resvg(svg, { fitTo: { mode: 'width', value: CARD_WIDTH } });
+  return Buffer.from(resvgInstance.render().asPng());
+}
+
+export async function renderLeaderboardPage(data: LeaderboardPageData): Promise<Buffer> {
+  const tree = buildLeaderboardPage(data, loadLogoDataUri());
   const svg = await satori(tree as never, { width: CARD_WIDTH, height: CARD_HEIGHT, fonts: loadFonts() });
   const resvgInstance = new Resvg(svg, { fitTo: { mode: 'width', value: CARD_WIDTH } });
   return Buffer.from(resvgInstance.render().asPng());
