@@ -33,7 +33,7 @@
     "cleanup-user-scores": "tsx scripts/cleanup-user-scores.ts"
   },
   "devDependencies": {
-    "@eslint/js": "^9.25.0",
+    "@eslint/js": "^10.0.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.3.3",
     "@typescript-eslint/eslint-plugin": "^8.30.1",
