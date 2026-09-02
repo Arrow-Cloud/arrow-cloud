@@ -27,6 +27,9 @@ api/src/**/*.js
 api/src/**/*.js.map
 api/src/**/*.d.ts
 api/src/**/*.d.ts.map
+# ...except hand-authored vendor shims, which must stay plain CommonJS (see webpack.config.js's
+# NormalModuleReplacementPlugin usage for why this one exists).
+!api/src/utils/vendor-shims/*.js
 output/
 
 # Event backend configs (contain chart hashes, not secrets but event-specific)

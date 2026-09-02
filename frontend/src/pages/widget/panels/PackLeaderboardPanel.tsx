@@ -24,17 +24,20 @@ const LB_COLORS: Record<LeaderboardKey, string> = {
 const DIFFICULTY_LABELS: Record<PackLeaderboardDifficulty, string> = { medium: 'Med', hard: 'Hard', challenge: 'Expert' };
 const FADE_IN: React.CSSProperties = { animation: 'widgetFadeIn 0.4s ease' };
 
+// Always floors, never rounds to nearest - a player should never see more points than earned.
 function fmtScore(n: number): string {
-  if (n >= 100000) return `${Math.round(n / 1000)}k`;
-  if (n >= 10000) return `${(n / 1000).toFixed(1)}k`;
-  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  const floored = Math.floor(n);
+  if (floored >= 100000) return `${Math.floor(floored / 1000)}k`;
+  if (floored >= 10000) return `${Math.floor(floored / 100) / 10}k`;
+  return floored.toLocaleString();
 }
 
 // Deltas abbreviate more aggressively than scores (>1,000 rather than >=10,000) since they're
-// shown in a tighter space alongside the rank/name/score.
+// shown in a tighter space alongside the rank/name/score. Also always floors - see fmtScore.
 function fmtDeltaMagnitude(n: number): string {
-  if (n > 1000) return `${(n / 1000).toFixed(1)}k`;
-  return n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+  const floored = Math.floor(n);
+  if (floored > 1000) return `${Math.floor(floored / 100) / 10}k`;
+  return floored.toLocaleString();
 }
 
 // Delta is from the streaming user's perspective: positive means this player is ahead of them.

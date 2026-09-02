@@ -39,7 +39,7 @@ export const HORIZONTAL_WIDTHS: Record<WidgetFeatureConfig['type'], number> = {
   currentSession: 220,
 };
 
-export const ELIGIBLE_PACK_IDS = [101, 102, 131, 346, 348, 371];
+export const ELIGIBLE_PACK_IDS = [101, 102, 131, 346, 348, 371, 380];
 
 export function encodeWidgetConfig(config: WidgetConfig): string {
   return btoa(JSON.stringify(config));

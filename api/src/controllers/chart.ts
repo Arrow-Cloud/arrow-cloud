@@ -13,6 +13,7 @@ import { publishScoreSubmissionEvent, EVENT_TYPES } from '../utils/events';
 import { GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID, GLOBAL_HARD_EX_LEADERBOARD_ID } from '../utils/leaderboard';
 import { EventRegistry, EventLeaderboardResponse } from '../utils/events/base';
 import { EventLeaderboardService } from '../services/eventLeaderboards';
+import { computePackResultImages } from '../utils/pack-leaderboard';
 import { resolveChartBanner } from '../utils/chart-banner';
 import { parseLocalDateToUTC } from '../utils/date';
 
@@ -687,7 +688,9 @@ interface ScoreSubmissionEvent extends AuthenticatedEvent {
 
 interface ScoreSubmissionResponse {
   success: true;
+  playId: number;
   eventLeaderboards?: EventLeaderboardResponse[];
+  resultImages?: string[];
 }
 
 const validateScoreSubmission = (event: AuthenticatedEvent): event is ScoreSubmissionEvent => {
@@ -845,6 +848,16 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
       }
       // sessionUpdate is broadcast by the user-stats SQS consumer after writing the session.
 
+      // Synchronously render + upload pack-leaderboard result image(s), if this chart belongs to
+      // any pack-leaderboard-eligible pack. No-op (single cheap query) otherwise.
+      let resultImages: string[] = [];
+      try {
+        resultImages = await computePackResultImages(prisma, s3Client, newPlay);
+      } catch (error) {
+        console.error('Failed to compute pack result images:', error);
+        // Don't fail the request if this fails - the play was created successfully.
+      }
+
       // Publish score submission event to SNS
       try {
         await publishScoreSubmissionEvent({
@@ -863,7 +876,11 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
       }
 
       // Calculate event leaderboards with deltas if this chart belongs to active events
-      const response: ScoreSubmissionResponse = { success: true };
+      const response: ScoreSubmissionResponse = { success: true, playId: newPlay.id };
+
+      if (resultImages.length > 0) {
+        response.resultImages = resultImages;
+      }
 
       if (activeEvents.length > 0) {
         const eventLeaderboards: EventLeaderboardResponse[] = [];
@@ -907,8 +924,9 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
         }
       }
 
-      // Return event leaderboards if available, otherwise empty response for backward compatibility
-      if (response.eventLeaderboards && response.eventLeaderboards.length > 0) {
+      // Return a JSON response if there's event-leaderboard or pack-result-image content,
+      // otherwise empty response for backward compatibility.
+      if ((response.eventLeaderboards && response.eventLeaderboards.length > 0) || (response.resultImages && response.resultImages.length > 0)) {
         return respond(200, response);
       } else {
         return emptyResponse();

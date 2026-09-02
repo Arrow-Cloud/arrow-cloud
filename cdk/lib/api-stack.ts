@@ -106,7 +106,10 @@ export class ApiStack extends cdk.Stack {
       architecture: lambda.Architecture.ARM_64,
       code: lambda.Code.fromAsset('../api/dist'),
       handler: 'index.handler',
-      memorySize: 256,
+      // Bumped from 256MB - AWS allocates CPU proportionally to memory, and 256MB was
+      // throttling the CPU-bound work in the pack-result-image render path (harfbuzz WASM init,
+      // satori layout, resvg rasterization), producing occasional multi-second latency spikes.
+      memorySize: 1024,
       timeout: cdk.Duration.seconds(10),
       environment: {
         DATABASE_SECRET_ARN: database.secret?.secretArn || '',
@@ -185,6 +188,17 @@ export class ApiStack extends cdk.Stack {
       publicReadAccess: true,
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ACLS, // Block ACLs but allow bucket policies
       cors: S3_CORS_CONFIG,
+      lifecycleRules: [
+        // Pack-leaderboard result images (api/src/utils/pack-leaderboard.ts's computePackResultImages)
+        // are re-rendered fresh on every eligible score submission and never read back by the
+        // backend - only used once by the game client right after submission - so there's no
+        // reason to keep them around.
+        {
+          id: 'ExpirePackResultImages',
+          prefix: 'result/play/',
+          expiration: cdk.Duration.days(1),
+        },
+      ],
     });
 
     // Optionally import ACM cert for assets custom domain (must be in us-east-1 for CloudFront)
@@ -633,6 +647,16 @@ export class ApiStack extends cdk.Stack {
     userStatsLambda.addEnvironment('CONNECTIONS_TABLE_NAME', websocketConnectionsTable.tableName);
     userStatsLambda.addToRolePolicy(wsApiManagementPolicy);
     websocketConnectionsTable.grantReadData(userStatsLambda);
+
+    // Add to pack leaderboard Lambda so it can broadcast a 'refresh' to the streamer widget after
+    // recalculating + uploading a pack's leaderboard JSON (api/src/pack-leaderboard.ts's
+    // sendToUser call) - without this, sendToUser silently no-ops (CONNECTIONS_TABLE_NAME/
+    // WEBSOCKET_API_URL are unset, so it returns 0 instead of throwing) and the widget never
+    // learns a recalculation finished.
+    packLeaderboardLambda.addEnvironment('WEBSOCKET_API_URL', wsApiUrl);
+    packLeaderboardLambda.addEnvironment('CONNECTIONS_TABLE_NAME', websocketConnectionsTable.tableName);
+    packLeaderboardLambda.addToRolePolicy(wsApiManagementPolicy);
+    websocketConnectionsTable.grantReadData(packLeaderboardLambda);
 
     new cdk.CfnOutput(this, 'WebSocketApiUrl', {
       value: wsApiUrl,
