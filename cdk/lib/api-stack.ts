@@ -648,6 +648,16 @@ export class ApiStack extends cdk.Stack {
     userStatsLambda.addToRolePolicy(wsApiManagementPolicy);
     websocketConnectionsTable.grantReadData(userStatsLambda);
 
+    // Add to pack leaderboard Lambda so it can broadcast a 'refresh' to the streamer widget after
+    // recalculating + uploading a pack's leaderboard JSON (api/src/pack-leaderboard.ts's
+    // sendToUser call) - without this, sendToUser silently no-ops (CONNECTIONS_TABLE_NAME/
+    // WEBSOCKET_API_URL are unset, so it returns 0 instead of throwing) and the widget never
+    // learns a recalculation finished.
+    packLeaderboardLambda.addEnvironment('WEBSOCKET_API_URL', wsApiUrl);
+    packLeaderboardLambda.addEnvironment('CONNECTIONS_TABLE_NAME', websocketConnectionsTable.tableName);
+    packLeaderboardLambda.addToRolePolicy(wsApiManagementPolicy);
+    websocketConnectionsTable.grantReadData(packLeaderboardLambda);
+
     new cdk.CfnOutput(this, 'WebSocketApiUrl', {
       value: wsApiUrl,
       description: 'WebSocket API URL for real-time connections',

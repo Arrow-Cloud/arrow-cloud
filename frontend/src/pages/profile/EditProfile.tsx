@@ -152,7 +152,10 @@ const LeaderboardPreferenceCard: React.FC<{
   title: React.ReactNode;
   description: React.ReactNode;
   disclaimer?: React.ReactNode;
-}> = ({ scope, title, description, disclaimer }) => {
+  // Explicit per-card label (rather than a shared generic "Save Preferences") - the two cards on
+  // this page save independently, and identical button text made it easy to click the wrong one.
+  saveLabel: React.ReactNode;
+}> = ({ scope, title, description, disclaimer, saveLabel }) => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -251,10 +254,13 @@ const LeaderboardPreferenceCard: React.FC<{
         <div className="animate-pulse text-sm">
           <FormattedMessage defaultMessage="Loading leaderboards..." description="Loading message shown while leaderboards are being fetched" id="628Yaq" />
         </div>
-      ) : error ? (
-        <div className="text-error text-sm">{error}</div>
       ) : (
         <>
+          {/* A save/clear error shows alongside the form (not instead of it) - the previous
+              version replaced the whole checkbox grid + buttons with just the error text, so a
+              failed save left no way to retry without reloading the page, which then re-fetched
+              the pre-edit server state and made it look like the deselection never took. */}
+          {error && <div className="text-error text-sm">{error}</div>}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {AVAILABLE_LEADERBOARDS.map((lb) => {
               const checked = selected.includes(lb.id);
@@ -274,7 +280,7 @@ const LeaderboardPreferenceCard: React.FC<{
               {saving ? (
                 <FormattedMessage defaultMessage="Saving..." description="Button label shown when preferred leaderboards are being saved" id="TZbl8m" />
               ) : (
-                <FormattedMessage defaultMessage="Save Preferences" description="Button label for saving preferred leaderboards" id="f70c15" />
+                saveLabel
               )}
             </button>
             <button className="btn btn-sm btn-outline" onClick={clearAll} disabled={saving || selected.length === 0}>
@@ -312,6 +318,9 @@ const LeaderboardsSection: React.FC = () => {
             id="X5K83v"
           />
         }
+        saveLabel={
+          <FormattedMessage defaultMessage="Save In-Game Preferences" description="Button label for saving in-game preferred leaderboards" id="epvYHU" />
+        }
       />
       <LeaderboardPreferenceCard
         scope="WEBSITE"
@@ -322,6 +331,9 @@ const LeaderboardsSection: React.FC = () => {
             description="Instructional text for selecting website preferred leaderboard styles"
             id="IOYCVY"
           />
+        }
+        saveLabel={
+          <FormattedMessage defaultMessage="Save Website Preferences" description="Button label for saving website preferred leaderboards" id="+E7mfO" />
         }
       />
     </div>

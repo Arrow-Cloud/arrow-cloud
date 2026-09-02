@@ -402,13 +402,7 @@ function selectNearbyRankings(rankings: LeaderboardPageEntry[]): LeaderboardPage
  * there's nothing to persist - see the "Revised architecture" section of the approved plan.
  * No-op (single cheap query, no added latency) for the common case of a non-pack-eligible chart.
  */
-// TEMPORARY: gate this feature to a handful of test accounts while it's being validated in
-// production. Remove this (and the check below) once we're ready to roll it out to everyone.
-const RESULT_IMAGE_TEST_USER_IDS = new Set(['27cfc687-8d10-4132-bd29-da3b4ef54dfb', '3ac37479-c87f-459c-b3aa-c17e95c1a0d8']);
-
 export async function computePackResultImages(prisma: PrismaClient, s3Client: S3Client, play: Play): Promise<string[]> {
-  if (!RESULT_IMAGE_TEST_USER_IDS.has(play.userId)) return [];
-
   const matches = await getEligiblePacksForChart(prisma, play.chartHash);
   if (matches.length === 0) return [];
 
