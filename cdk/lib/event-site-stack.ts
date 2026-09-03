@@ -9,6 +9,8 @@ import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 export interface EventSiteStackProps extends cdk.StackProps {
   /** Subdomain prefix, e.g. "testevent" → testevent.arrowcloud.dance */
   subdomain: string;
+  /** Additional subdomains that should also point to this site (e.g. dev aliases) */
+  additionalSubdomains?: string[];
   /** Root domain, e.g. "arrowcloud.dance" */
   domainName: string;
   /** ACM wildcard certificate ARN in us-east-1 */
@@ -24,6 +26,7 @@ export class EventSiteStack extends cdk.Stack {
     super(scope, id, props);
 
     const fqdn = `${props.subdomain}.${props.domainName}`;
+    const allFqdns = [fqdn, ...(props.additionalSubdomains || []).map(s => `${s}.${props.domainName}`)];
 
     const bucket = new s3.Bucket(this, 'SiteBucket', {
       publicReadAccess: false,
@@ -52,7 +55,7 @@ export class EventSiteStack extends cdk.Stack {
         { httpStatus: 403, responseHttpStatus: 200, responsePagePath: '/index.html' },
       ],
       certificate,
-      domainNames: [fqdn],
+      domainNames: allFqdns,
       comment: `Event site: ${fqdn}`,
     });
 

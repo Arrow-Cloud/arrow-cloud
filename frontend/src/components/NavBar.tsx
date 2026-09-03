@@ -70,9 +70,11 @@ interface NavBarProps {
   logo?: React.ReactNode;
   /** Extra elements to render in the nav bar (e.g. theme toggle) */
   extra?: React.ReactNode;
+  /** Override the Edit Profile link URL (e.g. point to main site from event subdomains) */
+  profileUrl?: string;
 }
 
-const NavBar: React.FC<NavBarProps> = ({ eventMode = false, logo, extra }) => {
+const NavBar: React.FC<NavBarProps> = ({ eventMode = false, logo, extra, profileUrl }) => {
   const navigate = useNavigate();
   const { formatMessage } = useIntl();
   const { user, logout, hasPermission, hasAny } = useAuth();
@@ -209,6 +211,16 @@ const NavBar: React.FC<NavBarProps> = ({ eventMode = false, logo, extra }) => {
                   </li>
                   <div className="divider my-1"></div>
                   <li>
+                    {profileUrl ? (
+                      <a
+                        href={profileUrl}
+                        className="hover:bg-primary hover:text-primary-content transition-colors flex items-center gap-2"
+                        onClick={() => closeDropdown()}
+                      >
+                        <Edit className="w-4 h-4" />
+                        {formatMessage({ defaultMessage: 'Edit Profile', id: '7JspJu', description: 'User menu item for editing profile' })}
+                      </a>
+                    ) : (
                     <Link
                       to="/profile"
                       className="hover:bg-primary hover:text-primary-content transition-colors flex items-center gap-2"
@@ -219,6 +231,7 @@ const NavBar: React.FC<NavBarProps> = ({ eventMode = false, logo, extra }) => {
                       <Edit className="w-4 h-4" />
                       {formatMessage({ defaultMessage: 'Edit Profile', id: '7JspJu', description: 'User menu item for editing profile' })}
                     </Link>
+                    )}
                   </li>
                   <li>
                     <a
@@ -447,6 +460,16 @@ const NavBar: React.FC<NavBarProps> = ({ eventMode = false, logo, extra }) => {
                       >
                         {user.alias}
                       </button>
+                      {profileUrl ? (
+                        <a
+                          href={profileUrl}
+                          className="w-full text-left p-3 hover:bg-base-200 rounded-lg transition-colors flex items-center gap-2"
+                          onClick={() => closeMobileMenu()}
+                        >
+                          <Edit className="w-4 h-4" />
+                          {formatMessage({ defaultMessage: 'Edit Profile', id: 'LhgF30', description: 'Mobile user menu item for editing profile' })}
+                        </a>
+                      ) : (
                       <button
                         className="w-full text-left p-3 hover:bg-base-200 rounded-lg transition-colors flex items-center gap-2"
                         onClick={() => {
@@ -457,6 +480,7 @@ const NavBar: React.FC<NavBarProps> = ({ eventMode = false, logo, extra }) => {
                         <Edit className="w-4 h-4" />
                         {formatMessage({ defaultMessage: 'Edit Profile', id: 'LhgF30', description: 'Mobile user menu item for editing profile' })}
                       </button>
+                      )}
                       <button
                         className="w-full text-left p-3 hover:bg-error hover:text-error-content rounded-lg transition-colors flex items-center gap-2"
                         onClick={() => {

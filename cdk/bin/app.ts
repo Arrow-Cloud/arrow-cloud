@@ -5,6 +5,7 @@ import { CertificatesStackUsEast1, CertificatesStackUsEast2, WildcardCertificate
 import { ShareServiceStack } from '../lib/share-service-stack';
 import { EventSiteStack } from '../lib/event-site-stack';
 import { EventBackendConstruct } from '../lib/event-backend-construct';
+import { GolfBackendStack } from '../lib/golf-backend-stack';
 import * as path from 'path';
 
 const app = new cdk.App();
@@ -13,7 +14,7 @@ const app = new cdk.App();
 const domainName = (app.node.tryGetContext('domainName') as string | undefined) || process.env.DOMAIN_NAME || 'arrowcloud.dance';
 
 // Helper certificate stacks (deploy independently)
-const certUsEast1 = new CertificatesStackUsEast1(app, 'CertificatesUsEast1', {
+new CertificatesStackUsEast1(app, 'CertificatesUsEast1', {
   env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-1' },
   domainName,
   includeWww: true,
@@ -53,11 +54,23 @@ if (wildcardCertArn) {
     wildcardCertArn,
     distPath: '../events/testevent/frontend/dist',
   });
+
+  new EventSiteStack(app, 'EventSite-golf', {
+    subdomain: '6ddf7d26',
+    domainName,
+    wildcardCertArn,
+    distPath: '../events/golf/frontend/dist',
+  });
 }
 
 // === Event Backends ===
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const testeventConfig = require('../../events/testevent/backend/config.json');
+
+new GolfBackendStack(app, 'GolfBackend', {
+  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-2' },
+  submitApiCodePath: path.join(__dirname, '../../events/golf/backend/dist'),
+});
 
 new EventBackendConstruct(apiStack, 'EventBackend-testevent', {
   eventSlug: 'testevent',
