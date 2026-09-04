@@ -156,6 +156,41 @@ function h(type: string, props: Record<string, unknown> = {}, ...children: (Chil
   return { type, props: { ...props, children: flatChildren.length === 1 ? flatChildren[0] : flatChildren } };
 }
 
+// Course names, hole (chart) titles/artists, and player aliases are all unbounded-length user
+// content - this card is a fixed width, so any of them can otherwise clip against the edge or
+// overlap other text. satori does correctly support the standard CSS truncation combo,
+// overflow:hidden + textOverflow:ellipsis + whiteSpace:nowrap (verified directly - it's not a given
+// every satori feature works, e.g. border-based CSS triangles render as solid blocks instead)... but
+// ONLY when the text is left-aligned. Pairing that combo with justifyContent:'center' on centered
+// headings (which every one of these fields is) breaks satori's overflow calculation - text still
+// gets an ellipsis, but also silently clips off the *left* edge with no indicator, which is worse
+// than the plain clipping this is meant to fix. There's no reliable way to detect a satori text
+// overflow after the fact, so this estimates the rendered width up front (average glyph width for
+// this family) and only centers when that estimate comfortably fits - genuinely-too-long text
+// instead falls back to left-aligned + ellipsis, which satori renders correctly. A short/normal name
+// (the overwhelming majority) is unaffected either way.
+const AVG_CHAR_WIDTH_RATIO = 0.56;
+function truncatedLine(text: string, maxWidthPx: number, style: Record<string, unknown> = {}) {
+  const fontSize = (style.fontSize as number | undefined) ?? s(16);
+  const fits = text.length * fontSize * AVG_CHAR_WIDTH_RATIO <= maxWidthPx;
+  return h(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        width: '100%',
+        minWidth: 0,
+        justifyContent: fits ? 'center' : 'flex-start',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        ...style,
+      },
+    },
+    text,
+  );
+}
+
 // --- The pin-proximity dispersion chart ---
 // The green is a deterministically-random organic blob, seeded from the chart hash - the same
 // chart always renders the same green shape, but every chart looks like a distinct real green
@@ -402,7 +437,7 @@ function buildCardHeader(logoDataUri: string, subtitle: Child) {
     h('img', { src: logoDataUri, width: HEADER_LOGO_WIDTH, height: HEADER_LOGO_HEIGHT, style: { display: 'flex' } }),
     // Course (pack) name, in the fun handwritten font - distinct from the hole (chart) info below it,
     // which stays in the normal body font (bold) since it's regular informational text, not branding.
-    h('div', { style: { display: 'flex', fontFamily: 'PermanentMarker', fontSize: s(28), color: STROKE_GOOD, marginTop: s(10) } }, COURSE_NAME),
+    truncatedLine(COURSE_NAME, CARD_WIDTH - s(40), { fontFamily: 'PermanentMarker', fontSize: s(28), color: STROKE_GOOD, marginTop: s(10) }),
     subtitle,
   );
 }
@@ -445,10 +480,11 @@ function buildGolfCard(opts: {
       logoDataUri,
       h(
         'div',
-        { style: { display: 'flex', fontSize: s(18), fontWeight: 700, color: 'rgba(255,255,255,0.85)', gap: s(8), marginTop: s(8) } },
-        h('span', {}, chartTitle),
-        h('span', {}, '·'),
-        h('span', {}, chartArtist),
+        { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', marginTop: s(8) } },
+        // Song title and artist on their own lines, each independently truncated - either one alone
+        // can be long enough to clip, and cramming both onto one line only made that worse.
+        truncatedLine(chartTitle, CARD_WIDTH - s(40), { fontSize: s(18), fontWeight: 700, color: 'rgba(255,255,255,0.9)' }),
+        truncatedLine(chartArtist, CARD_WIDTH - s(40), { fontSize: s(15), fontWeight: 700, color: 'rgba(255,255,255,0.65)', marginTop: s(1) }),
       ),
     ),
     h(
@@ -651,9 +687,13 @@ function buildRankingsCard(opts: {
           style: {
             display: 'flex',
             flex: 1,
+            minWidth: 0, // without this, a flex item won't shrink past its content's intrinsic width - overflow/ellipsis would never trigger
             fontSize: s(21),
             fontWeight: r.isSelf || r.isRival ? 700 : 400,
             color: r.isSelf ? SELF_COLOR : r.isRival ? RIVAL_COLOR : '#ffffff',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
           },
         },
         r.alias,
@@ -778,10 +818,9 @@ async function main() {
     buildRankingsCard({
       subtitle: h(
         'div',
-        { style: { display: 'flex', fontSize: s(18), fontWeight: 700, color: 'rgba(255,255,255,0.85)', gap: s(8), marginTop: s(8) } },
-        h('span', {}, 'Fairway to Heaven'),
-        h('span', {}, '·'),
-        h('span', {}, 'modus'),
+        { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', marginTop: s(8) } },
+        truncatedLine('Fairway to Heaven', CARD_WIDTH - s(40), { fontSize: s(18), fontWeight: 700, color: 'rgba(255,255,255,0.9)' }),
+        truncatedLine('modus', CARD_WIDTH - s(40), { fontSize: s(15), fontWeight: 700, color: 'rgba(255,255,255,0.65)', marginTop: s(1) }),
       ),
       sectionLabel: 'Hole 4 Leaderboard',
       rankings: holeRankings,
@@ -799,7 +838,7 @@ async function main() {
     buildRankingsCard({
       // Course name itself now comes from the shared header (COURSE_NAME, in Permanent Marker) -
       // this subtitle line only needs the course-specific detail the header doesn't cover.
-      subtitle: h('div', { style: { display: 'flex', fontSize: s(18), fontWeight: 700, color: 'rgba(255,255,255,0.85)', marginTop: s(8) } }, '9 Holes'),
+      subtitle: truncatedLine('9 Holes', CARD_WIDTH - s(40), { fontSize: s(18), fontWeight: 700, color: 'rgba(255,255,255,0.9)', marginTop: s(8) }),
       sectionLabel: 'Course Leaderboard',
       rankings: courseRankings,
       totalParticipants: courseRankings.length,
