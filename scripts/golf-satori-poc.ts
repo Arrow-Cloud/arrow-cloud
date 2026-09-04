@@ -205,26 +205,75 @@ interface GreenControlPoint {
   radius: number;
 }
 
-// Independent per-point noise alone tends to smooth back out into "a wobbly circle" once the
-// Catmull-Rom spline runs through it - real greens read as irregular because they're elongated and
-// often lobed, not just bumpy. So the radius at each angle is built from three layers: an ellipse
-// (random aspect ratio + rotation, breaking circular symmetry at the largest scale), a second
-// harmonic (an occasional waist/lobe, at a random phase), and per-point jitter (the fine edge
-// irregularity). All three are drawn from the same chart-hash-seeded rng, in this order, so the
-// whole shape - not just the noise - is deterministic per chart.
-function generateGreenControlPoints(rng: () => number, count: number, baseRadius: number, wobbleFrac: number): GreenControlPoint[] {
-  const aspect = 0.55 + rng() * 0.3; // 0.55-0.85: minor/major axis ratio - lower = more elongated
-  const rotation = rng() * Math.PI * 2;
-  const lobeAmp = 0.08 + rng() * 0.1; // subtle second-harmonic waist/lobe
-  const lobePhase = rng() * Math.PI * 2;
+// Multi-octave radial noise - a small randomized Fourier series - rather than a hand-composed
+// "ellipse x one harmonic x per-point jitter" model. That older approach always read as a stretched,
+// pinched circle, because it fundamentally only had two independent shape frequencies (the ellipse
+// itself is a k=1 asymmetry, the "lobe" a k=2 one) plus unstructured per-point noise that the
+// Catmull-Rom spline mostly smoothed back out. Here, each octave k=1..OCTAVES is an independent
+// cosine at its own random amplitude/phase; k=1 alone already produces the elongation the old
+// ellipse formula did (a single-lobe asymmetry *is* elongation), k=2 a waist/lobe, and k=3+ layer in
+// genuinely organic, non-repeating fine irregularity along the edge - the standard technique for
+// procedural blob/island silhouettes. Amplitude decays per octave (persistence, same idea as Perlin
+// noise's octave falloff) so low frequencies set the overall silhouette and high frequencies only
+// add detail, never dominate. All of it comes from the same chart-hash-seeded rng, so the whole
+// shape is deterministic per chart.
+// Every chart previously produced the same "family" of shape (isotropic noise around a circle) -
+// visually distinct per chart, but all reading as one blobby archetype. A small hand-picked set of
+// variants - chosen deterministically per chart hash, same as everything else here - gives real
+// layout diversity (skinny/wide, round, sprawling) on top of the per-chart noise, the way real
+// greens vary in silhouette, not just in edge detail.
+interface GreenVariant {
+  name: string;
+  aspectX: number;
+  aspectY: number;
+  octaves: number;
+  persistence: number;
+  amplitude: number;
+}
+
+const GREEN_VARIANTS: GreenVariant[] = [
+  { name: 'round', aspectX: 1, aspectY: 1, octaves: 4, persistence: 0.42, amplitude: 0.28 },
+  { name: 'wide', aspectX: 1.35, aspectY: 0.8, octaves: 4, persistence: 0.42, amplitude: 0.26 },
+  { name: 'tall', aspectX: 0.8, aspectY: 1.35, octaves: 4, persistence: 0.42, amplitude: 0.26 },
+  { name: 'compact', aspectX: 0.82, aspectY: 0.82, octaves: 3, persistence: 0.4, amplitude: 0.16 },
+  { name: 'sprawling', aspectX: 1.15, aspectY: 1.05, octaves: 5, persistence: 0.4, amplitude: 0.3 },
+];
+
+function pickGreenVariant(rng: () => number): GreenVariant {
+  return GREEN_VARIANTS[Math.floor(rng() * GREEN_VARIANTS.length) % GREEN_VARIANTS.length];
+}
+
+function generateGreenControlPoints(rng: () => number, count: number, baseRadius: number, variant: GreenVariant): GreenControlPoint[] {
+  const { aspectX, aspectY, octaves, persistence, amplitude: startAmplitude } = variant;
+  let amplitude = startAmplitude;
+  const harmonics: { k: number; amplitude: number; phase: number }[] = [];
+  for (let k = 1; k <= octaves; k++) {
+    harmonics.push({ k, amplitude: amplitude * (0.7 + rng() * 0.6), phase: rng() * Math.PI * 2 });
+    amplitude *= persistence;
+  }
+
+  // Both bounds are safety clamps, not stylistic choices - persistence/amplitude above are tuned so
+  // these rarely bind, but random phases could in principle align at one angle across all octaves at
+  // once. The green outline itself (not just the dots plotted against it) needs to stay inside its
+  // container or it visibly overlaps the card content around it, so the multiplier's ceiling/floor
+  // are derived from the variant's own aspect ratio - a "wide" variant's ellipse alone already
+  // reaches 1.35x on its long axis, so its noise multiplier gets a correspondingly tighter ceiling
+  // than "round"'s, keeping every variant's overall radius inside the same [0.45, 1.3] envelope.
+  const maxAspect = Math.max(aspectX, aspectY);
+  const minAspect = Math.min(aspectX, aspectY);
+  const multiplierMax = 1.3 / maxAspect;
+  const multiplierMin = 0.45 / minAspect;
 
   return Array.from({ length: count }, (_, i) => {
     const angle = (i / count) * Math.PI * 2;
-    const rel = angle - rotation;
-    const ellipseFactor = 1 / Math.sqrt(Math.cos(rel) ** 2 + (Math.sin(rel) / aspect) ** 2);
-    const lobeFactor = 1 + lobeAmp * Math.cos(2 * (angle - lobePhase));
-    const jitter = 1 + (rng() * 2 - 1) * wobbleFrac;
-    return { angle, radius: baseRadius * ellipseFactor * lobeFactor * jitter };
+    // Polar-ellipse base radius (aspectX along the horizontal axis, aspectY along the vertical) -
+    // this is what actually produces "skinnier vertical"/"skinnier horizontal"/"more circular", on
+    // top of which the per-octave noise still adds organic irregularity.
+    const ellipseFactor = (aspectX * aspectY) / Math.sqrt((aspectY * Math.cos(angle)) ** 2 + (aspectX * Math.sin(angle)) ** 2);
+    let multiplier = 1;
+    for (const h of harmonics) multiplier += h.amplitude * Math.cos(h.k * angle + h.phase);
+    multiplier = Math.min(Math.max(multiplier, multiplierMin), multiplierMax);
+    return { angle, radius: baseRadius * ellipseFactor * multiplier };
   });
 }
 
@@ -270,12 +319,10 @@ function buildGreenSvgDataUri(points: GreenControlPoint[], diameter: number): st
 function buildDispersionChart(notes: MockNote[], diameter: number, chartHash: string) {
   const R = diameter / 2;
   const rng = mulberry32(hashStringToSeed(chartHash));
-  // baseRadius is deliberately conservative (0.38R, not 0.55R) - the ellipse/lobe factors in
-  // generateGreenControlPoints can multiply a control point's radius well past 1x baseRadius at its
-  // widest, and this still needs to leave room for OVERSHOOT dots beyond it without touching the
-  // container edge. The Math.min clamp below is the actual guarantee; this is just tuned to rarely
-  // need it.
-  const controlPoints = generateGreenControlPoints(rng, 10, R * 0.5, 0.15);
+  // 24 control points to properly resolve up to 5-octave noise below Nyquist - fewer points would
+  // alias the higher octaves into jagged/spiky edges instead of smooth organic curves.
+  const variant = pickGreenVariant(rng);
+  const controlPoints = generateGreenControlPoints(rng, 24, R * 0.5, variant);
   const OVERSHOOT = 1.3;
 
   // Angle and radius are otherwise fully determined by (chronological index, strokes) - fine on
@@ -291,7 +338,28 @@ function buildDispersionChart(notes: MockNote[], diameter: number, chartHash: st
 
   const greenSvgUri = buildGreenSvgDataUri(controlPoints, diameter);
 
-  const positions = notes.map((note, i) => {
+  // Real charts run 800-2000+ notes, not the ~300 this was originally tuned against. A literal
+  // one-dot-per-note plot at that count either overwhelms the render (thousands of absolutely
+  // positioned elements) or, if dots are also faded down, disappears almost entirely: aces cluster
+  // near the pin at a near-zero radius but still spread across the *full circle* in angle (angle is
+  // chronological position, not per-hit), so at high counts they form a thin ring around the cup
+  // rather than one overlapping stack - there isn't enough overlap for opacity-blending to build
+  // visible density, so a first pass that faded AND shrunk dots together just made the chart go
+  // blank. Size is what keeps a high-count chart readable; opacity only needs a light touch as a
+  // ceiling on the rare heavy-overlap spot, not as a primary density signal.
+  const DENSITY_REF = 300;
+  const dotSizeScale = Math.max(0.5, Math.min(1, DENSITY_REF / notes.length));
+  const dotOpacity = Math.max(0.8, Math.min(1, (DENSITY_REF * 2) / notes.length));
+  // Caps the actual element count for pathologically long charts, by plotting every Nth note by
+  // original chronological index (not truncating to the first N) so the sampled shape/timing
+  // distribution still represents the full play. Set above the 800-2000 range this was tuned for -
+  // sampling isn't needed there, only as a safety valve for outliers.
+  const MAX_PLOTTED_DOTS = 2500;
+  const stride = Math.max(1, Math.ceil(notes.length / MAX_PLOTTED_DOTS));
+
+  const positions: { cx: number; cy: number; strokes: number }[] = [];
+  for (let i = 0; i < notes.length; i += stride) {
+    const note = notes[i];
     const angleJitter = (jitter01(i * 2 + 1) - 0.5) * ((Math.PI * 2) / notes.length) * 6;
     const radiusJitter = 1 + (jitter01(i * 2 + 2) - 0.5) * 0.35;
     const angle = -Math.PI / 2 + (i / notes.length) * Math.PI * 2 + angleJitter;
@@ -301,11 +369,11 @@ function buildDispersionChart(notes: MockNote[], diameter: number, chartHash: st
     // jitter, since 0 * anything = 0) - a small floor lets aces spread into a visible little cluster
     // right around the pin instead of stacking into one indistinguishable point.
     const radius = Math.min(localBoundary * Math.max(t, 0.035) * OVERSHOOT * radiusJitter, R * 0.95);
-    return { cx: R + radius * Math.cos(angle), cy: R + radius * Math.sin(angle), strokes: note.strokes };
-  });
+    positions.push({ cx: R + radius * Math.cos(angle), cy: R + radius * Math.sin(angle), strokes: note.strokes });
+  }
 
   const dots = positions.map(({ cx, cy, strokes }) => {
-    const size = s(3 + (Math.min(strokes, 200) / 200) * 4);
+    const size = s((3 + (Math.min(strokes, 200) / 200) * 4) * dotSizeScale);
     return h('div', {
       style: {
         display: 'flex',
@@ -316,15 +384,22 @@ function buildDispersionChart(notes: MockNote[], diameter: number, chartHash: st
         top: cy - size / 2,
         borderRadius: '50%',
         backgroundColor: strokeColorHex(strokes),
+        opacity: dotOpacity,
       },
     });
   });
 
   // Aces (strokes === 0) get a highlight ring so the "perfect hits" cluster is easy to pick out from
   // the general green/yellow/orange spread rather than blending in as just another small green dot.
-  const aceRingSize = s(11);
-  const aceRings = positions
-    .filter((p) => p.strokes === 0)
+  // Capped separately from the dot count above (MAX_ACE_RINGS, not MAX_PLOTTED_DOTS) - hundreds of
+  // individual ring outlines don't blend via opacity the way overlapping filled dots do, they'd just
+  // read as scribble, so only a representative sample gets an explicit ring.
+  const MAX_ACE_RINGS = 40;
+  const acePositions = positions.filter((p) => p.strokes === 0);
+  const aceRingStride = Math.max(1, Math.ceil(acePositions.length / MAX_ACE_RINGS));
+  const aceRingSize = s(11 * Math.max(0.6, dotSizeScale));
+  const aceRings = acePositions
+    .filter((_, i) => i % aceRingStride === 0)
     .map(({ cx, cy }) =>
       h('div', {
         style: {
@@ -336,6 +411,7 @@ function buildDispersionChart(notes: MockNote[], diameter: number, chartHash: st
           top: cy - aceRingSize / 2,
           borderRadius: '50%',
           border: `${s(1.5)}px solid ${STROKE_GOOD}`,
+          opacity: Math.max(0.4, dotOpacity),
         },
       }),
     );
@@ -459,16 +535,30 @@ function buildGolfCard(opts: {
   const aceCount = notes.filter((n) => n.strokes === 0).length;
   const obCount = notes.filter((n) => n.strokes === 200).length;
 
-  // Number-on-top, label-beneath - same stacked convention as STROKES below, now shared by every
-  // mini stat rather than STROKES being a one-off.
+  // One font (Nunito) for both numbers and labels - weight/size/opacity carry the hierarchy instead
+  // of a font swap. lineHeight: 1 on both lines strips each font's built-in leading (the default
+  // line-height at fontSize 64 was pushing the label much further from its number than the
+  // fontSize gap alone would suggest) so the explicit marginTop below is the *only* space between
+  // a number and its own label.
   const miniStat = (label: string, value: number, color: string) =>
     h(
       'div',
       { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
-      h('div', { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(24), fontWeight: 700, color } }, `${value}`),
+      h('div', { style: { display: 'flex', fontFamily: 'Nunito', fontSize: s(34), fontWeight: 700, lineHeight: 1, color } }, `${value}`),
       h(
         'div',
-        { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(11), fontWeight: 700, letterSpacing: s(1.5), color: 'rgba(255,255,255,0.5)' } },
+        {
+          style: {
+            display: 'flex',
+            fontFamily: 'Nunito',
+            fontSize: s(11),
+            fontWeight: 600,
+            lineHeight: 1,
+            letterSpacing: s(1.5),
+            marginTop: s(4),
+            color: 'rgba(255,255,255,0.6)',
+          },
+        },
         label,
       ),
     );
@@ -490,13 +580,28 @@ function buildGolfCard(opts: {
     h(
       'div',
       { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: s(10) } },
-      h('div', { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(64), fontWeight: 700, color: '#ffffff' } }, fmtStrokes(totalStrokes)),
       h(
         'div',
-        { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(16), fontWeight: 700, letterSpacing: s(2), color: 'rgba(255,255,255,0.55)' } },
+        { style: { display: 'flex', fontFamily: 'Nunito', fontSize: s(64), fontWeight: 700, lineHeight: 1, color: '#ffffff' } },
+        fmtStrokes(totalStrokes),
+      ),
+      h(
+        'div',
+        {
+          style: {
+            display: 'flex',
+            fontFamily: 'Nunito',
+            fontSize: s(12),
+            fontWeight: 600,
+            lineHeight: 1,
+            letterSpacing: s(2),
+            marginTop: s(6),
+            color: 'rgba(255,255,255,0.6)',
+          },
+        },
         'STROKES',
       ),
-      h('div', { style: { display: 'flex', fontSize: s(20), fontWeight: 700, color: delta.color, marginTop: s(6) } }, `${delta.text} vs. previous best`),
+      h('div', { style: { display: 'flex', fontSize: s(24), fontWeight: 700, color: delta.color, marginTop: s(8) } }, `${delta.text} vs. previous best`),
       h('div', { style: { display: 'flex', gap: s(20), marginTop: s(10) } }, miniStat('ACES', aceCount, STROKE_GOOD), miniStat('OB', obCount, STROKE_BAD)),
     ),
     h(
