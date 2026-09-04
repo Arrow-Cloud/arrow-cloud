@@ -35,10 +35,10 @@ const HomePage = () => {
       ) : (
         <div className="mt-4 flex flex-col items-center gap-3">
           <p className="text-base-content/70">
-            <FormattedMessage defaultMessage="Login to submit a chart." id="k9rW2A" description="Call to action for logged-out users on homepage" />
+            <FormattedMessage defaultMessage="Login to submit a chart." id="1aS/pR" description="Call to action for logged-out users on homepage" />
           </p>
           <Link to="/login" className="btn btn-accent gap-2">
-            <FormattedMessage defaultMessage="Login" id="AyGauy" description="Login button on homepage" />
+            <FormattedMessage defaultMessage="Login" id="+ANEqj" description="Login button on homepage" />
           </Link>
         </div>
       )}

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import { Flag, UploadCloud, CheckCircle2, AlertCircle, ChevronLeft } from 'lucide-react';
@@ -209,38 +209,64 @@ const SubmitChartPage = () => {
               <FormattedMessage defaultMessage="Submit a Chart" id="fZEEk5" description="Submit chart page heading" />
             </h1>
             <p className="text-base-content/60 text-sm">
-              <FormattedMessage
-                defaultMessage="Choose a pack to submit to."
-                id="6UWT96"
-                description="Pack selection prompt on submit chart page"
-              />
+              <FormattedMessage defaultMessage="Choose a pack to submit to." id="6UWT96" description="Pack selection prompt on submit chart page" />
             </p>
           </div>
           {/* General Info & Charting Rules */}
           <div className="card bg-base-200 p-5 flex flex-col gap-4">
-            <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">General Information</h2>
+            <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
+              <FormattedMessage defaultMessage="General Information" id="elcNgS" description="General information section heading on submit chart page" />
+            </h2>
             <ul className="flex flex-col gap-1 list-disc list-outside pl-4 marker:text-accent">
               <li className="text-sm text-base-content/80 pl-1">
-                The event&apos;s theme and scoring system have not been announced yet, but shouldn&apos;t meaningfully impact how charts are written. These will be announced in the fall. The scoring system is accuracy oriented, with more timing windows that are less punishing regarding small mistakes.
+                <FormattedMessage
+                  defaultMessage="The event's theme and scoring system have not been announced yet, but shouldn't meaningfully impact how charts are written. These will be announced in the fall. The scoring system is accuracy oriented, with more timing windows that are less punishing regarding small mistakes."
+                  id="WLy3O5"
+                  description="General info bullet: theme/scoring system not yet announced"
+                />
               </li>
               <li className="text-sm text-base-content/80 pl-1">
-                The event will go live in December with 3 or 4 small packs with about 20 charts in each pack. More packs will be made available to submit charts to and will release after the initial event goes live.
+                <FormattedMessage
+                  defaultMessage="The event will go live in December with 3 or 4 small packs with about 20 charts in each pack. More packs will be made available to submit charts to and will release after the initial event goes live."
+                  id="DTG0cR"
+                  description="General info bullet: event launch timing"
+                />
               </li>
               <li className="text-sm text-base-content/80 pl-1">
-                The curators for the packs will review your chart submissions and may reach out to you for some small changes.
+                <FormattedMessage
+                  defaultMessage="The curators for the packs will review your chart submissions and may reach out to you for some small changes."
+                  id="W6rPfy"
+                  description="General info bullet: curator review process"
+                />
               </li>
             </ul>
 
-            <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">Charting Rules</h2>
+            <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
+              <FormattedMessage defaultMessage="Charting Rules" id="OmylTm" description="Charting rules section heading on submit chart page" />
+            </h2>
             <ul className="flex flex-col gap-1 list-disc list-outside pl-4 marker:text-accent">
               <li className="text-sm text-base-content/80 pl-1">
-                Your chart <strong>MUST BE UNRELEASED</strong>. You may release your chart separately after your chart debuts in the event.
+                <FormattedMessage
+                  defaultMessage="Your chart <strong>MUST BE UNRELEASED</strong>. You may release your chart separately after your chart debuts in the event."
+                  id="F0dRE7"
+                  description="Charting rule: chart must be unreleased"
+                  values={{ strong: (chunks: React.ReactNode) => <strong>{chunks}</strong> }}
+                />
               </li>
               <li className="text-sm text-base-content/80 pl-1">
-                Your chart <strong>WILL BE REVIEWED ON MMOD</strong>. CMOD is not allowed in this event. If you need help normalizing scroll speed please ask in Discord.
+                <FormattedMessage
+                  defaultMessage="Your chart <strong>WILL BE REVIEWED ON MMOD</strong>. CMOD is not allowed in this event. If you need help normalizing scroll speed please ask in Discord."
+                  id="8fqwZu"
+                  description="Charting rule: MMOD review requirement"
+                  values={{ strong: (chunks: React.ReactNode) => <strong>{chunks}</strong> }}
+                />
               </li>
               <li className="text-sm text-base-content/80 pl-1">
-                Explicit content is allowed but it is up to the discretion of the curators if something crosses the line. Songs like WAP, Nissan Altima, are not likely to be accepted. Use your judgment.
+                <FormattedMessage
+                  defaultMessage="Explicit content is allowed but it is up to the discretion of the curators if something crosses the line. Songs like WAP, Nissan Altima, are not likely to be accepted. Use your judgment."
+                  id="tIKdFn"
+                  description="Charting rule: explicit content policy"
+                />
               </li>
             </ul>
           </div>
@@ -272,7 +298,12 @@ const SubmitChartPage = () => {
           <Flag className="w-10 h-10 text-accent" />
           <h1 className="text-2xl font-bold">{selectedPack.name}</h1>
           <p className="text-sm text-base-content/60">
-            Curated by {selectedPack.curators.join(', ')}
+            <FormattedMessage
+              defaultMessage="Curated by {curators}"
+              id="lYb4jE"
+              description="Curator credit line on submit chart page"
+              values={{ curators: selectedPack.curators.join(', ') }}
+            />
           </p>
         </div>
 
@@ -328,10 +359,7 @@ const SubmitChartPage = () => {
               <div className="flex flex-col gap-1">
                 <progress className="progress progress-accent w-full" value={progress} max={100} />
                 <span className="text-xs text-base-content/60 text-right">
-                  {formatMessage(
-                    { defaultMessage: '{progress}% ', id: 'SrvHAs', description: 'Upload progress percentage label' },
-                    { progress },
-                  ).trim()}
+                  {formatMessage({ defaultMessage: '{progress}% ', id: 'SrvHAs', description: 'Upload progress percentage label' }, { progress }).trim()}
                 </span>
               </div>
             )}
