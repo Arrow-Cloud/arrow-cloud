@@ -21,6 +21,13 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 
+export interface ApiStackProps extends cdk.StackProps {
+  /** Golf event's read-api Function URL (from GolfBackendStack, via events/golf/backend/config.json
+   * - not a live cross-stack construct reference, see golf-backend-stack.ts for why). Blank until
+   * GolfBackendStack has been deployed at least once. */
+  golfReadApiUrl?: string;
+}
+
 export class ApiStack extends cdk.Stack {
   public readonly vpc: ec2.IVpc;
   public readonly dbSecurityGroup: ec2.ISecurityGroup;
@@ -29,7 +36,7 @@ export class ApiStack extends cdk.Stack {
   public readonly scoreSubmissionTopic: sns.ITopic;
   public readonly discordNotifyQueue: sqs.Queue;
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: ApiStackProps) {
     super(scope, id, props);
 
     const vpc = new ec2.Vpc(this, 'ACApiVPC', {
@@ -121,6 +128,7 @@ export class ApiStack extends cdk.Stack {
         WEBAUTHN_ORIGIN: 'https://arrowcloud.dance',
         S3_BUCKET_PACKS: 'arrow-cloud-packs',
         SCORE_SUBMISSION_TOPIC_ARN: scoreSubmissionTopic.topicArn,
+        ...(props?.golfReadApiUrl ? { GOLF_READ_API_URL: props.golfReadApiUrl } : {}),
       },
       vpc,
       vpcSubnets: {

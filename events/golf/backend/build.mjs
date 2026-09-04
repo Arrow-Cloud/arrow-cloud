@@ -1,7 +1,7 @@
 import * as esbuild from 'esbuild';
 
 await esbuild.build({
-  entryPoints: ['src/submit-api.ts', 'src/submission-notifier.ts'],
+  entryPoints: ['src/submit-api.ts', 'src/submission-notifier.ts', 'src/score-processor.ts', 'src/read-api.ts'],
   bundle: true,
   platform: 'node',
   target: 'node22',

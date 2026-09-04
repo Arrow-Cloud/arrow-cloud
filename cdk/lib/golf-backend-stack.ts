@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as s3n from 'aws-cdk-lib/aws-s3-notifications';
+import * as sns from 'aws-cdk-lib/aws-sns';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as cloudfrontOrigins from 'aws-cdk-lib/aws-cloudfront-origins';
@@ -10,8 +11,13 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import { EventBackendConstruct } from './event-backend-construct';
 
 export interface GolfBackendStackProps extends cdk.StackProps {
-  /** Path to the compiled submit API Lambda code (the dist/ directory) */
+  /** Path to the compiled submit API Lambda code (the dist/ directory) - also used for the
+   * score-processor and read-api Lambdas below, since all four entry points build into the same
+   * events/golf/backend/dist/ output (see build.mjs). */
   submitApiCodePath: string;
+
+  /** Chart hashes golf currently scores - see events/golf/backend/config.json */
+  chartHashes: string[];
 }
 
 /**
@@ -27,21 +33,46 @@ export class GolfBackendStack extends cdk.Stack {
   public readonly table: dynamodb.Table;
   public readonly submissionsBucket: s3.Bucket;
   public readonly submitApiUrl: string;
+  public readonly readApiUrl?: string;
 
   constructor(scope: Construct, id: string, props: GolfBackendStackProps) {
     super(scope, id, props);
 
-    const { submitApiCodePath } = props;
+    const { submitApiCodePath, chartHashes } = props;
 
     // Import the shared Discord notify queue by ARN — avoids a cross-environment
     // stack reference between ApiStack (no explicit env) and this stack.
     const discordNotifyQueue = sqs.Queue.fromQueueArn(this, 'DiscordNotifyQueue', `arn:aws:sqs:${this.region}:${this.account}:arrow-cloud-discord-notify`);
 
+    // Same cross-environment issue as the Discord queue above (ApiStack has no explicit env, this
+    // stack does) — CDK only auto-wires a construct reference when both stacks resolve to the same
+    // explicit-vs-agnostic env shape, so this imports the topic by ARN instead of taking
+    // apiStack.scoreSubmissionTopic as a direct prop. Topic name confirmed in api-stack.ts.
+    const scoreSubmissionTopic = sns.Topic.fromTopicArn(
+      this,
+      'ScoreSubmissionTopic',
+      `arn:aws:sns:${this.region}:${this.account}:arrow-cloud-score-submissions`,
+    );
+
     this.backend = new EventBackendConstruct(this, 'Backend', {
       eventSlug: 'golf',
+      scoreSubmissionTopic,
+      chartHashes,
+      scoreProcessorCodePath: submitApiCodePath,
+      scoreProcessorHandler: 'score-processor.handler',
+      readApiCodePath: submitApiCodePath,
+      readApiHandler: 'read-api.handler',
     });
 
     this.table = this.backend.table;
+    this.readApiUrl = this.backend.readApiUrl;
+
+    if (this.readApiUrl) {
+      new cdk.CfnOutput(this, 'GolfReadApiUrl', {
+        value: this.readApiUrl,
+        description: "Golf read-api URL - paste into events/golf/backend/config.json's readApiUrl field, then deploy ApiStack",
+      });
+    }
 
     // === Submissions Bucket ===
     this.submissionsBucket = new s3.Bucket(this, 'SubmissionsBucket', {

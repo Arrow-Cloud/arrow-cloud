@@ -91,6 +91,7 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
     let timingData: TimingDatumSimplified[] | undefined;
     let lifebarInfo: PlaySubmission['lifebarInfo'] | undefined;
     let npsData: { x: number; y: number }[] | undefined; // intentionally simplified (drop measure / nps extras)
+    let radar: PlaySubmission['radar'] | undefined;
     try {
       const submission: PlaySubmission = await loadTimingDataFromPlay(
         {
@@ -111,6 +112,7 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
       // Map timingData to the simplified pair for frontend scatter usage
       timingData = submission.timingData.map((d) => [d[0], d[1]]);
       lifebarInfo = submission.lifebarInfo;
+      radar = submission.radar;
 
       const ni = submission.npsInfo;
       if (ni && Array.isArray(ni.points)) {
@@ -128,6 +130,7 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
       timingData = undefined;
       lifebarInfo = undefined;
       npsData = undefined;
+      radar = undefined;
     }
 
     const response = {
@@ -189,6 +192,10 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
       timingData: timingData || null,
       lifebarInfo: lifebarInfo || null,
       npsData: npsData || null,
+      // Mine/hold/roll counts - no per-note identity in the submission payload, only these
+      // aggregates. Exposed here (not previously) so event consumers like golf's score-processor
+      // can compute their own scoring off this public endpoint without touching raw S3 data.
+      radar: radar || null,
       modifiers: play.modifiers || null,
     };
 

@@ -31,8 +31,18 @@ new WildcardCertificateStack(app, 'WildcardCertificate', {
   domainName,
 });
 
+// === Event Backends ===
+// Loaded before ApiStack/GolfBackendStack since both need chartHashes/readApiUrl from it - a
+// two-step config, not a live CDK cross-stack reference (see golf-backend-stack.ts's comment on
+// why ApiStack and GolfBackendStack can't reference each other directly). On first deploy
+// readApiUrl is blank; deploy GolfBackendStack, paste its GolfReadApiUrl output in here, redeploy.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const golfConfig = require('../../events/golf/backend/config.json');
+
 // Main stacks
-const apiStack = new ApiStack(app, 'ApiStack');
+const apiStack = new ApiStack(app, 'ApiStack', {
+  golfReadApiUrl: golfConfig.readApiUrl || undefined,
+});
 new FrontendStack(app, 'FrontendStack');
 
 // Share service stack
@@ -63,13 +73,13 @@ if (wildcardCertArn) {
   });
 }
 
-// === Event Backends ===
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const testeventConfig = require('../../events/testevent/backend/config.json');
 
 new GolfBackendStack(app, 'GolfBackend', {
   env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: 'us-east-2' },
   submitApiCodePath: path.join(__dirname, '../../events/golf/backend/dist'),
+  chartHashes: golfConfig.chartHashes,
 });
 
 new EventBackendConstruct(apiStack, 'EventBackend-testevent', {
