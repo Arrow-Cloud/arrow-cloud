@@ -6,6 +6,7 @@ import { ShareServiceStack } from '../lib/share-service-stack';
 import { EventSiteStack } from '../lib/event-site-stack';
 import { EventBackendConstruct } from '../lib/event-backend-construct';
 import { GolfBackendStack } from '../lib/golf-backend-stack';
+import { IamStack } from '../lib/iam-stack';
 import * as path from 'path';
 
 const app = new cdk.App();
@@ -81,6 +82,9 @@ new GolfBackendStack(app, 'GolfBackend', {
   submitApiCodePath: path.join(__dirname, '../../events/golf/backend/dist'),
   chartHashes: golfConfig.chartHashes,
 });
+
+// Standalone, unrelated to the app's own runtime infra - see docs/aws-mcp-access.md.
+new IamStack(app, 'IamStack');
 
 new EventBackendConstruct(apiStack, 'EventBackend-testevent', {
   eventSlug: 'testevent',
