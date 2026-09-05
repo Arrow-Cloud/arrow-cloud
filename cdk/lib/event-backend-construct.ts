@@ -44,6 +44,14 @@ export interface EventBackendProps {
   /** Handler entry point for the read API Lambda (e.g. "read-api.handler") */
   readApiHandler?: string;
 
+  /**
+   * Read API Lambda memory, in MB (default: 256). Lambda allocates CPU proportional to memory -
+   * bump this for a read API called synchronously with a tight client-side timeout (e.g. from a
+   * play-submission response path), since more CPU shrinks cold-start init time. 3,008 MB is AWS's
+   * documented threshold for 2 full vCPUs (1,769 MB = 1 vCPU).
+   */
+  readApiMemorySize?: number;
+
   // --- Shared ---
 
   /** Base URL for the Arrow Cloud API (default: https://api.arrowcloud.dance) */
@@ -83,6 +91,7 @@ export class EventBackendConstruct extends Construct {
       scheduledProcessorHandler,
       readApiCodePath,
       readApiHandler,
+      readApiMemorySize = 256,
       scheduleInterval = cdk.Duration.hours(1),
       apiBaseUrl = 'https://api.arrowcloud.dance',
       environment = {},
@@ -206,7 +215,7 @@ export class EventBackendConstruct extends Construct {
         architecture: lambda.Architecture.ARM_64,
         code: lambda.Code.fromAsset(readApiCodePath),
         handler: readApiHandler,
-        memorySize: 256,
+        memorySize: readApiMemorySize,
         timeout: cdk.Duration.seconds(10),
         environment: sharedEnv,
       });

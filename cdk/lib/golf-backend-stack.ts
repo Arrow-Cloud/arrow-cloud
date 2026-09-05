@@ -62,6 +62,12 @@ export class GolfBackendStack extends cdk.Stack {
       scoreProcessorHandler: 'score-processor.handler',
       readApiCodePath: submitApiCodePath,
       readApiHandler: 'read-api.handler',
+      // Called synchronously (short timeout) from the core API's play-submission response path -
+      // see api/src/utils/event-result-images.ts's GOLF_READ_API_TIMEOUT_MS. CloudWatch showed a
+      // cold Init Duration of ~312ms at the default 256 MB, blowing through that timeout on the
+      // light, bursty test traffic this gets. More memory buys proportionally more CPU during
+      // cold-start init - 1024 MB cuts init time without going as far as the 3,008 MB/2-vCPU tier.
+      readApiMemorySize: 1024,
     });
 
     this.table = this.backend.table;

@@ -129,6 +129,13 @@ export class ApiStack extends cdk.Stack {
         S3_BUCKET_PACKS: 'arrow-cloud-packs',
         SCORE_SUBMISSION_TOPIC_ARN: scoreSubmissionTopic.topicArn,
         ...(props?.golfReadApiUrl ? { GOLF_READ_API_URL: props.golfReadApiUrl } : {}),
+        // Node 18+'s native fetch (undici) resolves DNS in "verbatim" order by default, so if a
+        // hostname's DNS answer includes an AAAA record, undici can attempt to connect over IPv6
+        // first - which hangs until timeout in this VPC (no IPv6 route on these subnets/NAT gateway)
+        // before falling back to IPv4. This showed up as ~1.5s of unexplained latency on outbound
+        // fetch() calls (e.g. to golf's read-api Function URL) that had nothing to do with the
+        // target's own execution time. Forcing IPv4-first DNS resolution avoids the hang entirely.
+        NODE_OPTIONS: '--dns-result-order=ipv4first',
       },
       vpc,
       vpcSubnets: {

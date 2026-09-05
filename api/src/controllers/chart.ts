@@ -856,7 +856,20 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
       // back was pure wasted latency. Each branch owns its own catch and degrades to a safe default
       // - one failing can never affect the others or fail this response.
       const [packResultImages, eventResultImages] = await Promise.all([
-        computePackResultImages(prisma, s3Client, newPlay).catch((error) => {
+        (async () => {
+          // CPU-bound (satori/resvg) once its own DB awaits resolve, and can occupy the event loop
+          // for multiple seconds - confirmed via this log during the golf read-api investigation
+          // (a single request logged 3027ms here), consistent with the memory bump this Lambda
+          // already needed for "occasional multi-second latency spikes" in this render path (see
+          // api-stack.ts). Kept as lightweight ongoing visibility into that cost, since it can delay
+          // anything else running concurrently in the same Promise.all (e.g. golf's read-api fetch).
+          const startedAt = Date.now();
+          try {
+            return await computePackResultImages(prisma, s3Client, newPlay);
+          } finally {
+            console.log(`[perf] computePackResultImages took ${Date.now() - startedAt}ms`);
+          }
+        })().catch((error) => {
           console.error('Failed to compute pack result images:', error);
           return [] as string[];
         }),
