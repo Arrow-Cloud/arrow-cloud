@@ -25,8 +25,75 @@ export interface EventResultImageProvider<TScore, TContext> {
 }
 
 const GOLF_TEST_USER_IDS = new Set(['3ac37479-c87f-459c-b3aa-c17e95c1a0d8', '27cfc687-8d10-4132-bd29-da3b4ef54dfb']);
-// Pre-beta testing set - see docs/plans/golf-event-result-images.md. More added later.
-const GOLF_CHART_HASHES = ['7a520534f16d6455', '065f74f741eb2f9d', 'f3871997119d5052'];
+
+interface GolfChartConfig {
+  hash: string;
+  /** Display name for the pack this chart belongs to - shown on the result card (see
+   * golf-result-image.ts) and, later, used to pick a per-course background image. Deliberately a
+   * short display name, not the on-disk pack folder name (e.g. "In The Golf - Beta Pines vE2"). */
+  courseName: string;
+  /** Real assigned par (scripts/assign-golf-pars.ts / scripts/data/golf-*-pars.json) - undefined for
+   * charts that don't have one yet, in which case the result card falls back to strokes alone. */
+  par?: number;
+}
+
+// Pre-beta testing set (see docs/plans/golf-event-result-images.md) plus the two real beta packs,
+// "In The Golf - Beta Hills" and "In The Golf - Beta Pines" - 18 charts (holes) each, hashed via
+// scripts/get-pack-hashes.ts against each pack's local Songs folder. Several song folders in both
+// packs ship both a .sm and a .ssc for the same song (the .ssc being the current/curated chart,
+// the .sm a stale leftover with extra now-unused difficulties) - StepMania always prefers the .ssc
+// when both exist, so only its chart(s) are included here; the .sm-only entries the raw hash dump
+// also produced were dropped, which is what brought each pack down to exactly 18 as expected.
+// Par values are copied from scripts/data/golf-beta-hills-pars.json / golf-beta-pines-pars.json
+// (scripts/assign-golf-pars.ts's output) - the original pre-beta hashes have no assigned par yet.
+const GOLF_CHARTS: GolfChartConfig[] = [
+  // Original pre-beta test hashes - no real course/pack these came from, so they get a placeholder
+  // course name and no par (assign-golf-pars.ts has never been run against them).
+  { hash: '7a520534f16d6455', courseName: 'Alpha Testing' },
+  { hash: '065f74f741eb2f9d', courseName: 'Alpha Testing' },
+  { hash: 'f3871997119d5052', courseName: 'Alpha Testing' },
+  { hash: '50bcefd78fa82988', courseName: 'Alpha Testing' },
+  // In The Golf - Beta Hills
+  { hash: '996bf355e5de44ad', courseName: 'Beta Hills', par: 15 },
+  { hash: '3e9031441b77fab9', courseName: 'Beta Hills', par: 8 },
+  { hash: '4f949d8e05f32f50', courseName: 'Beta Hills', par: 6 },
+  { hash: '22f6263af9be0b6b', courseName: 'Beta Hills', par: 10 },
+  { hash: '5953a34fd2cd40f1', courseName: 'Beta Hills', par: 12 },
+  { hash: 'fec7522480170c8a', courseName: 'Beta Hills', par: 6 },
+  { hash: '6e9ad3a992102915', courseName: 'Beta Hills', par: 14 },
+  { hash: '4b7c49173870b344', courseName: 'Beta Hills', par: 6 },
+  { hash: 'a4bc270ad709a9fd', courseName: 'Beta Hills', par: 8 },
+  { hash: 'efd7909645aba29c', courseName: 'Beta Hills', par: 10 },
+  { hash: '969dad24922317c1', courseName: 'Beta Hills', par: 6 },
+  { hash: '4b42c43066bd717b', courseName: 'Beta Hills', par: 8 },
+  { hash: '57bb7e53e5b6090c', courseName: 'Beta Hills', par: 14 },
+  { hash: '6e6103ecf837152e', courseName: 'Beta Hills', par: 5 },
+  { hash: 'c064c72efd651fe4', courseName: 'Beta Hills', par: 12 },
+  { hash: '913a5c614722de0d', courseName: 'Beta Hills', par: 6 },
+  { hash: '95b5fe504f42fa3f', courseName: 'Beta Hills', par: 8 },
+  { hash: 'a087601d3d52726f', courseName: 'Beta Hills', par: 13 },
+  // In The Golf - Beta Pines
+  { hash: '20ba0b5a36805858', courseName: 'Beta Pines', par: 3 },
+  { hash: '88ea9f8af9490151', courseName: 'Beta Pines', par: 4 },
+  { hash: 'e77af6b4d45028ff', courseName: 'Beta Pines', par: 4 },
+  { hash: '9b4bc7e9928de39b', courseName: 'Beta Pines', par: 3 },
+  { hash: 'b32c5908a47afc44', courseName: 'Beta Pines', par: 3 },
+  { hash: 'fd8afbbf787e17c7', courseName: 'Beta Pines', par: 3 },
+  { hash: '702d12f7153dfec5', courseName: 'Beta Pines', par: 3 },
+  { hash: '9a5e366400f59236', courseName: 'Beta Pines', par: 3 },
+  { hash: '20416aedbdd59653', courseName: 'Beta Pines', par: 3 },
+  { hash: '2d8af9e16da4e23a', courseName: 'Beta Pines', par: 6 },
+  { hash: 'ab70937938c39775', courseName: 'Beta Pines', par: 5 },
+  { hash: 'f07b623a9324570d', courseName: 'Beta Pines', par: 4 },
+  { hash: 'f96a28b54873a734', courseName: 'Beta Pines', par: 4 },
+  { hash: '1dc29ef7904a58b1', courseName: 'Beta Pines', par: 4 },
+  { hash: 'd0ee6c126ac9c710', courseName: 'Beta Pines', par: 6 },
+  { hash: '4c99bd7995c84915', courseName: 'Beta Pines', par: 5 },
+  { hash: 'ded54c81a7bd03dc', courseName: 'Beta Pines', par: 3 },
+  { hash: 'ba6a606e74c8ee00', courseName: 'Beta Pines', par: 3 },
+];
+const GOLF_CHART_HASHES = GOLF_CHARTS.map((c) => c.hash);
+const GOLF_CHART_BY_HASH = new Map(GOLF_CHARTS.map((c) => [c.hash, c]));
 // 300ms -> 800ms -> 1500ms -> 3000ms. ApiStack's Lambda is VPC-attached (for RDS), so reaching
 // golf's public read-api Function URL means NAT egress; on top of that, computePackResultImages'
 // synchronous satori/resvg rendering runs concurrently in the same Promise.all and can occupy the
@@ -80,10 +147,16 @@ const golfResultImageProvider: EventResultImageProvider<GolfScoreResult, GolfCon
     // native-module chain can only ever break this one call - same isolation reason
     // pack-result-image.ts's renderer is imported dynamically from pack-leaderboard.ts.
     const { renderGolfResultImage } = await import('./golf-result-image');
+    // Every hash in this provider's chartHashes (which is exactly GOLF_CHARTS.map(c => c.hash)) has
+    // a config entry by construction - the `!` reflects that invariant, not an assumption about
+    // this specific submission.
+    const chartConfig = GOLF_CHART_BY_HASH.get(submission.hash)!;
     const png = await renderGolfResultImage({
       chartTitle: submission.songName,
       chartArtist: submission.artist,
       chartHash: submission.hash,
+      courseName: chartConfig.courseName,
+      par: chartConfig.par ?? null,
       totalStrokes: ownScore.totalStrokes,
       noteCount: ownScore.noteCount,
       previousBestStrokes: context?.previousBestStrokes ?? null,

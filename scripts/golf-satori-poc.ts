@@ -137,6 +137,40 @@ function fmtStrokeDelta(deltaStrokes: number): { text: string; color: string } {
   return { text: '±0.00', color: 'rgba(255,255,255,0.5)' };
 }
 
+// Real golf terms mapped from a whole-number strokes-vs-par - exact same table as
+// scripts/golf-session-review-web/src/golf.ts's golfTermFor, duplicated here rather than imported
+// since this POC already reimplements the rest of the scoring/color logic locally (see calcStrokes
+// above). Unlike that tool's fabricated par, `par` here is real per-chart data assigned via
+// scripts/assign-golf-pars.ts (scripts/data/golf-*-pars.json) - only the mock per-note timing data
+// generating `totalStrokes` is synthetic.
+function golfTermFor(strokesVsPar: number): string {
+  switch (strokesVsPar) {
+    case -3:
+      return 'Albatross';
+    case -2:
+      return 'Eagle';
+    case -1:
+      return 'Birdie';
+    case 0:
+      return 'Par';
+    case 1:
+      return 'Bogey';
+    case 2:
+      return 'Double Bogey';
+    case 3:
+      return 'Triple Bogey';
+    default:
+      return strokesVsPar < 0 ? `${Math.abs(strokesVsPar)} Under Par` : `${strokesVsPar} Over Par`;
+  }
+}
+
+function fmtVsPar(strokesVsPar: number): { text: string; color: string } {
+  const term = golfTermFor(strokesVsPar);
+  if (strokesVsPar === 0) return { text: `E · ${term}`, color: 'rgba(255,255,255,0.85)' };
+  const sign = strokesVsPar > 0 ? '+' : '';
+  return { text: `${sign}${strokesVsPar} · ${term}`, color: strokesVsPar < 0 ? STROKE_GOOD : STROKE_BAD };
+}
+
 // FNV-1a - deterministic string -> 32-bit seed, so the green shape below is derived from the chart
 // hash (same chart always renders the same green) rather than from anything play-specific.
 function hashStringToSeed(str: string): number {
@@ -513,7 +547,7 @@ function buildCardHeader(logoDataUri: string, subtitle: Child) {
     h('img', { src: logoDataUri, width: HEADER_LOGO_WIDTH, height: HEADER_LOGO_HEIGHT, style: { display: 'flex' } }),
     // Course (pack) name, in the fun handwritten font - distinct from the hole (chart) info below it,
     // which stays in the normal body font (bold) since it's regular informational text, not branding.
-    truncatedLine(COURSE_NAME, CARD_WIDTH - s(40), { fontFamily: 'PermanentMarker', fontSize: s(28), color: STROKE_GOOD, marginTop: s(10) }),
+    truncatedLine(COURSE_NAME, CARD_WIDTH - s(40), { fontFamily: 'PermanentMarker', fontSize: s(20), color: STROKE_GOOD, marginTop: s(4) }),
     subtitle,
   );
 }
@@ -524,13 +558,17 @@ function buildGolfCard(opts: {
   chartHash: string;
   totalStrokes: number;
   previousBestStrokes: number;
+  par: number;
   notes: MockNote[];
   logoDataUri: string;
   acLogoDataUri: string;
   patternDataUri: string;
 }) {
-  const { chartTitle, chartArtist, chartHash, totalStrokes, previousBestStrokes, notes, logoDataUri, acLogoDataUri, patternDataUri } = opts;
+  const { chartTitle, chartArtist, chartHash, totalStrokes, previousBestStrokes, par, notes, logoDataUri, acLogoDataUri, patternDataUri } = opts;
   const delta = fmtStrokeDelta(totalStrokes - previousBestStrokes);
+  const strokesVsPar = Math.round(totalStrokes / 1000) - par;
+  const vsPar = fmtVsPar(strokesVsPar);
+  const VALUE_SLOT_HEIGHT = s(56); // matches the strokes number's own fontSize - see its usage below
   const DISPERSION_DIAMETER = s(410);
   const aceCount = notes.filter((n) => n.strokes === 0).length;
   const obCount = notes.filter((n) => n.strokes === 200).length;
@@ -563,6 +601,39 @@ function buildGolfCard(opts: {
       ),
     );
 
+  // The term ("Birdie"/"Bogey"/etc.) renders in a smaller font than the strokes number next to it,
+  // so it's built as its own (1- or 2-line) content, then both it and the strokes number get wrapped
+  // in an identical fixed-height, vertically-centered VALUE_SLOT_HEIGHT box below - that's what makes
+  // the term center against the number *and* keeps "STROKES"/"PAR N" landing on the same line
+  // afterward, regardless of which value block is actually taller inside its own fixed-size box.
+  // "Double Bogey"/"Triple Bogey" (and the fallback "N Under/Over Par" terms) are two words wide
+  // enough to otherwise force truncatedLine's ellipsis, so those wrap onto two lines instead (split
+  // on the first space).
+  const TERM_FONT_SIZE = s(26);
+  const TERM_WRAP_FONT_SIZE = s(19);
+  const TERM_WRAP_LINE_GAP = s(2);
+  const valueSlot = (content: Child) =>
+    h('div', { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: VALUE_SLOT_HEIGHT } }, content);
+  const parTermContent = (term: string, color: string) => {
+    const spaceIndex = term.indexOf(' ');
+    if (spaceIndex === -1) {
+      return truncatedLine(term, s(140), { fontFamily: 'Nunito', fontSize: TERM_FONT_SIZE, fontWeight: 700, lineHeight: 1, color });
+    }
+    return h(
+      'div',
+      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+      truncatedLine(term.slice(0, spaceIndex), s(140), { fontFamily: 'Nunito', fontSize: TERM_WRAP_FONT_SIZE, fontWeight: 700, lineHeight: 1, color }),
+      truncatedLine(term.slice(spaceIndex + 1), s(140), {
+        fontFamily: 'Nunito',
+        fontSize: TERM_WRAP_FONT_SIZE,
+        fontWeight: 700,
+        lineHeight: 1,
+        color,
+        marginTop: TERM_WRAP_LINE_GAP,
+      }),
+    );
+  };
+
   return buildCardShell(
     patternDataUri,
     acLogoDataUri,
@@ -579,30 +650,69 @@ function buildGolfCard(opts: {
     ),
     h(
       'div',
-      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: s(10) } },
+      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: s(14) } },
+      // Strokes and par are the two headline stats, presented as visual equals side by side (rather
+      // than one stacked above/below the other) - the eye reads them as a single "here's your score,
+      // here's how it compares" unit instead of a primary number with a caption bolted on after it.
       h(
         'div',
-        { style: { display: 'flex', fontFamily: 'Nunito', fontSize: s(64), fontWeight: 700, lineHeight: 1, color: '#ffffff' } },
-        fmtStrokes(totalStrokes),
+        { style: { display: 'flex', alignItems: 'flex-start', gap: s(28) } },
+        h(
+          'div',
+          { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+          valueSlot(
+            h(
+              'div',
+              { style: { display: 'flex', fontFamily: 'Nunito', fontSize: s(56), fontWeight: 700, lineHeight: 1, color: '#ffffff' } },
+              fmtStrokes(totalStrokes),
+            ),
+          ),
+          h(
+            'div',
+            {
+              style: {
+                display: 'flex',
+                fontFamily: 'Nunito',
+                fontSize: s(11),
+                fontWeight: 600,
+                lineHeight: 1,
+                letterSpacing: s(1.5),
+                marginTop: s(6),
+                color: 'rgba(255,255,255,0.6)',
+              },
+            },
+            'STROKES',
+          ),
+        ),
+        h('div', { style: { display: 'flex', width: s(1.5), height: VALUE_SLOT_HEIGHT, backgroundColor: 'rgba(255,255,255,0.15)' } }),
+        h(
+          'div',
+          { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+          valueSlot(parTermContent(golfTermFor(strokesVsPar), vsPar.color)),
+          h(
+            'div',
+            {
+              style: {
+                display: 'flex',
+                fontFamily: 'Nunito',
+                fontSize: s(11),
+                fontWeight: 600,
+                lineHeight: 1,
+                letterSpacing: s(1.5),
+                marginTop: s(6),
+                color: 'rgba(255,255,255,0.6)',
+              },
+            },
+            `PAR ${par}`,
+          ),
+        ),
       ),
       h(
         'div',
-        {
-          style: {
-            display: 'flex',
-            fontFamily: 'Nunito',
-            fontSize: s(12),
-            fontWeight: 600,
-            lineHeight: 1,
-            letterSpacing: s(2),
-            marginTop: s(6),
-            color: 'rgba(255,255,255,0.6)',
-          },
-        },
-        'STROKES',
+        { style: { display: 'flex', fontSize: s(14), fontWeight: 600, lineHeight: 1, color: delta.color, marginTop: s(12) } },
+        `${delta.text} vs. previous best`,
       ),
-      h('div', { style: { display: 'flex', fontSize: s(24), fontWeight: 700, color: delta.color, marginTop: s(8) } }, `${delta.text} vs. previous best`),
-      h('div', { style: { display: 'flex', gap: s(20), marginTop: s(10) } }, miniStat('ACES', aceCount, STROKE_GOOD), miniStat('OB', obCount, STROKE_BAD)),
+      h('div', { style: { display: 'flex', gap: s(20), marginTop: s(14) } }, miniStat('ACES', aceCount, STROKE_GOOD), miniStat('OB', obCount, STROKE_BAD)),
     ),
     h(
       'div',
@@ -837,17 +947,30 @@ function parseArgs(argv: string[]) {
     const idx = argv.indexOf(flag);
     return idx !== -1 && argv[idx + 1] ? argv[idx + 1] : fallback;
   };
+  // `parseInt(...) || fallback` looks equivalent but silently discards a legitimately-parsed 0 (0 is
+  // falsy) - a real bug here specifically, since a real assigned par of 0 is plausible for a very
+  // short/easy chart and `--par 0` must not quietly become the default 4.
+  const getInt = (flag: string, fallback: number) => {
+    const parsed = parseInt(get(flag, String(fallback)), 10);
+    return Number.isNaN(parsed) ? fallback : parsed;
+  };
   return {
-    runs: parseInt(get('--runs', '1'), 10) || 1,
-    seed: parseInt(get('--seed', '42'), 10) || 42,
+    runs: getInt('--runs', 1),
+    seed: getInt('--seed', 42),
     // Stands in for the real chart hash a submission would carry - the green shape is seeded from
     // this, not from --seed, since the green must stay fixed for a chart regardless of who's playing.
-    chartHash: get('--chart-hash', 'a3f9c81d4e2b7f60c9d3e8a1f60b7c42'),
+    // Defaults to a real Beta Pines chart hash (see the --par default's comment below) so the green
+    // shape shown is one that'll actually exist in the real event, not an arbitrary placeholder.
+    chartHash: get('--chart-hash', '88ea9f8af9490151'),
+    // Default matches a real assigned par from scripts/data/golf-beta-pines-pars.json ("BIRDS OF A
+    // FEATHER (Alohaii Remix)", chartHash 88ea9f8af9490151, par 4) - the mock timing data is still
+    // synthetic, but the par number itself is real, not fabricated, for an honest design review.
+    par: getInt('--par', 4),
   };
 }
 
 async function main() {
-  const { runs, seed, chartHash } = parseArgs(process.argv.slice(2));
+  const { runs, seed, chartHash, par } = parseArgs(process.argv.slice(2));
 
   const bodyData = readFileSync(path.resolve('scripts/assets/fonts/nunito-400.woff'));
   const bodyBoldData = readFileSync(path.resolve('scripts/assets/fonts/nunito-800.woff'));
@@ -904,11 +1027,12 @@ async function main() {
   await render(
     'golf-poc-1-result.png',
     buildGolfCard({
-      chartTitle: 'Fairway to Heaven',
-      chartArtist: 'modus',
+      chartTitle: 'BIRDS OF A FEATHER (Alohaii Remix) (Hard)',
+      chartArtist: 'Billie Eilish',
       chartHash,
       totalStrokes,
       previousBestStrokes,
+      par,
       notes,
       logoDataUri,
       acLogoDataUri,

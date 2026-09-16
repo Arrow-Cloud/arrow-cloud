@@ -1,14 +1,16 @@
 /**
- * Renders the golf-event result card PNG - this play's stroke total, delta vs. previous best, and
- * a "pin-proximity dispersion chart" (each tap note plotted on a deterministically-random green
- * shape seeded by chart hash - see buildDispersionChart below). Ported from
- * scripts/golf-satori-poc.ts (see that script's header for the full design rationale/history) -
- * same satori (layout -> SVG) + @resvg/resvg-js (SVG -> PNG) pipeline as pack-result-image.ts,
- * fonts/logo loaded once into memory at module scope and reused across warm Lambda invocations.
+ * Renders the golf-event result card PNG - this play's stroke total, delta vs. previous best, par
+ * (when this chart has one - see event-result-images.ts's GOLF_CHARTS), and a "pin-proximity
+ * dispersion chart" (each tap note plotted on a deterministically-random green shape seeded by
+ * chart hash - see buildDispersionChart below). Ported from scripts/golf-satori-poc.ts (see that
+ * script's header for the full design rationale/history, including the iterative par-layout design
+ * review) - same satori (layout -> SVG) + @resvg/resvg-js (SVG -> PNG) pipeline as
+ * pack-result-image.ts, fonts/logo loaded once into memory at module scope and reused across warm
+ * Lambda invocations.
  *
  * Scope for this rollout (see docs/plans/golf-event-result-images.md): just this one card - no
- * hole/course leaderboard pages yet, and no "course name" line (no real course/pack-mapping data
- * source for golf events exists yet, so nothing invented here).
+ * hole/course leaderboard pages yet. The course name IS shown (GOLF_CHARTS now maps every eligible
+ * chart hash to a course), but it's still just a label here - no per-course background art yet.
  */
 
 import { readFileSync } from 'fs';
@@ -38,13 +40,17 @@ function loadFonts() {
     // (fonts.googleapis.com/css2?family=Miso 404s) and this repo only has its Light instance
     // self-hosted, so anything rendered in it at small sizes reads as thin/hard-to-read no matter
     // what fontWeight is declared - there's no bold Miso glyph to fall back to.
-    const [nunitoRegular, nunitoBold] = [
+    // PermanentMarker is only for the course name, mirroring scripts/golf-satori-poc.ts's
+    // buildCardHeader - a distinct handwritten font for branding, separate from body text.
+    const [nunitoRegular, nunitoBold, permanentMarker] = [
       readFileSync(path.join(ASSETS_DIR, 'fonts', 'nunito-400.woff')),
       readFileSync(path.join(ASSETS_DIR, 'fonts', 'nunito-800.woff')),
+      readFileSync(path.join(ASSETS_DIR, 'fonts', 'PermanentMarker-Regular.ttf')),
     ];
     fonts = [
       { name: 'Nunito', data: nunitoRegular, weight: 400, style: 'normal' },
       { name: 'Nunito', data: nunitoBold, weight: 700, style: 'normal' },
+      { name: 'PermanentMarker', data: permanentMarker, weight: 400, style: 'normal' },
     ];
   }
   return fonts;
@@ -107,6 +113,39 @@ function fmtStrokeDelta(deltaStrokes: number): { text: string; color: string } {
   if (deltaStrokes < 0) return { text: `-${fmtStrokes(Math.abs(deltaStrokes))}`, color: STROKE_GOOD };
   if (deltaStrokes > 0) return { text: `+${fmtStrokes(deltaStrokes)}`, color: STROKE_BAD };
   return { text: '±0.00', color: 'rgba(255,255,255,0.5)' };
+}
+
+// Real golf terms mapped from a whole-number strokes-vs-par - same table as
+// scripts/golf-satori-poc.ts / scripts/golf-session-review-web/src/golf.ts's golfTermFor,
+// duplicated here rather than imported since this file already reimplements the rest of the
+// scoring/color logic locally (see strokeColorHex above). `par` is real per-chart data assigned via
+// scripts/assign-golf-pars.ts (see event-result-images.ts's GOLF_CHARTS) - not fabricated.
+function golfTermFor(strokesVsPar: number): string {
+  switch (strokesVsPar) {
+    case -3:
+      return 'Albatross';
+    case -2:
+      return 'Eagle';
+    case -1:
+      return 'Birdie';
+    case 0:
+      return 'Par';
+    case 1:
+      return 'Bogey';
+    case 2:
+      return 'Double Bogey';
+    case 3:
+      return 'Triple Bogey';
+    default:
+      return strokesVsPar < 0 ? `${Math.abs(strokesVsPar)} Under Par` : `${strokesVsPar} Over Par`;
+  }
+}
+
+function fmtVsPar(strokesVsPar: number): { text: string; color: string } {
+  const term = golfTermFor(strokesVsPar);
+  if (strokesVsPar === 0) return { text: `E · ${term}`, color: 'rgba(255,255,255,0.85)' };
+  const sign = strokesVsPar > 0 ? '+' : '';
+  return { text: `${sign}${strokesVsPar} · ${term}`, color: strokesVsPar < 0 ? STROKE_GOOD : STROKE_BAD };
 }
 
 // --- Tiny hyperscript helper (mirrors pack-result-image.ts / scripts/satori-poc.ts) ---
@@ -400,9 +439,15 @@ export interface GolfResultImageData {
   chartTitle: string;
   chartArtist: string;
   chartHash: string;
+  /** From event-result-images.ts's GOLF_CHARTS - display name for the pack this chart belongs to
+   * ("Alpha Testing" for the original pre-beta hashes, the real pack's name for Beta Hills/Pines). */
+  courseName: string;
   totalStrokes: number;
   noteCount: number;
   previousBestStrokes: number | null;
+  /** Real assigned par (scripts/assign-golf-pars.ts) - null for charts that don't have one yet
+   * (currently the "Alpha Testing" set), in which case the card falls back to showing strokes alone. */
+  par: number | null;
   aceCount: number;
   obCount: number;
   /** Per-note strokes, in chronological order - drives the dispersion chart. */
@@ -411,6 +456,9 @@ export interface GolfResultImageData {
 
 function buildCard(data: GolfResultImageData, images: { headerLogoDataUri: string; acLogoDataUri: string; patternDataUri: string }) {
   const delta = data.previousBestStrokes !== null ? fmtStrokeDelta(data.totalStrokes - data.previousBestStrokes) : undefined;
+  const strokesVsPar = data.par !== null ? Math.round(data.totalStrokes / 1000) - data.par : null;
+  const vsPar = strokesVsPar !== null ? fmtVsPar(strokesVsPar) : undefined;
+  const VALUE_SLOT_HEIGHT = s(56); // matches the strokes number's own fontSize - see its usage below
   const DISPERSION_DIAMETER = s(410);
 
   // One font (Nunito) for both numbers and labels - weight/size/opacity carry the hierarchy instead
@@ -440,6 +488,81 @@ function buildCard(data: GolfResultImageData, images: { headerLogoDataUri: strin
         label,
       ),
     );
+
+  const statLabel = (text: string) =>
+    h(
+      'div',
+      {
+        style: {
+          display: 'flex',
+          fontFamily: 'Nunito',
+          fontSize: s(11),
+          fontWeight: 600,
+          lineHeight: 1,
+          letterSpacing: s(1.5),
+          marginTop: s(6),
+          color: 'rgba(255,255,255,0.6)',
+        },
+      },
+      text,
+    );
+
+  // Ported from scripts/golf-satori-poc.ts's approved design review: strokes and par presented as
+  // visual equals side by side, with the term ("Birdie"/"Bogey"/etc.) vertically centered against
+  // the strokes number via a shared fixed-height VALUE_SLOT_HEIGHT box on both sides - that's what
+  // keeps "STROKES"/"PAR N" landing on the same line below regardless of which value is taller.
+  // "Double Bogey"/"Triple Bogey" (and the fallback "N Under/Over Par" terms) wrap onto two lines
+  // (split on the first space) instead of forcing truncatedLine's ellipsis.
+  const TERM_FONT_SIZE = s(26);
+  const TERM_WRAP_FONT_SIZE = s(19);
+  const TERM_WRAP_LINE_GAP = s(2);
+  const valueSlot = (content: Child) =>
+    h('div', { style: { display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: VALUE_SLOT_HEIGHT } }, content);
+  const parTermContent = (term: string, color: string) => {
+    const spaceIndex = term.indexOf(' ');
+    if (spaceIndex === -1) {
+      return truncatedLine(term, s(140), { fontFamily: 'Nunito', fontSize: TERM_FONT_SIZE, fontWeight: 700, lineHeight: 1, color });
+    }
+    return h(
+      'div',
+      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+      truncatedLine(term.slice(0, spaceIndex), s(140), { fontFamily: 'Nunito', fontSize: TERM_WRAP_FONT_SIZE, fontWeight: 700, lineHeight: 1, color }),
+      truncatedLine(term.slice(spaceIndex + 1), s(140), {
+        fontFamily: 'Nunito',
+        fontSize: TERM_WRAP_FONT_SIZE,
+        fontWeight: 700,
+        lineHeight: 1,
+        color,
+        marginTop: TERM_WRAP_LINE_GAP,
+      }),
+    );
+  };
+
+  const strokesNumber = valueSlot(
+    h(
+      'div',
+      { style: { display: 'flex', fontFamily: 'Nunito', fontSize: s(56), fontWeight: 700, lineHeight: 1, color: '#ffffff' } },
+      fmtStrokes(data.totalStrokes),
+    ),
+  );
+
+  // Charts without an assigned par (currently the "Alpha Testing" set) fall back to the original
+  // single-centered-column layout - no divider, no par column, nothing invented.
+  const strokesAndPar =
+    data.par !== null && vsPar
+      ? h(
+          'div',
+          { style: { display: 'flex', alignItems: 'flex-start', gap: s(28) } },
+          h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } }, strokesNumber, statLabel('STROKES')),
+          h('div', { style: { display: 'flex', width: s(1.5), height: VALUE_SLOT_HEIGHT, backgroundColor: 'rgba(255,255,255,0.15)' } }),
+          h(
+            'div',
+            { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } },
+            valueSlot(parTermContent(golfTermFor(strokesVsPar as number), vsPar.color)),
+            statLabel(`PAR ${data.par}`),
+          ),
+        )
+      : h('div', { style: { display: 'flex', flexDirection: 'column', alignItems: 'center' } }, strokesNumber, statLabel('STROKES'));
 
   return h(
     'div',
@@ -472,6 +595,7 @@ function buildCard(data: GolfResultImageData, images: { headerLogoDataUri: strin
       'div',
       { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', padding: s(20), paddingBottom: 0 } },
       h('img', { src: images.headerLogoDataUri, width: HEADER_LOGO_WIDTH, height: HEADER_LOGO_HEIGHT, style: { display: 'flex' } }),
+      truncatedLine(data.courseName, CARD_WIDTH - s(40), { fontFamily: 'PermanentMarker', fontSize: s(20), color: STROKE_GOOD, marginTop: s(4) }),
       h(
         'div',
         { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', marginTop: s(8) } },
@@ -481,35 +605,19 @@ function buildCard(data: GolfResultImageData, images: { headerLogoDataUri: strin
     ),
     h(
       'div',
-      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: s(10) } },
-      h(
-        'div',
-        { style: { display: 'flex', fontFamily: 'Nunito', fontSize: s(64), fontWeight: 700, lineHeight: 1, color: '#ffffff' } },
-        fmtStrokes(data.totalStrokes),
-      ),
-      h(
-        'div',
-        {
-          style: {
-            display: 'flex',
-            fontFamily: 'Nunito',
-            fontSize: s(12),
-            fontWeight: 600,
-            lineHeight: 1,
-            letterSpacing: s(2),
-            marginTop: s(6),
-            color: 'rgba(255,255,255,0.6)',
-          },
-        },
-        'STROKES',
-      ),
+      { style: { display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: s(14) } },
+      strokesAndPar,
       // No previous best (first play on this chart, or the read-api call failed/timed out) - the
       // card still renders, just without this line, rather than failing or showing a fake delta.
       delta &&
-        h('div', { style: { display: 'flex', fontSize: s(24), fontWeight: 700, color: delta.color, marginTop: s(8) } }, `${delta.text} vs. previous best`),
+        h(
+          'div',
+          { style: { display: 'flex', fontSize: s(14), fontWeight: 600, lineHeight: 1, color: delta.color, marginTop: s(12) } },
+          `${delta.text} vs. previous best`,
+        ),
       h(
         'div',
-        { style: { display: 'flex', gap: s(20), marginTop: s(10) } },
+        { style: { display: 'flex', gap: s(20), marginTop: s(14) } },
         miniStat('ACES', data.aceCount, STROKE_GOOD),
         miniStat('OB', data.obCount, STROKE_BAD),
       ),
