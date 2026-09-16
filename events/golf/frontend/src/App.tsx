@@ -12,19 +12,23 @@ import HomePage from './pages/HomePage';
 import SubmitChartPage from './pages/SubmitChartPage';
 import EventFooter from './components/EventFooter';
 import ThemeToggle from './components/ThemeToggle';
+import GradientBackground from './components/GradientBackground';
 
 const EventLogo = () => {
   const { formatMessage } = useIntl();
   return (
     <div className="flex items-center gap-3">
+      {/* Bundled locally (public/img/) rather than the assets.arrowcloud.dance CDN - the golf
+          branding hasn't been uploaded there yet. Same PNG already used for the golf result cards
+          and announcement slideshow (api/assets/golf/, scripts/golf-announcement/public/brand/). */}
       <img
-        src="https://assets.arrowcloud.dance/logos/20250725/ac%20logo.png"
-        alt={formatMessage({ defaultMessage: 'Arrow Cloud', id: 'P9WhvC', description: 'Alt text for Arrow Cloud logo' })}
+        src="/img/ITGolf_Logo-ArrowLeft_Large.png"
+        alt={formatMessage({ defaultMessage: 'In The Golf', id: 'LAWbk8', description: 'Alt text for In The Golf logo' })}
         className="h-8 w-auto"
       />
     </div>
   );
-}
+};
 
 const EventNavExtras = () => {
   const { user } = useAuth();
@@ -52,10 +56,11 @@ const AppContent = () => {
   return (
     <Router>
       <ScrollToTop />
+      <GradientBackground />
       <div className="fixed top-0 left-0 right-0 z-50">
         <NavBar eventMode profileUrl="https://arrowcloud.dance/profile" logo={<EventLogo />} extra={<EventNavExtras />} />
       </div>
-      <div className="flex flex-col min-h-screen bg-base-100">
+      <div className="relative flex flex-col min-h-screen">
         <div className="flex-1">
           <Routes>
             <Route path="/" element={<HomePage />} />

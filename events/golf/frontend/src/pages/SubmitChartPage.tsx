@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
-import { Flag, UploadCloud, CheckCircle2, AlertCircle, ChevronLeft } from 'lucide-react';
+import { Flag, UploadCloud, CheckCircle2, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useAuth } from '@shared/contexts/AuthContext';
 
 const SUBMIT_API_URL = import.meta.env.VITE_GOLF_SUBMIT_API_URL as string | undefined;
@@ -84,7 +84,42 @@ const PACKS: Pack[] = [
       },
     ],
   },
+  {
+    id: 'movement-slop',
+    name: 'Movement Slop',
+    badge: 'Blocks 11–13 · Length 1:30–2:30 · eBPM cap 170',
+    curators: [],
+    ruleSections: [
+      {
+        items: [
+          'Length: 1:30–2:30',
+          'Block rating: 11, 12, or 13',
+          'General chart submission prompt: movement heavy / "movement slop"',
+          'Think of tech like BRFS, BRSS, XO+, SS+ — laterals, extended boxes, reverse staircases, etc. are all appropriate!',
+          "Charts like Spellbound (SM 12), Spider (SX 12), and Antidote (SX 12) from ITL 2026 are good examples of what's appropriate for submission",
+          'Try to use BR as a mechanism for technical execution checks, reading checks, and form checks',
+          'FS are just fun, so go ham',
+          'Focus on a solid primary "identity"/motif for the chart\'s most musically impactful section',
+          "We aren't looking for movement just for the sake of movement — make sure it's happening in the musically relevant sections of the chart",
+          'Give players a break too! Movement is tiring',
+          'If you include XOBRs or 270s, please make them optional and/or easy to cheat',
+          'eBPM cap of 170 — movement tech is easier to approach at lower BPMs, so this keeps it more accessible',
+        ],
+      },
+    ],
+  },
 ];
+
+// The one translucent glass panel every step's content sits in, matching HomePage.tsx's Section
+// treatment - so this page reads as part of the same site instead of a set of solid opaque cards
+// floating directly on the animated background (GradientBackground.tsx).
+function PageCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="card bg-base-100/70 backdrop-blur-md shadow-xl ring-1 ring-base-content/10 p-6 sm:p-10 w-full max-w-2xl flex flex-col gap-6">
+      {children}
+    </div>
+  );
+}
 
 const SubmitChartPage = () => {
   const { formatMessage } = useIntl();
@@ -202,7 +237,7 @@ const SubmitChartPage = () => {
   if (!selectedPack) {
     return (
       <div className="flex flex-col items-center pt-24 pb-16 px-4 min-h-screen">
-        <div className="w-full max-w-lg flex flex-col gap-6">
+        <PageCard>
           <div className="flex flex-col items-center gap-2 text-center">
             <Flag className="w-10 h-10 text-accent" />
             <h1 className="text-2xl font-bold">
@@ -212,17 +247,18 @@ const SubmitChartPage = () => {
               <FormattedMessage defaultMessage="Choose a pack to submit to." id="6UWT96" description="Pack selection prompt on submit chart page" />
             </p>
           </div>
+
           {/* General Info & Charting Rules */}
-          <div className="card bg-base-200 p-5 flex flex-col gap-4">
+          <div className="card bg-base-200/60 p-5 flex flex-col gap-4">
             <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
               <FormattedMessage defaultMessage="General Information" id="elcNgS" description="General information section heading on submit chart page" />
             </h2>
             <ul className="flex flex-col gap-1 list-disc list-outside pl-4 marker:text-accent">
               <li className="text-sm text-base-content/80 pl-1">
                 <FormattedMessage
-                  defaultMessage="The event's theme and scoring system have not been announced yet, but shouldn't meaningfully impact how charts are written. These will be announced in the fall. The scoring system is accuracy oriented, with more timing windows that are less punishing regarding small mistakes."
-                  id="WLy3O5"
-                  description="General info bullet: theme/scoring system not yet announced"
+                  defaultMessage="The event's theme is golf - each pack is a “course” and each chart a “hole”. The custom scoring system is accuracy oriented, with more timing windows that are less punishing regarding small mistakes, so this shouldn't meaningfully impact how charts are written."
+                  id="egBNV3"
+                  description="General info bullet: event theme and scoring system"
                 />
               </li>
               <li className="text-sm text-base-content/80 pl-1">
@@ -246,11 +282,13 @@ const SubmitChartPage = () => {
             </h2>
             <ul className="flex flex-col gap-1 list-disc list-outside pl-4 marker:text-accent">
               <li className="text-sm text-base-content/80 pl-1">
+                <span className="badge badge-error badge-sm font-bold uppercase tracking-wide mr-2 align-middle translate-y-[-1px]">
+                  <FormattedMessage defaultMessage="Rule change" id="YZELv2" description="Tag flagging a rule that changed since the announcement" />
+                </span>
                 <FormattedMessage
-                  defaultMessage="Your chart <strong>MUST BE UNRELEASED</strong>. You may release your chart separately after your chart debuts in the event."
-                  id="F0dRE7"
-                  description="Charting rule: chart must be unreleased"
-                  values={{ strong: (chunks: React.ReactNode) => <strong>{chunks}</strong> }}
+                  defaultMessage="Charts no longer need to be unreleased or debut in this event - they just can't have been in any previous ITL, SRPG, tournament, or other notable event."
+                  id="4XbXsm"
+                  description="Charting rule: chart release history requirement (post-announcement update)"
                 />
               </li>
               <li className="text-sm text-base-content/80 pl-1">
@@ -275,17 +313,25 @@ const SubmitChartPage = () => {
             {PACKS.map((pack) => (
               <button
                 key={pack.id}
-                className="card bg-base-200 p-5 text-left hover:bg-base-300 transition-colors cursor-pointer border border-transparent hover:border-accent/30"
+                className="card bg-base-200/60 p-5 flex-row items-center justify-between gap-4 text-left hover:bg-base-300/70 transition-colors cursor-pointer border border-transparent hover:border-accent/30"
                 onClick={() => handlePackSelect(pack)}
               >
-                <div className="flex flex-col gap-1">
+                <div className="flex flex-col gap-1 min-w-0">
                   <span className="font-semibold text-base-content">{pack.name}</span>
                   <span className="text-sm text-base-content/60">{pack.badge}</span>
                 </div>
+                {/* A clear call-to-action, not just a hover state on an otherwise-plain card - a
+                    styled span (not a real nested <button>, which HTML doesn't allow inside this
+                    row's own <button>) so the whole row stays a single click target while still
+                    reading unambiguously as "click this to proceed". */}
+                <span className="btn btn-accent btn-sm gap-1 pointer-events-none shrink-0">
+                  <FormattedMessage defaultMessage="Select" id="/5ACNj" description="Call-to-action button label on a pack selection card" />
+                  <ChevronRight className="w-4 h-4" />
+                </span>
               </button>
             ))}
           </div>
-        </div>
+        </PageCard>
       </div>
     );
   }
@@ -293,22 +339,24 @@ const SubmitChartPage = () => {
   // Step 2: rules + upload
   return (
     <div className="flex flex-col items-center pt-24 pb-16 px-4 min-h-screen">
-      <div className="w-full max-w-md flex flex-col gap-6">
+      <PageCard>
         <div className="flex flex-col items-center gap-2 text-center">
           <Flag className="w-10 h-10 text-accent" />
           <h1 className="text-2xl font-bold">{selectedPack.name}</h1>
-          <p className="text-sm text-base-content/60">
-            <FormattedMessage
-              defaultMessage="Curated by {curators}"
-              id="lYb4jE"
-              description="Curator credit line on submit chart page"
-              values={{ curators: selectedPack.curators.join(', ') }}
-            />
-          </p>
+          {selectedPack.curators.length > 0 && (
+            <p className="text-sm text-base-content/60">
+              <FormattedMessage
+                defaultMessage="Curated by {curators}"
+                id="lYb4jE"
+                description="Curator credit line on submit chart page"
+                values={{ curators: selectedPack.curators.join(', ') }}
+              />
+            </p>
+          )}
         </div>
 
         {/* Pack-specific Rules */}
-        <div className="card bg-base-200 p-5 flex flex-col gap-4">
+        <div className="card bg-base-200/60 p-5 flex flex-col gap-4">
           <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
             <FormattedMessage defaultMessage="Submission Rules" id="JHeC4d" description="Rules section heading on submit chart page" />
           </h2>
@@ -328,7 +376,7 @@ const SubmitChartPage = () => {
 
         {/* Upload form / success */}
         {uploadState === 'done' ? (
-          <div className="card bg-base-200 p-6 flex flex-col items-center gap-3 text-center">
+          <div className="card bg-base-200/60 p-6 flex flex-col items-center gap-3 text-center">
             <CheckCircle2 className="w-10 h-10 text-success" />
             <p className="font-semibold">
               <FormattedMessage defaultMessage="Chart submitted successfully!" id="vAro4O" description="Upload success message" />
@@ -338,7 +386,7 @@ const SubmitChartPage = () => {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="card bg-base-200 p-6 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="card bg-base-200/60 p-6 flex flex-col gap-4">
             <label className="form-control w-full">
               <div className="label">
                 <span className="label-text">
@@ -409,7 +457,7 @@ const SubmitChartPage = () => {
             </div>
           </form>
         )}
-      </div>
+      </PageCard>
     </div>
   );
 };
