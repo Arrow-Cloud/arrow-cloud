@@ -4,6 +4,7 @@ import { FrontendStack } from '../lib/frontend-stack';
 import { CertificatesStackUsEast1, CertificatesStackUsEast2, WildcardCertificateStack } from '../lib/certificates-stack';
 import { ShareServiceStack } from '../lib/share-service-stack';
 import { EventSiteStack } from '../lib/event-site-stack';
+import { RedirectSiteStack } from '../lib/redirect-site-stack';
 import { EventBackendConstruct } from '../lib/event-backend-construct';
 import { GolfBackendStack } from '../lib/golf-backend-stack';
 import { IamStack } from '../lib/iam-stack';
@@ -66,11 +67,31 @@ if (wildcardCertArn) {
     distPath: '../events/testevent/frontend/dist',
   });
 
+  // Was hosted at the unguessable '6ddf7d26' subdomain pre-reveal, deliberately hidden from anyone
+  // before the announcement. Now that it's happened, the real "golf" subdomain is public.
   new EventSiteStack(app, 'EventSite-golf', {
-    subdomain: '6ddf7d26',
+    subdomain: 'golf',
     domainName,
     wildcardCertArn,
     distPath: '../events/golf/frontend/dist',
+  });
+
+  // "In The Golf" is a plausible domain guess for this event - redirect it to the real one instead
+  // of leaving it a dead end.
+  new RedirectSiteStack(app, 'EventSite-golf-redirect-inthegolf', {
+    subdomain: 'inthegolf',
+    domainName,
+    wildcardCertArn,
+    redirectToHost: `golf.${domainName}`,
+  });
+
+  // Anyone who still has the pre-reveal hash link bookmarked (beta testers, curators) lands on the
+  // real site instead of a dead cert-mismatch error now that EventSite-golf no longer answers to it.
+  new RedirectSiteStack(app, 'EventSite-golf-redirect-hash', {
+    subdomain: '6ddf7d26',
+    domainName,
+    wildcardCertArn,
+    redirectToHost: `golf.${domainName}`,
   });
 }
 
