@@ -30,7 +30,9 @@
     "visualize-play": "tsx scripts/visualize-play.ts",
     "visualize-chartjs": "tsx scripts/visualize-chartjs.ts",
     "download-play": "tsx scripts/download-play.ts",
-    "cleanup-user-scores": "tsx scripts/cleanup-user-scores.ts"
+    "cleanup-user-scores": "tsx scripts/cleanup-user-scores.ts",
+    "golf-session-review": "tsx scripts/golf-session-review.ts",
+    "assign-golf-pars": "tsx scripts/assign-golf-pars.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
