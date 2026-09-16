@@ -35,6 +35,12 @@ output/
 # Event backend configs (contain chart hashes, not secrets but event-specific)
 events/*/backend/config.json
 
+# Golf event announcement slideshow - presentation content/notes, not app code
+scripts/golf-announcement/
+
+# Personal golf-scoring session review tool - local analysis only, not a shipped feature
+scripts/golf-session-review-web/
+
 # These instructions kinda suck right now, I'll make something more general purpose later if anyone else wants it.
 .github/copilot-instructions.md
 

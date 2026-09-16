@@ -14,6 +14,7 @@ import { GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID, GLOBAL_HARD_EX_L
 import { EventRegistry, EventLeaderboardResponse } from '../utils/events/base';
 import { EventLeaderboardService } from '../services/eventLeaderboards';
 import { computePackResultImages } from '../utils/pack-leaderboard';
+import { computeEventResultImages } from '../utils/event-result-images';
 import { resolveChartBanner } from '../utils/chart-banner';
 import { parseLocalDateToUTC } from '../utils/date';
 
@@ -848,19 +849,35 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
       }
       // sessionUpdate is broadcast by the user-stats SQS consumer after writing the session.
 
-      // Synchronously render + upload pack-leaderboard result image(s), if this chart belongs to
-      // any pack-leaderboard-eligible pack. No-op (single cheap query) otherwise.
-      let resultImages: string[] = [];
-      try {
-        resultImages = await computePackResultImages(prisma, s3Client, newPlay);
-      } catch (error) {
-        console.error('Failed to compute pack result images:', error);
-        // Don't fail the request if this fails - the play was created successfully.
-      }
-
-      // Publish score submission event to SNS
-      try {
-        await publishScoreSubmissionEvent({
+      // Pack-image rendering, event-image rendering (api/src/utils/event-result-images.ts - each
+      // provider owns its own bounded read against that event's own isolated read-api and degrades
+      // gracefully on failure), and the SNS publish are all independent of each other's results, so
+      // run them concurrently rather than serially - serializing three unrelated I/O calls back to
+      // back was pure wasted latency. Each branch owns its own catch and degrades to a safe default
+      // - one failing can never affect the others or fail this response.
+      const [packResultImages, eventResultImages] = await Promise.all([
+        (async () => {
+          // CPU-bound (satori/resvg) once its own DB awaits resolve, and can occupy the event loop
+          // for multiple seconds - confirmed via this log during the golf read-api investigation
+          // (a single request logged 3027ms here), consistent with the memory bump this Lambda
+          // already needed for "occasional multi-second latency spikes" in this render path (see
+          // api-stack.ts). Kept as lightweight ongoing visibility into that cost, since it can delay
+          // anything else running concurrently in the same Promise.all (e.g. golf's read-api fetch).
+          const startedAt = Date.now();
+          try {
+            return await computePackResultImages(prisma, s3Client, newPlay);
+          } finally {
+            console.log(`[perf] computePackResultImages took ${Date.now() - startedAt}ms`);
+          }
+        })().catch((error) => {
+          console.error('Failed to compute pack result images:', error);
+          return [] as string[];
+        }),
+        computeEventResultImages(scoreSubmission, newPlay, s3Client).catch((error) => {
+          console.error('Failed to compute event result images:', error);
+          return [] as string[];
+        }),
+        publishScoreSubmissionEvent({
           eventType: EVENT_TYPES.SCORE_SUBMITTED,
           timestamp: newPlay.createdAt.toISOString(),
           userId: user.id,
@@ -869,15 +886,17 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
             id: newPlay.id.toString(),
             rawTimingDataUrl: `s3://${BUCKET}/${path}`,
           },
-        });
-      } catch (error) {
-        console.error('Failed to publish score submission event:', error);
-        // Don't fail the request if event publication fails
-      }
+        }).catch((error) => {
+          console.error('Failed to publish score submission event:', error);
+        }),
+      ]);
 
       // Calculate event leaderboards with deltas if this chart belongs to active events
       const response: ScoreSubmissionResponse = { success: true, playId: newPlay.id };
 
+      // Event images lead (the special/beta content for the curated test group), pack images
+      // follow - a chart can be eligible for both (see docs/plans/golf-event-result-images.md).
+      const resultImages = [...eventResultImages, ...packResultImages];
       if (resultImages.length > 0) {
         response.resultImages = resultImages;
       }

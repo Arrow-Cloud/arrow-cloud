@@ -405,15 +405,16 @@ function buildLeaderboardPage(data: MockLeaderboardPageData, logoDataUri: string
           style: { display: 'flex', width: s(28), height: s(2), backgroundImage: `linear-gradient(270deg, transparent, ${TITLE_GRADIENT[0]})` },
         }),
       ),
-      h('div', { style: { display: 'flex', fontSize: s(19), fontWeight: 700 } }, data.packName),
+      truncatedLine(data.packName, CARD_WIDTH - s(40), { fontSize: s(19), fontWeight: 700 }),
+      // Song title and artist on their own lines, each independently truncated - either one alone
+      // can be long enough to clip, and cramming both onto one line (as this used to) only made
+      // that worse.
+      truncatedLine(data.chartTitle, CARD_WIDTH - s(40), { fontSize: s(13), fontWeight: 700, marginTop: s(4) }),
+      truncatedLine(data.chartArtist, CARD_WIDTH - s(40), { fontSize: s(12), color: 'rgba(255,255,255,0.6)', marginTop: s(1) }),
       h(
         'div',
-        { style: { display: 'flex', fontSize: s(12), color: 'rgba(255,255,255,0.5)', gap: s(6), marginTop: s(2) } },
-        h('span', {}, data.chartTitle),
-        h('span', {}, '·'),
-        h('span', {}, data.chartArtist),
-        h('span', {}, '·'),
-        h('span', {}, `${DIFFICULTY_LABELS[data.difficulty]} ${data.meter}`),
+        { style: { display: 'flex', fontSize: s(12), color: 'rgba(255,255,255,0.5)', marginTop: s(3) } },
+        `${DIFFICULTY_LABELS[data.difficulty]} ${data.meter}`,
       ),
     ),
     // Which leaderboard this page shows.
@@ -451,7 +452,23 @@ function buildLeaderboardPage(data: MockLeaderboardPageData, logoDataUri: string
               { style: { display: 'flex', width: s(36), fontSize: s(18), fontWeight: 700, color: r.isSelf ? color : 'rgba(255,255,255,0.5)' } },
               `${r.rank}`,
             ),
-            h('div', { style: { display: 'flex', flex: 1, fontSize: s(18), fontWeight: r.isSelf || r.isRival ? 700 : 400, color: nameColor } }, r.alias),
+            h(
+              'div',
+              {
+                style: {
+                  display: 'flex',
+                  flex: 1,
+                  minWidth: 0, // without this, a flex item won't shrink past its content's intrinsic width - overflow/ellipsis would never trigger
+                  fontSize: s(18),
+                  fontWeight: r.isSelf || r.isRival ? 700 : 400,
+                  color: nameColor,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                },
+              },
+              r.alias,
+            ),
             h('div', { style: { display: 'flex', fontSize: s(18), fontWeight: 700 } }, fmtPoints(r.totalScore)),
           ),
         );
@@ -476,6 +493,41 @@ type Child = Node | string | null | undefined | false;
 function h(type: string, props: Record<string, unknown> = {}, ...children: (Child | Child[])[]): Node {
   const flatChildren = children.flat().filter((c): c is Node | string => c !== null && c !== undefined && c !== false);
   return { type, props: { ...props, children: flatChildren.length === 1 ? flatChildren[0] : flatChildren } };
+}
+
+// Pack names, chart titles, artist names, and player aliases are all unbounded-length user content -
+// this card is a fixed width, so any of them can otherwise clip against the edge or overlap other
+// text. satori does correctly support the standard CSS truncation combo, overflow:hidden +
+// textOverflow:ellipsis + whiteSpace:nowrap (verified directly - it's not a given every satori
+// feature works, e.g. border-based CSS triangles render as solid blocks instead)... but ONLY when
+// the text is left-aligned. Pairing that combo with justifyContent:'center' on centered headings
+// (which every one of these fields is) breaks satori's overflow calculation - text still gets an
+// ellipsis, but also silently clips off the *left* edge with no indicator, which is worse than the
+// plain clipping this is meant to fix. There's no reliable way to detect a satori text overflow
+// after the fact, so this estimates the rendered width up front (average glyph width for this
+// family) and only centers when that estimate comfortably fits - genuinely-too-long text instead
+// falls back to left-aligned + ellipsis, which satori renders correctly. A short/normal name (the
+// overwhelming majority) is unaffected either way.
+const AVG_CHAR_WIDTH_RATIO = 0.56;
+function truncatedLine(text: string, maxWidthPx: number, style: Record<string, unknown> = {}) {
+  const fontSize = (style.fontSize as number | undefined) ?? s(16);
+  const fits = text.length * fontSize * AVG_CHAR_WIDTH_RATIO <= maxWidthPx;
+  return h(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        width: '100%',
+        minWidth: 0,
+        justifyContent: fits ? 'center' : 'flex-start',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        ...style,
+      },
+    },
+    text,
+  );
 }
 
 // Always floors, never rounds to nearest - a player should never see more points than earned.
@@ -559,15 +611,16 @@ function buildCard(data: MockResultsCardData, logoDataUri: string) {
           style: { display: 'flex', width: s(28), height: s(2), backgroundImage: `linear-gradient(270deg, transparent, ${TITLE_GRADIENT[0]})` },
         }),
       ),
-      h('div', { style: { display: 'flex', fontSize: s(19), fontWeight: 700 } }, data.packName),
+      truncatedLine(data.packName, CARD_WIDTH - s(40), { fontSize: s(19), fontWeight: 700 }),
+      // Song title and artist on their own lines, each independently truncated - either one alone
+      // can be long enough to clip, and cramming both onto one line (as this used to) only made
+      // that worse.
+      truncatedLine(data.chartTitle, CARD_WIDTH - s(40), { fontSize: s(13), fontWeight: 700, marginTop: s(4) }),
+      truncatedLine(data.chartArtist, CARD_WIDTH - s(40), { fontSize: s(12), color: 'rgba(255,255,255,0.6)', marginTop: s(1) }),
       h(
         'div',
-        { style: { display: 'flex', fontSize: s(12), color: 'rgba(255,255,255,0.5)', gap: s(6), marginTop: s(2) } },
-        h('span', {}, data.chartTitle),
-        h('span', {}, '·'),
-        h('span', {}, data.chartArtist),
-        h('span', {}, '·'),
-        h('span', {}, `${DIFFICULTY_LABELS[data.difficulty]} ${data.meter}`),
+        { style: { display: 'flex', fontSize: s(12), color: 'rgba(255,255,255,0.5)', marginTop: s(3) } },
+        `${DIFFICULTY_LABELS[data.difficulty]} ${data.meter}`,
       ),
     ),
     h(

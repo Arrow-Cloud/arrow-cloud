@@ -21,14 +21,22 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 
+export interface ApiStackProps extends cdk.StackProps {
+  /** Golf event's read-api Function URL (from GolfBackendStack, via events/golf/backend/config.json
+   * - not a live cross-stack construct reference, see golf-backend-stack.ts for why). Blank until
+   * GolfBackendStack has been deployed at least once. */
+  golfReadApiUrl?: string;
+}
+
 export class ApiStack extends cdk.Stack {
   public readonly vpc: ec2.IVpc;
   public readonly dbSecurityGroup: ec2.ISecurityGroup;
   public readonly databaseSecret: secretsmanager.ISecret;
   public readonly scoresBucket: s3.IBucket;
   public readonly scoreSubmissionTopic: sns.ITopic;
+  public readonly discordNotifyQueue: sqs.Queue;
 
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props?: ApiStackProps) {
     super(scope, id, props);
 
     const vpc = new ec2.Vpc(this, 'ACApiVPC', {
@@ -120,6 +128,14 @@ export class ApiStack extends cdk.Stack {
         WEBAUTHN_ORIGIN: 'https://arrowcloud.dance',
         S3_BUCKET_PACKS: 'arrow-cloud-packs',
         SCORE_SUBMISSION_TOPIC_ARN: scoreSubmissionTopic.topicArn,
+        ...(props?.golfReadApiUrl ? { GOLF_READ_API_URL: props.golfReadApiUrl } : {}),
+        // Node 18+'s native fetch (undici) resolves DNS in "verbatim" order by default, so if a
+        // hostname's DNS answer includes an AAAA record, undici can attempt to connect over IPv6
+        // first - which hangs until timeout in this VPC (no IPv6 route on these subnets/NAT gateway)
+        // before falling back to IPv4. This showed up as ~1.5s of unexplained latency on outbound
+        // fetch() calls (e.g. to golf's read-api Function URL) that had nothing to do with the
+        // target's own execution time. Forcing IPv4-first DNS resolution avoids the hang entirely.
+        NODE_OPTIONS: '--dns-result-order=ipv4first',
       },
       vpc,
       vpcSubnets: {
@@ -315,7 +331,7 @@ export class ApiStack extends cdk.Stack {
     const discordSecret = secretsmanager.Secret.fromSecretNameV2(this, 'DiscordBotSecret', 'DiscordBotSecret');
 
     // SQS queue for Discord notifications
-    const discordNotifyQueue = new sqs.Queue(this, 'DiscordNotifyQueue', {
+    this.discordNotifyQueue = new sqs.Queue(this, 'DiscordNotifyQueue', {
       queueName: 'arrow-cloud-discord-notify',
       visibilityTimeout: cdk.Duration.minutes(2),
       deadLetterQueue: {
@@ -339,23 +355,23 @@ export class ApiStack extends cdk.Stack {
         // DISCORD_DEFAULT_CHANNEL_ID: '123456789012345678',
       },
       // Removed VPC configuration to avoid NAT Gateway charges for Discord API calls
-      events: [new lambdaEventSources.SqsEventSource(discordNotifyQueue, { batchSize: 5 })],
+      events: [new lambdaEventSources.SqsEventSource(this.discordNotifyQueue, { batchSize: 5 })],
     });
 
     // Allow Discord Lambda to read bot secret
     discordSecret.grantRead(discordNotifierLambda);
 
     // Allow API Lambda to send messages to the Discord queue
-    discordNotifyQueue.grantSendMessages(apiLambda);
+    this.discordNotifyQueue.grantSendMessages(apiLambda);
     // Allow the pack processor lambda to send messages to the Discord queue
-    discordNotifyQueue.grantSendMessages(packProcessorLambda);
+    this.discordNotifyQueue.grantSendMessages(packProcessorLambda);
 
     // Expose queue URL to API Lambda for convenience
-    apiLambda.addEnvironment('DISCORD_NOTIFY_QUEUE_URL', discordNotifyQueue.queueUrl);
+    apiLambda.addEnvironment('DISCORD_NOTIFY_QUEUE_URL', this.discordNotifyQueue.queueUrl);
     // Expose queue URL to Pack Processor Lambda
-    packProcessorLambda.addEnvironment('DISCORD_NOTIFY_QUEUE_URL', discordNotifyQueue.queueUrl);
+    packProcessorLambda.addEnvironment('DISCORD_NOTIFY_QUEUE_URL', this.discordNotifyQueue.queueUrl);
 
-    new cdk.CfnOutput(this, 'DiscordNotifyQueueUrl', { value: discordNotifyQueue.queueUrl });
+    new cdk.CfnOutput(this, 'DiscordNotifyQueueUrl', { value: this.discordNotifyQueue.queueUrl });
 
     // Debounce state table
     new dynamodb.Table(this, 'DebounceLocks', {

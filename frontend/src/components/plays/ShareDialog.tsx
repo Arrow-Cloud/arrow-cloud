@@ -115,25 +115,18 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ play, isOpen, onClose 
               value={primarySystem}
               onChange={(e) => {
                 const newPrimary = e.target.value as ShareSystem;
-                setPrimarySystem(newPrimary);
-                // If secondary matches new primary, switch it to something else
-                if (secondarySystem === newPrimary) {
-                  const alternatives: ShareSystem[] = ['H.EX', 'EX', 'ITG'];
-                  const otherOption = alternatives.find((s) => s !== newPrimary)!;
-                  setSecondarySystem(otherOption);
+                // Picking the system currently in Secondary swaps the two rather than blocking the
+                // selection - lets the user flip primary/secondary with a single dropdown change.
+                if (newPrimary === secondarySystem) {
+                  setSecondarySystem(primarySystem);
                 }
+                setPrimarySystem(newPrimary);
                 setImageLoading(true);
               }}
             >
-              <option value="H.EX" disabled={secondarySystem === 'H.EX'}>
-                {formatMessage({ defaultMessage: 'H.EX', id: 'Gdrt7M', description: 'H.EX scoring system name' })}
-              </option>
-              <option value="EX" disabled={secondarySystem === 'EX'}>
-                {formatMessage({ defaultMessage: 'EX', id: 'gE+yeP', description: 'EX scoring system name' })}
-              </option>
-              <option value="ITG" disabled={secondarySystem === 'ITG'}>
-                {formatMessage({ defaultMessage: 'ITG', id: 'vgg5G0', description: 'ITG scoring system name' })}
-              </option>
+              <option value="H.EX">{formatMessage({ defaultMessage: 'H.EX', id: 'Gdrt7M', description: 'H.EX scoring system name' })}</option>
+              <option value="EX">{formatMessage({ defaultMessage: 'EX', id: 'gE+yeP', description: 'EX scoring system name' })}</option>
+              <option value="ITG">{formatMessage({ defaultMessage: 'ITG', id: 'vgg5G0', description: 'ITG scoring system name' })}</option>
             </select>
           </div>
           <div>
@@ -147,25 +140,18 @@ export const ShareDialog: React.FC<ShareDialogProps> = ({ play, isOpen, onClose 
               value={secondarySystem}
               onChange={(e) => {
                 const newSecondary = e.target.value as ShareSystem;
-                setSecondarySystem(newSecondary);
-                // If primary matches new secondary, switch it to something else
-                if (primarySystem === newSecondary) {
-                  const alternatives: ShareSystem[] = ['H.EX', 'EX', 'ITG'];
-                  const otherOption = alternatives.find((s) => s !== newSecondary)!;
-                  setPrimarySystem(otherOption);
+                // Picking the system currently in Primary swaps the two rather than blocking the
+                // selection - lets the user flip primary/secondary with a single dropdown change.
+                if (newSecondary === primarySystem) {
+                  setPrimarySystem(secondarySystem);
                 }
+                setSecondarySystem(newSecondary);
                 setImageLoading(true);
               }}
             >
-              <option value="H.EX" disabled={primarySystem === 'H.EX'}>
-                {formatMessage({ defaultMessage: 'H.EX', id: 'Gdrt7M', description: 'H.EX scoring system name' })}
-              </option>
-              <option value="EX" disabled={primarySystem === 'EX'}>
-                {formatMessage({ defaultMessage: 'EX', id: 'gE+yeP', description: 'EX scoring system name' })}
-              </option>
-              <option value="ITG" disabled={primarySystem === 'ITG'}>
-                {formatMessage({ defaultMessage: 'ITG', id: 'vgg5G0', description: 'ITG scoring system name' })}
-              </option>
+              <option value="H.EX">{formatMessage({ defaultMessage: 'H.EX', id: 'Gdrt7M', description: 'H.EX scoring system name' })}</option>
+              <option value="EX">{formatMessage({ defaultMessage: 'EX', id: 'gE+yeP', description: 'EX scoring system name' })}</option>
+              <option value="ITG">{formatMessage({ defaultMessage: 'ITG', id: 'vgg5G0', description: 'ITG scoring system name' })}</option>
             </select>
           </div>
         </div>
