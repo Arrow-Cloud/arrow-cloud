@@ -16,12 +16,14 @@ const PACK_CHANNEL_MAP: Record<string, string> = {
   'quint-bait': '1500528587261083658',
   'stamina-stamtech': '1500503650714521670',
   'pride-demon': '1500503116267655218',
+  'movement-slop': '1506461643469754408',
 };
 
 const PACK_NAMES: Record<string, string> = {
   'quint-bait': 'Quint Bait',
   'stamina-stamtech': 'Stamina / StamTech',
   'pride-demon': 'Pride Demon',
+  'movement-slop': 'Movement Slop',
 };
 
 // Discord green
@@ -77,7 +79,7 @@ export const handler: S3Handler = async (event) => {
       ],
     };
 
-    console.log('sending SQS message', { queueUrl: DISCORD_NOTIFY_QUEUE_URL, channelId: DISCORD_CHANNEL_ID });
+    console.log('sending SQS message', { queueUrl: DISCORD_NOTIFY_QUEUE_URL, channelId });
     await sqs.send(
       new SendMessageCommand({
         QueueUrl: DISCORD_NOTIFY_QUEUE_URL,

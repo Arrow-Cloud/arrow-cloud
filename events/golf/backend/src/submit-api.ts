@@ -14,7 +14,7 @@ const PRESIGNED_URL_EXPIRY_SECONDS = 300; // 5 minutes
 // Only accept zip archives — chart packages are always zips
 const ALLOWED_CONTENT_TYPES = new Set(['application/zip', 'application/x-zip-compressed', 'application/x-zip', 'application/octet-stream']);
 
-const VALID_PACK_IDS = new Set(['quint-bait', 'stamina-stamtech', 'pride-demon']);
+const VALID_PACK_IDS = new Set(['quint-bait', 'stamina-stamtech', 'pride-demon', 'movement-slop']);
 
 interface FunctionUrlEvent {
   requestContext: { http: { method: string; path: string } };
