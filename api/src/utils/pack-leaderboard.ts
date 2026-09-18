@@ -17,12 +17,29 @@ import type { PackResultImageData, PackResultImageEntry, LeaderboardPageData, Le
 // Types
 // ---------------------------------------------------------------------------
 
-/** Pack IDs that have pack leaderboards enabled. */
-export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371, 380];
+/** Tech Heavy Charts 4. Hard/Expert-only leaderboards - see PACK_LEADERBOARD_DIFFICULTY_OVERRIDES. */
+export const THC4_PACK_ID = 0; // TODO: set once the pack exists in the DB
 
-/** The difficulty slots we compute pack leaderboards for. */
+/** Pack IDs that have pack leaderboards enabled. */
+export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID];
+
+/** The difficulty slots we compute pack leaderboards for (by default - see the per-pack overrides below). */
 export const PACK_LEADERBOARD_DIFFICULTIES = ['medium', 'hard', 'challenge'] as const;
 export type PackLeaderboardDifficulty = (typeof PACK_LEADERBOARD_DIFFICULTIES)[number];
+
+/**
+ * Packs whose leaderboards only cover a subset of the difficulty slots. Any pack not listed here
+ * gets the full PACK_LEADERBOARD_DIFFICULTIES set. Keep the frontend mirror in
+ * frontend/src/utils/widgetConfig.ts in sync with this.
+ */
+export const PACK_LEADERBOARD_DIFFICULTY_OVERRIDES: Record<number, readonly PackLeaderboardDifficulty[]> = {
+  [THC4_PACK_ID]: ['hard', 'challenge'],
+};
+
+/** The difficulty slots a given pack's leaderboards cover. */
+export function getPackLeaderboardDifficulties(packId: number): readonly PackLeaderboardDifficulty[] {
+  return PACK_LEADERBOARD_DIFFICULTY_OVERRIDES[packId] ?? PACK_LEADERBOARD_DIFFICULTIES;
+}
 
 /** Scoring system label → global Leaderboard row id mapping. */
 export const SCORING_SYSTEMS = {
@@ -93,6 +110,10 @@ export async function getEligiblePacksForChart(prisma: PrismaClient, chartHash: 
   for (const sc of simfileCharts) {
     const packId = sc.simfile.packId;
     if (!sc.difficulty || !ELIGIBLE_PACK_IDS.includes(packId)) continue;
+    // A pack may only run leaderboards for some difficulty slots (e.g. THC4 is Hard/Expert only) -
+    // a chart in one of its excluded slots isn't a pack-leaderboard chart at all, so it must not
+    // trigger a recalculation or a result image.
+    if (!getPackLeaderboardDifficulties(packId).includes(sc.difficulty as PackLeaderboardDifficulty)) continue;
     const key = `${packId}:${sc.difficulty}`;
     if (seen.has(key)) continue;
     seen.add(key);
@@ -250,9 +271,11 @@ function rankPackScoring(scoreIndex: Map<string, BestScoreRow[]>, chartHashes: s
 /**
  * Calculate pack leaderboards for a single pack.
  *
- * Returns a fully-serialisable {@link PackLeaderboardOutput} containing 15
- * leaderboards (3 difficulties × 5 scoring systems) with a de-duplicated
- * users dictionary.
+ * Returns a fully-serialisable {@link PackLeaderboardOutput} containing one
+ * leaderboard per (difficulty × scoring system) - normally 15 (3 difficulties × 5
+ * scoring systems), fewer for packs with a difficulty override (see
+ * {@link getPackLeaderboardDifficulties}; excluded slots are simply absent from
+ * `leaderboards`) - with a de-duplicated users dictionary.
  */
 export async function calculatePackLeaderboards(prisma: PrismaClient, packId: number): Promise<PackLeaderboardOutput> {
   // 1. Fetch pack info
@@ -261,12 +284,14 @@ export async function calculatePackLeaderboards(prisma: PrismaClient, packId: nu
     select: { id: true, name: true },
   });
 
+  const difficulties = getPackLeaderboardDifficulties(packId);
+
   // 2. Gather all chart hashes in this pack grouped by difficulty slot
   //    Path: Pack → Simfile → SimfileChart (holds difficulty + chartHash)
   const simfileCharts = await prisma.simfileChart.findMany({
     where: {
       simfile: { packId },
-      difficulty: { in: [...PACK_LEADERBOARD_DIFFICULTIES] },
+      difficulty: { in: [...difficulties] },
     },
     select: {
       chartHash: true,
@@ -277,7 +302,7 @@ export async function calculatePackLeaderboards(prisma: PrismaClient, packId: nu
 
   // Group chart hashes by difficulty
   const hashesByDifficulty: Record<string, string[]> = {};
-  for (const d of PACK_LEADERBOARD_DIFFICULTIES) {
+  for (const d of difficulties) {
     hashesByDifficulty[d] = [];
   }
   const cmodIneligibleHashes = new Set<string>();
@@ -319,7 +344,7 @@ export async function calculatePackLeaderboards(prisma: PrismaClient, packId: nu
     scoreIndex.get(key)!.push(row);
   }
 
-  for (const difficulty of PACK_LEADERBOARD_DIFFICULTIES) {
+  for (const difficulty of difficulties) {
     const diffHashes = hashesByDifficulty[difficulty];
     leaderboards[difficulty] = {};
 

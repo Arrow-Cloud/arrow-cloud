@@ -19,11 +19,11 @@ import { type PackListItem, type UserRecentPlay } from '../../schemas/apiSchemas
 import {
   WelcomeBackCard,
   AboutCard,
-  AnnouncementVideoCard,
   UserRecentScoresCard,
   GlobalActivityCard,
   RecentPacksCard,
   SetupAndSupportCards,
+  NewPackLeaderboardsCard,
 } from './components';
 
 const PAGE_SIZE = 10;
@@ -208,9 +208,8 @@ export const HomePageNew: React.FC = () => {
             {/* About Card - Only show for logged out users */}
             {!user && <AboutCard />}
 
-            {/* Post-stream: the recorded announcement, replacing AnnouncementCountdownCard now that
-                the reveal has happened (see AnnouncementVideoCard.tsx's own header comment). */}
-            <AnnouncementVideoCard />
+            {/* New pack leaderboard announcement (THC4) — expires 2026-10-31 */}
+            <NewPackLeaderboardsCard />
 
             {/* User's Own Recent Scores Card - Only show for logged in users */}
             {user && (

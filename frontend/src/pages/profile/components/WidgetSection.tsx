@@ -7,6 +7,7 @@ import {
   encodeWidgetConfig,
   getWidgetDimensions,
   ELIGIBLE_PACK_IDS,
+  getPackLeaderboardDifficulties,
   type WidgetConfig,
   type WidgetFeatureConfig,
   type LeaderboardKey,
@@ -177,7 +178,11 @@ const PackLeaderboardConfig: React.FC<{
         value={feature.packId}
         onChange={(e) => {
           const pack = packs.find((p) => p.id === parseInt(e.target.value, 10));
-          if (pack) onChange({ ...feature, packId: pack.id, packName: pack.name, bannerUrl: bestBannerUrl(pack) });
+          if (!pack) return;
+          // Not every pack runs leaderboards for every difficulty slot - keep the selection valid for the new pack.
+          const difficulties = getPackLeaderboardDifficulties(pack.id);
+          const difficulty = difficulties.includes(feature.difficulty) ? feature.difficulty : difficulties[difficulties.length - 1];
+          onChange({ ...feature, packId: pack.id, packName: pack.name, bannerUrl: bestBannerUrl(pack), difficulty });
         }}
       >
         {packs.map((p) => (
@@ -190,7 +195,7 @@ const PackLeaderboardConfig: React.FC<{
     <div>
       <label className="text-xs font-semibold text-base-content/70 mb-1 block">Difficulty</label>
       <div className="flex gap-2">
-        {(['medium', 'hard', 'challenge'] as PackLeaderboardDifficulty[]).map((d) => (
+        {getPackLeaderboardDifficulties(feature.packId).map((d) => (
           <button
             key={d}
             type="button"
@@ -720,7 +725,8 @@ export const WidgetSection: React.FC = () => {
       .catch(() => {});
   }, []);
 
-  const config: WidgetConfig = { version: 1, orientation, features };
+  // hideProfile: new widgets never show the alias/avatar header - see WidgetConfig.hideProfile.
+  const config: WidgetConfig = { version: 1, orientation, features, hideProfile: true };
   const encodedConfig = encodeWidgetConfig(config);
   const { width: widgetWidth, height: widgetHeight } = getWidgetDimensions(config);
 
