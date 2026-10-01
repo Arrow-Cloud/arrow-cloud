@@ -9,6 +9,10 @@
  *
  * To list all currently flagged charts:
  *   npx ts-node scripts/set-cmod-ineligible-charts.ts --list
+ *
+ * Per-pack hash lists are kept in scripts/data/cmod-ineligible/<pack>.txt (one hash per line) so
+ * they can be re-applied, e.g. after the pack is (re)imported:
+ *   xargs npx ts-node scripts/set-cmod-ineligible-charts.ts < scripts/data/cmod-ineligible/thc4.txt
  */
 import { PrismaClient } from '../api/prisma/generated/client';
 

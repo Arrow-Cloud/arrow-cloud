@@ -178,7 +178,7 @@ export const StreamerWidgetPage: React.FC = () => {
   const orientation = config?.orientation ?? 'horizontal';
   const isHorizontal = orientation === 'horizontal';
 
-  // Strip legacy 'profile' entries from old encoded configs — profile is now always-on at the top
+  // Strip legacy 'profile' entries from old encoded configs — the header is controlled by hideProfile, not a feature
   const rawFeatures = config?.features ?? [];
   const filteredFeatures = rawFeatures.filter((f) => (f as any).type !== 'profile');
   const activeFeatures =
@@ -186,24 +186,27 @@ export const StreamerWidgetPage: React.FC = () => {
       ? filteredFeatures
       : [{ type: 'currentSession' as const }, { type: 'recentPlays' as const, leaderboards: ['EX' as LeaderboardKey] }];
 
+  // Legacy URLs (no hideProfile) keep the alias/avatar header and the viewport-pinned status dot
+  // exactly as they were, so nothing shifts in an OBS scene that was sized around them.
+  const showProfile = !config?.hideProfile;
+
+  // WebSocket status dot — only visible when WS is configured
+  const statusDot = WS_URL && (
+    <div className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-success shadow-lg shadow-success/50' : 'bg-error shadow-lg shadow-error/50'} animate-pulse`} />
+  );
+
   return (
     <div className="w-full h-screen flex items-center justify-center p-0 bg-transparent">
       <style>{WIDGET_KEYFRAMES}</style>
-      {/* WebSocket status dot — only visible when WS is configured */}
-      {WS_URL && (
-        <div className="fixed top-2 right-2 z-50">
-          <div
-            className={`w-2 h-2 rounded-full ${wsConnected ? 'bg-success shadow-lg shadow-success/50' : 'bg-error shadow-lg shadow-error/50'} animate-pulse`}
-          />
-        </div>
-      )}
+      {showProfile && statusDot && <div className="fixed top-2 right-2 z-50">{statusDot}</div>}
 
       <div style={{ width: totalWidth, height: totalHeight, backgroundColor: 'transparent' }} className="flex flex-col overflow-hidden">
-        {/* Profile is always rendered at the top, full width, transparent */}
-        <ProfileStatsPanel user={widgetData.user} />
+        {showProfile && <ProfileStatsPanel user={widgetData.user} />}
 
-        {/* Feature panels below — side by side (horizontal) or stacked (vertical) */}
-        <div className={`flex ${isHorizontal ? 'flex-row' : 'flex-col'} flex-1 overflow-hidden`}>
+        {/* Feature panels — side by side (horizontal) or stacked (vertical) */}
+        <div className={`relative flex ${isHorizontal ? 'flex-row' : 'flex-col'} flex-1 overflow-hidden`}>
+          {/* Without the header there's nothing above the panels, so the dot sits on the panels' own top-right corner */}
+          {!showProfile && statusDot && <div className="absolute top-2 right-2 z-50">{statusDot}</div>}
           {activeFeatures.map((feature, i) => {
             if (feature.type === 'recentPlays') {
               return <RecentPlaysPanel key={i} plays={widgetData.recentPlays ?? []} leaderboards={feature.leaderboards} orientation={orientation} />;

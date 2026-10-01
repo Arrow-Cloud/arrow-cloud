@@ -1,4 +1,5 @@
 export { WelcomeBackCard } from './WelcomeBackCard';
+export { NewPackLeaderboardsCard } from './NewPackLeaderboardsCard';
 export { AboutCard } from './AboutCard';
 export { AnnouncementCountdownCard } from './AnnouncementCountdownCard';
 export { AnnouncementVideoCard } from './AnnouncementVideoCard';

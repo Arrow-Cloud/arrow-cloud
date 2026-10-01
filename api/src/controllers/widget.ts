@@ -29,6 +29,8 @@ interface WidgetConfig {
   version: 1;
   orientation: 'horizontal' | 'vertical';
   features: WidgetFeatureConfig[];
+  /** Frontend-only rendering flag (hides the alias/avatar header); mirrored here so the type matches what's encoded. */
+  hideProfile?: boolean;
 }
 
 const LB_KEY_TO_ID: Record<LeaderboardKey, number> = {

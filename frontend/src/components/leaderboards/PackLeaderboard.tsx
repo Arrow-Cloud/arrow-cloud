@@ -125,13 +125,22 @@ interface PackLeaderboardProps {
 
 export const PackLeaderboard: React.FC<PackLeaderboardProps> = ({ data, packId }) => {
   const { activeLeaderboard } = useLeaderboardView();
-  const [activeDifficulty, setActiveDifficultyState] = useState<string>(() => localStorage.getItem(DIFFICULTY_LS_KEY) || 'challenge');
+  const [storedDifficulty, setStoredDifficulty] = useState<string>(() => localStorage.getItem(DIFFICULTY_LS_KEY) || 'challenge');
   const [page, setPage] = useState(1);
 
   const setActiveDifficulty = (d: string) => {
-    setActiveDifficultyState(d);
+    setStoredDifficulty(d);
     localStorage.setItem(DIFFICULTY_LS_KEY, d);
   };
+
+  // Only offer the difficulty slots this pack actually has leaderboards for - some packs are
+  // Hard/Expert only (see PACK_LEADERBOARD_DIFFICULTY_OVERRIDES in api/src/utils/pack-leaderboard.ts),
+  // and their leaderboard JSON simply omits the excluded slots.
+  const availableTabs = useMemo(() => DIFFICULTY_TABS.filter(({ key }) => data?.leaderboards[key]), [data]);
+  // The remembered difficulty is shared across packs, so it may not exist here - fall back to the hardest available.
+  const activeDifficulty = availableTabs.some(({ key }) => key === storedDifficulty)
+    ? storedDifficulty
+    : (availableTabs[availableTabs.length - 1]?.key ?? storedDifficulty);
 
   // Reset page when difficulty or scoring system changes
   const currentLeaderboard = useMemo(() => {
@@ -157,7 +166,7 @@ export const PackLeaderboard: React.FC<PackLeaderboardProps> = ({ data, packId }
 
         {/* Difficulty tabs */}
         <div className="flex gap-2 mb-4">
-          {DIFFICULTY_TABS.map(({ key, label }) => {
+          {availableTabs.map(({ key, label }) => {
             const color = DIFFICULTY_COLORS[key];
             const isActive = activeDifficulty === key;
             return (
