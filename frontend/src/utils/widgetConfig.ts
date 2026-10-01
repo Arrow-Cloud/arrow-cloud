@@ -52,7 +52,7 @@ export const HORIZONTAL_WIDTHS: Record<WidgetFeatureConfig['type'], number> = {
 /** Tech Heavy Charts 4. Hard/Expert-only leaderboards - see PACK_LEADERBOARD_DIFFICULTY_OVERRIDES. */
 export const THC4_PACK_ID = 383;
 
-export const ELIGIBLE_PACK_IDS = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID];
+export const ELIGIBLE_PACK_IDS = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID, 387];
 
 export const PACK_LEADERBOARD_DIFFICULTIES: readonly PackLeaderboardDifficulty[] = ['medium', 'hard', 'challenge'];
 
