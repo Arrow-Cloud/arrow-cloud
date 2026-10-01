@@ -1,11 +1,27 @@
 # In The Golf — Beta Test Prep (mid-October)
 
-Status: **planning**. Branch: `golf-beta-prep`. Target: beta live mid-October 2026, full launch
-December (dates per `events/golf/frontend/src/pages/HomePage.tsx`'s timeline section).
+Status: **planning — design decisions resolved** (see Decisions below). Branch: `golf-beta-prep`.
+Target: beta live mid-October 2026 with a fixed end date before the December full launch (timeline
+section in `events/golf/frontend/src/pages/HomePage.tsx`).
 
 This plan covers everything between today's state — a marketing site, a chart-submission portal, and
 a working single-image result card gated to two test accounts — and a beta a real player base can
 play through without us hand-holding it.
+
+## Decisions
+
+Resolved 2026-09-30. Each is expanded in the section noted.
+
+| # | Decision | Where |
+|---|---|---|
+| 1 | Trophies are granted by a **core-side poller** reading golf's public read-api — golf stays strictly read-only | §3 |
+| 2 | Course boards list **completed rounds first by lowest strokes, then partials by holes played, tie-broken on strokes** | §2.2 |
+| 3 | **Per-course boards only** — no combined cross-course standing | §2.2 |
+| 4 | Beta trophies are **permanent and beta-exclusive** | §3.3 |
+| 5 | Hole order stays the **current alphabetical song-folder order** | §1.3 |
+| 6 | The 4 Alpha Testing charts become a **hidden dev-only course** | §1.4 |
+| 7 | Beta starts mid-October and **closes on a fixed end date** before December (exact dates still needed) | §6 |
+| 8 | Courses **may still change** before beta — config must tolerate revisions | §1.6 |
 
 ## Context: what actually exists today
 
@@ -29,8 +45,8 @@ Event infra is deliberately isolated: golf's backend has **its own DynamoDB tabl
 score data **only** over public HTTP (`apiFetch` in `events/golf/backend/src/shared.ts`) — never
 Postgres or S3 directly. The point is that a future third-party event author gets the same contract,
 so a bug or bad actor in one event can never touch core data or slow the submission path. Two items
-below (trophies, ban filtering) push directly against that boundary and need an explicit decision
-rather than a quiet workaround.
+below push directly against that boundary: trophies (resolved — a core-side poller keeps golf
+read-only, §3) and ban filtering (still needs a mechanism, §4.1).
 
 ---
 
@@ -60,17 +76,31 @@ or four places with no single source of truth**, and the event backend itself kn
 2. **Give the event backend a course concept.** `score-processor.ts` currently stores strokes against
    a bare `chartHash` and has no idea which course it belongs to or what its par is. Course rankings
    (§2) and the scorecard UI (§5) both need hole→course→par resolution inside golf's own backend.
-3. **Hole numbering.** Nothing today assigns hole 1–18 within a course. Real golf ordering matters
-   for a scorecard; the par JSONs are in song-folder order, which is probably not the intended play
-   order. Needs a deliberate per-course ordering.
-4. **Decide the fate of the 4 "Alpha Testing" hashes** still in `config.json` and `GOLF_CHARTS`
-   (`7a520534f16d6455`, `065f74f741eb2f9d`, `f3871997119d5052`, `50bcefd78fa82988`). They have no
-   course and no par, and `golf-result-image.ts` has a dedicated no-par fallback layout just for
-   them. If they're not part of the beta, dropping them deletes a whole branch of layout code.
-5. **Sanity-check the par spread.** Hills is 5–15, Pines is 3–6 — consistent with Hills being the
-   meter-13 course and Pines meter-8, but it means a bad round on Hills costs far more against par
-   than on Pines. If the two courses are ever combined into one overall standing, that asymmetry
-   decides who wins. Flagging rather than assuming.
+3. **Hole numbering — keep the current order.** *Decided:* holes are numbered 1–18 in the existing
+   alphabetical song-folder order, as the par JSONs and CSVs already are. Hole numbers are stable
+   positional labels so players and the scorecard can refer to "hole 7", not a curated routing — so
+   no pacing is implied and nothing needs to be collected from curators to ship. The ordering lives
+   in the course config (§1.1) as explicit indices rather than being re-derived by sorting at read
+   time, so it stays fixed even if a song is renamed, and can be re-routed later without a data
+   migration.
+4. **Alpha Testing charts become a hidden course.** *Decided:* the 4 par-less hashes
+   (`7a520534f16d6455`, `065f74f741eb2f9d`, `f3871997119d5052`, `50bcefd78fa82988`) stay, reframed as
+   a dev-only course so the whole pipeline can be exercised end-to-end without touching real beta
+   boards. Consequences to build for: the course config needs a `hidden: true` flag; the site must
+   omit hidden courses from every listing and leaderboard; hidden courses must be excluded from
+   trophies and from any event-wide totals; and `golf-result-image.ts`'s no-par fallback layout
+   stays alive, so it needs to keep working rather than being deleted as dead code.
+5. **Par spread — no longer a correctness risk.** Hills is 5–15 and Pines is 3–6, consistent with
+   Hills being the meter-13 course and Pines meter-8. This only mattered if the two were ever summed
+   into one standing; with per-course boards only (§2.2) the asymmetry is purely cosmetic. Worth
+   re-reading if an overall board is ever revisited.
+6. **Tolerate course revisions.** *Decided:* the 36 charts are **not** locked — songs may be added,
+   removed, or re-charted before beta (the packs already carry a `vE2` suffix). So the course config
+   can't be treated as immutable: the hash/par regeneration path (`scripts/get-pack-hashes.ts` →
+   `scripts/assign-golf-pars.ts` → course config) needs to stay a repeatable one-command flow rather
+   than a one-time manual copy into `GOLF_CHARTS`, and re-running it must preserve pars for charts
+   whose hash didn't change. A re-chart changes the hash, which silently orphans every score on the
+   old one — see the open question on what happens to those scores.
 
 ---
 
@@ -103,11 +133,36 @@ Everything is partitioned **by user**. Answering "where does this player rank on
    `LEADERBOARD` pattern — with the sort key **inverted**, since golf is lower-is-better and
    testevent's `scoreToSortKey` assumes higher-is-better. (Zero-padded `strokes`, ascending, is the
    natural form; needs a deliberate width given strokes run into the tens of thousands.)
-2. **Maintain a per-user, per-course aggregate item** (`COURSE#<courseId>` → sum of that user's 18
-   best hole totals, holes completed, vs-par). This is the course ranking's backing data and the
-   scorecard's. Decide what a partial course means: 14 of 18 holes played — ranked with a penalty,
-   ranked among other partials, or excluded until complete? This decision shapes both the image and
-   the leaderboard page, so it should be made before either is built.
+2. **Maintain a per-user, per-course aggregate item** (`COURSE#<courseId>` → sum of that user's best
+   hole totals, holes completed, vs-par). This is the backing data for both the course-ranking image
+   and the scorecard.
+
+   **Course ranking sort order** *(decided)*:
+
+   - **Completed rounds first** (all 18 holes), ascending by total strokes — lowest wins.
+   - **Then partial rounds**, descending by holes completed, ties broken ascending by total strokes.
+
+   ```
+   dimo        9.02
+   wafles     10.28
+   topher      6.53  (thru 16)
+   snap        9.12  (thru 16)
+   heavymode   7.01  (thru 15)
+   ```
+
+   Note what this example makes explicit: a partial player's raw total is *lower* than a completed
+   player's simply because they've played fewer holes (topher's 6.53 beats wafles' 10.28 but ranks
+   below it). That's exactly why holes-completed is the primary key for partials and why partials can
+   never outrank a completed round — totals across different hole counts aren't comparable. Any
+   implementation that sorts the whole board on strokes alone is wrong.
+
+   Mechanically this is two queries against the same ranked index (complete, then partial) rather
+   than one, or a single composite sort key encoding `completed-flag | hole-count-descending |
+   strokes-ascending`. The composite key is preferable — it keeps the read a single ranged query and
+   keeps the ordering rule in one place instead of split across two call sites.
+
+   **Per-course boards only** *(decided)* — there is no combined cross-course standing, so no
+   normalisation across courses is needed and the Hills/Pines par asymmetry doesn't come into play.
 3. **New read-api routes**: hole rankings for a chart, course rankings for a course, and this user's
    standing in both. Prefer **one batched endpoint** returning everything the three images need.
 4. **Keep inside the latency budget.** `fetchContext` is called synchronously inside the submission
@@ -138,29 +193,37 @@ is the pattern to follow (milestone-based, replaces lower tiers).
 writing to core Postgres. Golf knows who earned what; core owns the award. That gap needs a
 deliberate bridge, and it's the single biggest open design question in this plan.
 
-Options, roughly in order of how well they preserve the isolation boundary:
+**Decided: a core-side poller.** Core periodically reads golf's public read-api and grants trophies
+itself. Golf never writes to core, no new write surface into user data is created, and the same
+mechanism works for any future event — a third-party event author gets trophies for free without
+being handed credentials. The cost is that awards lag by the poll interval.
 
-- **(a) A core-side poller/reconciler.** Core periodically reads golf's public read-api and grants
-  trophies. Keeps the boundary perfectly intact (golf stays read-only, no new write surface) and
-  generalises to future events. Cost: trophies lag by the poll interval.
-- **(b) An authenticated core "event trophy grant" endpoint** golf's Lambda calls. Immediate awards,
-  but it hands an event backend a write path into core user data — exactly what the isolation rule
-  exists to prevent. Would need a tight allowlist of grantable slugs per event.
-- **(c) End-of-event batch script.** Simplest, zero new infra, but no "as the event progresses",
-  which is explicitly what was asked for.
-
-(a) looks like the right default, with the poll interval tuned to how fresh an award needs to feel.
+Rejected: an authenticated grant endpoint golf calls (immediate, but hands an event backend a write
+path into core user data, which is the exact thing the isolation rule exists to prevent), and an
+end-of-event batch (no awards *during* the event, which is the whole point).
 
 ### Work
 
-1. Decide the bridge (above).
+1. **Build the poller.** Scheduled Lambda in core, reading golf's read-api and granting via the
+   existing `Trophy`/`UserTrophy` path. Open: poll interval. Design notes:
+   - Needs an **idempotent** grant — `UserTrophy` already has a `@@unique([userId, trophyId])`, so a
+     re-grant is a no-op, but the notification must not re-fire on every poll.
+   - Reads must be **bounded** — a full scan of every player's standing every interval won't scale;
+     prefer a read-api route that returns only what changed since a cursor/timestamp.
+   - Hidden courses (§1.4) must be excluded from trophy evaluation.
+   - `events/testevent/backend/src/scheduled-processor.ts` is prior art for a scheduled event Lambda,
+     though note it lives on the event side — this poller belongs on the core side.
 2. **Define the trophy catalogue** — this is content work and the long-pole item. Candidates worth
    considering: first round completed, a course completed, hole-in-one/ace-count milestones, under
    par on a hole, under par on a full course, beating a specific curator's score, participation.
    Each needs name, slug, tier, description template, and an image asset.
-3. Decide whether beta trophies are **beta-exclusive** (and so a permanent collectible marking early
-   testers) or a dry run reset before December. This affects whether we're willing to grant them on
-   scoring rules the home page itself calls "subject to change after beta testing".
+3. **Permanent and beta-exclusive** *(decided)*: beta trophies stay on profiles forever and are never
+   grantable again, marking the early testers. Two consequences. First, each beta trophy needs a slug
+   distinct from any December equivalent (e.g. `golf_beta_*`) so the launch event can't re-award it.
+   Second, since the home page itself says stroke values are "subject to change after beta testing",
+   the catalogue should lean on **participation and milestones** (rounds completed, courses finished,
+   aces) over absolute stroke thresholds or final rankings — a permanent trophy pinned to a scoring
+   constant we're about to retune would misrepresent what the player actually did.
 4. Seed rows (`Trophy` is populated manually by convention — "Create these in the DB manually" per
    `trophy-assignment.ts`), and note that seeding is a human-run DB operation, not something this
    branch can do.
@@ -223,20 +286,52 @@ shell, the translucent `Section` card pattern, and the existing marketing home a
 
 ---
 
+## 6. Schedule and lifecycle
+
+**Decided:** beta opens mid-October and **closes on a fixed end date** before the December full
+launch, rather than running continuously into it. Exact dates still needed (see open questions) — so
+nothing in this phase should hardcode a date; the start/end belong in config the way
+`NewPackLeaderboardsCard`'s expiry does, not scattered through components.
+
+A fixed close is a real feature, not just a date, and it has to be built:
+
+1. **Final standings freeze.** At close, each course's board becomes the official beta result.
+   Decide whether submissions after the close are rejected outright, or accepted but not ranked
+   (gentler for a player mid-round when the clock runs out).
+2. **Trophy finalisation.** Any trophy contingent on a final standing can only be granted after the
+   freeze, so the poller (§3) needs a terminal run — and then needs to stop, so it isn't polling a
+   dead event into December.
+3. **The site after close.** The boards and scorecards should stay readable as an archive rather than
+   404ing, with a clear "beta complete" state instead of looking like a live event nobody is playing.
+4. **Relationship to December.** Whether December starts from an empty slate or inherits beta scores
+   is a launch-planning question, but the answer affects whether beta data needs to survive in a
+   migratable shape. Worth deciding before we design the DynamoDB items, not after.
+
+---
+
 ## Phasing toward mid-October
 
-1. **Foundation** — course/par source of truth (§1), course+par awareness in the event backend,
-   GSI keys and the course aggregate item (§2.1–2.2). Everything else depends on this.
-2. **Read API** — the batched rankings endpoint (§2.3), ban/alias handling (§4.1–4.2).
-3. **Images** — 3 per submission, inside the latency budget, then ungate (§2.4–2.6).
+1. **Foundation** — course config as the single source of truth, with `hidden` and hole indices
+   (§1.1, §1.3–1.4); course+par awareness in the event backend (§1.2); GSI keys and the course
+   aggregate item with the composite complete/holes/strokes sort key (§2.1–2.2). Everything else
+   depends on this, and the sort key is the piece most expensive to get wrong — it's baked into
+   written items, so changing it later means a backfill.
+2. **Read API** — the batched rankings endpoint (§2.3), ban/alias handling (§4.1–4.2). Design the
+   response shape once for both the result images and the website, since both consume it.
+3. **Images** — 3 per submission, inside the 3000ms budget, then ungate (§2.4–2.6). The Alpha Testing
+   course (§1.4) is the natural end-to-end test target before ungating.
 4. **Website** — api client, then courses → scorecard → hole detail → leaderboard, with compare and
    player card last (§5).
-5. **Trophies** — bridge decision early (it may need infra), catalogue and seeding can land late
-   (§3).
+5. **Trophies** — poller infra can start any time after phase 2 (it only needs the read-api);
+   catalogue content and DB seeding can land late (§3).
+6. **Close-out** — standings freeze, terminal trophy run, archive state (§6). Needed by the end date,
+   not by launch, so it can trail the beta opening — but not be forgotten.
 
 Backfill note: GSI keys and course aggregates only exist for scores processed *after* they ship. If
 beta testers play before that, their scores need re-deriving from the existing `PLAY`/`BEST` items —
-worth sequencing phase 1 before any real play, or writing a one-off backfill.
+worth sequencing phase 1 before any real play, or writing a one-off backfill. The same applies to any
+change to the composite sort key, which is the strongest argument for settling §2.2's encoding before
+phase 1 ships rather than iterating on it later.
 
 ## Explicitly out of scope
 
@@ -248,11 +343,26 @@ worth sequencing phase 1 before any real play, or writing a one-off backfill.
 
 ## Open questions
 
-1. **Trophy bridge**: poller, authenticated grant endpoint, or end-of-event batch? (§3 — recommend the poller.)
-2. **Partial courses**: how does a player with 14/18 holes rank? (§2.2 — blocks both the image and the leaderboard.)
-3. **Hole order** within each course — who decides the 1–18 sequence? (§1.3)
-4. **Is there an overall cross-course standing**, or do the two courses stay separate? The Hills/Pines par asymmetry matters a lot if combined. (§1.5)
-5. **Alpha Testing hashes** — keep or drop for beta? (§1.4)
-6. **Beta trophies**: permanent collectibles or reset before December? (§3.3)
-7. **Exact beta start date**, and is there a defined end, or does beta run until December?
-8. **Are the 18+18 charts final**, or can courses still change before beta? Pack names carry a "vE2" suffix, implying revisions.
+The eight original design questions are resolved (see Decisions). What's left is a mix of dates,
+tuning values, and one mechanism — none of which blocks starting phase 1.
+
+**Needed before beta ships:**
+
+1. **Exact beta start and end dates.** Drives the standings freeze, the poller's terminal run, and
+   any announcement card expiry. (§6)
+2. **Ban/shadowban mechanism.** Decided *that* banned players must not appear; not decided *how*.
+   Golf's store has no user table, so either the score processor records a flag at write time from
+   what the public API exposes, or the read-api filters at read time against a core lookup. The first
+   is cheaper but goes stale when someone is banned after the fact. (§4.1)
+3. **Trophy catalogue** — the actual list of earnable trophies, with names, tiers, descriptions, and
+   images. Content work, and the long pole in §3; leaning participation/milestone per §3.3.
+4. **Scores on a replaced chart.** Since courses may still change (§1.6), a re-chart produces a new
+   hash and orphans every score on the old one. Do those scores get discarded, remapped to the new
+   hash, or does a mid-beta re-chart simply get ruled out once the event opens?
+
+**Tuning, can be decided during implementation:**
+
+5. **Trophy poll interval** — how fresh an award needs to feel against how much polling we want. (§3)
+6. **Post-close submissions** — rejected, or accepted but unranked? (§6.1)
+7. **December inheritance** — does the full launch start fresh or carry beta scores forward? Affects
+   whether beta's DynamoDB items need to be migratable. (§6.4)
