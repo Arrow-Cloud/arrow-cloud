@@ -50,7 +50,7 @@ export const HORIZONTAL_WIDTHS: Record<WidgetFeatureConfig['type'], number> = {
 // keep the two in sync.
 
 /** Tech Heavy Charts 4. Hard/Expert-only leaderboards - see PACK_LEADERBOARD_DIFFICULTY_OVERRIDES. */
-export const THC4_PACK_ID = 0; // TODO: set once the pack exists in the DB
+export const THC4_PACK_ID = 383;
 
 export const ELIGIBLE_PACK_IDS = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID];
 

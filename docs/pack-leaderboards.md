@@ -24,9 +24,12 @@ converted to curved points and summed. Core logic lives in `api/src/utils/pack-l
   add it to `PACK_LEADERBOARD_DIFFICULTY_OVERRIDES` in both files too. Excluded slots are simply
   absent from the pack's JSON; the pack page derives its difficulty tabs from what's present, and
   the widget config UI only offers the pack's slots.
-- Charts that must not count when played on CMOD: flag them with
-  `npx ts-node scripts/set-cmod-ineligible-charts.ts <hash...>` (a human runs this). Flagged
-  charts drop CMOD plays from the ranking rather than the whole chart.
+- Charts that must not count when played on CMOD: record the hashes in
+  `scripts/data/cmod-ineligible/<pack>.txt` and flag them with
+  `xargs npx ts-node scripts/set-cmod-ineligible-charts.ts < scripts/data/cmod-ineligible/<pack>.txt`
+  (a human runs this, and only once the pack's `SimfileChart` rows exist - the script is a plain
+  `updateMany`, so running it before import matches 0 rows). Flagged charts drop CMOD plays from
+  the ranking rather than the whole chart.
 - Optional home page promo: `frontend/src/pages/home/components/NewPackLeaderboardsCard.tsx`
   (banner + YouTube trailer, self-expiring).
 - `npx tsx scripts/calculate-pack-leaderboard.ts <packId> [--user <userId>]` computes a pack

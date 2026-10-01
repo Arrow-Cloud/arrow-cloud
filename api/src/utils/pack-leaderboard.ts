@@ -18,7 +18,7 @@ import type { PackResultImageData, PackResultImageEntry, LeaderboardPageData, Le
 // ---------------------------------------------------------------------------
 
 /** Tech Heavy Charts 4. Hard/Expert-only leaderboards - see PACK_LEADERBOARD_DIFFICULTY_OVERRIDES. */
-export const THC4_PACK_ID = 0; // TODO: set once the pack exists in the DB
+export const THC4_PACK_ID = 383;
 
 /** Pack IDs that have pack leaderboards enabled. */
 export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID];

@@ -4,8 +4,10 @@ import { Trophy, Maximize2 } from 'lucide-react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { THC4_PACK_ID } from '../../../utils/widgetConfig';
 
-// Hide the card after this date.
-const EXPIRY = new Date('2026-10-31T00:00:00');
+// Hide the card after this date: midnight ending Sunday 2026-10-04, i.e. the end of launch weekend.
+// Deliberately timezone-naive, like the previous packs' cards - it resolves to each viewer's own
+// local midnight, so nobody sees the card linger into their Monday.
+const EXPIRY = new Date('2026-10-05T00:00:00');
 
 // The single pack we're launching a leaderboard for.
 const PACK = {
