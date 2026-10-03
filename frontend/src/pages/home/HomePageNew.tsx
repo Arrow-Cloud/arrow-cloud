@@ -208,7 +208,7 @@ export const HomePageNew: React.FC = () => {
             {/* About Card - Only show for logged out users */}
             {!user && <AboutCard />}
 
-            {/* New pack leaderboard announcement (THC4) — expires 2026-10-31 */}
+            {/* New pack leaderboard announcement — self-expiring, see NewPackLeaderboardsCard's EXPIRY */}
             <NewPackLeaderboardsCard />
 
             {/* User's Own Recent Scores Card - Only show for logged in users */}

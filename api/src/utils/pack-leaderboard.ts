@@ -21,7 +21,7 @@ import type { PackResultImageData, PackResultImageEntry, LeaderboardPageData, Le
 export const THC4_PACK_ID = 383;
 
 /** Pack IDs that have pack leaderboards enabled. */
-export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID];
+export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID, 387];
 
 /** The difficulty slots we compute pack leaderboards for (by default - see the per-pack overrides below). */
 export const PACK_LEADERBOARD_DIFFICULTIES = ['medium', 'hard', 'challenge'] as const;
