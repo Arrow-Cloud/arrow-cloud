@@ -36,3 +36,31 @@ rather than broadening an existing identity's scope for an unrelated use case.
 # Additional Context
 
 There are README.md files scattered in various places throughout the repo. Reference these for local context where required. Keep the readme files up to date. When context is gained that would be valuable to add at a high level please add additional sections or readme files when appropriate.
+
+# Game Context & Task Management
+
+Work is tracked in GitHub Issues, labeled `domain: game` or `domain: general`. Read `docs/game-primer.md` for game background before touching anything player-facing. `domain: game` work (scoring, charts, leaderboards, what players see) needs a filled-in Game Context section on the issue; do not guess at game behavior. `domain: general` work (UX, design, web best practices, perf, tests, infra) is open to your judgment.
+
+## Pull Requests
+
+Keep PR bodies short. The reviewer reads many of them. Write in simple, direct language, inspired by ASD-STE100 (Simplified Technical English): short sentences, active voice, one idea per sentence, common words, no filler.
+
+Use this format:
+
+```
+## What
+One to three sentences. What changed, and why.
+
+## Domain
+`general` or `game`. If `game`, say what player-visible behavior changes, and link the issue with its Game Context.
+
+## Test
+How you checked it. Say what you did not check.
+```
+
+Rules:
+- Add `domain: game` or `domain: general` as a label on the PR, matching the issue.
+- Do not list every changed file. The diff shows that.
+- Do not restate the issue. Link it with `Closes #N`.
+- Do not claim a test passed unless you ran it.
+- Never run migrations or deployments. Name any migration or deploy step in the PR so a human can do it.
