@@ -1,0 +1,30 @@
+name: Game task
+description: Work that touches game behavior, scoring, charts, leaderboards, or anything players would judge as right or wrong
+labels: ["domain: game", "needs-game-context"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Not ready to pick up until **Game Context** is filled in by Wafles. Remove `needs-game-context` and add `ready` once it is.
+        Read `docs/game-primer.md` first if you are unfamiliar with the game.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What needs to change, in engineering terms.
+    validations:
+      required: true
+  - type: textarea
+    id: game-context
+    attributes:
+      label: Game Context (Wafles)
+      description: What this means to players, what "correct" looks like, edge cases, and what must not break.
+    validations:
+      required: false
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: How we know it's done, including concrete example inputs and expected outputs where possible.
+    validations:
+      required: true

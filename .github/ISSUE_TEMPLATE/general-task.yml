@@ -1,0 +1,21 @@
+name: General task
+description: Web best practices, UX, design, performance, tests, infra, AWS, tooling. No game knowledge required.
+labels: ["domain: general"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What needs to change and why.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        If while working this you find it affects game behavior (scoring, charts, leaderboards, what players see), stop and relabel it `domain: game`.
