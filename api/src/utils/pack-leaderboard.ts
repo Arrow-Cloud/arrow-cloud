@@ -500,11 +500,6 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
       scoreIndex.get(key)!.push(row);
     }
 
-    // Every row across every leaderboard came from the same batched query above, so this is
-    // free - no extra query needed just to know who everyone is.
-    const aliasByUserId = new Map<string, string>();
-    for (const row of allBestScoresAll) aliasByUserId.set(row.userId, row.userAlias);
-
     const entries: PackResultImageEntry[] = [];
     const leaderboardPages: LeaderboardPageData[] = [];
 
@@ -554,13 +549,36 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
         totalParticipants: ranked.totalParticipants,
       });
 
-      const rankingsWithMeta: LeaderboardPageEntry[] = ranked.rankings.map((r) => ({
-        rank: r.rank,
-        alias: aliasByUserId.get(r.userId) ?? 'Unknown',
-        totalScore: Math.floor(r.totalScore),
-        isSelf: r.userId === play.userId,
-        isRival: rivalIds.has(r.userId),
-      }));
+      // A leaderboard row is a player's best, not their latest attempt - so when this play didn't
+      // improve on the player's own previous best, their row below shows that older score rather
+      // than what they just danced. Flagged per row so the card and the page can't look like they
+      // disagree. A tie counts as "didn't improve": the row is still the earlier score.
+      const playImprovedOwnBest = score > previousScore;
+
+      // The song leaderboard for the chart just played, ranked by each player's best score on it
+      // (the summary card above is the pack-scoped half of the pair; this is the song-scoped half).
+      // It reads straight out of the pack-wide scoreIndex - this chart is one of the pack's charts,
+      // so its rows are already in there - which means no extra query, and the same eligibility
+      // rules getBestScoresForCharts applies to the pack leaderboard itself: banned/shadow-banned
+      // users excluded, and CMOD plays excluded on charts flagged cmodIneligible. That makes this a
+      // pack-rules view of the chart rather than a copy of the global chart leaderboard.
+      const chartRankings: LeaderboardPageEntry[] = (scoreIndex.get(`${play.chartHash}:${leaderboardId}`) ?? [])
+        .slice()
+        // Tie-broken by userId only so repeat renders of the same data can't shuffle rows around.
+        .sort((a, b) => b.score - a.score || a.userId.localeCompare(b.userId))
+        .map((row, idx) => ({
+          rank: idx + 1,
+          alias: row.userAlias,
+          score: row.score,
+          // Floored, like every other points figure here - a player should never be shown more
+          // points than they've earned, and this has to agree with the summary card's CHART PTS
+          // for the same chart.
+          points: Math.floor(scoreToCurvedPoints(row.score)),
+          isSelf: row.userId === play.userId,
+          isPreviousBest: row.userId === play.userId && !playImprovedOwnBest,
+          isRival: rivalIds.has(row.userId),
+        }));
+
       leaderboardPages.push({
         leaderboardKey: systemKey,
         label: SCORING_SYSTEM_LABELS[systemKey],
@@ -569,8 +587,10 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
         chartArtist: match.chartArtist,
         difficulty: match.difficulty,
         meter: match.meter ?? 0,
-        totalParticipants: ranked.totalParticipants,
-        rankings: selectNearbyRankings(rankingsWithMeta),
+        // Players on this chart - deliberately not `ranked.totalParticipants`, which counts
+        // everyone in the whole pack leaderboard.
+        totalParticipants: chartRankings.length,
+        rankings: selectNearbyRankings(chartRankings),
       });
     }
 
@@ -585,8 +605,9 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
       entries,
     };
 
-    // Summary card first (image 1), then one page per selected leaderboard (images 2..n) -
-    // queued in order but all rendered/uploaded concurrently via the shared uploadTasks array.
+    // Pack summary card first (image 1), then one song-leaderboard page per selected leaderboard
+    // (images 2..n) - queued in order but all rendered/uploaded concurrently via the shared
+    // uploadTasks array.
     uploadTasks.push(upload(`result/play/${play.id}/${match.packId}.png`, renderPackResultImage(imageData)));
     for (const pageData of leaderboardPages) {
       uploadTasks.push(upload(`result/play/${play.id}/${match.packId}-${pageData.leaderboardKey}.png`, renderLeaderboardPage(pageData)));

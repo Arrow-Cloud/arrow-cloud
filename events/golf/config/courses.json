@@ -1,0 +1,431 @@
+{
+  "courses": [
+    {
+      "slug": "beta-hills",
+      "name": "Beta Hills",
+      "order": 1,
+      "hidden": false,
+      "pack": "In The Golf - Beta Hills vF4",
+      "holes": [
+        {
+          "holeNumber": 1,
+          "chartHash": "3e9031441b77fab9",
+          "displayName": "Aresene's Bazaar",
+          "songName": "Aresene's Bazaar",
+          "songFolder": "Aresene's Bazaar",
+          "artist": "James Landino",
+          "meter": 12,
+          "par": 7
+        },
+        {
+          "holeNumber": 2,
+          "chartHash": "4f949d8e05f32f50",
+          "displayName": "Azalea",
+          "songName": "Azalea",
+          "songFolder": "Azalea",
+          "artist": "Memme & M2U",
+          "meter": 11,
+          "par": 5
+        },
+        {
+          "holeNumber": 3,
+          "chartHash": "5953a34fd2cd40f1",
+          "displayName": "BxMxC",
+          "songName": "BxMxC",
+          "songFolder": "BxMxC",
+          "artist": "BABYMETAL",
+          "meter": 12,
+          "par": 14
+        },
+        {
+          "holeNumber": 4,
+          "chartHash": "fec7522480170c8a",
+          "displayName": "Feeling NRG",
+          "songName": "Feeling NRG",
+          "songFolder": "Feeling NRG",
+          "artist": "YUKIYANAGI",
+          "meter": 12,
+          "par": 6
+        },
+        {
+          "holeNumber": 5,
+          "chartHash": "a087601d3d52726f",
+          "displayName": "get funky, GET #HYPER...FLIP",
+          "songName": "get funky, GET \\#HYPER...FLIP",
+          "songFolder": "get funky, get hyper... flip",
+          "artist": "xaev",
+          "meter": 13,
+          "par": 13
+        },
+        {
+          "holeNumber": 6,
+          "chartHash": "6e9ad3a992102915",
+          "displayName": "Go Stoopid",
+          "songName": "Go Stoopid",
+          "songFolder": "Go Stoopid",
+          "artist": "JSTJR, Rawtek",
+          "meter": 12,
+          "par": 10
+        },
+        {
+          "holeNumber": 7,
+          "chartHash": "8964d941f1a7c81a",
+          "displayName": "HiTECH Meister",
+          "songName": "HiTECH Meister",
+          "songFolder": "HiTECH Meister",
+          "artist": "Kyutatsuki",
+          "meter": 14,
+          "par": 20
+        },
+        {
+          "holeNumber": 8,
+          "chartHash": "4b7c49173870b344",
+          "displayName": "Hot Guy Alert",
+          "songName": "Hot Guy Alert",
+          "songFolder": "Hot Guy Alert",
+          "artist": "The Floozies, The Sponges",
+          "meter": 11,
+          "par": 4
+        },
+        {
+          "holeNumber": 9,
+          "chartHash": "dd23ced08c27b93f",
+          "displayName": "ひゅるりらぱっぱ",
+          "songName": "ひゅるりらぱっぱ",
+          "songFolder": "Hyururirapappa",
+          "artist": "tuki.",
+          "meter": 11,
+          "par": 6
+        },
+        {
+          "holeNumber": 10,
+          "chartHash": "a4bc270ad709a9fd",
+          "displayName": "異端",
+          "songName": "異端",
+          "songFolder": "Itan",
+          "artist": "7OAST",
+          "meter": 13,
+          "par": 8
+        },
+        {
+          "holeNumber": 11,
+          "chartHash": "efd7909645aba29c",
+          "displayName": "Komm, Süsser Tod",
+          "songName": "Komm, Süsser Tod (Hard)",
+          "songFolder": "Komm, Susser Tod - [Zaia]",
+          "artist": "Apocalypse ft. ARIANNE",
+          "meter": 14,
+          "par": 10
+        },
+        {
+          "holeNumber": 12,
+          "chartHash": "969dad24922317c1",
+          "displayName": "Koto Overdrive",
+          "songName": "Koto Overdrive",
+          "songFolder": "Koto Overdrive",
+          "artist": "Alesda!",
+          "meter": 11,
+          "par": 7
+        },
+        {
+          "holeNumber": 13,
+          "chartHash": "57bb7e53e5b6090c",
+          "displayName": "MAD",
+          "songName": "MAD (Hard)",
+          "songFolder": "MAD",
+          "artist": "Mat Zo",
+          "meter": 14,
+          "par": 14
+        },
+        {
+          "holeNumber": 14,
+          "chartHash": "0bc514a3acbd332a",
+          "displayName": "Not Alone",
+          "songName": "Not Alone",
+          "songFolder": "Not Alone",
+          "artist": "Yue",
+          "meter": 13,
+          "par": 8
+        },
+        {
+          "holeNumber": 15,
+          "chartHash": "c064c72efd651fe4",
+          "displayName": "Sonic Boom",
+          "songName": "Sonic Boom",
+          "songFolder": "Sonic Boom (From Sonic CD)",
+          "artist": "Vector U",
+          "meter": 14,
+          "par": 10
+        },
+        {
+          "holeNumber": 16,
+          "chartHash": "913a5c614722de0d",
+          "displayName": "Thousand Absolutes",
+          "songName": "Thousand Absolutes",
+          "songFolder": "Thousand Absolutes",
+          "artist": "James Landino ft. DEMONDICE",
+          "meter": 12,
+          "par": 8
+        },
+        {
+          "holeNumber": 17,
+          "chartHash": "0b88e7b47f603a77",
+          "displayName": "WannaCry",
+          "songName": "WannaCry",
+          "songFolder": "WannaCry",
+          "artist": "Ninajirachi & Porter Robinson",
+          "meter": 12,
+          "par": 8
+        },
+        {
+          "holeNumber": 18,
+          "chartHash": "95b5fe504f42fa3f",
+          "displayName": "Wild West",
+          "songName": "Wild West",
+          "songFolder": "Wild West",
+          "artist": "Mo Falk",
+          "meter": 12,
+          "par": 8
+        }
+      ]
+    },
+    {
+      "slug": "beta-pines",
+      "name": "Beta Pines",
+      "order": 2,
+      "hidden": false,
+      "pack": "In The Golf - Beta Pines vF4",
+      "holes": [
+        {
+          "holeNumber": 1,
+          "chartHash": "88ea9f8af9490151",
+          "displayName": "BIRDS OF A FEATHER (Alohaii Remix)",
+          "songName": "BIRDS OF A FEATHER (Alohaii Remix) (Hard)",
+          "songFolder": "BIRDS OF A FEATHER (Alohaii Remix)",
+          "artist": "Billie Eilish",
+          "meter": 10,
+          "par": 4
+        },
+        {
+          "holeNumber": 2,
+          "chartHash": "e77af6b4d45028ff",
+          "displayName": "Chemicals",
+          "songName": "Chemicals (Medium)",
+          "songFolder": "Chemicals",
+          "artist": "NGHTMRE, Staysick",
+          "meter": 9,
+          "par": 4
+        },
+        {
+          "holeNumber": 3,
+          "chartHash": "9b4bc7e9928de39b",
+          "displayName": "Cloud Surfing",
+          "songName": "Cloud Surfing",
+          "songFolder": "Cloud Surfing",
+          "artist": "Wave Meow, Zentra",
+          "meter": 9,
+          "par": 3
+        },
+        {
+          "holeNumber": 4,
+          "chartHash": "fd8afbbf787e17c7",
+          "displayName": "Damaio",
+          "songName": "Damaio (Hard)",
+          "songFolder": "Damaio",
+          "artist": "En\\-vy",
+          "meter": 10,
+          "par": 3
+        },
+        {
+          "holeNumber": 5,
+          "chartHash": "b32c5908a47afc44",
+          "displayName": "DISCONNECTION",
+          "songName": "DISCONNECTION (Hard)",
+          "songFolder": "DISCONNECTION",
+          "artist": "Moe Shop",
+          "meter": 9,
+          "par": 4
+        },
+        {
+          "holeNumber": 6,
+          "chartHash": "c663d1fc786101b5",
+          "displayName": "Do My Thing",
+          "songName": "Do My Thing",
+          "songFolder": "Do My Thing",
+          "artist": "KNSRK",
+          "meter": 9,
+          "par": 5
+        },
+        {
+          "holeNumber": 7,
+          "chartHash": "702d12f7153dfec5",
+          "displayName": "Dr. Wilys Castle",
+          "songName": "Dr. Wilys Castle (Medium)",
+          "songFolder": "Dr. Wilys Castle (From Megaman 2)",
+          "artist": "Bossfight",
+          "meter": 8,
+          "par": 4
+        },
+        {
+          "holeNumber": 8,
+          "chartHash": "9a5e366400f59236",
+          "displayName": "GIMME LOVE",
+          "songName": "GIMME LOVE (Medium)",
+          "songFolder": "GIMME LOVE",
+          "artist": "Łaszewo",
+          "meter": 8,
+          "par": 3
+        },
+        {
+          "holeNumber": 9,
+          "chartHash": "20416aedbdd59653",
+          "displayName": "Illuzion",
+          "songName": "Illuzion (Medium)",
+          "songFolder": "Illuzion",
+          "artist": "Shirobon",
+          "meter": 8,
+          "par": 3
+        },
+        {
+          "holeNumber": 10,
+          "chartHash": "2d8af9e16da4e23a",
+          "displayName": "Kotake & Koume's Theme",
+          "songName": "Kotake & Koume's Theme",
+          "songFolder": "Kotake & Koume's Theme",
+          "artist": "Vector U",
+          "meter": 11,
+          "par": 6
+        },
+        {
+          "holeNumber": 11,
+          "chartHash": "ded54c81a7bd03dc",
+          "displayName": "let you go",
+          "songName": "let you go (Medium)",
+          "songFolder": "let you go",
+          "artist": "Glitch Cat, RXMALIAN, TSVNEO",
+          "meter": 9,
+          "par": 3
+        },
+        {
+          "holeNumber": 12,
+          "chartHash": "ba6a606e74c8ee00",
+          "displayName": "make you mine",
+          "songName": "make you mine",
+          "songFolder": "make you mine",
+          "artist": "Madison Beer",
+          "meter": 8,
+          "par": 3
+        },
+        {
+          "holeNumber": 13,
+          "chartHash": "ab70937938c39775",
+          "displayName": "Nasty",
+          "songName": "Nasty (Hard)",
+          "songFolder": "Nasty (Match My Tweak Remix)",
+          "artist": "Tinashe remixed by Jane Remover",
+          "meter": 10,
+          "par": 6
+        },
+        {
+          "holeNumber": 14,
+          "chartHash": "f07b623a9324570d",
+          "displayName": "Safe & Sound",
+          "songName": "Safe & Sound",
+          "songFolder": "Safe & Sound",
+          "artist": "Mesto",
+          "meter": 10,
+          "par": 4
+        },
+        {
+          "holeNumber": 15,
+          "chartHash": "f96a28b54873a734",
+          "displayName": "Slow Burner",
+          "songName": "Slow Burner",
+          "songFolder": "Slow Burner",
+          "artist": "Interplanetary Criminal, Original Koffee",
+          "meter": 10,
+          "par": 3
+        },
+        {
+          "holeNumber": 16,
+          "chartHash": "1dc29ef7904a58b1",
+          "displayName": "Stratoliner",
+          "songName": "Stratoliner (Medium)",
+          "songFolder": "Stratoliner",
+          "artist": "C-Show",
+          "meter": 8,
+          "par": 5
+        },
+        {
+          "holeNumber": 17,
+          "chartHash": "d0ee6c126ac9c710",
+          "displayName": "ULTRA SYNERGY MATRIX",
+          "songName": "ULTRA SYNERGY MATRIX (Hard)",
+          "songFolder": "ULTRA SYNERGY MATRIX (MYUKKE. REMIX)",
+          "artist": "Tanchiky",
+          "meter": 10,
+          "par": 8
+        },
+        {
+          "holeNumber": 18,
+          "chartHash": "4c99bd7995c84915",
+          "displayName": "Uncontrollable",
+          "songName": "Uncontrollable (Medium)",
+          "songFolder": "Uncontrollable",
+          "artist": "Eleganto & Zadquiel",
+          "meter": 9,
+          "par": 5
+        }
+      ]
+    },
+    {
+      "slug": "alpha-testing",
+      "name": "Alpha Testing",
+      "order": 99,
+      "hidden": true,
+      "pack": null,
+      "holes": [
+        {
+          "holeNumber": 1,
+          "chartHash": "7a520534f16d6455",
+          "displayName": "Unknown",
+          "songName": "Unknown",
+          "songFolder": "Unknown",
+          "artist": "Unknown",
+          "meter": 0,
+          "par": null
+        },
+        {
+          "holeNumber": 2,
+          "chartHash": "065f74f741eb2f9d",
+          "displayName": "Unknown",
+          "songName": "Unknown",
+          "songFolder": "Unknown",
+          "artist": "Unknown",
+          "meter": 0,
+          "par": null
+        },
+        {
+          "holeNumber": 3,
+          "chartHash": "f3871997119d5052",
+          "displayName": "Unknown",
+          "songName": "Unknown",
+          "songFolder": "Unknown",
+          "artist": "Unknown",
+          "meter": 0,
+          "par": null
+        },
+        {
+          "holeNumber": 4,
+          "chartHash": "50bcefd78fa82988",
+          "displayName": "Unknown",
+          "songName": "Unknown",
+          "songFolder": "Unknown",
+          "artist": "Unknown",
+          "meter": 0,
+          "par": null
+        }
+      ]
+    }
+  ]
+}

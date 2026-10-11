@@ -115,15 +115,20 @@ function buildEntry(
   rank: number,
   totalParticipants: number,
 ): MockResultsCardEntry {
-  const chartPoints = approxChartPoints(score);
-  const chartPointsBefore = approxChartPoints(previousScore);
-  const chartPointsDelta = Math.round(chartPoints - chartPointsBefore);
+  // Mirrors computePackResultImages: chart points track your BEST-EVER score on the chart, so a
+  // replay that didn't improve on it can't drag them down - scoreDelta is the only figure allowed
+  // to go negative. Both are floored (never rounded to nearest) and the delta is derived from the
+  // already-floored values, so after - before === delta exactly.
+  const effectiveScore = Math.max(score, previousScore);
+  const chartPoints = Math.floor(approxChartPoints(effectiveScore));
+  const chartPointsBefore = Math.floor(approxChartPoints(previousScore));
+  const chartPointsDelta = chartPoints - chartPointsBefore;
   return {
     leaderboardKey,
     label,
     score,
     scoreDelta: Math.round((score - previousScore) * 100) / 100,
-    chartPoints: Math.round(chartPoints),
+    chartPoints,
     chartPointsDelta,
     packTotal: packTotalBefore + chartPointsDelta,
     packTotalDelta: chartPointsDelta,
@@ -147,10 +152,14 @@ const MOCK_DATA: MockResultsCardData = {
   ],
 };
 
-// --- POC-only: "leaderboard page" images (images 2..n) ---------------------------------------
+// --- POC-only: "song leaderboard page" images (images 2..n) -----------------------------------
 // Experimental, not the intended long-term design - just enough to preview a multi-image response
 // shape (one page per preferred leaderboard, each a ranked player list) so the game client dev can
 // start building pagination support against something real.
+//
+// These rank players by their best score on the chart that was just played. The summary card
+// (image 1) is the pack-scoped half of the pair - pack totals, pack rank - and these are the
+// song-scoped half, which is why a player's rank here and on the card legitimately differ.
 //
 // Selection follows the same "top + rivals + nearby-you" convention already established elsewhere
 // (api/src/controllers/leaderboard.ts's in-game/site leaderboard endpoint, and the streamer widget's
@@ -161,7 +170,11 @@ const MOCK_DATA: MockResultsCardData = {
 interface MockLeaderboardRanking {
   rank: number;
   alias: string;
-  totalScore: number;
+  score: number; // 0-100, this player's best on THIS chart (not a pack total)
+  points: number; // 0-1000, that score's curved chart points - what it adds to their pack total
+  // Set only on the viewer's own row, when this play didn't improve on their existing best - i.e.
+  // the score in this row predates the play that triggered the image.
+  isPreviousBest: boolean;
   isSelf: boolean;
   isRival: boolean;
 }
@@ -182,6 +195,30 @@ interface MockLeaderboardPageData {
 
 const LEADERBOARD_PAGE_TOP_N = 2; // matches leaderboard.ts's top2Entries
 const LEADERBOARD_PAGE_TARGET_SIZE = 7; // matches leaderboard.ts's default MIN_SIZE
+const PAGE_POINTS_COL_WIDTH = s(72);
+const PAGE_SCORE_COL_WIDTH = s(96);
+
+// Right-aligned column header over one of the numeric columns, matching that column's width.
+function columnHeader(label: string, width: number) {
+  return h(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        width,
+        justifyContent: 'flex-end',
+        fontFamily: 'Miso',
+        fontSize: s(14),
+        fontWeight: 700,
+        letterSpacing: s(1),
+        color: 'rgba(255,255,255,0.6)',
+        marginBottom: s(3),
+      },
+    },
+    label,
+  );
+}
+
 const RIVAL_COLOR = DELTA_DOWN; // reuse the existing red rather than invent a new accent
 
 function selectNearbyRankings(rankings: MockLeaderboardRanking[]): MockLeaderboardRanking[] {
@@ -288,66 +325,71 @@ const MOCK_NAME_POOL = [
   'Quill2',
 ];
 
-function buildMockFullRankings(opts: { topScore: number; bottomScore: number; selfRank: number; rivalAliases: string[] }) {
-  // One continuous score curve for everyone (self included), so self's score is guaranteed to
-  // fit monotonically between its neighbors instead of being an arbitrary value that might not
-  // actually belong at the requested rank.
-  const names = [...MOCK_NAME_POOL];
-  names.splice(opts.selfRank - 1, 0, 'Wafles');
-  return names.map((alias, i) => {
-    const t = i / (names.length - 1);
-    return {
-      rank: i + 1,
-      alias,
-      totalScore: Math.round(opts.topScore - t * (opts.topScore - opts.bottomScore)),
-      isSelf: alias === 'Wafles',
-      isRival: opts.rivalAliases.includes(alias),
-    };
+function buildMockChartRankings(opts: {
+  topScore: number;
+  bottomScore: number;
+  selfScore: number;
+  // Whether self's row is a score they already had rather than the one they just danced - i.e. the
+  // play that triggered these images missed (or tied) their existing PB.
+  selfIsPreviousBest: boolean;
+  rivalAliases: string[];
+}): MockLeaderboardRanking[] {
+  // One continuous score curve across the field, then self is inserted at the position its own
+  // score actually earns - rather than at a rank picked by hand, which could contradict the score
+  // the summary card shows for the same leaderboard.
+  const field = MOCK_NAME_POOL.map((alias, i) => {
+    const t = i / (MOCK_NAME_POOL.length - 1);
+    return { alias, score: Math.round((opts.topScore - t * (opts.topScore - opts.bottomScore)) * 100) / 100 };
   });
+  const selfIndex = field.findIndex((f) => f.score < opts.selfScore);
+  field.splice(selfIndex === -1 ? field.length : selfIndex, 0, { alias: 'Wafles', score: opts.selfScore });
+  return field.map((f, i) => ({
+    rank: i + 1,
+    alias: f.alias,
+    score: f.score,
+    points: Math.floor(approxChartPoints(f.score)),
+    isSelf: f.alias === 'Wafles',
+    isPreviousBest: f.alias === 'Wafles' && opts.selfIsPreviousBest,
+    isRival: opts.rivalAliases.includes(f.alias),
+  }));
 }
 
+// totalParticipants is derived from the field rather than hard-coded - on a song leaderboard it's
+// "players with a score on this chart", which is exactly the length of the generated field.
+function mockPage(
+  leaderboardKey: keyof typeof LEADERBOARD_COLORS,
+  label: string,
+  page: number,
+  opts: Parameters<typeof buildMockChartRankings>[0],
+): MockLeaderboardPageData {
+  const rankings = buildMockChartRankings(opts);
+  return {
+    leaderboardKey,
+    label,
+    packName: MOCK_DATA.packName,
+    chartTitle: MOCK_DATA.chartTitle,
+    chartArtist: MOCK_DATA.chartArtist,
+    difficulty: MOCK_DATA.difficulty,
+    meter: MOCK_DATA.meter,
+    page,
+    totalPages: 3,
+    totalParticipants: rankings.length,
+    rankings,
+  };
+}
+
+// A leaderboard row is a player's BEST score on the chart, so self's score here is max(this play,
+// previous best) - which is what the card's CHART PTS is computed from too, hence the two images
+// always agreeing on points. H.EX is the interesting case: the 91.23% just danced was a miss on an
+// existing 92.10%, so the board still shows 92.10% while the card shows the play (91.23%, -0.87%).
+// The rank self lands at is this chart's rank, which is NOT the card's pack rank - that's the
+// whole point of the pair.
 const MOCK_LEADERBOARD_PAGES: MockLeaderboardPageData[] = [
-  {
-    leaderboardKey: 'HardEX',
-    label: 'H.EX',
-    packName: MOCK_DATA.packName,
-    chartTitle: MOCK_DATA.chartTitle,
-    chartArtist: MOCK_DATA.chartArtist,
-    difficulty: MOCK_DATA.difficulty,
-    meter: MOCK_DATA.meter,
-    page: 1,
-    totalPages: 3,
-    totalParticipants: 66,
-    // Nova is the top rival (rank 1); Kite lands a few ranks from Wafles as the nearest rival.
-    rankings: buildMockFullRankings({ topScore: 26800, bottomScore: 8200, selfRank: 12, rivalAliases: ['Nova', 'Kite'] }),
-  },
-  {
-    leaderboardKey: 'EX',
-    label: 'EX',
-    packName: MOCK_DATA.packName,
-    chartTitle: MOCK_DATA.chartTitle,
-    chartArtist: MOCK_DATA.chartArtist,
-    difficulty: MOCK_DATA.difficulty,
-    meter: MOCK_DATA.meter,
-    page: 2,
-    totalPages: 3,
-    totalParticipants: 66,
-    // Wafles is #1 here - no "nearby" gap needed above, just top + rivals below.
-    rankings: buildMockFullRankings({ topScore: 30240, bottomScore: 9500, selfRank: 1, rivalAliases: ['Kirei', 'Solace'] }),
-  },
-  {
-    leaderboardKey: 'ITG',
-    label: 'ITG',
-    packName: MOCK_DATA.packName,
-    chartTitle: MOCK_DATA.chartTitle,
-    chartArtist: MOCK_DATA.chartArtist,
-    difficulty: MOCK_DATA.difficulty,
-    meter: MOCK_DATA.meter,
-    page: 3,
-    totalPages: 3,
-    totalParticipants: 66,
-    rankings: buildMockFullRankings({ topScore: 27600, bottomScore: 8800, selfRank: 24, rivalAliases: ['Jynx', 'Rift'] }),
-  },
+  // Nova tops the chart as a rival; Kite sits well below Wafles as the nearest-by-rank rival.
+  mockPage('HardEX', 'H.EX', 1, { topScore: 96.84, bottomScore: 71.2, selfScore: 92.1, selfIsPreviousBest: true, rivalAliases: ['Nova', 'Kite'] }),
+  mockPage('EX', 'EX', 2, { topScore: 98.91, bottomScore: 80.4, selfScore: 96.45, selfIsPreviousBest: false, rivalAliases: ['Kirei', 'Solace'] }),
+  // A tie counts as "didn't improve", so this one carries the tag too.
+  mockPage('ITG', 'ITG', 3, { topScore: 99.42, bottomScore: 86.1, selfScore: 94.1, selfIsPreviousBest: true, rivalAliases: ['Jynx', 'Rift'] }),
 ];
 
 function buildLeaderboardPage(data: MockLeaderboardPageData, logoDataUri: string) {
@@ -399,17 +441,27 @@ function buildLeaderboardPage(data: MockLeaderboardPageData, logoDataUri: string
               color: 'transparent',
             },
           },
-          'Pack Leaderboard',
+          'Song Leaderboard',
         ),
         h('div', {
           style: { display: 'flex', width: s(28), height: s(2), backgroundImage: `linear-gradient(270deg, transparent, ${TITLE_GRADIENT[0]})` },
         }),
       ),
-      truncatedLine(data.packName, CARD_WIDTH - s(40), { fontSize: s(19), fontWeight: 700 }),
+      // Pack name as a demoted kicker rather than the headline (the summary card is the other way
+      // round): the ranking below is chart-scoped, so the chart is the subject here. It still has
+      // to appear, though - a chart can belong to more than one leaderboard-eligible pack, and
+      // each of those packs produces its own set of images.
+      truncatedLine(data.packName, CARD_WIDTH - s(40), {
+        fontFamily: 'Miso',
+        fontSize: s(16),
+        fontWeight: 700,
+        letterSpacing: s(2),
+        textTransform: 'uppercase',
+        color: 'rgba(255,255,255,0.5)',
+      }),
       // Song title and artist on their own lines, each independently truncated - either one alone
-      // can be long enough to clip, and cramming both onto one line (as this used to) only made
-      // that worse.
-      truncatedLine(data.chartTitle, CARD_WIDTH - s(40), { fontSize: s(13), fontWeight: 700, marginTop: s(4) }),
+      // can be long enough to clip, and cramming both onto one line only made that worse.
+      truncatedLine(data.chartTitle, CARD_WIDTH - s(40), { fontSize: s(19), fontWeight: 700, marginTop: s(2) }),
       truncatedLine(data.chartArtist, CARD_WIDTH - s(40), { fontSize: s(12), color: 'rgba(255,255,255,0.6)', marginTop: s(1) }),
       h(
         'div',
@@ -417,18 +469,23 @@ function buildLeaderboardPage(data: MockLeaderboardPageData, logoDataUri: string
         `${DIFFICULTY_LABELS[data.difficulty]} ${data.meter}`,
       ),
     ),
-    // Which leaderboard this page shows.
+    // Which leaderboard this page shows, and what the numbers down the right-hand side are. The
+    // horizontal padding matches the ranking rows below so both columns line up with their header.
     h(
       'div',
       {
         style: {
           display: 'flex',
+          alignItems: 'flex-end',
+          padding: `0 ${s(8)}px`,
           marginBottom: s(10),
           paddingBottom: s(10),
           borderBottom: `${s(1)}px solid rgba(255,255,255,0.08)`,
         },
       },
-      h('div', { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(28), fontWeight: 700, color } }, data.label),
+      h('div', { style: { display: 'flex', flex: 1, fontFamily: 'Miso', fontSize: s(28), fontWeight: 700, color } }, data.label),
+      columnHeader('PTS', PAGE_POINTS_COL_WIDTH),
+      columnHeader('SCORE', PAGE_SCORE_COL_WIDTH),
     ),
     (() => {
       const selected = selectNearbyRankings(data.rankings);
@@ -469,7 +526,52 @@ function buildLeaderboardPage(data: MockLeaderboardPageData, logoDataUri: string
               },
               r.alias,
             ),
-            h('div', { style: { display: 'flex', fontSize: s(18), fontWeight: 700 } }, fmtPoints(r.totalScore)),
+            // Only ever on the viewer's own row, and only when the play that produced this image
+            // didn't beat what they already had. Without it the row looks wrong next to the summary
+            // card, which reports the play itself - a leaderboard shows your best, so a missed PB
+            // leaves the older, higher score sitting here.
+            r.isPreviousBest &&
+              h(
+                'div',
+                {
+                  style: {
+                    display: 'flex',
+                    flexShrink: 0,
+                    marginLeft: s(8),
+                    padding: `${s(2)}px ${s(6)}px`,
+                    backgroundColor: 'rgba(255,255,255,0.08)',
+                    fontFamily: 'Miso',
+                    fontSize: s(13),
+                    fontWeight: 700,
+                    letterSpacing: s(1),
+                    color: 'rgba(255,255,255,0.55)',
+                  },
+                },
+                'PREVIOUS PB',
+              ),
+            // Curved chart points next to the raw percentage: points are what this chart contributes to
+            // the pack total on the summary card, the percentage is what was actually danced. Ranking by
+            // either gives the same order (points are a monotonic function of score), so showing both
+            // can't contradict the rank beside it.
+            h(
+              'div',
+              {
+                style: {
+                  display: 'flex',
+                  width: PAGE_POINTS_COL_WIDTH,
+                  justifyContent: 'flex-end',
+                  fontSize: s(16),
+                  fontWeight: 700,
+                  color: 'rgba(255,255,255,0.55)',
+                },
+              },
+              fmtPoints(r.points),
+            ),
+            h(
+              'div',
+              { style: { display: 'flex', width: PAGE_SCORE_COL_WIDTH, justifyContent: 'flex-end', fontSize: s(18), fontWeight: 700 } },
+              `${r.score.toFixed(2)}%`,
+            ),
           ),
         );
       });
@@ -480,7 +582,7 @@ function buildLeaderboardPage(data: MockLeaderboardPageData, logoDataUri: string
         h(
           'div',
           { style: { display: 'flex', justifyContent: 'center', marginTop: s(14), fontSize: s(12), color: 'rgba(255,255,255,0.4)' } },
-          `${data.totalParticipants} participants`,
+          `${data.totalParticipants} players on this chart`,
         ),
       );
     })(),
@@ -672,7 +774,9 @@ function buildCard(data: MockResultsCardData, logoDataUri: string) {
               'div',
               { style: { display: 'flex', flexDirection: 'column', flex: 1 } },
               h('div', { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(24), fontWeight: 700, color } }, entry.label),
-              h('div', { style: { display: 'flex', fontSize: s(11), color: 'rgba(255,255,255,0.5)' } }, `#${entry.rank} of ${entry.totalParticipants}`),
+              // Explicitly "Pack #" now that images 2..n show this player's rank on the song
+              // itself - the two numbers are different things and sit one swipe apart.
+              h('div', { style: { display: 'flex', fontSize: s(11), color: 'rgba(255,255,255,0.5)' } }, `Pack #${entry.rank} of ${entry.totalParticipants}`),
             ),
             stat('SCORE', `${entry.score.toFixed(2)}%`, scoreDelta, 'right'),
           ),

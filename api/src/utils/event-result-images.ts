@@ -39,13 +39,23 @@ interface GolfChartConfig {
 
 // Pre-beta testing set (see docs/plans/golf-event-result-images.md) plus the two real beta packs,
 // "In The Golf - Beta Hills" and "In The Golf - Beta Pines" - 18 charts (holes) each, hashed via
-// scripts/get-pack-hashes.ts against each pack's local Songs folder. Several song folders in both
-// packs ship both a .sm and a .ssc for the same song (the .ssc being the current/curated chart,
-// the .sm a stale leftover with extra now-unused difficulties) - StepMania always prefers the .ssc
-// when both exist, so only its chart(s) are included here; the .sm-only entries the raw hash dump
-// also produced were dropped, which is what brought each pack down to exactly 18 as expected.
-// Par values are copied from scripts/data/golf-beta-hills-pars.json / golf-beta-pines-pars.json
-// (scripts/assign-golf-pars.ts's output) - the original pre-beta hashes have no assigned par yet.
+// scripts/get-pack-hashes.ts against each pack's local Songs folder. Currently the vF4 revision of
+// both packs, which (unlike vE2) ships exactly one .ssc per song folder and no stale .sm leftovers,
+// so the raw hash dump needed no .ssc-preference filtering - 18 simfiles, 18 charts each. vF4 is a
+// pure folder rename of vF3 (re-hashed to confirm: all 36 beta hashes byte-identical), so a pack
+// version bump alone doesn't imply any change here.
+// Hash order here is the dump's own (filesystem/ASCII) order, which is why "get funky..." sorts last.
+// Par values are copied from scripts/data/golf-beta-hills-pars-final.json /
+// golf-beta-pines-pars-final.json (scripts/assign-golf-pars.ts's output, as finalized for the beta;
+// these supersede the earlier non-"-final" files, which hold stale vE2-era pars). All 36 beta
+// charts now have a par; only the 4 original pre-beta hashes don't. A chart with no par still
+// renders a result card, just strokes-only with no vs-par term - see golf-result-image.ts.
+// These pars must match what the packs' own Golf.ini ships, since that's what the in-game HUD
+// reads (Themes/ArrowCloudTheme/Scripts/SL-GolfHelpers.lua) - regenerate the ini from the same
+// -final.json files via scripts/generate-golf-ini.ts so the card and the HUD can't disagree.
+// KEEP IN SYNC with events/golf/backend/config.json's chartHashes (same 40 hashes, same order):
+// that array drives golf's SNS subscription filter, this one drives result images, and both are
+// hand-maintained - a hash in only one of them silently half-works (see this file's header).
 const GOLF_CHARTS: GolfChartConfig[] = [
   // Original pre-beta test hashes - no real course/pack these came from, so they get a placeholder
   // course name and no par (assign-golf-pars.ts has never been run against them).
@@ -54,40 +64,40 @@ const GOLF_CHARTS: GolfChartConfig[] = [
   { hash: 'f3871997119d5052', courseName: 'Alpha Testing' },
   { hash: '50bcefd78fa82988', courseName: 'Alpha Testing' },
   // In The Golf - Beta Hills
-  { hash: '996bf355e5de44ad', courseName: 'Beta Hills', par: 15 },
-  { hash: '3e9031441b77fab9', courseName: 'Beta Hills', par: 8 },
-  { hash: '4f949d8e05f32f50', courseName: 'Beta Hills', par: 6 },
-  { hash: '22f6263af9be0b6b', courseName: 'Beta Hills', par: 10 },
-  { hash: '5953a34fd2cd40f1', courseName: 'Beta Hills', par: 12 },
+  { hash: '3e9031441b77fab9', courseName: 'Beta Hills', par: 7 },
+  { hash: '4f949d8e05f32f50', courseName: 'Beta Hills', par: 5 },
+  { hash: '5953a34fd2cd40f1', courseName: 'Beta Hills', par: 14 },
   { hash: 'fec7522480170c8a', courseName: 'Beta Hills', par: 6 },
-  { hash: '6e9ad3a992102915', courseName: 'Beta Hills', par: 14 },
-  { hash: '4b7c49173870b344', courseName: 'Beta Hills', par: 6 },
+  { hash: '6e9ad3a992102915', courseName: 'Beta Hills', par: 10 },
+  { hash: '8964d941f1a7c81a', courseName: 'Beta Hills', par: 20 },
+  { hash: '4b7c49173870b344', courseName: 'Beta Hills', par: 4 },
+  { hash: 'dd23ced08c27b93f', courseName: 'Beta Hills', par: 6 },
   { hash: 'a4bc270ad709a9fd', courseName: 'Beta Hills', par: 8 },
   { hash: 'efd7909645aba29c', courseName: 'Beta Hills', par: 10 },
-  { hash: '969dad24922317c1', courseName: 'Beta Hills', par: 6 },
-  { hash: '4b42c43066bd717b', courseName: 'Beta Hills', par: 8 },
+  { hash: '969dad24922317c1', courseName: 'Beta Hills', par: 7 },
   { hash: '57bb7e53e5b6090c', courseName: 'Beta Hills', par: 14 },
-  { hash: '6e6103ecf837152e', courseName: 'Beta Hills', par: 5 },
-  { hash: 'c064c72efd651fe4', courseName: 'Beta Hills', par: 12 },
-  { hash: '913a5c614722de0d', courseName: 'Beta Hills', par: 6 },
+  { hash: '0bc514a3acbd332a', courseName: 'Beta Hills', par: 8 },
+  { hash: 'c064c72efd651fe4', courseName: 'Beta Hills', par: 10 },
+  { hash: '913a5c614722de0d', courseName: 'Beta Hills', par: 8 },
+  { hash: '0b88e7b47f603a77', courseName: 'Beta Hills', par: 8 },
   { hash: '95b5fe504f42fa3f', courseName: 'Beta Hills', par: 8 },
   { hash: 'a087601d3d52726f', courseName: 'Beta Hills', par: 13 },
   // In The Golf - Beta Pines
-  { hash: '20ba0b5a36805858', courseName: 'Beta Pines', par: 3 },
   { hash: '88ea9f8af9490151', courseName: 'Beta Pines', par: 4 },
   { hash: 'e77af6b4d45028ff', courseName: 'Beta Pines', par: 4 },
   { hash: '9b4bc7e9928de39b', courseName: 'Beta Pines', par: 3 },
-  { hash: 'b32c5908a47afc44', courseName: 'Beta Pines', par: 3 },
+  { hash: 'b32c5908a47afc44', courseName: 'Beta Pines', par: 4 },
   { hash: 'fd8afbbf787e17c7', courseName: 'Beta Pines', par: 3 },
-  { hash: '702d12f7153dfec5', courseName: 'Beta Pines', par: 3 },
+  { hash: 'c663d1fc786101b5', courseName: 'Beta Pines', par: 5 },
+  { hash: '702d12f7153dfec5', courseName: 'Beta Pines', par: 4 },
   { hash: '9a5e366400f59236', courseName: 'Beta Pines', par: 3 },
   { hash: '20416aedbdd59653', courseName: 'Beta Pines', par: 3 },
   { hash: '2d8af9e16da4e23a', courseName: 'Beta Pines', par: 6 },
-  { hash: 'ab70937938c39775', courseName: 'Beta Pines', par: 5 },
+  { hash: 'ab70937938c39775', courseName: 'Beta Pines', par: 6 },
   { hash: 'f07b623a9324570d', courseName: 'Beta Pines', par: 4 },
-  { hash: 'f96a28b54873a734', courseName: 'Beta Pines', par: 4 },
-  { hash: '1dc29ef7904a58b1', courseName: 'Beta Pines', par: 4 },
-  { hash: 'd0ee6c126ac9c710', courseName: 'Beta Pines', par: 6 },
+  { hash: 'f96a28b54873a734', courseName: 'Beta Pines', par: 3 },
+  { hash: '1dc29ef7904a58b1', courseName: 'Beta Pines', par: 5 },
+  { hash: 'd0ee6c126ac9c710', courseName: 'Beta Pines', par: 8 },
   { hash: '4c99bd7995c84915', courseName: 'Beta Pines', par: 5 },
   { hash: 'ded54c81a7bd03dc', courseName: 'Beta Pines', par: 3 },
   { hash: 'ba6a606e74c8ee00', courseName: 'Beta Pines', par: 3 },

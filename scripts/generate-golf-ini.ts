@@ -46,18 +46,36 @@ interface ParEntry {
   par: number | null;
 }
 
-const DEFAULT_INPUTS = ['scripts/data/golf-beta-hills-pars.json', 'scripts/data/golf-beta-pines-pars.json'];
+// The finalized beta par sets. The earlier non-"-final" files are kept only as history (they hold
+// stale vE2-era pars for charts vF3 dropped) - don't regenerate from those.
+const DEFAULT_INPUTS = ['scripts/data/golf-beta-hills-pars-final.json', 'scripts/data/golf-beta-pines-pars-final.json'];
 
 function capitalize(word: string): string {
   return word.length === 0 ? word : word[0].toUpperCase() + word.slice(1);
 }
 
-// Safe for use as an .ini section name - StepMania folder names are already filesystem-safe, but a
-// literal `[` or `]` inside one (real example: "Komm, Susser Tod - [Zaia]", a real Beta Hills
-// folder) would corrupt the `[SongFolder]` section header's own bracket delimiters. Ini has no
-// escape syntax for this, so both characters are just stripped.
-function sanitizeSectionName(name: string): string {
-  return name.replace(/[[\]]/g, '');
+// Section names are written as the song's folder name VERBATIM - no sanitizing, including when the
+// name itself contains `[` or `]` (real example: "Komm, Susser Tod - [Zaia]", a real Beta Hills
+// folder).
+//
+// An earlier version stripped both bracket characters, on the theory that they'd corrupt the
+// `[SongFolder]` header's own delimiters. That was wrong, and it silently broke par lookup for
+// exactly that song: the reader is Lua, not C++ (Themes/_fallback/Scripts/01 IniFile.lua - the
+// engine's `IniFile` global), and it parses a section with
+//
+//     local sec = str:match( "^%[(.+)%]" )
+//
+// which is anchored at the start of the line and greedy, so the capture always extends to the LAST
+// `]` on the line. `[Komm, Susser Tod - [Zaia]]` therefore yields exactly "Komm, Susser Tod -
+// [Zaia]", brackets intact. Stripping them instead produced a section key that could never match,
+// since SL-GolfHelpers.lua's Golf.GetPar looks the par up by `Basename(song:GetSongDir())` - the
+// real folder name, brackets and all - so that hole just showed no par at all.
+//
+// Verified for every real vF4 song folder: a bracket anywhere in the name (leading, trailing, or
+// interior) round-trips, because the pattern only needs the line to start with `[` and end with
+// `]`, which wrapping always guarantees.
+function sectionNameFor(name: string): string {
+  return name;
 }
 
 function buildIni(entries: ParEntry[]): string {
@@ -72,7 +90,7 @@ function buildIni(entries: ParEntry[]): string {
   const lines: string[] = [];
   for (const songFolder of songFolders) {
     const charts = bySongFolder.get(songFolder)!.sort((a, b) => a.difficulty.localeCompare(b.difficulty));
-    const section = sanitizeSectionName(songFolder);
+    const section = sectionNameFor(songFolder);
     if (charts.length === 1) {
       lines.push(`[${section}]`, `Par=${charts[0].par}`, '');
     } else {

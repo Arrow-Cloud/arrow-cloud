@@ -99,11 +99,21 @@ export interface PackResultImageData {
 export interface LeaderboardPageEntry {
   rank: number;
   alias: string;
-  totalScore: number;
+  score: number; // 0-100, this player's best on THIS chart (not a pack total)
+  points: number; // 0-1000, that score's curved chart points - what it adds to their pack total
+  // Set only on the viewer's own row, when this play didn't improve on their existing best - i.e.
+  // the score in this row predates the play that triggered the image.
+  isPreviousBest: boolean;
   isSelf: boolean;
   isRival: boolean;
 }
 
+/**
+ * One page per scoring system, ranking players by their best score on the chart that was just
+ * played - not by their pack totals. The summary card (PackResultImageData) is the pack-scoped
+ * half of this pair; these pages are the song-scoped half, so they carry the same chart identity
+ * (title/artist/meter) the card does.
+ */
 export interface LeaderboardPageData {
   leaderboardKey: keyof typeof LEADERBOARD_COLORS;
   label: string;
@@ -112,7 +122,7 @@ export interface LeaderboardPageData {
   chartArtist: string;
   difficulty: 'medium' | 'hard' | 'challenge';
   meter: number;
-  totalParticipants: number;
+  totalParticipants: number; // players with a score on this chart, not pack participants
   // Already curated (top + rivals + nearby-you) by the caller - see pack-leaderboard.ts's
   // selectNearbyRankings. This module only renders, it doesn't decide who to show.
   rankings: LeaderboardPageEntry[];
@@ -304,7 +314,9 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
               'div',
               { style: { display: 'flex', flexDirection: 'column', flex: 1 } },
               h('div', { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(24), fontWeight: 700, color } }, entry.label),
-              h('div', { style: { display: 'flex', fontSize: s(11), color: 'rgba(255,255,255,0.5)' } }, `#${entry.rank} of ${entry.totalParticipants}`),
+              // Explicitly "Pack #" now that images 2..n show this player's rank on the song
+              // itself - the two numbers are different things and sit one swipe apart.
+              h('div', { style: { display: 'flex', fontSize: s(11), color: 'rgba(255,255,255,0.5)' } }, `Pack #${entry.rank} of ${entry.totalParticipants}`),
             ),
             stat('SCORE', `${entry.score.toFixed(2)}%`, scoreDelta, 'right'),
           ),
@@ -318,6 +330,30 @@ function buildCard(data: PackResultImageData, logoDataUri: string) {
         );
       }),
     ),
+  );
+}
+
+const PAGE_POINTS_COL_WIDTH = s(72);
+const PAGE_SCORE_COL_WIDTH = s(96);
+
+// Right-aligned column header over one of the numeric columns, matching that column's width.
+function columnHeader(label: string, width: number) {
+  return h(
+    'div',
+    {
+      style: {
+        display: 'flex',
+        width,
+        justifyContent: 'flex-end',
+        fontFamily: 'Miso',
+        fontSize: s(14),
+        fontWeight: 700,
+        letterSpacing: s(1),
+        color: 'rgba(255,255,255,0.6)',
+        marginBottom: s(3),
+      },
+    },
+    label,
   );
 }
 
@@ -372,17 +408,27 @@ function buildLeaderboardPage(data: LeaderboardPageData, logoDataUri: string) {
               color: 'transparent',
             },
           },
-          'Pack Leaderboard',
+          'Song Leaderboard',
         ),
         h('div', {
           style: { display: 'flex', width: s(28), height: s(2), backgroundImage: `linear-gradient(270deg, transparent, ${TITLE_GRADIENT[0]})` },
         }),
       ),
-      truncatedLine(data.packName, CARD_WIDTH - s(40), { fontSize: s(19), fontWeight: 700 }),
+      // Pack name as a demoted kicker rather than the headline (the summary card is the other way
+      // round): the ranking below is chart-scoped, so the chart is the subject here. It still has
+      // to appear, though - a chart can belong to more than one leaderboard-eligible pack, and
+      // each of those packs produces its own set of images.
+      truncatedLine(data.packName, CARD_WIDTH - s(40), {
+        fontFamily: 'Miso',
+        fontSize: s(16),
+        fontWeight: 700,
+        letterSpacing: s(2),
+        textTransform: 'uppercase',
+        color: 'rgba(255,255,255,0.5)',
+      }),
       // Song title and artist on their own lines, each independently truncated - either one alone
-      // can be long enough to clip, and cramming both onto one line (as this used to) only made
-      // that worse.
-      truncatedLine(data.chartTitle, CARD_WIDTH - s(40), { fontSize: s(13), fontWeight: 700, marginTop: s(4) }),
+      // can be long enough to clip, and cramming both onto one line only made that worse.
+      truncatedLine(data.chartTitle, CARD_WIDTH - s(40), { fontSize: s(19), fontWeight: 700, marginTop: s(2) }),
       truncatedLine(data.chartArtist, CARD_WIDTH - s(40), { fontSize: s(12), color: 'rgba(255,255,255,0.6)', marginTop: s(1) }),
       h(
         'div',
@@ -390,11 +436,23 @@ function buildLeaderboardPage(data: LeaderboardPageData, logoDataUri: string) {
         `${DIFFICULTY_LABELS[data.difficulty]} ${data.meter}`,
       ),
     ),
-    // Which leaderboard this page shows.
+    // Which leaderboard this page shows, and what the numbers down the right-hand side are. The
+    // horizontal padding matches the ranking rows below so both columns line up with their header.
     h(
       'div',
-      { style: { display: 'flex', marginBottom: s(10), paddingBottom: s(10), borderBottom: `${s(1)}px solid rgba(255,255,255,0.08)` } },
-      h('div', { style: { display: 'flex', fontFamily: 'Miso', fontSize: s(28), fontWeight: 700, color } }, data.label),
+      {
+        style: {
+          display: 'flex',
+          alignItems: 'flex-end',
+          padding: `0 ${s(8)}px`,
+          marginBottom: s(10),
+          paddingBottom: s(10),
+          borderBottom: `${s(1)}px solid rgba(255,255,255,0.08)`,
+        },
+      },
+      h('div', { style: { display: 'flex', flex: 1, fontFamily: 'Miso', fontSize: s(28), fontWeight: 700, color } }, data.label),
+      columnHeader('PTS', PAGE_POINTS_COL_WIDTH),
+      columnHeader('SCORE', PAGE_SCORE_COL_WIDTH),
     ),
     h(
       'div',
@@ -434,13 +492,58 @@ function buildLeaderboardPage(data: LeaderboardPageData, logoDataUri: string) {
             },
             r.alias,
           ),
-          h('div', { style: { display: 'flex', fontSize: s(18), fontWeight: 700 } }, fmtPoints(r.totalScore)),
+          // Only ever on the viewer's own row, and only when the play that produced this image
+          // didn't beat what they already had. Without it the row looks wrong next to the summary
+          // card, which reports the play itself - a leaderboard shows your best, so a missed PB
+          // leaves the older, higher score sitting here.
+          r.isPreviousBest &&
+            h(
+              'div',
+              {
+                style: {
+                  display: 'flex',
+                  flexShrink: 0,
+                  marginLeft: s(8),
+                  padding: `${s(2)}px ${s(6)}px`,
+                  backgroundColor: 'rgba(255,255,255,0.08)',
+                  fontFamily: 'Miso',
+                  fontSize: s(13),
+                  fontWeight: 700,
+                  letterSpacing: s(1),
+                  color: 'rgba(255,255,255,0.55)',
+                },
+              },
+              'PREVIOUS PB',
+            ),
+          // Curved chart points next to the raw percentage: points are what this chart contributes to
+          // the pack total on the summary card, the percentage is what was actually danced. Ranking by
+          // either gives the same order (points are a monotonic function of score), so showing both
+          // can't contradict the rank beside it.
+          h(
+            'div',
+            {
+              style: {
+                display: 'flex',
+                width: PAGE_POINTS_COL_WIDTH,
+                justifyContent: 'flex-end',
+                fontSize: s(16),
+                fontWeight: 700,
+                color: 'rgba(255,255,255,0.55)',
+              },
+            },
+            fmtPoints(r.points),
+          ),
+          h(
+            'div',
+            { style: { display: 'flex', width: PAGE_SCORE_COL_WIDTH, justifyContent: 'flex-end', fontSize: s(18), fontWeight: 700 } },
+            `${r.score.toFixed(2)}%`,
+          ),
         );
       }),
       h(
         'div',
         { style: { display: 'flex', justifyContent: 'center', marginTop: s(14), fontSize: s(12), color: 'rgba(255,255,255,0.4)' } },
-        `${data.totalParticipants} participants`,
+        `${data.totalParticipants} players on this chart`,
       ),
     ),
   );

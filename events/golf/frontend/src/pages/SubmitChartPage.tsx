@@ -108,6 +108,46 @@ const PACKS: Pack[] = [
       },
     ],
   },
+  {
+    id: 'hip-hop',
+    name: 'Hip Hop',
+    badge: 'Blocks 10–12 · Length 1:45–2:45',
+    curators: ['Formless'],
+    ruleSections: [
+      {
+        items: [
+          'Length: 1:45–2:45',
+          'Block rating: 10, 11, or 12',
+          'Hip Hop, including the Trap sub-genre',
+          'No culture vulture artists',
+          'Explicit language and themes are allowed',
+          'The pack is about the music, so tech, no tech, and hard tech are all welcome',
+          'Hip Hop is a severely neglected genre in charting — the goal is to get more people interested in it',
+          "This isn't a summer-vibes pack — we're not looking to make Summer Vibes Vol. 5",
+        ],
+      },
+    ],
+  },
+  {
+    id: 'iidx',
+    name: 'IIDX',
+    badge: 'Blocks 12–14 · Length 1:15–2:39 · One song per mix',
+    curators: ['Andeh', 'Formless'],
+    ruleSections: [
+      {
+        items: [
+          'Length: 1:15–2:39 — covers essentially any IIDX song apart from the full-length versions',
+          'Block rating: 12, 13, or 14',
+          'Song must have originated from Beatmania IIDX',
+          'One song per mix, to force maximum diversity',
+          'Tech to hard tech preferred — this is meant to be a somewhat challenging pack',
+          'Genre diversity is encouraged: IIDX spans techno, industrial, DnB, hip hop, trance and more',
+          'Preference for songs that have yet to be charted in the modern tech scene',
+          'The aim is a good representation of IIDX music and how it has evolved — iconic songs brought to life here are especially welcome',
+        ],
+      },
+    ],
+  },
 ];
 
 // The one translucent glass panel every step's content sits in, matching HomePage.tsx's Section
