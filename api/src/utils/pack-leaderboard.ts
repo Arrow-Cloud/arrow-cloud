@@ -427,7 +427,24 @@ function selectNearbyRankings(rankings: LeaderboardPageEntry[]): LeaderboardPage
  * there's nothing to persist - see the "Revised architecture" section of the approved plan.
  * No-op (single cheap query, no added latency) for the common case of a non-pack-eligible chart.
  */
-export async function computePackResultImages(prisma: PrismaClient, s3Client: S3Client, play: Play): Promise<string[]> {
+export async function computePackResultImages(
+  prisma: PrismaClient,
+  s3Client: S3Client,
+  play: Play,
+  /**
+   * `maxImages` caps how many images this renders. It is a budget handed down by the caller (see
+   * chart.ts / MAX_RESULT_IMAGES), not a rendering preference: a single play can already match
+   * several packs, each contributing a summary card plus one page per leaderboard, and other
+   * sources (custom events) share the same response. Images are kept in queue order - the first
+   * pack's summary card, then its leaderboard pages, then the next pack - and the rest are never
+   * rendered at all, since satori/resvg is CPU-bound and a dropped image would be pure wasted
+   * latency on the synchronous submission path.
+   */
+  options: { maxImages?: number } = {},
+): Promise<string[]> {
+  const maxImages = options.maxImages ?? Number.POSITIVE_INFINITY;
+  if (maxImages <= 0) return [];
+
   const matches = await getEligiblePacksForChart(prisma, play.chartHash);
   if (matches.length === 0) return [];
 
@@ -476,6 +493,9 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
     );
 
   for (const match of matches) {
+    // Budget spent - skip this pack entirely rather than querying for images that won't be rendered.
+    if (uploadTasks.length >= maxImages) break;
+
     const simfileCharts = await prisma.simfileChart.findMany({
       where: { simfile: { packId: match.packId }, difficulty: match.difficulty },
       select: { chartHash: true, cmodIneligible: true },
@@ -608,8 +628,12 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
     // Pack summary card first (image 1), then one song-leaderboard page per selected leaderboard
     // (images 2..n) - queued in order but all rendered/uploaded concurrently via the shared
     // uploadTasks array.
-    uploadTasks.push(upload(`result/play/${play.id}/${match.packId}.png`, renderPackResultImage(imageData)));
+    // Each push checks the budget first, because calling render* is what starts the work.
+    if (uploadTasks.length < maxImages) {
+      uploadTasks.push(upload(`result/play/${play.id}/${match.packId}.png`, renderPackResultImage(imageData)));
+    }
     for (const pageData of leaderboardPages) {
+      if (uploadTasks.length >= maxImages) break;
       uploadTasks.push(upload(`result/play/${play.id}/${match.packId}-${pageData.leaderboardKey}.png`, renderLeaderboardPage(pageData)));
     }
   }

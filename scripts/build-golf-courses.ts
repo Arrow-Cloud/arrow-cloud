@@ -77,8 +77,14 @@ interface Course {
 // editing this file's output - see the note in docs/plans/golf-beta-prep.md \u00a71.1.
 const DIFFICULTY_SUFFIX = /\s*\((?:Beginner|Easy|Medium|Hard|Challenge|Edit)\)\s*$/i;
 
+// Simfile tags are stored with escape sequences - a backslash before a character that would otherwise be
+// syntax ("En\-vy", "GET \#HYPER"). Anything shown to a player has to be unescaped: the game client sends
+// text already unescaped, and /activity and /rankings serve displayName and artist straight from here. An
+// earlier version only handled `\#`, so an artist with `\-` reached the live feed as "En\-vy".
+const unescapeSimfile = (text: string) => text.replace(/\\(.)/g, '$1');
+
 function toDisplayName(title: string): string {
-  return title.replace(/\\#/g, '#').replace(DIFFICULTY_SUFFIX, '').trim();
+  return unescapeSimfile(title).replace(DIFFICULTY_SUFFIX, '').trim();
 }
 
 const OUT = 'events/golf/config/courses.json';
@@ -90,6 +96,7 @@ const SOURCES: { slug: string; name: string; order: number; file: string }[] = [
 
 // The original pre-beta hashes. They predate assign-golf-pars.ts, so they have no par and no song
 // metadata to read - they're carried as a hidden course purely as an end-to-end test target.
+const ALPHA_PAR = 3;
 const ALPHA_HASHES = ['7a520534f16d6455', '065f74f741eb2f9d', 'f3871997119d5052', '50bcefd78fa82988'];
 
 function build(): Course[] {
@@ -107,7 +114,7 @@ function build(): Course[] {
         displayName: toDisplayName(e.title),
         songName: e.title,
         songFolder: e.songFolder,
-        artist: e.artist,
+        artist: unescapeSimfile(e.artist),
         meter: e.meter,
         par: e.par,
       })),
@@ -128,7 +135,10 @@ function build(): Course[] {
       songFolder: 'Unknown',
       artist: 'Unknown',
       meter: 0,
-      par: null,
+      // A flat 3: these predate assign-golf-pars.ts and exist only to exercise the pipeline, so
+      // there is no real hole to calibrate against. Must match GOLF_CHARTS in
+      // api/src/utils/event-result-images.ts, which carries its own copy for the result cards.
+      par: ALPHA_PAR,
     })),
   });
 

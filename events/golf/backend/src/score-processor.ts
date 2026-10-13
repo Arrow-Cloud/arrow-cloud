@@ -12,8 +12,10 @@ import {
   type BestItem,
 } from './shared';
 import { resolveHole } from './courses';
+import { refreshCourseStanding } from './standings';
 import { checkGolfEligibility } from '../../../../api/src/utils/scoring/eligibility';
 import { calculateGolfStrokes } from '../../../../api/src/utils/scoring/golf';
+import { holePartitionKey, holeSortKey } from './rankings';
 
 interface ScoreSubmissionEvent {
   eventType: string;
@@ -144,13 +146,30 @@ async function processRecord(record: SQSRecord): Promise<void> {
   // 3. Check/update personal best - lower strokes is better, and only an eligible play qualifies.
   const currentBest = eligible ? await getState<BestItem>(`USER#${userId}`, `BEST#${event.chartHash}`) : undefined;
   if (eligible && (!currentBest || totalStrokes < currentBest.totalStrokes)) {
-    await putState(`USER#${userId}`, `BEST#${event.chartHash}`, {
-      type: 'BEST',
-      playId,
-      userId,
-      chartHash: event.chartHash,
-      totalStrokes,
-    });
+    // The hole board (gsi1) is every player's BEST item for this chart, ordered by holeSortKey, so the
+    // keys are written with the best rather than in a separate pass. The alias and achievedAt are
+    // denormalized onto it so a board row needs no second lookup per player.
+    await putState(
+      `USER#${userId}`,
+      `BEST#${event.chartHash}`,
+      {
+        type: 'BEST',
+        playId,
+        userId,
+        chartHash: event.chartHash,
+        totalStrokes,
+        playerAlias: play.user.alias,
+        timestamp,
+      },
+      {
+        gsi1pk: holePartitionKey(event.chartHash),
+        gsi1sk: holeSortKey({ totalStrokes, achievedAt: timestamp, userId }),
+      },
+    );
+
+    // A changed best changes the player's standing on its course, so refresh it. Done only when the
+    // best actually changed: a play that doesn't beat the best can't move the standing.
+    await refreshCourseStanding(userId, play.user.alias, event.chartHash);
   }
 }
 

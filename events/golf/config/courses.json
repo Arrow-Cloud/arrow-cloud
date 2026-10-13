@@ -232,7 +232,7 @@
           "displayName": "Damaio",
           "songName": "Damaio (Hard)",
           "songFolder": "Damaio",
-          "artist": "En\\-vy",
+          "artist": "En-vy",
           "meter": 10,
           "par": 3
         },
@@ -393,7 +393,7 @@
           "songFolder": "Unknown",
           "artist": "Unknown",
           "meter": 0,
-          "par": null
+          "par": 3
         },
         {
           "holeNumber": 2,
@@ -403,7 +403,7 @@
           "songFolder": "Unknown",
           "artist": "Unknown",
           "meter": 0,
-          "par": null
+          "par": 3
         },
         {
           "holeNumber": 3,
@@ -413,7 +413,7 @@
           "songFolder": "Unknown",
           "artist": "Unknown",
           "meter": 0,
-          "par": null
+          "par": 3
         },
         {
           "holeNumber": 4,
@@ -423,7 +423,7 @@
           "songFolder": "Unknown",
           "artist": "Unknown",
           "meter": 0,
-          "par": null
+          "par": 3
         }
       ]
     }

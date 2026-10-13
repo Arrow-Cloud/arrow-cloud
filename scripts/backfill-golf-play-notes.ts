@@ -16,10 +16,16 @@
  *      score processor uses, so this can't drift from live ingestion.
  *
  *      Older items were written with no notion of eligibility at all, so some BEST rows were set by
- *      a quit, a rate-modded run or an autoplay run. That matters more than it sounds: golf is
- *      lower-is-better, so an abandoned or rate-assisted run produces a *low* total that beats real
- *      rounds. Phase 2 recomputes every BEST from eligible plays only and deletes any whose owner
- *      has no eligible play on that hole.
+ *      a quit, a rate-modded run or an autoplay run. Phase 2 recomputes every BEST from eligible
+ *      plays only and deletes any whose owner has no eligible play on that hole.
+ *   5. BEST items carry the hole-board index keys (gsi1), the player's alias and when the best was
+ *      set, and every player has a COURSE standing item indexed into gsi2. These are what the
+ *      hole and course ranking pages read; without them a board is empty until each player next
+ *      improves a best. Phase 2 rewrites every BEST with its keys, and phase 3 rebuilds the
+ *      standings from the bests, deleting any whose bests are gone.
+ *
+ *      Phases 2 and 3 run on every invocation, not only when per-play work remains: they are
+ *      derived from the whole table and skip anything already correct, so re-running is cheap.
  *
  * REQUIRES ApiStack to be deployed first: the eligibility inputs are read from GET /play/{id},
  * which only started returning them in the same change as this script. Run against the old API and
@@ -44,10 +50,12 @@
  * is an idempotent overwrite of the same keys, and plays already carrying everything are skipped.
  */
 
+import { readFileSync } from 'fs';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, ScanCommand, PutCommand, UpdateCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import { calculateGolfStrokes } from '../api/src/utils/scoring/golf';
 import { checkGolfEligibility } from '../api/src/utils/scoring/eligibility';
+import { aggregateCourse, coursePartitionKey, courseSortKey, holePartitionKey, holeSortKey } from '../events/golf/backend/src/rankings';
 
 const TABLE_NAME = process.env.GOLF_STATE_TABLE_NAME || 'event-golf-state';
 const REGION = process.env.AWS_REGION || 'us-east-2';
@@ -76,6 +84,21 @@ interface BestRow {
   userId: string;
   totalStrokes: number;
   playId: number;
+  playerAlias?: string;
+  timestamp?: string;
+  gsi1pk?: string;
+  gsi1sk?: string;
+}
+
+interface StandingRow {
+  pk: string;
+  sk: string;
+  gsi2sk?: string;
+}
+
+interface CourseConfig {
+  slug: string;
+  holes: { chartHash: string }[];
 }
 
 interface PlayApiResponse {
@@ -120,7 +143,7 @@ async function scanByType<T>(type: string): Promise<T[]> {
  *
  * A (user, hole) pair with no eligible play has its BEST deleted outright - there is no best to show.
  */
-async function reconcileBests(plays: PlayRow[], apply: boolean) {
+async function reconcileBests(plays: PlayRow[], apply: boolean): Promise<Map<string, PlayRow>> {
   const bests = await scanByType<BestRow>('BEST');
 
   const bestByKey = new Map<string, PlayRow>();
@@ -128,52 +151,54 @@ async function reconcileBests(plays: PlayRow[], apply: boolean) {
     if (play.eligible !== true) continue;
     const key = `${play.userId}|${play.chartHash}`;
     const current = bestByKey.get(key);
-    if (!current || play.totalStrokes < current.totalStrokes) bestByKey.set(key, play);
+    // A tie goes to the earlier play, which is what the score processor does live (it only replaces a
+    // best with strictly fewer strokes) and what ranking assumes (the earlier achiever ranks ahead).
+    // Without the timestamp comparison the winner would be whichever play the scan happened to return
+    // first, so a re-run could flip it.
+    const beatsCurrent =
+      !current || play.totalStrokes < current.totalStrokes || (play.totalStrokes === current.totalStrokes && play.timestamp < current.timestamp);
+    if (beatsCurrent) bestByKey.set(key, play);
   }
 
-  let corrected = 0;
   let deleted = 0;
-  let unchanged = 0;
-
+  const existingByKey = new Map<string, BestRow>();
   for (const best of bests) {
     const key = `${best.userId}|${best.chartHash}`;
-    const shouldBe = bestByKey.get(key);
-
-    if (!shouldBe) {
+    if (!bestByKey.has(key)) {
       if (apply) await ddb.send(new DeleteCommand({ TableName: TABLE_NAME, Key: { pk: best.pk, sk: best.sk } }));
       deleted++;
       continue;
     }
-    if (shouldBe.totalStrokes === best.totalStrokes && shouldBe.playId === best.playId) {
-      unchanged++;
-      continue;
-    }
-    if (apply) {
-      await ddb.send(
-        new PutCommand({
-          TableName: TABLE_NAME,
-          Item: {
-            pk: best.pk,
-            sk: best.sk,
-            type: 'BEST',
-            playId: shouldBe.playId,
-            userId: shouldBe.userId,
-            chartHash: shouldBe.chartHash,
-            totalStrokes: shouldBe.totalStrokes,
-            updatedAt: new Date().toISOString(),
-          },
-        }),
-      );
-    }
-    corrected++;
+    existingByKey.set(key, best);
   }
 
-  // A passing play whose hole has no BEST row at all - possible if the only prior BEST was deleted
-  // by an earlier run, or if a play was ingested while BEST writing was gated.
+  // Every surviving best is rewritten in full - corrected values, hole-index keys, alias and
+  // timestamp together - unless it is already exactly right, which is what keeps a re-run cheap.
+  let alreadyCurrent = 0;
+  let corrected = 0;
   let created = 0;
-  const haveBest = new Set(bests.map((b) => `${b.userId}|${b.chartHash}`));
+  let reindexed = 0;
   for (const [key, play] of bestByKey) {
-    if (haveBest.has(key)) continue;
+    const existing = existingByKey.get(key);
+    const wantKey = holeSortKey({ totalStrokes: play.totalStrokes, achievedAt: play.timestamp, userId: play.userId });
+    const wantAlias = play.playerAlias ?? 'Unknown';
+
+    if (
+      existing &&
+      existing.playId === play.playId &&
+      existing.totalStrokes === play.totalStrokes &&
+      existing.gsi1sk === wantKey &&
+      existing.gsi1pk === holePartitionKey(play.chartHash) &&
+      existing.playerAlias === wantAlias &&
+      existing.timestamp === play.timestamp
+    ) {
+      alreadyCurrent++;
+      continue;
+    }
+    if (!existing) created++;
+    else if (existing.playId !== play.playId || existing.totalStrokes !== play.totalStrokes) corrected++;
+    else reindexed++;
+
     if (apply) {
       await ddb.send(
         new PutCommand({
@@ -186,19 +211,104 @@ async function reconcileBests(plays: PlayRow[], apply: boolean) {
             userId: play.userId,
             chartHash: play.chartHash,
             totalStrokes: play.totalStrokes,
+            playerAlias: wantAlias,
+            timestamp: play.timestamp,
+            gsi1pk: holePartitionKey(play.chartHash),
+            gsi1sk: wantKey,
             updatedAt: new Date().toISOString(),
           },
         }),
       );
     }
-    created++;
   }
 
   console.log(`\nBEST reconciliation (eligible plays only):`);
-  console.log(`  already correct       : ${unchanged}`);
-  console.log(`  ${apply ? 'corrected' : 'would correct'}${apply ? '            ' : '        '}: ${corrected}`);
-  console.log(`  ${apply ? 'deleted' : 'would delete'} (no eligible play): ${deleted}`);
-  console.log(`  ${apply ? 'created' : 'would create'} (missing)        : ${created}`);
+  console.log(`  already current              : ${alreadyCurrent}`);
+  console.log(`  ${apply ? 'corrected' : 'would correct'} (wrong play/score) : ${corrected}`);
+  console.log(`  ${apply ? 'indexed' : 'would index'} (keys/alias added)  : ${reindexed}`);
+  console.log(`  ${apply ? 'created' : 'would create'} (missing)          : ${created}`);
+  console.log(`  ${apply ? 'deleted' : 'would delete'} (no eligible play)  : ${deleted}`);
+  return bestByKey;
+}
+
+/**
+ * Phase 3: rebuild every player's standing on every course from their per-hole bests.
+ *
+ * Standings are a pure function of the bests (see events/golf/backend/src/standings.ts, which does the
+ * same one player at a time as bests change), so this can always be re-derived and never drifts.
+ * Hidden courses get standings too: visibility is applied on read, so un-hiding one needs no backfill.
+ * A standing whose player no longer has any best on that course is deleted.
+ */
+async function rebuildStandings(bestByKey: Map<string, PlayRow>, apply: boolean) {
+  const courses = (JSON.parse(readFileSync('events/golf/config/courses.json', 'utf-8')) as { courses: CourseConfig[] }).courses;
+  const existing = await scanByType<StandingRow & { sk: string }>('COURSE_STANDING');
+  const existingByKey = new Map(existing.map((row) => [`${row.pk}|${row.sk}`, row]));
+
+  const bestsByUser = new Map<string, PlayRow[]>();
+  for (const play of bestByKey.values()) {
+    if (!bestsByUser.has(play.userId)) bestsByUser.set(play.userId, []);
+    bestsByUser.get(play.userId)!.push(play);
+  }
+
+  const wanted = new Set<string>();
+  let alreadyCurrent = 0;
+  let written = 0;
+
+  for (const [userId, userBests] of bestsByUser) {
+    const alias = userBests.find((b) => b.playerAlias)?.playerAlias ?? 'Unknown';
+    for (const course of courses) {
+      const aggregate = aggregateCourse(
+        userBests.map((b) => ({ chartHash: b.chartHash, totalStrokes: b.totalStrokes, achievedAt: b.timestamp })),
+        new Set(course.holes.map((h) => h.chartHash)),
+      );
+      if (!aggregate) continue;
+
+      const pk = `USER#${userId}`;
+      const sk = `COURSE#${course.slug}`;
+      wanted.add(`${pk}|${sk}`);
+      const totalHoles = course.holes.length;
+      const gsi2sk = courseSortKey({ userId, alias, ...aggregate }, totalHoles);
+      if (existingByKey.get(`${pk}|${sk}`)?.gsi2sk === gsi2sk) {
+        alreadyCurrent++;
+        continue;
+      }
+      written++;
+      if (apply) {
+        await ddb.send(
+          new PutCommand({
+            TableName: TABLE_NAME,
+            Item: {
+              pk,
+              sk,
+              type: 'COURSE_STANDING',
+              userId,
+              playerAlias: alias,
+              courseSlug: course.slug,
+              holesCompleted: aggregate.holesCompleted,
+              totalHoles,
+              totalStrokes: aggregate.totalStrokes,
+              achievedAt: aggregate.achievedAt,
+              gsi2pk: coursePartitionKey(course.slug),
+              gsi2sk,
+              updatedAt: new Date().toISOString(),
+            },
+          }),
+        );
+      }
+    }
+  }
+
+  let deleted = 0;
+  for (const [key, row] of existingByKey) {
+    if (wanted.has(key)) continue;
+    if (apply) await ddb.send(new DeleteCommand({ TableName: TABLE_NAME, Key: { pk: row.pk, sk: row.sk } }));
+    deleted++;
+  }
+
+  console.log(`\nCourse standings (rebuilt from the bests above):`);
+  console.log(`  already current : ${alreadyCurrent}`);
+  console.log(`  ${apply ? 'written' : 'would write'}${apply ? '        ' : '    '}: ${written}`);
+  console.log(`  ${apply ? 'deleted' : 'would delete'} (stale) : ${deleted}`);
 }
 
 async function main() {
@@ -223,7 +333,8 @@ async function main() {
   const todo = plays.filter((p) => !p.gsi2pk || !p.playerAlias || p.eligible === undefined).slice(0, limit);
 
   console.log(`${plays.length} PLAY items, ${plays.length - todo.length} already current, ${todo.length} to backfill.\n`);
-  if (todo.length === 0) return;
+  // No early return when there is nothing to do per play: the BEST and standings phases below are
+  // derived from the whole table and still have work after every play is already current.
 
   let updated = 0;
   let notesWritten = 0;
@@ -347,12 +458,13 @@ async function main() {
   // the BEST of every hole it simply hasn't looked at yet. Skip it rather than act on partial data.
   if (todo.length < plays.filter((p) => !p.gsi2pk || !p.playerAlias || p.eligible === undefined).length) {
     console.log(
-      `\nSkipping BEST reconciliation: --limit left ${plays.length - todo.length} play(s) unresolved, and reconciling on partial data would delete bests for holes this run never examined.`,
+      `\nSkipping BEST reconciliation and standings: --limit left ${plays.length - todo.length} play(s) unresolved, and reconciling on partial data would delete bests for holes this run never examined.`,
     );
     return;
   }
 
-  await reconcileBests(plays, apply);
+  const bestByKey = await reconcileBests(plays, apply);
+  await rebuildStandings(bestByKey, apply);
   if (failures.length > 0) {
     console.log(`\n${failures.length} play(s) without full data:`);
     for (const f of failures.slice(0, 20)) console.log(`  ${f.playId}: ${f.reason}`);

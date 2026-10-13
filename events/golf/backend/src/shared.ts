@@ -88,6 +88,36 @@ export interface BestItem {
   userId: string;
   chartHash: string;
   updatedAt: string;
+  /** Denormalized when the best is set, so a board row needs no second lookup per player. Absent on
+   * items written before rankings existed; scripts/backfill-golf-play-notes.ts fills them in. Goes
+   * stale if the player later renames - docs/plans/golf-beta-prep.md section 4.2. */
+  playerAlias?: string;
+  /** When the play that set this best was made - the achievedAt used to break exact ties. */
+  timestamp?: string;
+  /** gsi1: this hole's board, ordered by holeSortKey. Absent until backfilled. */
+  gsi1pk?: string;
+  gsi1sk?: string;
+}
+
+/** One player's standing on one course, derived from their BEST items and indexed into gsi2 so the
+ * course board is a single ranged query. Rebuilt from the bests each time rather than incremented,
+ * so it can always be recomputed and never drifts from the bests it summarises. */
+export interface CourseStandingItem {
+  pk: string;
+  sk: string;
+  type: 'COURSE_STANDING';
+  userId: string;
+  playerAlias: string;
+  courseSlug: string;
+  holesCompleted: number;
+  /** The course's hole count when this was written - what "complete" meant at the time. If a course
+   * gains or loses a hole, standings need re-deriving (the backfill does this). */
+  totalHoles: number;
+  totalStrokes: number;
+  achievedAt: string;
+  gsi2pk: string;
+  gsi2sk: string;
+  updatedAt: string;
 }
 
 /** Fetch JSON from the Arrow Cloud API (public endpoints, no auth needed) - same pattern as
@@ -105,6 +135,57 @@ export async function apiFetch<T>(path: string): Promise<T> {
 export async function getState<T>(pk: string, sk: string): Promise<T | undefined> {
   const result = await ddb.send(new GetCommand({ TableName: TABLE_NAME, Key: { pk, sk } }));
   return result.Item as T | undefined;
+}
+
+/** All items under a partition key whose sort key starts with a prefix. `consistent` reads the base
+ * table strongly - needed when reading back something this same invocation just wrote. */
+export async function queryState<T>(pk: string, skPrefix: string, options?: { consistent?: boolean }): Promise<T[]> {
+  const items: T[] = [];
+  let cursor: Record<string, unknown> | undefined;
+  do {
+    const result = await ddb.send(
+      new QueryCommand({
+        TableName: TABLE_NAME,
+        KeyConditionExpression: 'pk = :pk AND begins_with(sk, :sk)',
+        ExpressionAttributeValues: { ':pk': pk, ':sk': skPrefix },
+        ConsistentRead: options?.consistent ?? false,
+        ExclusiveStartKey: cursor,
+      }),
+    );
+    items.push(...((result.Items || []) as T[]));
+    cursor = result.LastEvaluatedKey;
+  } while (cursor);
+  return items;
+}
+
+/**
+ * Every item in one GSI partition, in index order (ascending sort key), or `truncated: true` if it was
+ * bigger than `maxPages` of 1 MB.
+ *
+ * Reading a whole partition is what lets a board be ranked in memory from one query, with no per-row
+ * COUNT queries, and it is cheap at this scale: a best is a couple of hundred bytes, so a page holds
+ * thousands of players. The cap exists so a runaway partition degrades (the caller returns no board)
+ * rather than turning a result-image request into an unbounded walk.
+ */
+export async function queryGsiAll<T>(indexName: string, pkName: string, pkValue: string, maxPages = 5): Promise<{ items: T[]; truncated: boolean }> {
+  const items: T[] = [];
+  let cursor: Record<string, unknown> | undefined;
+  for (let page = 0; page < maxPages; page++) {
+    const result = await ddb.send(
+      new QueryCommand({
+        TableName: TABLE_NAME,
+        IndexName: indexName,
+        KeyConditionExpression: `${pkName} = :pk`,
+        ExpressionAttributeValues: { ':pk': pkValue },
+        ScanIndexForward: true,
+        ExclusiveStartKey: cursor,
+      }),
+    );
+    items.push(...((result.Items || []) as T[]));
+    cursor = result.LastEvaluatedKey;
+    if (!cursor) return { items, truncated: false };
+  }
+  return { items, truncated: true };
 }
 
 export async function putState(
