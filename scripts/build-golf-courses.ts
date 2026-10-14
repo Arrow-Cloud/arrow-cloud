@@ -94,32 +94,41 @@ const SOURCES: { slug: string; name: string; order: number; file: string }[] = [
   { slug: 'beta-pines', name: 'Beta Pines', order: 2, file: 'scripts/data/golf-beta-pines-pars-final.json' },
 ];
 
+// Hidden test courses built from a real pars file, so they carry real song metadata (unlike the
+// hash-only course below). Hidden means no public boards - only result cards, for allow-listed users.
+const HIDDEN_SOURCES: { slug: string; name: string; order: number; file: string }[] = [
+  { slug: 'alpha-test', name: 'Alpha Test', order: 98, file: 'scripts/data/golf-alpha-test-pars-final2.json' },
+];
+
 // The original pre-beta hashes. They predate assign-golf-pars.ts, so they have no par and no song
 // metadata to read - they're carried as a hidden course purely as an end-to-end test target.
 const ALPHA_PAR = 3;
 const ALPHA_HASHES = ['7a520534f16d6455', '065f74f741eb2f9d', 'f3871997119d5052', '50bcefd78fa82988'];
 
 function build(): Course[] {
-  const courses: Course[] = SOURCES.map(({ slug, name, order, file }) => {
-    const entries: ParEntry[] = JSON.parse(readFileSync(file, 'utf-8'));
-    return {
-      slug,
-      name,
-      order,
-      hidden: false,
-      pack: entries[0]?.pack ?? null,
-      holes: entries.map((e, i) => ({
-        holeNumber: i + 1,
-        chartHash: e.chartHash,
-        displayName: toDisplayName(e.title),
-        songName: e.title,
-        songFolder: e.songFolder,
-        artist: unescapeSimfile(e.artist),
-        meter: e.meter,
-        par: e.par,
-      })),
+  const fromParsFile =
+    (hidden: boolean) =>
+    ({ slug, name, order, file }: { slug: string; name: string; order: number; file: string }): Course => {
+      const entries: ParEntry[] = JSON.parse(readFileSync(file, 'utf-8'));
+      return {
+        slug,
+        name,
+        order,
+        hidden,
+        pack: entries[0]?.pack ?? null,
+        holes: entries.map((e, i) => ({
+          holeNumber: i + 1,
+          chartHash: e.chartHash,
+          displayName: toDisplayName(e.title),
+          songName: e.title,
+          songFolder: e.songFolder,
+          artist: unescapeSimfile(e.artist),
+          meter: e.meter,
+          par: e.par,
+        })),
+      };
     };
-  });
+  const courses: Course[] = [...SOURCES.map(fromParsFile(false)), ...HIDDEN_SOURCES.map(fromParsFile(true))];
 
   courses.push({
     slug: 'alpha-testing',

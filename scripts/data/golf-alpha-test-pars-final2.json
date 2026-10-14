@@ -1,0 +1,74 @@
+[
+  {
+    "pack": "In The Golf - Alpha Test",
+    "songFolder": "Fly Wit Me",
+    "simfileFile": "Fly Wit Me.ssc",
+    "title": "Fly Wit Me (Medium)",
+    "artist": "かめりあ",
+    "stepsType": "dance-single",
+    "difficulty": "challenge",
+    "meter": 12,
+    "chartHash": "b862c60449ca5ff9",
+    "par": 14
+  },
+  {
+    "pack": "In The Golf - Alpha Test",
+    "songFolder": "Groove District",
+    "simfileFile": "groovedistrict.ssc",
+    "title": "Groove District (Hard)",
+    "artist": "スタージャンク95",
+    "stepsType": "dance-single",
+    "difficulty": "challenge",
+    "meter": 9,
+    "chartHash": "04fc25f6dedd4185",
+    "par": 3
+  },
+  {
+    "pack": "In The Golf - Alpha Test",
+    "songFolder": "High Affinity",
+    "simfileFile": "High Affinity.ssc",
+    "title": "High Affinity",
+    "artist": "Auvic",
+    "stepsType": "dance-single",
+    "difficulty": "challenge",
+    "meter": 13,
+    "chartHash": "3dd4c092e25ccde4",
+    "par": 8
+  },
+  {
+    "pack": "In The Golf - Alpha Test",
+    "songFolder": "LEMONADE",
+    "simfileFile": "LEMONADE.ssc",
+    "title": "LEMONADE",
+    "artist": "aespa/Zedd",
+    "stepsType": "dance-single",
+    "difficulty": "challenge",
+    "meter": 11,
+    "chartHash": "af8fed60698146ce",
+    "par": 5
+  },
+  {
+    "pack": "In The Golf - Alpha Test",
+    "songFolder": "Rainbow Rave Parade",
+    "simfileFile": "Rainbow Rave Parade.ssc",
+    "title": "Rainbow Rave Parade",
+    "artist": "Chime",
+    "stepsType": "dance-single",
+    "difficulty": "challenge",
+    "meter": 13,
+    "chartHash": "d11e451f74e74e98",
+    "par": 10
+  },
+  {
+    "pack": "In The Golf - Alpha Test",
+    "songFolder": "Rockin The Drums",
+    "simfileFile": "Rockin The Drums.ssc",
+    "title": "Rockin The Drums (Medium)",
+    "artist": "longstoryshort, Pulsedriver & MC Hughie Babe",
+    "stepsType": "dance-single",
+    "difficulty": "challenge",
+    "meter": 7,
+    "chartHash": "9cc32b8a9a788bb9",
+    "par": 3
+  }
+]

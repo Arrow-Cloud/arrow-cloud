@@ -51,7 +51,7 @@ export interface EventResultImageProvider<TScore, TContext> {
   renderImages(request: ResultImageRequest<TScore>, context: TContext | undefined): Promise<Buffer[]>;
 }
 
-const GOLF_TEST_USER_IDS = new Set(['3ac37479-c87f-459c-b3aa-c17e95c1a0d8', '27cfc687-8d10-4132-bd29-da3b4ef54dfb']);
+const GOLF_TEST_USER_IDS = new Set(['3ac37479-c87f-459c-b3aa-c17e95c1a0d8', '27cfc687-8d10-4132-bd29-da3b4ef54dfb', 'a5dd627d-c5c7-47a7-99b2-854dbb80bfe7']);
 
 interface GolfChartConfig {
   hash: string;
@@ -97,6 +97,13 @@ const GOLF_CHARTS: GolfChartConfig[] = [
   { hash: '065f74f741eb2f9d', courseName: 'Alpha Testing', par: 3, hidden: true },
   { hash: 'f3871997119d5052', courseName: 'Alpha Testing', par: 3, hidden: true },
   { hash: '50bcefd78fa82988', courseName: 'Alpha Testing', par: 3, hidden: true },
+  // In The Golf - Alpha Test (hidden course "alpha-test"; pars from scripts/data/golf-alpha-test-pars-final2.json)
+  { hash: 'b862c60449ca5ff9', courseName: 'Alpha Test', par: 14, hidden: true },
+  { hash: '04fc25f6dedd4185', courseName: 'Alpha Test', par: 3, hidden: true },
+  { hash: '3dd4c092e25ccde4', courseName: 'Alpha Test', par: 8, hidden: true },
+  { hash: 'af8fed60698146ce', courseName: 'Alpha Test', par: 5, hidden: true },
+  { hash: 'd11e451f74e74e98', courseName: 'Alpha Test', par: 10, hidden: true },
+  { hash: '9cc32b8a9a788bb9', courseName: 'Alpha Test', par: 3, hidden: true },
   // In The Golf - Beta Hills
   { hash: '3e9031441b77fab9', courseName: 'Beta Hills', par: 7 },
   { hash: '4f949d8e05f32f50', courseName: 'Beta Hills', par: 5 },

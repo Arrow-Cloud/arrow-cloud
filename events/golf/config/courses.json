@@ -379,6 +379,75 @@
       ]
     },
     {
+      "slug": "alpha-test",
+      "name": "Alpha Test",
+      "order": 98,
+      "hidden": true,
+      "pack": "In The Golf - Alpha Test",
+      "holes": [
+        {
+          "holeNumber": 1,
+          "chartHash": "b862c60449ca5ff9",
+          "displayName": "Fly Wit Me",
+          "songName": "Fly Wit Me (Medium)",
+          "songFolder": "Fly Wit Me",
+          "artist": "かめりあ",
+          "meter": 12,
+          "par": 14
+        },
+        {
+          "holeNumber": 2,
+          "chartHash": "04fc25f6dedd4185",
+          "displayName": "Groove District",
+          "songName": "Groove District (Hard)",
+          "songFolder": "Groove District",
+          "artist": "スタージャンク95",
+          "meter": 9,
+          "par": 3
+        },
+        {
+          "holeNumber": 3,
+          "chartHash": "3dd4c092e25ccde4",
+          "displayName": "High Affinity",
+          "songName": "High Affinity",
+          "songFolder": "High Affinity",
+          "artist": "Auvic",
+          "meter": 13,
+          "par": 8
+        },
+        {
+          "holeNumber": 4,
+          "chartHash": "af8fed60698146ce",
+          "displayName": "LEMONADE",
+          "songName": "LEMONADE",
+          "songFolder": "LEMONADE",
+          "artist": "aespa/Zedd",
+          "meter": 11,
+          "par": 5
+        },
+        {
+          "holeNumber": 5,
+          "chartHash": "d11e451f74e74e98",
+          "displayName": "Rainbow Rave Parade",
+          "songName": "Rainbow Rave Parade",
+          "songFolder": "Rainbow Rave Parade",
+          "artist": "Chime",
+          "meter": 13,
+          "par": 10
+        },
+        {
+          "holeNumber": 6,
+          "chartHash": "9cc32b8a9a788bb9",
+          "displayName": "Rockin The Drums",
+          "songName": "Rockin The Drums (Medium)",
+          "songFolder": "Rockin The Drums",
+          "artist": "longstoryshort, Pulsedriver & MC Hughie Babe",
+          "meter": 7,
+          "par": 3
+        }
+      ]
+    },
+    {
       "slug": "alpha-testing",
       "name": "Alpha Testing",
       "order": 99,
