@@ -7,7 +7,7 @@
  *   1. PLAY items carry gsi2 keys (gsi2pk=ACTIVITY) - without them a play is invisible to the feed
  *      query entirely, so an un-backfilled table returns an empty panel no matter how many plays
  *      it holds.
- *   2. PLAY items carry playerAlias - the feed needs a display name.
+ *   2. PLAY items carry playerAlias and profileImageUrl - the feed needs a display name, and boards an avatar.
  *   3. A sibling PLAY_NOTES item holds per-note strokes for the dispersion plot.
  *   4. Plays carry an eligibility verdict, and only an eligible play is indexed into the feed or
  *      allowed to set a personal best. Eligible means: passed, musicRate exactly 1, no autoplay
@@ -72,6 +72,8 @@ interface PlayRow {
   chartHash: string;
   timestamp: string;
   playerAlias?: string;
+  /** Absent until backfilled; null once backfilled for a player with no avatar. */
+  profileImageUrl?: string | null;
   gsi2pk?: string;
   eligible?: boolean | null;
   totalStrokes: number;
@@ -85,6 +87,7 @@ interface BestRow {
   totalStrokes: number;
   playId: number;
   playerAlias?: string;
+  profileImageUrl?: string | null;
   timestamp?: string;
   gsi1pk?: string;
   gsi1sk?: string;
@@ -94,6 +97,7 @@ interface StandingRow {
   pk: string;
   sk: string;
   gsi2sk?: string;
+  profileImageUrl?: string | null;
 }
 
 interface CourseConfig {
@@ -103,7 +107,7 @@ interface CourseConfig {
 
 interface PlayApiResponse {
   id: number;
-  user: { id: string; alias: string };
+  user: { id: string; alias: string; profileImageUrl?: string | null };
   timingData: [number, number | 'Miss'][] | null;
   radar: { Holds: [number, number]; Mines: [number, number]; Rolls: [number, number] } | null;
   passed: boolean | null;
@@ -182,6 +186,8 @@ async function reconcileBests(plays: PlayRow[], apply: boolean): Promise<Map<str
     const existing = existingByKey.get(key);
     const wantKey = holeSortKey({ totalStrokes: play.totalStrokes, achievedAt: play.timestamp, userId: play.userId });
     const wantAlias = play.playerAlias ?? 'Unknown';
+    // undefined (not yet backfilled) must not equal null (no avatar), or the best would never be rewritten.
+    const wantAvatar = play.profileImageUrl === undefined ? undefined : play.profileImageUrl;
 
     if (
       existing &&
@@ -190,6 +196,8 @@ async function reconcileBests(plays: PlayRow[], apply: boolean): Promise<Map<str
       existing.gsi1sk === wantKey &&
       existing.gsi1pk === holePartitionKey(play.chartHash) &&
       existing.playerAlias === wantAlias &&
+      wantAvatar !== undefined &&
+      existing.profileImageUrl === wantAvatar &&
       existing.timestamp === play.timestamp
     ) {
       alreadyCurrent++;
@@ -212,6 +220,7 @@ async function reconcileBests(plays: PlayRow[], apply: boolean): Promise<Map<str
             chartHash: play.chartHash,
             totalStrokes: play.totalStrokes,
             playerAlias: wantAlias,
+            profileImageUrl: wantAvatar ?? null,
             timestamp: play.timestamp,
             gsi1pk: holePartitionKey(play.chartHash),
             gsi1sk: wantKey,
@@ -256,6 +265,7 @@ async function rebuildStandings(bestByKey: Map<string, PlayRow>, apply: boolean)
 
   for (const [userId, userBests] of bestsByUser) {
     const alias = userBests.find((b) => b.playerAlias)?.playerAlias ?? 'Unknown';
+    const profileImageUrl = userBests.find((b) => b.playerAlias)?.profileImageUrl ?? null;
     for (const course of courses) {
       const aggregate = aggregateCourse(
         userBests.map((b) => ({ chartHash: b.chartHash, totalStrokes: b.totalStrokes, achievedAt: b.timestamp })),
@@ -268,7 +278,8 @@ async function rebuildStandings(bestByKey: Map<string, PlayRow>, apply: boolean)
       wanted.add(`${pk}|${sk}`);
       const totalHoles = course.holes.length;
       const gsi2sk = courseSortKey({ userId, alias, ...aggregate }, totalHoles);
-      if (existingByKey.get(`${pk}|${sk}`)?.gsi2sk === gsi2sk) {
+      const current = existingByKey.get(`${pk}|${sk}`);
+      if (current?.gsi2sk === gsi2sk && current.profileImageUrl === profileImageUrl) {
         alreadyCurrent++;
         continue;
       }
@@ -283,6 +294,7 @@ async function rebuildStandings(bestByKey: Map<string, PlayRow>, apply: boolean)
               type: 'COURSE_STANDING',
               userId,
               playerAlias: alias,
+              profileImageUrl,
               courseSlug: course.slug,
               holesCompleted: aggregate.holesCompleted,
               totalHoles,
@@ -330,7 +342,9 @@ async function main() {
       process.exit(1);
     }
   }
-  const todo = plays.filter((p) => !p.gsi2pk || !p.playerAlias || p.eligible === undefined).slice(0, limit);
+  // A play still needs work if it lacks feed keys, an alias, a verdict, or the avatar field (null counts as present).
+  const needsWork = (p: PlayRow) => !p.gsi2pk || !p.playerAlias || p.eligible === undefined || p.profileImageUrl === undefined;
+  const todo = plays.filter(needsWork).slice(0, limit);
 
   console.log(`${plays.length} PLAY items, ${plays.length - todo.length} already current, ${todo.length} to backfill.\n`);
   // No early return when there is nothing to do per play: the BEST and standings phases below are
@@ -351,6 +365,7 @@ async function main() {
       const detail = (await res.json()) as PlayApiResponse;
 
       const alias = detail.user?.alias ?? play.playerAlias ?? 'Unknown';
+      const profileImageUrl = detail.user?.profileImageUrl ?? null;
 
       // Same shared rule the score processor applies, so a backfilled play and a freshly ingested
       // one can never disagree about whether it counts.
@@ -369,6 +384,9 @@ async function main() {
         : null;
       const eligible = check?.eligible ?? false;
       play.eligible = check ? eligible : null;
+      // Phases 2 and 3 are derived from these in-memory rows, so they need the values just resolved, not the stale ones.
+      play.playerAlias = alias;
+      play.profileImageUrl = profileImageUrl;
       if (check && !eligible) for (const r of check.reasons) reasonCounts[r] = (reasonCounts[r] || 0) + 1;
       if (!check) undetermined++;
 
@@ -383,9 +401,10 @@ async function main() {
             ...(eligible
               ? {
                   UpdateExpression:
-                    'SET playerAlias = :alias, eligible = :eligible, passed = :passed, musicRate = :rate, usedAutoplay = :auto, gsi2pk = :apk, gsi2sk = :ask REMOVE ineligibleReasons',
+                    'SET playerAlias = :alias, profileImageUrl = :avatar, eligible = :eligible, passed = :passed, musicRate = :rate, usedAutoplay = :auto, gsi2pk = :apk, gsi2sk = :ask REMOVE ineligibleReasons',
                   ExpressionAttributeValues: {
                     ':alias': alias,
+                    ':avatar': profileImageUrl,
                     ':eligible': check ? true : null,
                     ':passed': detail.passed,
                     ':rate': detail.musicRate,
@@ -396,9 +415,10 @@ async function main() {
                 }
               : {
                   UpdateExpression:
-                    'SET playerAlias = :alias, eligible = :eligible, ineligibleReasons = :reasons, passed = :passed, musicRate = :rate, usedAutoplay = :auto REMOVE gsi2pk, gsi2sk',
+                    'SET playerAlias = :alias, profileImageUrl = :avatar, eligible = :eligible, ineligibleReasons = :reasons, passed = :passed, musicRate = :rate, usedAutoplay = :auto REMOVE gsi2pk, gsi2sk',
                   ExpressionAttributeValues: {
                     ':alias': alias,
+                    ':avatar': profileImageUrl,
                     ':eligible': check ? false : null,
                     ':reasons': check ? check.reasons : ['undetermined'],
                     ':passed': detail.passed,
@@ -456,7 +476,7 @@ async function main() {
   // items this run actually processed. Under --limit the rest still read as undefined, which is not
   // "ineligible" but "unknown" - and the reconciler cannot tell the difference, so it would delete
   // the BEST of every hole it simply hasn't looked at yet. Skip it rather than act on partial data.
-  if (todo.length < plays.filter((p) => !p.gsi2pk || !p.playerAlias || p.eligible === undefined).length) {
+  if (todo.length < plays.filter(needsWork).length) {
     console.log(
       `\nSkipping BEST reconciliation and standings: --limit left ${plays.length - todo.length} play(s) unresolved, and reconciling on partial data would delete bests for holes this run never examined.`,
     );

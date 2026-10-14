@@ -59,6 +59,8 @@ export function coursePartitionKey(courseSlug: string): string {
 export interface HoleBest {
   userId: string;
   alias: string;
+  /** Carried through to board rows untouched. Undefined or null: show no avatar. */
+  profileImageUrl?: string | null;
   /** Raw integer strokes, as stored everywhere. Display is this / 1000. */
   totalStrokes: number;
   /** ISO timestamp of the play that set this best. */
@@ -75,6 +77,8 @@ export function holeSortKey(best: Pick<HoleBest, 'totalStrokes' | 'achievedAt' |
 export interface CourseStanding {
   userId: string;
   alias: string;
+  /** Carried through to board rows untouched. Undefined or null: show no avatar. */
+  profileImageUrl?: string | null;
   holesCompleted: number;
   /** Sum of the player's best on each completed hole, raw integer strokes. */
   totalStrokes: number;

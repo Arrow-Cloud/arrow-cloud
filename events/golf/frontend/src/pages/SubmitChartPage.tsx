@@ -150,15 +150,11 @@ const PACKS: Pack[] = [
   },
 ];
 
-// The one translucent glass panel every step's content sits in, matching HomePage.tsx's Section
-// treatment - so this page reads as part of the same site instead of a set of solid opaque cards
-// floating directly on the animated background (GradientBackground.tsx).
+// The one pop-card every step's content sits in, matching HomePage.tsx's Section
+// treatment - so this page reads as part of the same site
+// over the sky and hills of CourseBackground.tsx.
 function PageCard({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="card bg-base-100/70 backdrop-blur-md shadow-xl ring-1 ring-base-content/10 p-6 sm:p-10 w-full max-w-2xl flex flex-col gap-6">
-      {children}
-    </div>
-  );
+  return <div className="card pop-card p-6 sm:p-10 w-full max-w-2xl flex flex-col gap-6">{children}</div>;
 }
 
 const SubmitChartPage = () => {
@@ -289,7 +285,7 @@ const SubmitChartPage = () => {
           </div>
 
           {/* General Info & Charting Rules */}
-          <div className="card bg-base-200/60 p-5 flex flex-col gap-4">
+          <div className="card pop-tile p-5 flex flex-col gap-4">
             <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
               <FormattedMessage defaultMessage="General Information" id="elcNgS" description="General information section heading on submit chart page" />
             </h2>
@@ -353,7 +349,7 @@ const SubmitChartPage = () => {
             {PACKS.map((pack) => (
               <button
                 key={pack.id}
-                className="card bg-base-200/60 p-5 flex-row items-center justify-between gap-4 text-left hover:bg-base-300/70 transition-colors cursor-pointer border border-transparent hover:border-accent/30"
+                className="card pop-tile p-5 flex-row items-center justify-between gap-4 text-left hover:bg-base-300/70 transition-colors cursor-pointer border border-transparent hover:border-accent/30"
                 onClick={() => handlePackSelect(pack)}
               >
                 <div className="flex flex-col gap-1 min-w-0">
@@ -396,7 +392,7 @@ const SubmitChartPage = () => {
         </div>
 
         {/* Pack-specific Rules */}
-        <div className="card bg-base-200/60 p-5 flex flex-col gap-4">
+        <div className="card pop-tile p-5 flex flex-col gap-4">
           <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
             <FormattedMessage defaultMessage="Submission Rules" id="JHeC4d" description="Rules section heading on submit chart page" />
           </h2>
@@ -416,7 +412,7 @@ const SubmitChartPage = () => {
 
         {/* Upload form / success */}
         {uploadState === 'done' ? (
-          <div className="card bg-base-200/60 p-6 flex flex-col items-center gap-3 text-center">
+          <div className="card pop-tile p-6 flex flex-col items-center gap-3 text-center">
             <CheckCircle2 className="w-10 h-10 text-success" />
             <p className="font-semibold">
               <FormattedMessage defaultMessage="Chart submitted successfully!" id="vAro4O" description="Upload success message" />
@@ -426,7 +422,7 @@ const SubmitChartPage = () => {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="card bg-base-200/60 p-6 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="card pop-tile p-6 flex flex-col gap-4">
             <label className="form-control w-full">
               <div className="label">
                 <span className="label-text">

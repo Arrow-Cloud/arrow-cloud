@@ -20,7 +20,7 @@ import { aggregateCourse, coursePartitionKey, courseSortKey, type CourseStanding
  * No-op for a chart on no current course (a dropped chart has no course to stand on). Hidden courses
  * are written like any other: visibility is applied on read, so un-hiding one later needs no backfill.
  */
-export async function refreshCourseStanding(userId: string, alias: string, chartHash: string): Promise<void> {
+export async function refreshCourseStanding(userId: string, alias: string, profileImageUrl: string | null, chartHash: string): Promise<void> {
   const resolved = resolveHole(chartHash);
   if (!resolved) return;
   const { course } = resolved;
@@ -41,6 +41,7 @@ export async function refreshCourseStanding(userId: string, alias: string, chart
       type: 'COURSE_STANDING',
       userId,
       playerAlias: alias,
+      profileImageUrl,
       courseSlug: course.slug,
       holesCompleted: aggregate.holesCompleted,
       totalHoles,

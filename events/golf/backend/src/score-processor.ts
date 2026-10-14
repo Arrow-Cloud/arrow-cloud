@@ -113,6 +113,7 @@ async function processRecord(record: SQSRecord): Promise<void> {
       playId,
       userId,
       playerAlias: play.user.alias,
+      profileImageUrl: play.user.profileImageUrl ?? null,
       chartHash: event.chartHash,
       totalStrokes,
       noteCount,
@@ -147,7 +148,7 @@ async function processRecord(record: SQSRecord): Promise<void> {
   const currentBest = eligible ? await getState<BestItem>(`USER#${userId}`, `BEST#${event.chartHash}`) : undefined;
   if (eligible && (!currentBest || totalStrokes < currentBest.totalStrokes)) {
     // The hole board (gsi1) is every player's BEST item for this chart, ordered by holeSortKey, so the
-    // keys are written with the best rather than in a separate pass. The alias and achievedAt are
+    // keys are written with the best rather than in a separate pass. The alias, avatar and achievedAt are
     // denormalized onto it so a board row needs no second lookup per player.
     await putState(
       `USER#${userId}`,
@@ -159,6 +160,7 @@ async function processRecord(record: SQSRecord): Promise<void> {
         chartHash: event.chartHash,
         totalStrokes,
         playerAlias: play.user.alias,
+        profileImageUrl: play.user.profileImageUrl ?? null,
         timestamp,
       },
       {
@@ -169,7 +171,7 @@ async function processRecord(record: SQSRecord): Promise<void> {
 
     // A changed best changes the player's standing on its course, so refresh it. Done only when the
     // best actually changed: a play that doesn't beat the best can't move the standing.
-    await refreshCourseStanding(userId, play.user.alias, event.chartHash);
+    await refreshCourseStanding(userId, play.user.alias, play.user.profileImageUrl ?? null, event.chartHash);
   }
 }
 

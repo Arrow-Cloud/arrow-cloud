@@ -16,7 +16,8 @@ export const CHART_HASHES: string[] = JSON.parse(process.env.CHART_HASHES || '[]
 export interface PlayApiResponse {
   id: number;
   createdAt: string;
-  user: { id: string; alias: string };
+  /** `profileImageUrl` is a ready-to-use CloudFront URL, or null for a player with no avatar. */
+  user: { id: string; alias: string; profileImageUrl?: string | null };
   chart: { hash: string };
   timingData: [number, number | 'Miss'][] | null;
   radar: { Holds: [number, number]; Mines: [number, number]; Rolls: [number, number] } | null;
@@ -44,6 +45,9 @@ export interface PlayItem {
   /** Denormalized at score time. Goes stale if the player later renames - see
    * docs/plans/golf-beta-prep.md §4.2, which wants that resolved before beta. */
   playerAlias: string;
+  /** Denormalized with the alias, and stale in the same way until a profile-change event updates it. null:
+   * the player had no avatar when this was written. Absent: written before avatars were stored. */
+  profileImageUrl?: string | null;
   chartHash: string;
   totalStrokes: number;
   noteCount: number;
@@ -92,6 +96,8 @@ export interface BestItem {
    * items written before rankings existed; scripts/backfill-golf-play-notes.ts fills them in. Goes
    * stale if the player later renames - docs/plans/golf-beta-prep.md section 4.2. */
   playerAlias?: string;
+  /** The player's avatar when the best was set; see PlayItem.profileImageUrl. */
+  profileImageUrl?: string | null;
   /** When the play that set this best was made - the achievedAt used to break exact ties. */
   timestamp?: string;
   /** gsi1: this hole's board, ordered by holeSortKey. Absent until backfilled. */
@@ -108,6 +114,8 @@ export interface CourseStandingItem {
   type: 'COURSE_STANDING';
   userId: string;
   playerAlias: string;
+  /** The player's avatar when the standing was last rebuilt; see PlayItem.profileImageUrl. */
+  profileImageUrl?: string | null;
   courseSlug: string;
   holesCompleted: number;
   /** The course's hole count when this was written - what "complete" meant at the time. If a course

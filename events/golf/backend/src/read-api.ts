@@ -164,6 +164,7 @@ async function getActivity(params: Record<string, string>) {
       playId: play.playId,
       userId: play.userId,
       playerAlias: play.playerAlias ?? null,
+      profileImageUrl: play.profileImageUrl ?? null,
       timestamp: play.timestamp,
       courseSlug: course.slug,
       courseName: course.name,
@@ -350,6 +351,7 @@ async function getCourseLeaderboard(slug: string, params: Record<string, string>
       rows: items.map((i) => ({
         userId: i.userId,
         alias: i.playerAlias,
+        profileImageUrl: i.profileImageUrl,
         holesCompleted: i.holesCompleted,
         totalStrokes: i.totalStrokes,
         achievedAt: i.achievedAt,
@@ -375,7 +377,13 @@ async function getHoleLeaderboard(chartHash: string, params: Record<string, stri
     buildHoleLeaderboard({
       course: resolved.course,
       hole: resolved.hole,
-      rows: items.map((i) => ({ userId: i.userId, alias: i.playerAlias ?? 'Unknown', totalStrokes: i.totalStrokes, achievedAt: i.timestamp ?? i.updatedAt })),
+      rows: items.map((i) => ({
+        userId: i.userId,
+        alias: i.playerAlias ?? 'Unknown',
+        profileImageUrl: i.profileImageUrl,
+        totalStrokes: i.totalStrokes,
+        achievedAt: i.timestamp ?? i.updatedAt,
+      })),
       ...parsePaging(params),
     }),
   );

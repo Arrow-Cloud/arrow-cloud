@@ -52,6 +52,8 @@ every player, in rank order, with nothing added.
   reached the standing first is ahead.
 - **Rows are in order.** Render them top to bottom as given.
 - **No viewer or rival markers.** To highlight someone, compare `userId` yourself.
+- **`profileImageUrl`** is a ready-to-use image URL, or `null` for a player with no avatar. Render a placeholder
+  for `null`. It is stored with the alias, so it has the same freshness (see the known gaps).
 - **Paging only.** `limit` defaults to 50 (max 100). `offset` defaults to 0. Unusable values fall back to
   the defaults instead of erroring. Ranks are absolute: page two starts at rank 51. `totalPlayers` is the
   whole board, so one response is enough to build a pager. An `offset` past the end gives empty `rows`.
@@ -92,9 +94,9 @@ first hole; there is no minimum.
   "limit": 50,
   "offset": 0,
   "rows": [
-    { "rank": 1, "userId": "…", "alias": "bracken", "totalStrokes": 61240, "holesCompleted": 18, "complete": true },
-    { "rank": 2, "userId": "…", "alias": "nilo", "totalStrokes": 63910, "holesCompleted": 18, "complete": true },
-    { "rank": 3, "userId": "…", "alias": "teague", "totalStrokes": 27860, "holesCompleted": 4, "complete": false }
+    { "rank": 1, "userId": "…", "alias": "bracken", "profileImageUrl": "https://assets.arrowcloud.dance/profile-images/…", "totalStrokes": 61240, "holesCompleted": 18, "complete": true },
+    { "rank": 2, "userId": "…", "alias": "nilo", "profileImageUrl": null, "totalStrokes": 63910, "holesCompleted": 18, "complete": true },
+    { "rank": 3, "userId": "…", "alias": "teague", "profileImageUrl": null, "totalStrokes": 27860, "holesCompleted": 4, "complete": false }
   ]
 }
 ```
@@ -115,7 +117,7 @@ Each player's best eligible play on one hole, fewest strokes first. Get hashes f
   "limit": 50,
   "offset": 0,
   "rows": [
-    { "rank": 1, "userId": "…", "alias": "nilo", "totalStrokes": 630, "achievedAt": "2026-10-09T20:42:13.017Z" }
+    { "rank": 1, "userId": "…", "alias": "nilo", "profileImageUrl": null, "totalStrokes": 630, "achievedAt": "2026-10-09T20:42:13.017Z" }
   ]
 }
 ```
@@ -134,7 +136,7 @@ The boards show exactly what the score processor stored. There is no moderation 
 - **Banned and shadowbanned players are not filtered.** Golf has no user table, and core does not expose ban
   state to it.
 - **Plays deleted in core are not removed.** Golf's queue only accepts `score-submitted`.
-- **Aliases are as of the player's last best.** A rename is not propagated until they next improve a best.
+- **Aliases and avatars are as of the player's last best.** A rename or a new avatar is not propagated until they next improve a best.
 
 Fine to build against. Not fine to promote until these close.
 
@@ -182,6 +184,7 @@ Passing ids is safe: every row is already public in the unfiltered feed. If the 
       "playId": 531987,
       "userId": "…",
       "playerAlias": "bracken",
+      "profileImageUrl": null,
       "timestamp": "2026-10-08T01:26:47.304Z",
       "courseSlug": "beta-pines", "courseName": "Beta Pines", "holeNumber": 8,
       "chartHash": "9a5e366400f59236", "songName": "Example Song", "artist": "Example Artist",

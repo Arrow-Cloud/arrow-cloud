@@ -294,12 +294,41 @@ describe('leaderboards are raw: nothing skipped, nothing curated', () => {
   // player does it by userId. If a row ever gains a field, this fails and the README has to be updated with it.
   it('hole rows carry exactly the documented fields and no viewer or rival markers', () => {
     const row = buildHoleLeaderboard({ course: pines, hole: pines.holes[0], rows: holeRows, limit: 1, offset: 0 }).rows[0];
-    expect(Object.keys(row).sort()).toEqual(['achievedAt', 'alias', 'rank', 'totalStrokes', 'userId']);
+    expect(Object.keys(row).sort()).toEqual(['achievedAt', 'alias', 'profileImageUrl', 'rank', 'totalStrokes', 'userId']);
   });
 
   it('course rows carry exactly the documented fields and no viewer or rival markers', () => {
     const row = buildCourseLeaderboard({ course: pines, rows: courseRows, limit: 1, offset: 0 }).rows[0];
-    expect(Object.keys(row).sort()).toEqual(['alias', 'complete', 'holesCompleted', 'rank', 'totalStrokes', 'userId']);
+    expect(Object.keys(row).sort()).toEqual(['alias', 'complete', 'holesCompleted', 'profileImageUrl', 'rank', 'totalStrokes', 'userId']);
+  });
+
+  // The avatar is stored data like the alias: passed through untouched, and null (not undefined, which JSON would
+  // drop) for a player with none or a row written before avatars were stored.
+  it("passes each row's avatar through, and is null when there is none", () => {
+    const avatar = 'https://assets.example.test/profile-images/u1/a.png';
+    const hole = buildHoleLeaderboard({
+      course: pines,
+      hole: pines.holes[0],
+      rows: [
+        { userId: 'u1', alias: 'with', profileImageUrl: avatar, totalStrokes: 1000, achievedAt: '2026-10-01T00:00:00.000Z' },
+        { userId: 'u2', alias: 'null', profileImageUrl: null, totalStrokes: 2000, achievedAt: '2026-10-01T00:00:00.000Z' },
+        { userId: 'u3', alias: 'absent', totalStrokes: 3000, achievedAt: '2026-10-01T00:00:00.000Z' },
+      ],
+      limit: 10,
+      offset: 0,
+    });
+    expect(hole.rows.map((r) => r.profileImageUrl)).toEqual([avatar, null, null]);
+
+    const course = buildCourseLeaderboard({
+      course: pines,
+      rows: [
+        { userId: 'u1', alias: 'with', profileImageUrl: avatar, holesCompleted: 1, totalStrokes: 1000, achievedAt: '2026-10-01T00:00:00.000Z' },
+        { userId: 'u3', alias: 'absent', holesCompleted: 1, totalStrokes: 3000, achievedAt: '2026-10-01T00:00:00.000Z' },
+      ],
+      limit: 10,
+      offset: 0,
+    });
+    expect(course.rows.map((r) => r.profileImageUrl)).toEqual([avatar, null]);
   });
 
   // Two players with the same alias are two rows. De-duplicating by name would drop one and skip a rank.
