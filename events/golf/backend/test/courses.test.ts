@@ -10,10 +10,13 @@ interface Hole {
   chartHash: string;
   displayName: string;
   artist: string;
+  bannerUrl: string | null;
 }
 interface Course {
   slug: string;
   hidden: boolean;
+  description: string | null;
+  bannerUrl: string | null;
   holes: Hole[];
 }
 const courses = (JSON.parse(readFileSync(path.join(__dirname, '../../config/courses.json'), 'utf-8')) as { courses: Course[] }).courses;
@@ -44,6 +47,32 @@ describe('events/golf/config/courses.json', () => {
       seen.set(h.chartHash, where);
     }
     expect(duplicates).toEqual([]);
+  });
+
+  // GET /courses and /courses/{slug} serve these as-is, and the home page renders them with no fallback.
+  describe.each(courses.filter((c) => !c.hidden).map((course) => [course.slug, course] as const))('visible course %s', (_slug, course) => {
+    it('has a description', () => {
+      expect(course.description?.trim()).toBeTruthy();
+    });
+
+    // Served as-is, and rendered with no fallback. This pins the shape only; that the file exists in the assets
+    // bucket is a manual upload step this test cannot see.
+    it('has a banner on the assets CloudFront host', () => {
+      expect(course.bannerUrl).toMatch(new RegExp(`^https://assets\\.arrowcloud\\.dance/misc/golf/courses/${course.slug}-[0-9a-f]{8}\\.webp$`));
+    });
+
+    // A hole banner is optional (a song folder may have no usable image), but when present it must be the
+    // optimised file scripts/gather-golf-course-meta.ts writes, named for the chart so it can't be mixed up.
+    it('has a banner URL, or null, on every hole', () => {
+      for (const hole of course.holes) {
+        if (hole.bannerUrl === null) continue;
+        expect(hole.bannerUrl).toMatch(new RegExp(`^https://assets\\.arrowcloud\\.dance/misc/golf/holes/${hole.chartHash}-[0-9a-f]{8}\\.webp$`));
+      }
+    });
+
+    it('has most holes bannered (a mass of nulls means the gather script was not run)', () => {
+      expect(course.holes.filter((h) => h.bannerUrl).length).toBeGreaterThanOrEqual(course.holes.length - 3);
+    });
   });
 
   // Hole numbers are labels players see ("HOLE 8") and are explicit indices, not derived from order.

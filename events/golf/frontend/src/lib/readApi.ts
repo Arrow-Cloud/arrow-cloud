@@ -1,7 +1,9 @@
-// Client for the golf backend's public read API (events/golf/backend/README.md). No auth.
+// Client for the golf backend's public read API (events/golf/backend/README.md). Public reads; fetchCourse also sends the login token.
 //
 // Always same-origin under /api: CloudFront routes it to the read-api Lambda in production, and
 // the dev server proxies it to VITE_GOLF_READ_API_URL (vite.config.js). No base URL lives here.
+import { getStoredToken } from '@shared/services/authStorage';
+
 const READ_API_BASE = '/api';
 
 // In dev without VITE_GOLF_READ_API_URL there's no proxy, so /api would get Vite's index.html
@@ -77,4 +79,55 @@ export async function fetchCourseLeaderboard(slug: string, signal?: AbortSignal)
   const res = await fetch(`${READ_API_BASE}/courses/${encodeURIComponent(slug)}/leaderboard?limit=100`, { signal });
   if (!res.ok) throw new Error(`GET /courses/${slug}/leaderboard failed: ${res.status}`);
   return (await res.json()) as CourseLeaderboard;
+}
+
+// The session token the main site issued at login, as an Authorization header - or no headers when logged
+// out. Send it on reads that personalise (GET /courses/{slug}); the API treats a missing, expired or invalid
+// token as anonymous, never as an error, so it is always safe to attach.
+function sessionHeaders(): HeadersInit {
+  const token = getStoredToken();
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+// One hole of GET /courses/{slug}.
+export interface CourseHole {
+  holeNumber: number;
+  chartHash: string;
+  songName: string;
+  artist: string;
+  meter: number | null;
+  par: number | null;
+  /** Optimised 1024x400-shaped WebP, or null when the song has no image - render a fallback. */
+  bannerUrl: string | null;
+}
+
+export interface Course {
+  slug: string;
+  name: string;
+  order: number;
+  description: string | null;
+  bannerUrl: string | null;
+  holesTotal: number;
+  parTotal: number | null;
+  holes: CourseHole[];
+}
+
+// The viewer's stored best on one hole.
+export interface HoleBest {
+  chartHash: string;
+  /** Raw integer: divide by 1000 at render time. */
+  totalStrokes: number;
+  /** ISO 8601. */
+  achievedAt: string;
+}
+
+/**
+ * One course. When logged in, `bests` holds the viewer's best on each hole they have played (match to
+ * `course.holes` by `chartHash`; unplayed holes are absent) - one request instead of one per hole. It is
+ * undefined when logged out or the session is no longer valid.
+ */
+export async function fetchCourse(slug: string, signal?: AbortSignal): Promise<{ course: Course; bests?: HoleBest[] }> {
+  const res = await fetch(`${READ_API_BASE}/courses/${encodeURIComponent(slug)}`, { headers: sessionHeaders(), signal });
+  if (!res.ok) throw new Error(`GET /courses/${slug} failed: ${res.status}`);
+  return (await res.json()) as { course: Course; bests?: HoleBest[] };
 }

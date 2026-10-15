@@ -25,6 +25,8 @@ export interface Hole {
   artist: string;
   meter: number;
   par: number | null;
+  /** Full URL of the hole's banner image on the assets CloudFront distribution; null when the song has none. */
+  bannerUrl: string | null;
 }
 
 export interface Course {
@@ -36,6 +38,10 @@ export interface Course {
    * docs/plans/golf-beta-prep.md §1.4. */
   hidden: boolean;
   pack: string | null;
+  /** One short sentence for the course list; null when none is written. */
+  description: string | null;
+  /** Full URL of the banner image on the assets CloudFront distribution; null for none. */
+  bannerUrl: string | null;
   holes: Hole[];
 }
 

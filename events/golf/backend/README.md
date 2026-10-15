@@ -7,7 +7,8 @@ the course list, and a feed of recent plays.
 
 | Route | Returns | Shape |
 |---|---|---|
-| `GET /courses` | Every public course and its holes | Static index |
+| `GET /courses` | Every public course: name, banner, description, holes | Static index |
+| `GET /courses/{slug}` | One public course, same fields; when logged in, also the viewer's best on each hole | Static, plus one read when logged in |
 | `GET /courses/{slug}/leaderboard` | Everyone's standing on a course | **Raw leaderboard**, paged |
 | `GET /holes/{chartHash}/leaderboard` | Everyone's best on a hole | **Raw leaderboard**, paged |
 | `GET /activity` | Latest play per player | Feed (not a leaderboard) |
@@ -30,7 +31,9 @@ nothing. Application code never reads that variable; it only calls `/api/...`.
 
 Conventions:
 
-- **No auth, no caching.** Every response is fresh. Add your own client cache if you want one.
+- **Public, no caching.** Every response is fresh. Add your own client cache if you want one.
+- **Optional login.** Send `Authorization: Bearer <session token>` (the one the main site issues at login) and
+  routes that personalise will use it. See [Authentication](#authentication). Never needed; never an error.
 - **Strokes are raw integers.** Divide by 1000 and fix to 2dp at render time: `27860` → `"27.86"`. Store and
   pass the raw integer everywhere else.
 - **Errors** are `{ "error": "message" }` with `400` (bad or missing parameter), `404` (unknown thing) or
@@ -61,7 +64,8 @@ every player, in rank order, with nothing added.
 
 ### `GET /courses`
 
-Every public course, in display order, with its holes. The hidden Alpha Testing course is never listed.
+Every public course, in display order, with its name, banner, description and holes. Hidden courses (Alpha
+Test, Alpha Testing) are never listed.
 
 ```jsonc
 {
@@ -69,16 +73,65 @@ Every public course, in display order, with its holes. The hidden Alpha Testing 
     {
       "slug": "beta-pines",
       "name": "Beta Pines",
+      "order": 2,                // release order; the list is sorted by it
+      "description": "More challenging content to test your limits on golf scoring.",   // null if none
+      "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/courses/beta-pines-99f0ff48.webp",   // null if none
       "holesTotal": 18,
       "parTotal": 76,            // null if any hole has no par
       "holes": [
         { "holeNumber": 1, "chartHash": "88ea9f8af9490151", "songName": "Example Song",
-          "artist": "Example Artist", "meter": 10, "par": 4 }
+          "artist": "Example Artist", "meter": 10, "par": 4,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/88ea9f8af9490151-1a2b3c4d.webp" }   // null if the song has none
       ]
     }
   ]
 }
 ```
+
+Both `bannerUrl`s (course and hole) are full URLs on the assets CloudFront distribution, so they work from any
+origin. Every banner is a WebP at most 1024px wide, cropped to the 1024x400 banner shape (see below). A hole's
+`bannerUrl` is `null` when its song has no usable image (every current hole has one, but a new song may not): render a
+fallback. The file name ends in a hash of the image, so a URL never changes meaning: a new image is a new URL.
+
+### `GET /courses/{slug}`
+
+One course, with exactly the fields of a `/courses` entry (holes included), wrapped as `{ "course": { ... } }`.
+`404` for an unknown slug, and the same `404` for a hidden course, so a hidden slug reveals nothing.
+
+When the request carries a valid login token, the response also has the viewer's best on each hole of the
+course. This replaces one `/best` call per hole (18 per course). The viewer comes from the token, so there is no
+`userId` parameter:
+
+```jsonc
+{
+  "course": { /* as above */ },
+  "bests": [   // hole order; a hole the player has not played is absent; [] for a new player
+    { "chartHash": "9cc32b8a9a788bb9", "totalStrokes": 27860, "achievedAt": "2026-10-01T12:00:00.000Z" }
+  ]
+}
+```
+
+A logged-out caller, or one whose token is missing, expired or invalid, gets the plain course with **no `bests`
+key** (not an error). Match `bests` to `course.holes` by `chartHash`.
+
+Where the data comes from: `description` is hand-written in `scripts/data/golf-course-meta.json`. The images come from
+the packs, found by `scripts/gather-golf-course-meta.ts`: the course banner is `Banner=` in the pack's `Pack.ini`, and a
+hole banner is the `#BANNER:` of its song's `.ssc` (or, when that is empty, the folder's `banner.png` / `*-bn.png`, as
+ITGmania does). The script centre-crops each image to 1024x400, caps it at 1024px wide, encodes WebP (the originals total
+about 33 MB, the output about 2 MB) and writes the files to `scripts/output/golf-assets/` (gitignored), laid out as they
+sit in the bucket: `courses/<slug>-<hash>.webp` and `holes/<chartHash>-<hash>.webp`. The hash is of the source image and the
+settings, so a changed image gets a new name and the year-long cache never serves a stale one. It records the paths in
+`golf-course-meta.json` (`banner`, and `holes.<chartHash>.banner`), and `scripts/build-golf-courses.ts` turns them into
+URLs in [`../config/courses.json`](../config/courses.json).
+
+To change a banner or add a course or hole:
+1. `npx tsx scripts/gather-golf-course-meta.ts` (add `--dry-run` to preview; it never touches AWS). Check its notes:
+   songs with no image, and pictures cropped by more than 20% to fit.
+2. Upload: `aws s3 sync scripts/output/golf-assets s3://arrow-cloud-assets/misc/golf/ --content-type image/webp --cache-control "public, max-age=31536000, immutable"`
+   (the script prints this). Upload **before** deploying, or the API links to files that are not there yet.
+3. `npx tsx scripts/build-golf-courses.ts`, then deploy GolfBackend. No CloudFront invalidation is needed.
+
+The earlier PNG course banners (`misc/golf/acitgb*-bn.png`) are no longer referenced and can be deleted from the bucket.
 
 ### `GET /courses/{slug}/leaderboard`
 
@@ -148,19 +201,22 @@ A feed of the most recent play by each of the N most recently active players. It
 Course" panel. It is **not a leaderboard**: it is ordered by time, one row per player.
 
 ```
-GET /activity?limit=3&course=beta-pines&userIds=<id>,<id>
+GET /activity?limit=3&course=beta-pines&chartHash=<hash>&userIds=<id>,<id>
 ```
 
 | Param | Default | |
 |---|---|---|
 | `limit` | `3` | Max `50`. Rows to return (one per player). |
 | `course` | all courses | Optional. One course slug, e.g. `beta-pines`. |
+| `chartHash` | all holes | Optional. One hole's chart hash. Only visible-course charts are accepted. |
 | `userIds` | everyone | Optional. Comma-separated user ids, max 100. Only their plays. |
 
-`400` for an unknown `course` (the response lists `validCourses`) or more than 100 `userIds`.
+`400` for an unknown `course` (the response lists `validCourses`), an unknown or hidden `chartHash`, or more than 100 `userIds`.
 
 **With `course`:** each row is the player's latest play *on that course*. A player whose newest round was on
 another course still appears, via their latest round on this one.
+
+**With `chartHash`:** each row is the player's latest play *on that hole*, so a hole's feed is one row per player, not every attempt. Combined with `course`, a hash from another course returns an empty list.
 
 **"Rivals only":** there is no flag. The browser is authenticated with the core API, so it reads its own
 rivals there and passes their ids:
@@ -281,5 +337,35 @@ GET /best?userId=<uuid>&chartHash=<hash>
   (`api/src/utils/event-result-images.ts`) instead of importing golf's types. Change a field here and you
   must change it there.
 - **Tests:** `test/*.test.ts`, run by the api's jest (`cd api && npx jest`), which is what CI runs.
-- **`courses.json`** is hand-maintained. `scripts/build-golf-courses.ts` can generate it, but its input
-  files are not in the working tree.
+- **`courses.json`** is generated, not hand-edited: `scripts/build-golf-courses.ts` builds it from the par files
+  in `scripts/data/golf-*-pars-final*.json` (holes and pars) and `scripts/data/golf-course-meta.json` (description,
+  and the course and hole banner paths). `npx tsx scripts/build-golf-courses.ts --check` fails if the committed file is out of date.
+  To change a course:
+  - **Pars or holes:** re-run `scripts/assign-golf-pars.ts`, then rebuild.
+  - **Description:** edit `golf-course-meta.json`, then rebuild.
+  - **Banners (course and hole):** put the image in the pack, run `scripts/gather-golf-course-meta.ts` (it optimises
+    them into `scripts/output/golf-assets/` and prints the `aws s3 sync` upload command), upload, then rebuild. Details
+    under `GET /courses/{slug}` above.
+  - Then deploy GolfBackend. The config is bundled into the Lambda, so nothing takes effect until then.
+
+## Authentication
+
+The read API can tell who is calling, for routes that want to (`src/auth.ts`). It does not issue tokens. The
+main site logs the user in and issues a session JWT; the browser sends it as `Authorization: Bearer <token>`,
+and this Lambda verifies it against the same signing key (the `JwtSecret` secret ApiStack uses).
+
+- **Optional everywhere.** A missing, malformed, expired or wrongly-signed token means anonymous. It is never a
+  `401`, so a stale session cannot break a page that works logged out. If the signing key cannot be read (a deploy
+  problem) it is logged, and callers are treated as anonymous.
+- **Checked:** signature (HS256 only; `none` and other algorithms are rejected), expiry, and a non-empty `userId`.
+- **Not checked:** whether the user still exists or is banned, because the token is trusted without calling the
+  core API. Tokens last up to 30 days. That is fine for reading your own public bests. A route that **acts** for a
+  viewer needs a stronger check.
+- **Frontend:** `fetchCourse` in `frontend/src/lib/readApi.ts` attaches the token from the main site's auth
+  storage. Same-origin `/api` only: CloudFront forwards `Authorization` to the Lambda (the `api/*` behavior uses the
+  all-viewer-except-Host origin request policy, and caching is off).
+- **Wiring:** `readApiJwtSecretName: 'JwtSecret'` on the golf `EventBackendConstruct` sets `JWT_SECRET_ARN` and grants
+  read. Needs a GolfBackend deploy. Other events opt in the same way, and the secret is not granted by default.
+- **Adding a personalised route:** `const viewer = await getViewer(event.headers)`; `null` means anonymous.
+- `/best` and `/rankings` still take a `userId` parameter, because the core API calls them server-to-server
+  without a user token.

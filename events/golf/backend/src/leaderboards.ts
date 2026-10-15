@@ -17,6 +17,7 @@ export interface HoleConfig {
   artist: string;
   meter: number;
   par: number | null;
+  bannerUrl: string | null;
 }
 
 export interface CourseConfig {
@@ -24,6 +25,8 @@ export interface CourseConfig {
   name: string;
   order: number;
   hidden: boolean;
+  description: string | null;
+  bannerUrl: string | null;
   holes: readonly HoleConfig[];
 }
 
@@ -70,24 +73,57 @@ function parTotal(course: CourseConfig): number | null {
   return total;
 }
 
-/** GET /courses: every visible course with its holes. Static - nothing here comes from the table. */
-export function buildCoursesIndex(courses: readonly CourseConfig[]) {
+/** The course as a public caller sees it, holes included. The one shape behind both GET /courses (a list of
+ * these) and GET /courses/{slug}, so the two cannot drift apart. */
+function publicCourse(course: CourseConfig) {
   return {
-    courses: visibleCourses(courses).map((course) => ({
-      slug: course.slug,
-      name: course.name,
-      holesTotal: course.holes.length,
-      parTotal: parTotal(course),
-      holes: course.holes.map((hole) => ({
-        holeNumber: hole.holeNumber,
-        chartHash: hole.chartHash,
-        songName: hole.displayName,
-        artist: hole.artist,
-        meter: hole.meter,
-        par: hole.par,
-      })),
+    slug: course.slug,
+    name: course.name,
+    order: course.order,
+    description: course.description,
+    bannerUrl: course.bannerUrl,
+    holesTotal: course.holes.length,
+    parTotal: parTotal(course),
+    holes: course.holes.map((hole) => ({
+      holeNumber: hole.holeNumber,
+      chartHash: hole.chartHash,
+      songName: hole.displayName,
+      artist: hole.artist,
+      meter: hole.meter,
+      par: hole.par,
+      bannerUrl: hole.bannerUrl,
     })),
   };
+}
+
+/** GET /courses: every visible course with its holes. Static - nothing here comes from the table. */
+export function buildCoursesIndex(courses: readonly CourseConfig[]) {
+  return { courses: visibleCourses(courses).map(publicCourse) };
+}
+
+/** GET /courses/{slug}: one visible course, or undefined for an unknown or hidden one (see findVisibleCourse). */
+export function buildCourseDetail(courses: readonly CourseConfig[], slug: string) {
+  const course = findVisibleCourse(courses, slug);
+  return course ? { course: publicCourse(course) } : undefined;
+}
+
+/** One player's stored best on one hole, as GET /courses/{slug}?userId returns it. */
+export interface PlayerHoleBest {
+  chartHash: string;
+  totalStrokes: number;
+  achievedAt: string;
+}
+
+/**
+ * The viewer's bests on this course's holes, in hole order. `bests` is every best the player has stored
+ * (any course); only this course's holes are kept, and a hole they haven't played is simply absent.
+ */
+export function buildPlayerBests(course: CourseConfig, bests: readonly PlayerHoleBest[]): PlayerHoleBest[] {
+  const byHash = new Map(bests.map((b) => [b.chartHash, b]));
+  return course.holes.flatMap((hole) => {
+    const best = byHash.get(hole.chartHash);
+    return best ? [{ chartHash: best.chartHash, totalStrokes: best.totalStrokes, achievedAt: best.achievedAt }] : [];
+  });
 }
 
 // --- Boards ---

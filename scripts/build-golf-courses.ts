@@ -48,6 +48,9 @@ interface Hole {
   artist: string;
   meter: number;
   par: number | null;
+  /** Full URL of the hole's banner on the assets CloudFront distribution, from the song folder - see
+   * scripts/gather-golf-course-meta.ts. null when the song has no usable image. */
+  bannerUrl: string | null;
 }
 
 interface Course {
@@ -61,6 +64,11 @@ interface Course {
    * pipeline end to end without touching real beta boards. */
   hidden: boolean;
   pack: string | null;
+  /** One short sentence for the course list. Hand-written in scripts/data/golf-course-meta.json. null for hidden courses. */
+  description: string | null;
+  /** Full URL of the banner image (1024x400 aspect) on the assets CloudFront distribution, from the pack's own
+   * banner - see scripts/gather-golf-course-meta.ts. null when the course has none. */
+  bannerUrl: string | null;
   holes: Hole[];
 }
 
@@ -88,7 +96,29 @@ function toDisplayName(title: string): string {
 }
 
 const OUT = 'events/golf/config/courses.json';
+const META = 'scripts/data/golf-course-meta.json';
 
+// Banners live in the assets bucket (s3://arrow-cloud-assets/misc/golf/<path>), which CloudFront serves at
+// the same host as every other Arrow Cloud asset (CLOUDFRONT_ASSETS_URL in api/src/utils/s3.ts). The files are
+// optimised and named by scripts/gather-golf-course-meta.ts, which prints the upload command; the path stored
+// in the meta JSON (courses/<slug>-<hash>.webp, holes/<chartHash>-<hash>.webp) is all that is joined here.
+const ASSETS_BASE_URL = 'https://assets.arrowcloud.dance';
+const BANNER_PREFIX = 'misc/golf';
+const assetUrl = (path: string | null | undefined) => (path ? `${ASSETS_BASE_URL}/${BANNER_PREFIX}/${path}` : null);
+
+// Per-course and per-hole facts that come from the packs and from hand-writing, not from the par files.
+// Written by scripts/gather-golf-course-meta.ts; a course missing from it just has no description or banner.
+interface CourseMetaEntry {
+  description?: string;
+  banner?: string | null;
+  holes?: Record<string, { banner?: string | null }>;
+}
+const meta: Record<string, CourseMetaEntry> = JSON.parse(readFileSync(META, 'utf-8'));
+const metaFor = (slug: string) => ({
+  description: meta[slug]?.description?.trim() || null,
+  bannerUrl: assetUrl(meta[slug]?.banner),
+});
+const holeBannerUrl = (slug: string, chartHash: string) => assetUrl(meta[slug]?.holes?.[chartHash]?.banner);
 const SOURCES: { slug: string; name: string; order: number; file: string }[] = [
   { slug: 'beta-hills', name: 'Beta Hills', order: 1, file: 'scripts/data/golf-beta-hills-pars-final.json' },
   { slug: 'beta-pines', name: 'Beta Pines', order: 2, file: 'scripts/data/golf-beta-pines-pars-final.json' },
@@ -116,6 +146,7 @@ function build(): Course[] {
         order,
         hidden,
         pack: entries[0]?.pack ?? null,
+        ...metaFor(slug),
         holes: entries.map((e, i) => ({
           holeNumber: i + 1,
           chartHash: e.chartHash,
@@ -125,6 +156,7 @@ function build(): Course[] {
           artist: unescapeSimfile(e.artist),
           meter: e.meter,
           par: e.par,
+          bannerUrl: holeBannerUrl(slug, e.chartHash),
         })),
       };
     };
@@ -136,6 +168,7 @@ function build(): Course[] {
     order: 99,
     hidden: true,
     pack: null,
+    ...metaFor('alpha-testing'),
     holes: ALPHA_HASHES.map((chartHash, i) => ({
       holeNumber: i + 1,
       chartHash,
@@ -148,6 +181,7 @@ function build(): Course[] {
       // there is no real hole to calibrate against. Must match GOLF_CHARTS in
       // api/src/utils/event-result-images.ts, which carries its own copy for the result cards.
       par: ALPHA_PAR,
+      bannerUrl: null,
     })),
   });
 

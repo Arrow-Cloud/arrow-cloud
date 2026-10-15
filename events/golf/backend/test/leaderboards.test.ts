@@ -2,6 +2,7 @@ import {
   DEFAULT_LEADERBOARD_LIMIT,
   MAX_LEADERBOARD_LIMIT,
   buildCourseLeaderboard,
+  buildCourseDetail,
   buildCoursesIndex,
   buildHoleLeaderboard,
   findVisibleCourse,
@@ -15,10 +16,10 @@ import { rankCourseBoard, rankHoleBoard, type CourseStanding, type HoleBest } fr
 const T = (minute: number) => `2026-10-01T00:${String(minute).padStart(2, '0')}:00.000Z`;
 
 function hole(n: number, par: number | null = 3): HoleConfig {
-  return { holeNumber: n, chartHash: `hash${n}`, displayName: `Song ${n}`, artist: `Artist ${n}`, meter: 10, par };
+  return { holeNumber: n, chartHash: `hash${n}`, displayName: `Song ${n}`, artist: `Artist ${n}`, meter: 10, par, bannerUrl: null };
 }
 function course(slug: string, holes: HoleConfig[], overrides: Partial<CourseConfig> = {}): CourseConfig {
-  return { slug, name: slug.toUpperCase(), order: 1, hidden: false, holes, ...overrides };
+  return { slug, name: slug.toUpperCase(), order: 1, hidden: false, description: null, bannerUrl: null, holes, ...overrides };
 }
 const standing = (userId: string, holesCompleted: number, totalStrokes: number, minute = 0): CourseStanding => ({
   userId,
@@ -83,7 +84,15 @@ describe('buildCoursesIndex', () => {
     const index = buildCoursesIndex([course('pines', [hole(1, 3), hole(2, 4)])]);
     expect(index.courses).toHaveLength(1);
     expect(index.courses[0]).toMatchObject({ slug: 'pines', name: 'PINES', holesTotal: 2, parTotal: 7 });
-    expect(index.courses[0].holes[1]).toEqual({ holeNumber: 2, chartHash: 'hash2', songName: 'Song 2', artist: 'Artist 2', meter: 10, par: 4 });
+    expect(index.courses[0].holes[1]).toEqual({
+      holeNumber: 2,
+      chartHash: 'hash2',
+      songName: 'Song 2',
+      artist: 'Artist 2',
+      meter: 10,
+      par: 4,
+      bannerUrl: null,
+    });
   });
 
   it('never includes a hidden course', () => {
@@ -100,6 +109,56 @@ describe('buildCoursesIndex', () => {
   it('serves the cleaned song name, not the raw simfile title', () => {
     const raw: HoleConfig = { ...hole(1), displayName: 'Chemicals' };
     expect(buildCoursesIndex([course('c', [raw])]).courses[0].holes[0].songName).toBe('Chemicals');
+  });
+});
+
+describe('course description and banner', () => {
+  const described = course('pines', [hole(1, 3), hole(2, 4)], { order: 2, description: 'Harder content.', bannerUrl: 'https://assets.example/pines.png' });
+
+  it('puts the order, description and banner on each /courses entry', () => {
+    expect(buildCoursesIndex([described]).courses[0]).toMatchObject({
+      order: 2,
+      description: 'Harder content.',
+      bannerUrl: 'https://assets.example/pines.png',
+    });
+  });
+
+  it('reports null, not undefined, for a course with neither', () => {
+    // undefined would drop the keys from the JSON, so a client could not tell "none" from "old API".
+    const entry = buildCoursesIndex([course('bare', [hole(1)])]).courses[0];
+    expect(entry.description).toBeNull();
+    expect(entry.bannerUrl).toBeNull();
+    expect(JSON.parse(JSON.stringify(entry))).toHaveProperty('description', null);
+  });
+
+  it('puts each hole banner on the hole, null (not undefined) when a song has none', () => {
+    const withBanner: HoleConfig = { ...hole(1), bannerUrl: 'https://assets.example/holes/hash1-ab12cd34.webp' };
+    const holes = buildCoursesIndex([course('c', [withBanner, hole(2)])]).courses[0].holes;
+    expect(holes[0].bannerUrl).toBe('https://assets.example/holes/hash1-ab12cd34.webp');
+    expect(holes[1].bannerUrl).toBeNull();
+    expect(JSON.parse(JSON.stringify(holes[1]))).toHaveProperty('bannerUrl', null);
+  });
+
+  it('lists courses in display order', () => {
+    const index = buildCoursesIndex([course('b', [hole(1)], { order: 2 }), course('a', [hole(1)], { order: 1 })]);
+    expect(index.courses.map((c) => c.slug)).toEqual(['a', 'b']);
+  });
+
+  describe('buildCourseDetail', () => {
+    it('returns the same fields as the list entry, holes included', () => {
+      const detail = buildCourseDetail([described, course('hills', [hole(1)])], 'pines');
+      expect(detail).toEqual({ course: buildCoursesIndex([described]).courses[0] });
+      expect(detail!.course.holes.map((h) => h.chartHash)).toEqual(['hash1', 'hash2']);
+    });
+
+    it('is undefined for an unknown course', () => {
+      expect(buildCourseDetail([described], 'nope')).toBeUndefined();
+    });
+
+    // Naming a hidden course must look exactly like naming one that does not exist.
+    it('is undefined for a hidden course', () => {
+      expect(buildCourseDetail([course('secret', [hole(1)], { hidden: true })], 'secret')).toBeUndefined();
+    });
   });
 });
 

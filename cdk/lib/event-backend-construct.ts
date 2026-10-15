@@ -6,6 +6,7 @@ import * as sns from 'aws-cdk-lib/aws-sns';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as snsSubscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 
@@ -52,6 +53,15 @@ export interface EventBackendProps {
    */
   readApiMemorySize?: number;
 
+  /**
+   * Name of the Secrets Manager secret holding the core API's session-JWT signing key (`JwtSecret`).
+   * Opt-in: when set, the read API Lambda can read it (JWT_SECRET_ARN) and so verify the logged-in
+   * user's token itself - see events/golf/backend/src/auth.ts. Without it the read API stays fully
+   * anonymous. Granting this puts the signing key in a publicly reachable Lambda, so only turn it on
+   * for events whose read API actually needs to know who is calling.
+   */
+  readApiJwtSecretName?: string;
+
   // --- Shared ---
 
   /** Base URL for the Arrow Cloud API (default: https://api.arrowcloud.dance) */
@@ -92,6 +102,7 @@ export class EventBackendConstruct extends Construct {
       readApiCodePath,
       readApiHandler,
       readApiMemorySize = 256,
+      readApiJwtSecretName,
       scheduleInterval = cdk.Duration.hours(1),
       apiBaseUrl = 'https://api.arrowcloud.dance',
       environment = {},
@@ -221,6 +232,12 @@ export class EventBackendConstruct extends Construct {
       });
 
       this.table.grantReadData(this.readApiLambda);
+
+      if (readApiJwtSecretName) {
+        const jwtSecret = secretsmanager.Secret.fromSecretNameV2(this, 'ReadApiJwtSecret', readApiJwtSecretName);
+        this.readApiLambda.addEnvironment('JWT_SECRET_ARN', jwtSecret.secretArn);
+        jwtSecret.grantRead(this.readApiLambda);
+      }
 
       const readFnUrl = this.readApiLambda.addFunctionUrl({
         authType: lambda.FunctionUrlAuthType.NONE,

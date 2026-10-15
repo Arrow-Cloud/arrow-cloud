@@ -11,12 +11,22 @@ import {
 } from './shared';
 import { COURSES, resolveVisibleHole, isVisibleCourseSlug, VISIBLE_COURSES } from './courses';
 import { parseIdFilter } from './query';
-import { buildCourseLeaderboard, buildCoursesIndex, buildHoleLeaderboard, findVisibleCourse, parsePaging } from './leaderboards';
+import { getViewer } from './auth';
+import {
+  buildCourseDetail,
+  buildCourseLeaderboard,
+  buildPlayerBests,
+  buildCoursesIndex,
+  buildHoleLeaderboard,
+  findVisibleCourse,
+  parsePaging,
+} from './leaderboards';
 import { computeRankings, coursePartitionKey, holePartitionKey } from './rankings';
 
 interface FunctionUrlEvent {
   requestContext: { http: { method: string; path: string } };
   queryStringParameters?: Record<string, string>;
+  headers?: Record<string, string>;
   rawPath: string;
 }
 
@@ -58,7 +68,7 @@ const MAX_ACTIVITY_PAGES = 5;
 const MAX_USER_IDS = 100;
 
 /**
- * GET /activity?limit=N&course=<slug>&userIds=<id,id,...>
+ * GET /activity?limit=N&course=<slug>&chartHash=<hash>&userIds=<id,id,...>
  *
  * The most recent play by each of the N most recently active players. Backs the "Currently On
  * Course" panel on the logged-out golf home page.
@@ -71,6 +81,10 @@ const MAX_USER_IDS = 100;
  * - `course` - one visible course slug (`beta-hills`, `beta-pines`). Omit for every course. An
  *   unknown or hidden slug is a 400 rather than an empty list, so a typo is reported instead of
  *   looking like a quiet event.
+ * - `chartHash` - one hole, by chart hash. Each row is then the player's most recent play on that hole.
+ *   Like `course`, an unknown or hidden hash is a 400 rather than an empty list, which also means a
+ *   hidden course's chart can't be probed through this path. Combined with `course`, both must match,
+ *   so a hash from a different course returns an empty list (a hole is on exactly one course).
  * - `userIds` - comma-separated user ids; only their plays are returned. This is what powers a
  *   "rivals only" toggle: the browser is already authenticated with the core API, so it reads its
  *   own rival list from `GET /rivals` there and passes the ids here.
@@ -92,8 +106,9 @@ const MAX_USER_IDS = 100;
  *   the affected DeadSync range. Enforced at write time by leaving ineligible plays out of the
  *   index entirely, and re-checked here so rows written before that rule still behave.
  *
- * Every filter runs before a player is marked as seen, so narrowing by course returns each player's
- * most recent play *on that course* rather than dropping players whose latest play was elsewhere.
+ * Every filter runs before a player is marked as seen, so narrowing by course (or chart) returns each
+ * player's most recent play *on that course* (or chart) rather than dropping players whose latest play
+ * was elsewhere.
  *
  * Filtering happens after the index read rather than through a per-course partition, so a narrow
  * filter walks more of the feed to fill a page. At MAX_ACTIVITY_PAGES x ACTIVITY_PAGE_SIZE that
@@ -112,6 +127,11 @@ async function getActivity(params: Record<string, string>) {
   const courseFilter = params.course?.trim();
   if (courseFilter && !isVisibleCourseSlug(courseFilter)) {
     return respond(400, { error: `Unknown course "${courseFilter}"`, validCourses: VISIBLE_COURSES.map((c) => c.slug) });
+  }
+
+  const chartFilter = params.chartHash?.trim();
+  if (chartFilter && !resolveVisibleHole(chartFilter)) {
+    return respond(400, { error: `Unknown chartHash "${chartFilter}"` });
   }
 
   const userIds = parseIdFilter(params.userIds);
@@ -142,6 +162,7 @@ async function getActivity(params: Record<string, string>) {
       if (seenUsers.has(play.userId)) continue;
       if (userIds && !userIds.has(play.userId)) continue;
       if (play.eligible === false) continue;
+      if (chartFilter && play.chartHash !== chartFilter) continue;
       const resolved = resolveVisibleHole(play.chartHash);
       if (!resolved) continue;
       if (courseFilter && resolved.course.slug !== courseFilter) continue;
@@ -318,6 +339,31 @@ function getCourses() {
 }
 
 /**
+ * GET /courses/{slug}: one course, same fields as a /courses entry. A hidden course is a 404, the same as an
+ * unknown one.
+ *
+ * For a logged-in caller (a valid session JWT in `Authorization: Bearer`, see auth.ts) the response also
+ * carries `bests`: that player's best on each hole of the course they have played, from one query on their
+ * partition - so a course page needs one request, not one per hole. Anonymous callers, and callers with a
+ * bad or expired token, get the plain course with no `bests` key.
+ */
+async function getCourse(slug: string, headers: Record<string, string> | undefined) {
+  const detail = buildCourseDetail(COURSES, slug);
+  if (!detail) return respond(404, { error: 'Unknown course' });
+
+  const viewer = await getViewer(headers);
+  if (!viewer) return respond(200, detail);
+
+  const course = findVisibleCourse(COURSES, slug)!;
+  const items = await queryState<BestItem>(`USER#${viewer.userId}`, 'BEST#');
+  const bests = buildPlayerBests(
+    course,
+    items.map((b) => ({ chartHash: b.chartHash, totalStrokes: b.totalStrokes, achievedAt: b.timestamp ?? b.updatedAt })),
+  );
+  return respond(200, { ...detail, bests });
+}
+
+/**
  * Both boards below read their whole partition and page in memory, rather than paging the index. At this
  * scale a partition is a few hundred bytes per player, so a request costs one cheap query and gets the true
  * total and absolute ranks for free. The read is capped (queryGsiAll's maxPages); a board past the cap is a
@@ -397,6 +443,9 @@ export async function handler(event: FunctionUrlEvent) {
   if (path === '/activity') return getActivity(params);
   if (path === '/rankings') return getRankings(params);
   if (path === '/courses') return getCourses();
+
+  const courseDetail = path.match(/^\/courses\/([^/]+)$/);
+  if (courseDetail) return getCourse(courseDetail[1], event.headers);
 
   const courseBoard = path.match(/^\/courses\/([^/]+)\/leaderboard$/);
   if (courseBoard) return getCourseLeaderboard(courseBoard[1], params);
