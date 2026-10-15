@@ -8,6 +8,7 @@ import { assetS3UrlToCloudFrontUrl } from '../utils/s3';
 import { getUserPreferredLeaderboardIds, setUserPreferredLeaderboards, UpdatePreferredLeaderboardsSchema } from '../services/userPreferredLeaderboards';
 import { getUserTrophies, updateTrophyDisplayOrder } from '../services/trophies';
 import { publishDiscordMessage } from '../utils/discordNotify';
+import { buildUserUpdatedEvent, publishUserUpdatedEvent } from '../utils/events';
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 import { resolveChartBanner } from '../utils/chart-banner';
@@ -700,6 +701,11 @@ export const updateProfile = async (event: AuthenticatedEvent, prisma: PrismaCli
       },
     });
 
+    // Event backends keep a copy of the alias beside each score, so tell them it changed.
+    if (alias && alias !== currentUser.alias) {
+      await publishUserUpdatedEvent(buildUserUpdatedEvent({ ...updatedUser, banned: currentUser.banned }, ['alias']));
+    }
+
     // If alias changed, notify Discord
     if (alias && alias !== currentUser.alias) {
       try {
@@ -912,6 +918,7 @@ export const banUser = async (event: AuthenticatedEvent, prisma: PrismaClient): 
         id: true,
         email: true,
         alias: true,
+        profileImageUrl: true,
         banned: true,
       },
     });
@@ -943,13 +950,17 @@ export const banUser = async (event: AuthenticatedEvent, prisma: PrismaClient): 
     }
 
     // Ban the user
-    await prisma.user.update({
+    const bannedUser = await prisma.user.update({
       where: { id: userId },
       data: {
         banned: true,
         shadowBanned: false,
       },
+      select: { id: true, alias: true, profileImageUrl: true, banned: true, updatedAt: true },
     });
+
+    // Event backends show players on public boards, so tell them this one is no longer eligible to appear.
+    await publishUserUpdatedEvent(buildUserUpdatedEvent(bannedUser, ['banned']));
 
     // Send Discord notification
     try {

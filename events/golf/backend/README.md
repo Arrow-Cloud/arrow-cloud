@@ -189,7 +189,7 @@ The boards show exactly what the score processor stored. There is no moderation 
 - **Banned and shadowbanned players are not filtered.** Golf has no user table, and core does not expose ban
   state to it.
 - **Plays deleted in core are not removed.** Golf's queue only accepts `score-submitted`.
-- **Aliases and avatars are as of the player's last best.** A rename or a new avatar is not propagated until they next improve a best.
+- **Aliases and avatars follow the player's profile.** Core publishes a `user-updated` event on a rename or avatar change, and the score processor rewrites the alias and avatar on all of that player's plays, bests and course standings (`src/user-updates.ts`). Until that is deployed, or for a change made before it was, a row shows the alias as of the player's last best. Ban state is ignored. The queue subscription is opt-in (`subscribeToUserUpdates` on `EventBackendConstruct`); golf sets it, and a new event whose processor does not handle `user-updated` must not.
 
 Fine to build against. Not fine to promote until these close.
 

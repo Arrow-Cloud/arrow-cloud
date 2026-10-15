@@ -34,6 +34,13 @@ export interface EventBackendProps {
   /** Handler entry point for the scheduled processor Lambda (e.g. "scheduled-processor.handler") */
   scheduledProcessorHandler?: string;
 
+  /**
+   * Also deliver `user-updated` events (a player's alias or avatar changed) to the score processor's queue.
+   * Opt-in: the processor must handle that event type, or it throws on every one and the messages end up in
+   * the dead-letter queue. Golf's does (events/golf/backend/src/score-processor.ts); testevent's does not.
+   */
+  subscribeToUserUpdates?: boolean;
+
   /** How often the scheduled Lambda runs (default: 1 hour) */
   scheduleInterval?: cdk.Duration;
 
@@ -103,6 +110,7 @@ export class EventBackendConstruct extends Construct {
       readApiHandler,
       readApiMemorySize = 256,
       readApiJwtSecretName,
+      subscribeToUserUpdates = false,
       scheduleInterval = cdk.Duration.hours(1),
       apiBaseUrl = 'https://api.arrowcloud.dance',
       environment = {},
@@ -160,18 +168,30 @@ export class EventBackendConstruct extends Construct {
         },
       });
 
-      scoreSubmissionTopic.addSubscription(
+      const scoreFilter = { eventType: ['score-submitted'], chartHash: chartHashes };
+      const scoreSubscription = scoreSubmissionTopic.addSubscription(
         new snsSubscriptions.SqsSubscription(this.queue, {
-          filterPolicy: {
-            eventType: sns.SubscriptionFilter.stringFilter({
-              allowlist: ['score-submitted'],
-            }),
-            chartHash: sns.SubscriptionFilter.stringFilter({
-              allowlist: chartHashes,
-            }),
-          },
+          // With user updates the whole policy is set by the override below instead; an override merges
+          // into this one rather than replacing it, which would leave these keys beside the `$or`.
+          filterPolicy: subscribeToUserUpdates
+            ? undefined
+            : {
+                eventType: sns.SubscriptionFilter.stringFilter({ allowlist: scoreFilter.eventType }),
+                chartHash: sns.SubscriptionFilter.stringFilter({ allowlist: chartHashes }),
+              },
         }),
       );
+
+      // User changes (alias, avatar) are about a player, not a chart, so a policy requiring a chartHash can
+      // never match them. They cannot get a subscription of their own to this queue: SNS allows ONE
+      // subscription per topic and endpoint, and a second with a different filter is rejected ("Subscription
+      // already exists with different attributes"). So the one subscription's filter becomes "a score for one
+      // of our charts OR a user-updated event", using SNS's `$or` matching.
+      if (subscribeToUserUpdates) {
+        (scoreSubscription.node.defaultChild as sns.CfnSubscription).addPropertyOverride('FilterPolicy', {
+          $or: [scoreFilter, { eventType: ['user-updated'] }],
+        });
+      }
 
       this.scoreProcessorLambda = new lambda.Function(this, 'ScoreProcessorLambda', {
         functionName: `${prefix}-score-processor`,

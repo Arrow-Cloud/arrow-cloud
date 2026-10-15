@@ -71,6 +71,8 @@ export class GolfBackendStack extends cdk.Stack {
       // The course page returns the logged-in player's bests, so the read API verifies the core API's
       // session JWT (events/golf/backend/src/auth.ts). Same secret ApiStack reads - api-stack.ts.
       readApiJwtSecretName: 'JwtSecret',
+      // Rewrite a player's alias and avatar on their stored plays and bests when they change them.
+      subscribeToUserUpdates: true,
     });
 
     this.table = this.backend.table;

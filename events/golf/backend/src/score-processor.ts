@@ -16,6 +16,7 @@ import { refreshCourseStanding } from './standings';
 import { checkGolfEligibility } from '../../../../api/src/utils/scoring/eligibility';
 import { calculateGolfStrokes } from '../../../../api/src/utils/scoring/golf';
 import { holePartitionKey, holeSortKey } from './rankings';
+import { applyUserUpdate, type UserUpdatedMessage } from './user-updates';
 
 interface ScoreSubmissionEvent {
   eventType: string;
@@ -45,7 +46,24 @@ interface ScoreSubmissionEvent {
  */
 async function processRecord(record: SQSRecord): Promise<void> {
   const snsWrapper = JSON.parse(record.body);
-  const event: ScoreSubmissionEvent = JSON.parse(snsWrapper.Message);
+  const message = JSON.parse(snsWrapper.Message);
+
+  // The queue carries two event types (see the subscription filters in event-backend-construct.ts).
+  // Anything unrecognised is dropped rather than failed: retrying it three times and dead-lettering it
+  // would not make it processable.
+  if (message.eventType === 'user-updated') {
+    const { updated, skipped } = await applyUserUpdate(message as UserUpdatedMessage);
+    console.log(
+      `[${EVENT_SLUG}] User updated: user=${message.userId} changed=${(message.changed ?? []).join(',')} items updated=${updated} skipped=${skipped}`,
+    );
+    return;
+  }
+  if (message.eventType !== 'score-submitted') {
+    console.warn(`[${EVENT_SLUG}] Ignoring unexpected event type ${message.eventType}`);
+    return;
+  }
+
+  const event: ScoreSubmissionEvent = message;
 
   console.log(`[${EVENT_SLUG}] Score received: chart=${event.chartHash} user=${event.userId} play=${event.play.id}`);
 
