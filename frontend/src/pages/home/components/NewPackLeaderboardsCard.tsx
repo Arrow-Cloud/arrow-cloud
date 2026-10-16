@@ -8,18 +8,15 @@ import { FormattedMessage, useIntl } from 'react-intl';
 // card mid-day for some players.
 const EXPIRY = new Date('2026-11-01T00:00:00');
 
-// The single pack we're launching a leaderboard for. Not sourced from THC4_PACK_ID-style shared
-// constants the way the previous card was: that constant exists because THC4 needed a difficulty
-// override keyed by id, and this pack is plain medium/hard/challenge with nothing else referencing it.
+// The single pack we're launching a leaderboard for. A plain literal, not a shared constant: this pack is
+// plain medium/hard/challenge with nothing else referencing its id.
 const PACK = {
-  id: 387,
-  name: "Kerpa's Simfiles Playlist 5",
-  // The pack's own banner, straight off the CDN. This pack has no _md/_sm or webp/avif variants
-  // (bannerVariants is null), so there's no smaller version to prefer - see this file's git history
-  // if an optimized upload is added later.
-  bannerUrl: 'https://assets.arrowcloud.dance/packs/1790891242672_kerpa-s_simfiles_playlist_5/pack-banner.png',
+  id: 389,
+  name: 'altruism2',
+  // Hand-uploaded to the assets bucket (misc/), served through the assets distribution.
+  bannerUrl: 'https://assets.arrowcloud.dance/misc/altruism2.png',
   // Native dimensions, for the aspect box below - keeps the image from reflowing the page as it loads.
-  bannerAspect: '2007/783',
+  bannerAspect: '1024/400',
 };
 
 /**
