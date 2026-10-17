@@ -1,4 +1,5 @@
-import { updateProfile, getUserById } from '../../src/controllers/profile';
+import { updateProfile, getUserById, banUser } from '../../src/controllers/profile';
+import { publishUserUpdatedEvent } from '../../src/utils/events';
 import { getUserPreferredLeaderboardIds } from '../../src/services/userPreferredLeaderboards';
 import { getUserTrophies } from '../../src/services/trophies';
 import { AuthenticatedEvent } from '../../src/utils/types';
@@ -17,6 +18,13 @@ jest.mock('../../src/utils/s3', () => ({
   assetS3UrlToCloudFrontUrl: jest.fn((url) => (url ? url.replace('s3://', 'https://') : null)),
   toCfVariantSet: jest.fn((vs) => (vs ? vs : undefined)),
 }));
+
+// Keep the real event builder (its output is what these tests assert on); only the SNS publish is replaced.
+jest.mock('../../src/utils/events', () => ({
+  ...jest.requireActual('../../src/utils/events'),
+  publishUserUpdatedEvent: jest.fn(),
+}));
+const mockPublishUserUpdated = publishUserUpdatedEvent as jest.MockedFunction<typeof publishUserUpdatedEvent>;
 
 const mockVerifyPassword = verifyPassword as jest.MockedFunction<typeof verifyPassword>;
 const mockHashPassword = hashPassword as jest.MockedFunction<typeof hashPassword>;
@@ -484,6 +492,76 @@ describe('Profile Controller', () => {
       });
     });
 
+    describe('user-updated event', () => {
+      const fixedDate = new Date('2026-10-14T12:00:00.000Z');
+      const updatedUser = {
+        id: 'user-123',
+        email: 'test@example.com',
+        alias: 'newuser',
+        profileImageUrl: 's3://avatars/user-123/a.png',
+        emailVerifiedAt: null,
+        createdAt: fixedDate,
+        updatedAt: fixedDate,
+      };
+
+      it('publishes a snapshot when the alias changes', async () => {
+        mockPrisma.user.findUnique = jest
+          .fn()
+          .mockResolvedValueOnce({ ...mockUser, banned: false })
+          .mockResolvedValueOnce(null);
+        mockPrisma.user.update = jest.fn().mockResolvedValue(updatedUser);
+
+        await updateProfile(mockAuthenticatedEvent, mockPrisma);
+
+        expect(mockPublishUserUpdated).toHaveBeenCalledTimes(1);
+        expect(mockPublishUserUpdated.mock.calls[0][0]).toMatchObject({
+          eventType: 'user-updated',
+          userId: 'user-123',
+          changed: ['alias'],
+          user: { alias: 'newuser', profileImageUrl: 'https://avatars/user-123/a.png', banned: false, updatedAt: '2026-10-14T12:00:00.000Z' },
+        });
+      });
+
+      it('does not publish when the alias is submitted but unchanged', async () => {
+        mockPrisma.user.findUnique = jest.fn().mockResolvedValue(mockUser);
+        mockPrisma.user.update = jest.fn().mockResolvedValue({ ...updatedUser, alias: 'testuser' });
+
+        await updateProfile({ ...mockAuthenticatedEvent, body: JSON.stringify({ alias: 'testuser' }) }, mockPrisma);
+
+        expect(mockPublishUserUpdated).not.toHaveBeenCalled();
+      });
+
+      it('does not publish for a change that is not an alias (a timezone)', async () => {
+        mockPrisma.user.findUnique = jest.fn().mockResolvedValue(mockUser);
+        mockPrisma.user.update = jest.fn().mockResolvedValue(updatedUser);
+
+        await updateProfile({ ...mockAuthenticatedEvent, body: JSON.stringify({ timezone: 'America/Chicago' }) }, mockPrisma);
+
+        expect(mockPublishUserUpdated).not.toHaveBeenCalled();
+      });
+
+      it('does not publish when the update is rejected (alias taken)', async () => {
+        mockPrisma.user.findUnique = jest.fn().mockResolvedValueOnce(mockUser).mockResolvedValueOnce({ id: 'someone-else' });
+
+        const result = await updateProfile(mockAuthenticatedEvent, mockPrisma);
+
+        expect(result.statusCode).toBe(409);
+        expect(mockPublishUserUpdated).not.toHaveBeenCalled();
+      });
+
+      it('reports the ban state it actually has, rather than assuming not banned', async () => {
+        mockPrisma.user.findUnique = jest
+          .fn()
+          .mockResolvedValueOnce({ ...mockUser, banned: true })
+          .mockResolvedValueOnce(null);
+        mockPrisma.user.update = jest.fn().mockResolvedValue(updatedUser);
+
+        await updateProfile(mockAuthenticatedEvent, mockPrisma);
+
+        expect(mockPublishUserUpdated.mock.calls[0][0].user.banned).toBe(true);
+      });
+    });
+
     it('should return 500 when there is a database error', async () => {
       mockPrisma.user.findUnique = jest.fn().mockRejectedValue(new Error('Database error'));
 
@@ -533,6 +611,58 @@ describe('Profile Controller', () => {
         },
         message: 'Profile updated successfully',
       });
+    });
+  });
+
+  describe('banUser', () => {
+    const fixedDate = new Date('2026-10-14T12:00:00.000Z');
+    let adminEvent: AuthenticatedEvent;
+
+    beforeEach(() => {
+      adminEvent = {
+        ...mockAuthenticatedEvent,
+        routeParameters: { userId: 'target-1' },
+        body: JSON.stringify({ reason: 'cheating', deleteData: false }),
+      } as unknown as AuthenticatedEvent;
+    });
+
+    it('publishes a ban event with the banned state and the stored avatar', async () => {
+      mockPrisma.user.findUnique = jest
+        .fn()
+        .mockResolvedValue({ id: 'target-1', email: 't@example.com', alias: 'cheater', profileImageUrl: 's3://avatars/target-1/a.png', banned: false });
+      mockPrisma.user.update = jest
+        .fn()
+        .mockResolvedValue({ id: 'target-1', alias: 'cheater', profileImageUrl: 's3://avatars/target-1/a.png', banned: true, updatedAt: fixedDate });
+
+      const result = await banUser(adminEvent, mockPrisma);
+
+      expect(result.statusCode).toBe(200);
+      expect(mockPublishUserUpdated).toHaveBeenCalledTimes(1);
+      expect(mockPublishUserUpdated.mock.calls[0][0]).toMatchObject({
+        userId: 'target-1',
+        changed: ['banned'],
+        user: { alias: 'cheater', banned: true, profileImageUrl: 'https://avatars/target-1/a.png' },
+      });
+    });
+
+    it('does not publish when the user is already banned', async () => {
+      mockPrisma.user.findUnique = jest
+        .fn()
+        .mockResolvedValue({ id: 'target-1', email: 't@example.com', alias: 'cheater', profileImageUrl: null, banned: true });
+
+      const result = await banUser(adminEvent, mockPrisma);
+
+      expect(result.statusCode).toBe(400);
+      expect(mockPublishUserUpdated).not.toHaveBeenCalled();
+    });
+
+    it('does not publish for a user that does not exist', async () => {
+      mockPrisma.user.findUnique = jest.fn().mockResolvedValue(null);
+
+      const result = await banUser(adminEvent, mockPrisma);
+
+      expect(result.statusCode).toBe(404);
+      expect(mockPublishUserUpdated).not.toHaveBeenCalled();
     });
   });
 

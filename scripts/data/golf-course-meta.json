@@ -1,0 +1,122 @@
+{
+  "beta-hills": {
+    "description": "More challenging content to test your limits on golf scoring.",
+    "banner": "courses/beta-hills-48ff2653.webp",
+    "holes": {
+      "3e9031441b77fab9": {
+        "banner": "holes/3e9031441b77fab9-7ad99399.webp"
+      },
+      "4f949d8e05f32f50": {
+        "banner": "holes/4f949d8e05f32f50-63ff4ea5.webp"
+      },
+      "5953a34fd2cd40f1": {
+        "banner": "holes/5953a34fd2cd40f1-14581203.webp"
+      },
+      "fec7522480170c8a": {
+        "banner": "holes/fec7522480170c8a-ffd863bf.webp"
+      },
+      "a087601d3d52726f": {
+        "banner": "holes/a087601d3d52726f-bee9322d.webp"
+      },
+      "6e9ad3a992102915": {
+        "banner": "holes/6e9ad3a992102915-430bd4db.webp"
+      },
+      "8964d941f1a7c81a": {
+        "banner": "holes/8964d941f1a7c81a-bc45a885.webp"
+      },
+      "4b7c49173870b344": {
+        "banner": "holes/4b7c49173870b344-47265bcc.webp"
+      },
+      "dd23ced08c27b93f": {
+        "banner": "holes/dd23ced08c27b93f-eeb3358a.webp"
+      },
+      "a4bc270ad709a9fd": {
+        "banner": "holes/a4bc270ad709a9fd-abc81d8f.webp"
+      },
+      "efd7909645aba29c": {
+        "banner": "holes/efd7909645aba29c-1c05f710.webp"
+      },
+      "969dad24922317c1": {
+        "banner": "holes/969dad24922317c1-235c9752.webp"
+      },
+      "57bb7e53e5b6090c": {
+        "banner": "holes/57bb7e53e5b6090c-abbecac1.webp"
+      },
+      "0bc514a3acbd332a": {
+        "banner": "holes/0bc514a3acbd332a-6fecefe8.webp"
+      },
+      "c064c72efd651fe4": {
+        "banner": "holes/c064c72efd651fe4-5555dbe1.webp"
+      },
+      "913a5c614722de0d": {
+        "banner": "holes/913a5c614722de0d-a371b596.webp"
+      },
+      "0b88e7b47f603a77": {
+        "banner": "holes/0b88e7b47f603a77-4ab9447d.webp"
+      },
+      "95b5fe504f42fa3f": {
+        "banner": "holes/95b5fe504f42fa3f-1702ae35.webp"
+      }
+    }
+  },
+  "beta-pines": {
+    "description": "A fun and easy course to introduce you to the new scoring system.",
+    "banner": "courses/beta-pines-99f0ff48.webp",
+    "holes": {
+      "88ea9f8af9490151": {
+        "banner": "holes/88ea9f8af9490151-50396b4e.webp"
+      },
+      "e77af6b4d45028ff": {
+        "banner": "holes/e77af6b4d45028ff-92c58aa3.webp"
+      },
+      "9b4bc7e9928de39b": {
+        "banner": "holes/9b4bc7e9928de39b-9f0678af.webp"
+      },
+      "fd8afbbf787e17c7": {
+        "banner": "holes/fd8afbbf787e17c7-7808f2b0.webp"
+      },
+      "b32c5908a47afc44": {
+        "banner": "holes/b32c5908a47afc44-329ffb4e.webp"
+      },
+      "c663d1fc786101b5": {
+        "banner": "holes/c663d1fc786101b5-70773955.webp"
+      },
+      "702d12f7153dfec5": {
+        "banner": "holes/702d12f7153dfec5-49a514e8.webp"
+      },
+      "9a5e366400f59236": {
+        "banner": "holes/9a5e366400f59236-f95bff5f.webp"
+      },
+      "20416aedbdd59653": {
+        "banner": "holes/20416aedbdd59653-8917aa37.webp"
+      },
+      "2d8af9e16da4e23a": {
+        "banner": "holes/2d8af9e16da4e23a-5123d017.webp"
+      },
+      "ded54c81a7bd03dc": {
+        "banner": "holes/ded54c81a7bd03dc-ebf3bd79.webp"
+      },
+      "ba6a606e74c8ee00": {
+        "banner": "holes/ba6a606e74c8ee00-215252b5.webp"
+      },
+      "ab70937938c39775": {
+        "banner": "holes/ab70937938c39775-46fd7616.webp"
+      },
+      "f07b623a9324570d": {
+        "banner": "holes/f07b623a9324570d-b851cdb4.webp"
+      },
+      "f96a28b54873a734": {
+        "banner": "holes/f96a28b54873a734-59828d1f.webp"
+      },
+      "1dc29ef7904a58b1": {
+        "banner": "holes/1dc29ef7904a58b1-0af8275e.webp"
+      },
+      "d0ee6c126ac9c710": {
+        "banner": "holes/d0ee6c126ac9c710-af3b8b67.webp"
+      },
+      "4c99bd7995c84915": {
+        "banner": "holes/4c99bd7995c84915-8ae5fd7c.webp"
+      }
+    }
+  }
+}

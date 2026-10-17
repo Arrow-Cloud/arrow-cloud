@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 const EventFooter = () => {
   const { formatMessage } = useIntl();
   return (
-    <footer className="border-t border-base-content/10 bg-base-200/40 backdrop-blur-sm text-sm text-base-content/70">
+    <footer className="border-t-2 border-base-content/10 bg-base-100/80 text-sm text-base-content/70">
       <div className="container mx-auto px-4 py-6 flex items-center justify-center gap-2">
         <span className="text-base-content/50">
           {formatMessage({ defaultMessage: 'Hosted on', id: '/tmeqw', description: 'Footer text before Arrow Cloud logo' })}

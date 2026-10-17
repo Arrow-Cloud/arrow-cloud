@@ -2,6 +2,7 @@ import type { S3Handler } from 'aws-lambda';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { SQSClient, SendMessageCommand } from '@aws-sdk/client-sqs';
+import { getPack } from './packs';
 
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
 const sqs = new SQSClient({});
@@ -10,21 +11,6 @@ const STATE_TABLE_NAME = process.env.STATE_TABLE_NAME!;
 const DISCORD_NOTIFY_QUEUE_URL = process.env.DISCORD_NOTIFY_QUEUE_URL!;
 const DISCORD_CHANNEL_ID = process.env.DISCORD_CHANNEL_ID!;
 const SUBMISSIONS_CDN_DOMAIN = process.env.SUBMISSIONS_CDN_DOMAIN!;
-
-// Maps pack ID to the Discord channel that receives submissions for that pack
-const PACK_CHANNEL_MAP: Record<string, string> = {
-  'quint-bait': '1500528587261083658',
-  'stamina-stamtech': '1500503650714521670',
-  'pride-demon': '1500503116267655218',
-  'movement-slop': '1506461643469754408',
-};
-
-const PACK_NAMES: Record<string, string> = {
-  'quint-bait': 'Quint Bait',
-  'stamina-stamtech': 'Stamina / StamTech',
-  'pride-demon': 'Pride Demon',
-  'movement-slop': 'Movement Slop',
-};
 
 // Discord green
 const EMBED_COLOR = 0x57f287;
@@ -54,9 +40,17 @@ export const handler: S3Handler = async (event) => {
     console.log('submission record', submission);
     const userId = submission?.userId ?? 'unknown';
     const userAlias = submission?.userAlias ?? 'unknown';
+    // Pack metadata comes from packs.ts, the same list submit-api.ts validates against, so a pack
+    // can't be accepted for upload and then be unroutable here. An unresolved pack still notifies -
+    // falling back to the default channel is noisy but recoverable, whereas dropping the message
+    // would lose a real submission someone spent time on.
     const packId = submission?.packId as string | undefined;
-    const channelId = (packId && PACK_CHANNEL_MAP[packId]) ?? DISCORD_CHANNEL_ID;
-    const packName = (packId && PACK_NAMES[packId]) ?? 'Unknown Pack';
+    const pack = packId ? getPack(packId) : undefined;
+    if (packId && !pack) {
+      console.warn(`Unknown packId "${packId}" on ${key} - routing to the default channel`);
+    }
+    const channelId = pack?.channelId ?? DISCORD_CHANNEL_ID;
+    const packName = pack?.name ?? 'Unknown Pack';
 
     const downloadUrl = `https://${SUBMISSIONS_CDN_DOMAIN}/${key}`;
 

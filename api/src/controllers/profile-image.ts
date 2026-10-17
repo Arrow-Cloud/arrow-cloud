@@ -5,6 +5,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { respond, internalServerErrorResponse } from '../utils/responses';
 import { PrismaClient } from '../../prisma/generated/client';
 import { assetS3UrlToCloudFrontUrl } from '../utils/s3';
+import { buildUserUpdatedEvent, publishUserUpdatedEvent } from '../utils/events';
 import { z } from 'zod';
 
 const S3_BUCKET_ASSETS = process.env.S3_BUCKET_ASSETS || 'arrow-cloud-assets';
@@ -185,6 +186,9 @@ export async function updateProfileImage(event: AuthenticatedEvent, prisma: Pris
       },
     });
 
+    // Event backends keep a copy of the avatar beside each score, so tell them it changed.
+    await publishUserUpdatedEvent(buildUserUpdatedEvent({ ...updatedUser, banned: event.user.banned }, ['profileImageUrl']));
+
     console.log('Updated profile image for user:', {
       userId: event.user.id,
       alias: event.user.alias,
@@ -231,6 +235,8 @@ export async function deleteProfileImage(event: AuthenticatedEvent, prisma: Pris
         updatedAt: true,
       },
     });
+
+    await publishUserUpdatedEvent(buildUserUpdatedEvent({ ...updatedUser, banned: event.user.banned }, ['profileImageUrl']));
 
     console.log('Deleted profile image for user:', {
       userId: event.user.id,

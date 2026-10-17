@@ -7,6 +7,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 import { EX_SCORING_SYSTEM, MONEY_SCORING_SYSTEM, HARD_EX_SCORING_SYSTEM, PlaySubmission } from '../utils/scoring';
 import { publishScoreDeletedEvent, EVENT_TYPES } from '../utils/events';
 import { resolveChartBanner } from '../utils/chart-banner';
+import { isSubmissionEligible } from '../utils/scoring/eligibility';
 import {
   ITG_LEADERBOARD_ID,
   EX_LEADERBOARD_ID,
@@ -92,6 +93,12 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
     let lifebarInfo: PlaySubmission['lifebarInfo'] | undefined;
     let npsData: { x: number; y: number }[] | undefined; // intentionally simplified (drop measure / nps extras)
     let radar: PlaySubmission['radar'] | undefined;
+    let passed: boolean | undefined;
+    let usedAutoplay: boolean | undefined;
+    let musicRate: number | undefined;
+    let bodyVersion: string | undefined;
+    let submissionEngineName: string | undefined;
+    let standardLeaderboardEligible: boolean | undefined;
     try {
       const submission: PlaySubmission = await loadTimingDataFromPlay(
         {
@@ -113,6 +120,23 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
       timingData = submission.timingData.map((d) => [d[0], d[1]]);
       lifebarInfo = submission.lifebarInfo;
       radar = submission.radar;
+      passed = submission.passed;
+      usedAutoplay = submission.usedAutoplay;
+      musicRate = submission.musicRate;
+      bodyVersion = submission._arrowCloudBodyVersion;
+      submissionEngineName = submission._engineName;
+      standardLeaderboardEligible = isSubmissionEligible(
+        {
+          bodyVersion: submission._arrowCloudBodyVersion,
+          engineName: submission._engineName,
+          musicRate: submission.musicRate,
+          usedAutoplay: submission.usedAutoplay,
+          passed: submission.passed,
+        },
+        // The standard boards' own rate clause: exactly 1. The rate-eligible variants relax this,
+        // so this flag answers "would it count on EX/ITG/Money", not "on any leaderboard at all".
+        submission.musicRate === 1,
+      );
 
       const ni = submission.npsInfo;
       if (ni && Array.isArray(ni.points)) {
@@ -131,6 +155,12 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
       lifebarInfo = undefined;
       npsData = undefined;
       radar = undefined;
+      passed = undefined;
+      usedAutoplay = undefined;
+      musicRate = undefined;
+      bodyVersion = undefined;
+      submissionEngineName = undefined;
+      standardLeaderboardEligible = undefined;
     }
 
     const response = {
@@ -196,6 +226,25 @@ export async function getPlay(event: ExtendedAPIGatewayProxyEvent, prisma: Prism
       // aggregates. Exposed here (not previously) so event consumers like golf's score-processor
       // can compute their own scoring off this public endpoint without touching raw S3 data.
       radar: radar || null,
+      // Whether the player actually passed the stage, and whether autoplay was on. Both come
+      // straight off the stored submission and are exposed for the same reason radar above is: an
+      // event consumer scoring the play itself needs them, and should not have to reach into core
+      // S3 to get them. Golf treats a non-passed play as not counting at all - no personal best, no
+      // public feed - so without this it cannot tell a completed round from a quit two seconds in.
+      // null (not false) when the raw submission could not be read, so a consumer can distinguish
+      // "known to have failed" from "unknown", which matters because defaulting unknown to false
+      // would silently drop every play whose S3 object is missing.
+      passed: passed ?? null,
+      usedAutoplay: usedAutoplay ?? null,
+      musicRate: musicRate ?? null,
+      bodyVersion: bodyVersion ?? null,
+      submissionEngineName: submissionEngineName ?? null,
+      // Core's own verdict for the standard leaderboards, so a consumer can defer to it rather than
+      // re-implementing rules it has no opinion on (schema floors, engine bugs) and inherit future
+      // changes for free. The raw inputs above are exposed alongside it because deferring is not
+      // always right: golf is stricter on rate and looser on autoplay, so it derives its own answer
+      // from the same shared module (api/src/utils/scoring/eligibility.ts).
+      standardLeaderboardEligible: standardLeaderboardEligible ?? null,
       modifiers: play.modifiers || null,
     };
 

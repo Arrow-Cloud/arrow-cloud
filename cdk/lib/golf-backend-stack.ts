@@ -68,6 +68,11 @@ export class GolfBackendStack extends cdk.Stack {
       // light, bursty test traffic this gets. More memory buys proportionally more CPU during
       // cold-start init - 1024 MB cuts init time without going as far as the 3,008 MB/2-vCPU tier.
       readApiMemorySize: 1024,
+      // The course page returns the logged-in player's bests, so the read API verifies the core API's
+      // session JWT (events/golf/backend/src/auth.ts). Same secret ApiStack reads - api-stack.ts.
+      readApiJwtSecretName: 'JwtSecret',
+      // Rewrite a player's alias and avatar on their stored plays and bests when they change them.
+      subscribeToUserUpdates: true,
     });
 
     this.table = this.backend.table;

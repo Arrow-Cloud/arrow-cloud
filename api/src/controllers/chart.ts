@@ -14,7 +14,7 @@ import { GLOBAL_EX_LEADERBOARD_ID, GLOBAL_MONEY_LEADERBOARD_ID, GLOBAL_HARD_EX_L
 import { EventRegistry, EventLeaderboardResponse } from '../utils/events/base';
 import { EventLeaderboardService } from '../services/eventLeaderboards';
 import { computePackResultImages } from '../utils/pack-leaderboard';
-import { computeEventResultImages } from '../utils/event-result-images';
+import { computeEventResultImages, eventResultImageSlots, limitResultImages, MAX_RESULT_IMAGES } from '../utils/event-result-images';
 import { resolveChartBanner } from '../utils/chart-banner';
 import { parseLocalDateToUTC } from '../utils/date';
 
@@ -855,6 +855,11 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
       // run them concurrently rather than serially - serializing three unrelated I/O calls back to
       // back was pure wasted latency. Each branch owns its own catch and degrades to a safe default
       // - one failing can never affect the others or fail this response.
+      // Event images take priority over pack images and the response is capped (MAX_RESULT_IMAGES),
+      // so the pack side is handed whatever the event side can't claim. Working that out up front -
+      // it's a lookup, no I/O - means the pack renderer never starts images that would be dropped.
+      const packImageBudget = Math.max(0, MAX_RESULT_IMAGES - eventResultImageSlots(newPlay, scoreSubmission));
+
       const [packResultImages, eventResultImages] = await Promise.all([
         (async () => {
           // CPU-bound (satori/resvg) once its own DB awaits resolve, and can occupy the event loop
@@ -865,7 +870,7 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
           // anything else running concurrently in the same Promise.all (e.g. golf's read-api fetch).
           const startedAt = Date.now();
           try {
-            return await computePackResultImages(prisma, s3Client, newPlay);
+            return await computePackResultImages(prisma, s3Client, newPlay, { maxImages: packImageBudget });
           } finally {
             console.log(`[perf] computePackResultImages took ${Date.now() - startedAt}ms`);
           }
@@ -873,7 +878,7 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
           console.error('Failed to compute pack result images:', error);
           return [] as string[];
         }),
-        computeEventResultImages(scoreSubmission, newPlay, s3Client).catch((error) => {
+        computeEventResultImages({ submission: scoreSubmission, play: newPlay, userAlias: user.alias, s3Client, prisma }).catch((error) => {
           console.error('Failed to compute event result images:', error);
           return [] as string[];
         }),
@@ -896,7 +901,8 @@ export const scoreSubmission: AuthenticatedRouteHandler = async (event: Authenti
 
       // Event images lead (the special/beta content for the curated test group), pack images
       // follow - a chart can be eligible for both (see docs/plans/golf-event-result-images.md).
-      const resultImages = [...eventResultImages, ...packResultImages];
+      // Capped, so when both want more than fits it is the older source (packs) that is cut.
+      const resultImages = limitResultImages(eventResultImages, packResultImages);
       if (resultImages.length > 0) {
         response.resultImages = resultImages;
       }

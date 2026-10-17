@@ -19,20 +19,25 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 
 const SCALE = 2;
-const s = (n: number) => n * SCALE;
-const CARD_WIDTH = s(480);
-const CARD_HEIGHT = s(600);
+// Exported with the helpers below so golf-ranking-image.ts's pages share this card's size, palette, fonts
+// and header rather than carrying copies that could drift apart.
+export const s = (n: number) => n * SCALE;
+export const CARD_WIDTH = s(480);
+export const CARD_HEIGHT = s(600);
 
-const STROKE_GOOD = '#36d399';
-const STROKE_BAD = '#f87272';
+export const STROKE_GOOD = '#36d399';
+export const STROKE_BAD = '#f87272';
 
 // See pack-result-image.ts's identical comment - this only resolves correctly post-webpack-build
 // (api/webpack.config.js's copy-webpack-plugin places assets/ alongside dist/index.js), not when
 // running this file directly from source.
-const ASSETS_DIR = path.join(__dirname, 'assets');
+//
+// GOLF_RESULT_IMAGE_ASSETS_DIR overrides that for local preview tooling only (scripts/preview-golf-ranking-images.ts
+// points it at api/assets). Nothing in a deployed Lambda sets it.
+const ASSETS_DIR = process.env.GOLF_RESULT_IMAGE_ASSETS_DIR ?? path.join(__dirname, 'assets');
 
 let fonts: { name: string; data: Buffer; weight: 400 | 700; style: 'normal' }[] | undefined;
-function loadFonts() {
+export function loadFonts() {
   if (!fonts) {
     // One font (Nunito) for both numbers and labels - matching the frontend site's own stat/score
     // convention (PlayCard, RecentPlaysPanel) - weight/size/opacity carry the number-vs-label
@@ -59,7 +64,7 @@ function loadFonts() {
 let acLogoDataUri: string | undefined;
 let headerLogoDataUri: string | undefined;
 let patternDataUri: string | undefined;
-function loadImageDataUris() {
+export function loadImageDataUris() {
   if (!acLogoDataUri) {
     acLogoDataUri = `data:image/png;base64,${readFileSync(path.join(ASSETS_DIR, 'ac-logo.png')).toString('base64')}`;
   }
@@ -105,7 +110,7 @@ function hashStringToSeed(str: string): number {
 }
 
 // Client HUD displays totalStrokes/1000 to 2 decimals (GolfScoring.lua's GolfUpdateCommand).
-function fmtStrokes(totalStrokes: number): string {
+export function fmtStrokes(totalStrokes: number): string {
   return (totalStrokes / 1000).toFixed(2);
 }
 
@@ -149,9 +154,9 @@ function fmtVsPar(strokesVsPar: number): { text: string; color: string } {
 }
 
 // --- Tiny hyperscript helper (mirrors pack-result-image.ts / scripts/satori-poc.ts) ---
-type Node = { type: string; props: Record<string, unknown> };
+export type Node = { type: string; props: Record<string, unknown> };
 type Child = Node | string | null | undefined | false;
-function h(type: string, props: Record<string, unknown> = {}, ...children: (Child | Child[])[]): Node {
+export function h(type: string, props: Record<string, unknown> = {}, ...children: (Child | Child[])[]): Node {
   const flatChildren = children.flat().filter((c): c is Node | string => c !== null && c !== undefined && c !== false);
   return { type, props: { ...props, children: flatChildren.length === 1 ? flatChildren[0] : flatChildren } };
 }
@@ -161,7 +166,7 @@ function h(type: string, props: Record<string, unknown> = {}, ...children: (Chil
 // center breaks satori's overflow calc; this estimates rendered width up front and only centers
 // when that estimate comfortably fits).
 const AVG_CHAR_WIDTH_RATIO = 0.56;
-function truncatedLine(text: string, maxWidthPx: number, style: Record<string, unknown> = {}) {
+export function truncatedLine(text: string, maxWidthPx: number, style: Record<string, unknown> = {}) {
   const fontSize = (style.fontSize as number | undefined) ?? s(16);
   const fits = text.length * fontSize * AVG_CHAR_WIDTH_RATIO <= maxWidthPx;
   return h(
@@ -431,9 +436,9 @@ function buildDispersionChart(notes: DispersionNote[], diameter: number, chartHa
   );
 }
 
-const AC_MARK_SIZE = s(34);
-const HEADER_LOGO_WIDTH = s(300);
-const HEADER_LOGO_HEIGHT = HEADER_LOGO_WIDTH * (199 / 1346); // ITGolf_Logo-ArrowLeft_Large.png's native aspect ratio (trimmed to its visible glyph bbox)
+export const AC_MARK_SIZE = s(34);
+export const HEADER_LOGO_WIDTH = s(300);
+export const HEADER_LOGO_HEIGHT = HEADER_LOGO_WIDTH * (199 / 1346); // ITGolf_Logo-ArrowLeft_Large.png's native aspect ratio (trimmed to its visible glyph bbox)
 
 export interface GolfResultImageData {
   chartTitle: string;
@@ -634,9 +639,13 @@ function buildCard(data: GolfResultImageData, images: { headerLogoDataUri: strin
   );
 }
 
-export async function renderGolfResultImage(data: GolfResultImageData): Promise<Buffer> {
-  const tree = buildCard(data, loadImageDataUris());
+/** Lay out a card-sized element tree with satori and rasterise it - the shared tail of every golf image. */
+export async function renderCardToPng(tree: Node): Promise<Buffer> {
   const svg = await satori(tree as never, { width: CARD_WIDTH, height: CARD_HEIGHT, fonts: loadFonts() });
   const resvgInstance = new Resvg(svg, { fitTo: { mode: 'width', value: CARD_WIDTH } });
   return Buffer.from(resvgInstance.render().asPng());
+}
+
+export async function renderGolfResultImage(data: GolfResultImageData): Promise<Buffer> {
+  return renderCardToPng(buildCard(data, loadImageDataUris()));
 }

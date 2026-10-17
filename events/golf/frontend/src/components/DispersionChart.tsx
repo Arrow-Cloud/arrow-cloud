@@ -5,8 +5,8 @@ import { mulberry32, hashStringToSeed } from '../lib/prng';
 // (api/src/utils/golf-result-image.ts) - same organic-blob-green + per-note dot plot, and same idea
 // of a small hand-picked set of green silhouettes (round/wide/tall/etc) chosen deterministically per
 // seed, layered under per-chart noise - real greens vary in silhouette, not just edge detail. Here
-// the seed comes from `greenSeed` (one per demo play, see data/dispersionDemoPlays.ts), so cycling
-// between plays shows a genuinely different hole each time, not just different dots on the same one.
+// the seed comes from `greenSeed`: one per demo play (see data/dispersionDemoPlays.ts), so cycling
+// between plays shows a genuinely different hole each time, or the chart hash for real plays.
 
 const STROKE_GOOD = '#36d399';
 const STROKE_BAD = '#f87272';
@@ -108,14 +108,20 @@ export default function DispersionChart({
 }: {
   noteStrokes: number[];
   greenSeed: string;
-  greenVariant: number;
+  /** Explicit silhouette index (demo plays). Omit it to pick the silhouette from the seeded rng
+   * exactly as the production renderer does, so `greenSeed={chartHash}` draws the same green as
+   * that chart's result image. */
+  greenVariant?: number;
   size?: number;
 }) {
   const R = size / 2;
 
   const controlPoints = useMemo(() => {
     const rng = mulberry32(hashStringToSeed(greenSeed));
-    const variant = GREEN_VARIANTS[((greenVariant % GREEN_VARIANTS.length) + GREEN_VARIANTS.length) % GREEN_VARIANTS.length];
+    // Production (pickGreenVariant) draws the variant from the rng *before* the control points, so
+    // that draw has to happen here too or every later rng value - and the whole shape - shifts.
+    const index = greenVariant ?? Math.floor(rng() * GREEN_VARIANTS.length);
+    const variant = GREEN_VARIANTS[((index % GREEN_VARIANTS.length) + GREEN_VARIANTS.length) % GREEN_VARIANTS.length];
     return generateGreenControlPoints(rng, 24, R * 0.5, variant);
   }, [R, greenSeed, greenVariant]);
 

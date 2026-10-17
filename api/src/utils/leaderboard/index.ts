@@ -1,6 +1,7 @@
 import { Play } from '../../../prisma/generated';
 import { PrismaClient } from '../../../prisma/generated/client';
-import { ENGINES, GradingSystem, PlaySubmission, ScoringSystem, SubmissionCalculator } from '../scoring';
+import { GradingSystem, PlaySubmission, ScoringSystem, SubmissionCalculator } from '../scoring';
+import { ALLOWED_AUTOPLAY_USERS, isSubmissionEligible } from '../scoring/eligibility';
 
 export interface ILeaderboard {
   isEligible: () => boolean;
@@ -43,7 +44,10 @@ function buildTieBreakComponent(date: Date): string {
   return inverted.toString().padStart(13, '0');
 }
 
-export const ALLOWED_AUTOPLAY_USERS = ['3ac37479-c87f-459c-b3aa-c17e95c1a0d8', 'f7e9cf36-cbc8-4330-9389-292b4034c043'];
+// Re-exported from ../scoring/eligibility (a zero-dependency module, so events/golf/backend can
+// read the same list without pulling PrismaClient into its Lambda bundle). Existing importers
+// of this symbol keep working unchanged.
+export { ALLOWED_AUTOPLAY_USERS };
 
 export class BaseLeaderboard {
   protected calculator: SubmissionCalculator;
@@ -72,34 +76,19 @@ export class BaseLeaderboard {
   }
 
   isEligible(): boolean {
-    // Old submissions before schema was finalized are not eligible
-    if (parseFloat(this.submissionData._arrowCloudBodyVersion) < 1.2) {
-      return false;
-    }
-
-    // DeadSync had a bug in submissions prior to a certain version, in addition to a breakage with semver for
-    // checking engine version, so we required DeadSync to start sending submissions with bodyVersion 1.4+
-    // so we can reject requests from that engine where the bug was present.
-    if (this.submissionData._engineName === ENGINES.DeadSync && parseFloat(this.submissionData._arrowCloudBodyVersion) < 1.4) {
-      return false;
-    }
-
-    if (!this.isRateEligible()) {
-      return false;
-    }
-
-    // No autoplay
-    if (this.submissionData.usedAutoplay) {
-      return false;
-    }
-
-    // Must have passed the chart
-    if (!this.submissionData.passed) {
-      return false;
-    }
-
-    // Additional future checks would short‑circuit here.
-    return true;
+    // The rule itself lives in ../scoring/eligibility so it can be evaluated without a leaderboard
+    // instance - GET /play/{id} exposes the verdict, and events/golf/backend derives its own rule
+    // from the same module. isRateEligible stays here because it is the clause subclasses override.
+    return isSubmissionEligible(
+      {
+        bodyVersion: this.submissionData._arrowCloudBodyVersion,
+        engineName: this.submissionData._engineName,
+        musicRate: this.submissionData.musicRate,
+        usedAutoplay: this.submissionData.usedAutoplay,
+        passed: this.submissionData.passed,
+      },
+      this.isRateEligible(),
+    );
   }
 
   async serializeData(): Promise<LeaderboardData> {

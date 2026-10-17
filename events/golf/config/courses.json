@@ -1,0 +1,554 @@
+{
+  "courses": [
+    {
+      "slug": "beta-hills",
+      "name": "Beta Hills",
+      "order": 1,
+      "hidden": false,
+      "pack": "In The Golf - Beta Hills vF4",
+      "description": "More challenging content to test your limits on golf scoring.",
+      "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/courses/beta-hills-48ff2653.webp",
+      "holes": [
+        {
+          "holeNumber": 1,
+          "chartHash": "3e9031441b77fab9",
+          "displayName": "Aresene's Bazaar",
+          "songName": "Aresene's Bazaar",
+          "songFolder": "Aresene's Bazaar",
+          "artist": "James Landino",
+          "meter": 12,
+          "par": 7,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/3e9031441b77fab9-7ad99399.webp"
+        },
+        {
+          "holeNumber": 2,
+          "chartHash": "4f949d8e05f32f50",
+          "displayName": "Azalea",
+          "songName": "Azalea",
+          "songFolder": "Azalea",
+          "artist": "Memme & M2U",
+          "meter": 11,
+          "par": 5,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/4f949d8e05f32f50-63ff4ea5.webp"
+        },
+        {
+          "holeNumber": 3,
+          "chartHash": "5953a34fd2cd40f1",
+          "displayName": "BxMxC",
+          "songName": "BxMxC",
+          "songFolder": "BxMxC",
+          "artist": "BABYMETAL",
+          "meter": 12,
+          "par": 14,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/5953a34fd2cd40f1-14581203.webp"
+        },
+        {
+          "holeNumber": 4,
+          "chartHash": "fec7522480170c8a",
+          "displayName": "Feeling NRG",
+          "songName": "Feeling NRG",
+          "songFolder": "Feeling NRG",
+          "artist": "YUKIYANAGI",
+          "meter": 12,
+          "par": 6,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/fec7522480170c8a-ffd863bf.webp"
+        },
+        {
+          "holeNumber": 5,
+          "chartHash": "a087601d3d52726f",
+          "displayName": "get funky, GET #HYPER...FLIP",
+          "songName": "get funky, GET \\#HYPER...FLIP",
+          "songFolder": "get funky, get hyper... flip",
+          "artist": "xaev",
+          "meter": 13,
+          "par": 13,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/a087601d3d52726f-bee9322d.webp"
+        },
+        {
+          "holeNumber": 6,
+          "chartHash": "6e9ad3a992102915",
+          "displayName": "Go Stoopid",
+          "songName": "Go Stoopid",
+          "songFolder": "Go Stoopid",
+          "artist": "JSTJR, Rawtek",
+          "meter": 12,
+          "par": 10,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/6e9ad3a992102915-430bd4db.webp"
+        },
+        {
+          "holeNumber": 7,
+          "chartHash": "8964d941f1a7c81a",
+          "displayName": "HiTECH Meister",
+          "songName": "HiTECH Meister",
+          "songFolder": "HiTECH Meister",
+          "artist": "Kyutatsuki",
+          "meter": 14,
+          "par": 20,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/8964d941f1a7c81a-bc45a885.webp"
+        },
+        {
+          "holeNumber": 8,
+          "chartHash": "4b7c49173870b344",
+          "displayName": "Hot Guy Alert",
+          "songName": "Hot Guy Alert",
+          "songFolder": "Hot Guy Alert",
+          "artist": "The Floozies, The Sponges",
+          "meter": 11,
+          "par": 4,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/4b7c49173870b344-47265bcc.webp"
+        },
+        {
+          "holeNumber": 9,
+          "chartHash": "dd23ced08c27b93f",
+          "displayName": "ひゅるりらぱっぱ",
+          "songName": "ひゅるりらぱっぱ",
+          "songFolder": "Hyururirapappa",
+          "artist": "tuki.",
+          "meter": 11,
+          "par": 6,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/dd23ced08c27b93f-eeb3358a.webp"
+        },
+        {
+          "holeNumber": 10,
+          "chartHash": "a4bc270ad709a9fd",
+          "displayName": "異端",
+          "songName": "異端",
+          "songFolder": "Itan",
+          "artist": "7OAST",
+          "meter": 13,
+          "par": 8,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/a4bc270ad709a9fd-abc81d8f.webp"
+        },
+        {
+          "holeNumber": 11,
+          "chartHash": "efd7909645aba29c",
+          "displayName": "Komm, Süsser Tod",
+          "songName": "Komm, Süsser Tod (Hard)",
+          "songFolder": "Komm, Susser Tod - [Zaia]",
+          "artist": "Apocalypse ft. ARIANNE",
+          "meter": 14,
+          "par": 10,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/efd7909645aba29c-1c05f710.webp"
+        },
+        {
+          "holeNumber": 12,
+          "chartHash": "969dad24922317c1",
+          "displayName": "Koto Overdrive",
+          "songName": "Koto Overdrive",
+          "songFolder": "Koto Overdrive",
+          "artist": "Alesda!",
+          "meter": 11,
+          "par": 7,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/969dad24922317c1-235c9752.webp"
+        },
+        {
+          "holeNumber": 13,
+          "chartHash": "57bb7e53e5b6090c",
+          "displayName": "MAD",
+          "songName": "MAD (Hard)",
+          "songFolder": "MAD",
+          "artist": "Mat Zo",
+          "meter": 14,
+          "par": 14,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/57bb7e53e5b6090c-abbecac1.webp"
+        },
+        {
+          "holeNumber": 14,
+          "chartHash": "0bc514a3acbd332a",
+          "displayName": "Not Alone",
+          "songName": "Not Alone",
+          "songFolder": "Not Alone",
+          "artist": "Yue",
+          "meter": 13,
+          "par": 8,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/0bc514a3acbd332a-6fecefe8.webp"
+        },
+        {
+          "holeNumber": 15,
+          "chartHash": "c064c72efd651fe4",
+          "displayName": "Sonic Boom",
+          "songName": "Sonic Boom",
+          "songFolder": "Sonic Boom (From Sonic CD)",
+          "artist": "Vector U",
+          "meter": 14,
+          "par": 10,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/c064c72efd651fe4-5555dbe1.webp"
+        },
+        {
+          "holeNumber": 16,
+          "chartHash": "913a5c614722de0d",
+          "displayName": "Thousand Absolutes",
+          "songName": "Thousand Absolutes",
+          "songFolder": "Thousand Absolutes",
+          "artist": "James Landino ft. DEMONDICE",
+          "meter": 12,
+          "par": 8,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/913a5c614722de0d-a371b596.webp"
+        },
+        {
+          "holeNumber": 17,
+          "chartHash": "0b88e7b47f603a77",
+          "displayName": "WannaCry",
+          "songName": "WannaCry",
+          "songFolder": "WannaCry",
+          "artist": "Ninajirachi & Porter Robinson",
+          "meter": 12,
+          "par": 8,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/0b88e7b47f603a77-4ab9447d.webp"
+        },
+        {
+          "holeNumber": 18,
+          "chartHash": "95b5fe504f42fa3f",
+          "displayName": "Wild West",
+          "songName": "Wild West",
+          "songFolder": "Wild West",
+          "artist": "Mo Falk",
+          "meter": 12,
+          "par": 8,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/95b5fe504f42fa3f-1702ae35.webp"
+        }
+      ]
+    },
+    {
+      "slug": "beta-pines",
+      "name": "Beta Pines",
+      "order": 2,
+      "hidden": false,
+      "pack": "In The Golf - Beta Pines vF4",
+      "description": "A fun and easy course to introduce you to the new scoring system.",
+      "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/courses/beta-pines-99f0ff48.webp",
+      "holes": [
+        {
+          "holeNumber": 1,
+          "chartHash": "88ea9f8af9490151",
+          "displayName": "BIRDS OF A FEATHER (Alohaii Remix)",
+          "songName": "BIRDS OF A FEATHER (Alohaii Remix) (Hard)",
+          "songFolder": "BIRDS OF A FEATHER (Alohaii Remix)",
+          "artist": "Billie Eilish",
+          "meter": 10,
+          "par": 4,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/88ea9f8af9490151-50396b4e.webp"
+        },
+        {
+          "holeNumber": 2,
+          "chartHash": "e77af6b4d45028ff",
+          "displayName": "Chemicals",
+          "songName": "Chemicals (Medium)",
+          "songFolder": "Chemicals",
+          "artist": "NGHTMRE, Staysick",
+          "meter": 9,
+          "par": 4,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/e77af6b4d45028ff-92c58aa3.webp"
+        },
+        {
+          "holeNumber": 3,
+          "chartHash": "9b4bc7e9928de39b",
+          "displayName": "Cloud Surfing",
+          "songName": "Cloud Surfing",
+          "songFolder": "Cloud Surfing",
+          "artist": "Wave Meow, Zentra",
+          "meter": 9,
+          "par": 3,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/9b4bc7e9928de39b-9f0678af.webp"
+        },
+        {
+          "holeNumber": 4,
+          "chartHash": "fd8afbbf787e17c7",
+          "displayName": "Damaio",
+          "songName": "Damaio (Hard)",
+          "songFolder": "Damaio",
+          "artist": "En-vy",
+          "meter": 10,
+          "par": 3,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/fd8afbbf787e17c7-7808f2b0.webp"
+        },
+        {
+          "holeNumber": 5,
+          "chartHash": "b32c5908a47afc44",
+          "displayName": "DISCONNECTION",
+          "songName": "DISCONNECTION (Hard)",
+          "songFolder": "DISCONNECTION",
+          "artist": "Moe Shop",
+          "meter": 9,
+          "par": 4,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/b32c5908a47afc44-329ffb4e.webp"
+        },
+        {
+          "holeNumber": 6,
+          "chartHash": "c663d1fc786101b5",
+          "displayName": "Do My Thing",
+          "songName": "Do My Thing",
+          "songFolder": "Do My Thing",
+          "artist": "KNSRK",
+          "meter": 9,
+          "par": 5,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/c663d1fc786101b5-70773955.webp"
+        },
+        {
+          "holeNumber": 7,
+          "chartHash": "702d12f7153dfec5",
+          "displayName": "Dr. Wilys Castle",
+          "songName": "Dr. Wilys Castle (Medium)",
+          "songFolder": "Dr. Wilys Castle (From Megaman 2)",
+          "artist": "Bossfight",
+          "meter": 8,
+          "par": 4,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/702d12f7153dfec5-49a514e8.webp"
+        },
+        {
+          "holeNumber": 8,
+          "chartHash": "9a5e366400f59236",
+          "displayName": "GIMME LOVE",
+          "songName": "GIMME LOVE (Medium)",
+          "songFolder": "GIMME LOVE",
+          "artist": "Łaszewo",
+          "meter": 8,
+          "par": 3,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/9a5e366400f59236-f95bff5f.webp"
+        },
+        {
+          "holeNumber": 9,
+          "chartHash": "20416aedbdd59653",
+          "displayName": "Illuzion",
+          "songName": "Illuzion (Medium)",
+          "songFolder": "Illuzion",
+          "artist": "Shirobon",
+          "meter": 8,
+          "par": 3,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/20416aedbdd59653-8917aa37.webp"
+        },
+        {
+          "holeNumber": 10,
+          "chartHash": "2d8af9e16da4e23a",
+          "displayName": "Kotake & Koume's Theme",
+          "songName": "Kotake & Koume's Theme",
+          "songFolder": "Kotake & Koume's Theme",
+          "artist": "Vector U",
+          "meter": 11,
+          "par": 6,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/2d8af9e16da4e23a-5123d017.webp"
+        },
+        {
+          "holeNumber": 11,
+          "chartHash": "ded54c81a7bd03dc",
+          "displayName": "let you go",
+          "songName": "let you go (Medium)",
+          "songFolder": "let you go",
+          "artist": "Glitch Cat, RXMALIAN, TSVNEO",
+          "meter": 9,
+          "par": 3,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/ded54c81a7bd03dc-ebf3bd79.webp"
+        },
+        {
+          "holeNumber": 12,
+          "chartHash": "ba6a606e74c8ee00",
+          "displayName": "make you mine",
+          "songName": "make you mine",
+          "songFolder": "make you mine",
+          "artist": "Madison Beer",
+          "meter": 8,
+          "par": 3,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/ba6a606e74c8ee00-215252b5.webp"
+        },
+        {
+          "holeNumber": 13,
+          "chartHash": "ab70937938c39775",
+          "displayName": "Nasty",
+          "songName": "Nasty (Hard)",
+          "songFolder": "Nasty (Match My Tweak Remix)",
+          "artist": "Tinashe remixed by Jane Remover",
+          "meter": 10,
+          "par": 6,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/ab70937938c39775-46fd7616.webp"
+        },
+        {
+          "holeNumber": 14,
+          "chartHash": "f07b623a9324570d",
+          "displayName": "Safe & Sound",
+          "songName": "Safe & Sound",
+          "songFolder": "Safe & Sound",
+          "artist": "Mesto",
+          "meter": 10,
+          "par": 4,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/f07b623a9324570d-b851cdb4.webp"
+        },
+        {
+          "holeNumber": 15,
+          "chartHash": "f96a28b54873a734",
+          "displayName": "Slow Burner",
+          "songName": "Slow Burner",
+          "songFolder": "Slow Burner",
+          "artist": "Interplanetary Criminal, Original Koffee",
+          "meter": 10,
+          "par": 3,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/f96a28b54873a734-59828d1f.webp"
+        },
+        {
+          "holeNumber": 16,
+          "chartHash": "1dc29ef7904a58b1",
+          "displayName": "Stratoliner",
+          "songName": "Stratoliner (Medium)",
+          "songFolder": "Stratoliner",
+          "artist": "C-Show",
+          "meter": 8,
+          "par": 5,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/1dc29ef7904a58b1-0af8275e.webp"
+        },
+        {
+          "holeNumber": 17,
+          "chartHash": "d0ee6c126ac9c710",
+          "displayName": "ULTRA SYNERGY MATRIX",
+          "songName": "ULTRA SYNERGY MATRIX (Hard)",
+          "songFolder": "ULTRA SYNERGY MATRIX (MYUKKE. REMIX)",
+          "artist": "Tanchiky",
+          "meter": 10,
+          "par": 8,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/d0ee6c126ac9c710-af3b8b67.webp"
+        },
+        {
+          "holeNumber": 18,
+          "chartHash": "4c99bd7995c84915",
+          "displayName": "Uncontrollable",
+          "songName": "Uncontrollable (Medium)",
+          "songFolder": "Uncontrollable",
+          "artist": "Eleganto & Zadquiel",
+          "meter": 9,
+          "par": 5,
+          "bannerUrl": "https://assets.arrowcloud.dance/misc/golf/holes/4c99bd7995c84915-8ae5fd7c.webp"
+        }
+      ]
+    },
+    {
+      "slug": "alpha-test",
+      "name": "Alpha Test",
+      "order": 98,
+      "hidden": true,
+      "pack": "In The Golf - Alpha Test",
+      "description": null,
+      "bannerUrl": null,
+      "holes": [
+        {
+          "holeNumber": 1,
+          "chartHash": "b862c60449ca5ff9",
+          "displayName": "Fly Wit Me",
+          "songName": "Fly Wit Me (Medium)",
+          "songFolder": "Fly Wit Me",
+          "artist": "かめりあ",
+          "meter": 12,
+          "par": 14,
+          "bannerUrl": null
+        },
+        {
+          "holeNumber": 2,
+          "chartHash": "04fc25f6dedd4185",
+          "displayName": "Groove District",
+          "songName": "Groove District (Hard)",
+          "songFolder": "Groove District",
+          "artist": "スタージャンク95",
+          "meter": 9,
+          "par": 3,
+          "bannerUrl": null
+        },
+        {
+          "holeNumber": 3,
+          "chartHash": "3dd4c092e25ccde4",
+          "displayName": "High Affinity",
+          "songName": "High Affinity",
+          "songFolder": "High Affinity",
+          "artist": "Auvic",
+          "meter": 13,
+          "par": 8,
+          "bannerUrl": null
+        },
+        {
+          "holeNumber": 4,
+          "chartHash": "af8fed60698146ce",
+          "displayName": "LEMONADE",
+          "songName": "LEMONADE",
+          "songFolder": "LEMONADE",
+          "artist": "aespa/Zedd",
+          "meter": 11,
+          "par": 5,
+          "bannerUrl": null
+        },
+        {
+          "holeNumber": 5,
+          "chartHash": "d11e451f74e74e98",
+          "displayName": "Rainbow Rave Parade",
+          "songName": "Rainbow Rave Parade",
+          "songFolder": "Rainbow Rave Parade",
+          "artist": "Chime",
+          "meter": 13,
+          "par": 10,
+          "bannerUrl": null
+        },
+        {
+          "holeNumber": 6,
+          "chartHash": "9cc32b8a9a788bb9",
+          "displayName": "Rockin The Drums",
+          "songName": "Rockin The Drums (Medium)",
+          "songFolder": "Rockin The Drums",
+          "artist": "longstoryshort, Pulsedriver & MC Hughie Babe",
+          "meter": 7,
+          "par": 3,
+          "bannerUrl": null
+        }
+      ]
+    },
+    {
+      "slug": "alpha-testing",
+      "name": "Alpha Testing",
+      "order": 99,
+      "hidden": true,
+      "pack": null,
+      "description": null,
+      "bannerUrl": null,
+      "holes": [
+        {
+          "holeNumber": 1,
+          "chartHash": "7a520534f16d6455",
+          "displayName": "Unknown",
+          "songName": "Unknown",
+          "songFolder": "Unknown",
+          "artist": "Unknown",
+          "meter": 0,
+          "par": 3,
+          "bannerUrl": null
+        },
+        {
+          "holeNumber": 2,
+          "chartHash": "065f74f741eb2f9d",
+          "displayName": "Unknown",
+          "songName": "Unknown",
+          "songFolder": "Unknown",
+          "artist": "Unknown",
+          "meter": 0,
+          "par": 3,
+          "bannerUrl": null
+        },
+        {
+          "holeNumber": 3,
+          "chartHash": "f3871997119d5052",
+          "displayName": "Unknown",
+          "songName": "Unknown",
+          "songFolder": "Unknown",
+          "artist": "Unknown",
+          "meter": 0,
+          "par": 3,
+          "bannerUrl": null
+        },
+        {
+          "holeNumber": 4,
+          "chartHash": "50bcefd78fa82988",
+          "displayName": "Unknown",
+          "songName": "Unknown",
+          "songFolder": "Unknown",
+          "artist": "Unknown",
+          "meter": 0,
+          "par": 3,
+          "bannerUrl": null
+        }
+      ]
+    }
+  ]
+}

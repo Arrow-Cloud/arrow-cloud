@@ -3,6 +3,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { randomUUID } from 'node:crypto';
+import { isValidPackId } from './packs';
 
 const s3 = new S3Client({});
 const dynamo = DynamoDBDocumentClient.from(new DynamoDBClient({}));
@@ -13,8 +14,6 @@ const PRESIGNED_URL_EXPIRY_SECONDS = 300; // 5 minutes
 
 // Only accept zip archives — chart packages are always zips
 const ALLOWED_CONTENT_TYPES = new Set(['application/zip', 'application/x-zip-compressed', 'application/x-zip', 'application/octet-stream']);
-
-const VALID_PACK_IDS = new Set(['quint-bait', 'stamina-stamtech', 'pride-demon', 'movement-slop']);
 
 interface FunctionUrlEvent {
   requestContext: { http: { method: string; path: string } };
@@ -64,7 +63,7 @@ export async function handler(event: FunctionUrlEvent) {
       return respond(400, { error: `Unsupported content type: ${contentType}` });
     }
 
-    if (typeof packId !== 'string' || !VALID_PACK_IDS.has(packId)) {
+    if (typeof packId !== 'string' || !isValidPackId(packId)) {
       return respond(400, { error: 'Invalid or missing packId' });
     }
 

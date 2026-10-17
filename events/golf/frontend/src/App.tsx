@@ -6,13 +6,18 @@ import { NotificationProvider } from '@shared/contexts/NotificationContext';
 import { LoginPage } from '@shared/pages/login/LoginPage';
 import { LoadingSpinner } from '@shared/components';
 import ScrollToTop from '@shared/components/ScrollToTop';
+import { lazy, Suspense } from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import { Flag } from 'lucide-react';
 import HomePage from './pages/HomePage';
 import SubmitChartPage from './pages/SubmitChartPage';
 import EventFooter from './components/EventFooter';
 import ThemeToggle from './components/ThemeToggle';
-import GradientBackground from './components/GradientBackground';
+import CourseBackground from './components/CourseBackground';
+import { BackdropProvider } from './components/background/BackdropContext';
+
+// The in-progress new home page - lazy-loaded so it ships as its own chunk rather than in the main bundle.
+const BetaHomePage = lazy(() => import('./pages/beta/home/BetaHomePage'));
 
 const EventLogo = () => {
   const { formatMessage } = useIntl();
@@ -55,21 +60,31 @@ const AppContent = () => {
 
   return (
     <Router>
-      <ScrollToTop />
-      <GradientBackground />
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <NavBar eventMode profileUrl="https://arrowcloud.dance/profile" logo={<EventLogo />} extra={<EventNavExtras />} />
-      </div>
-      <div className="relative flex flex-col min-h-screen">
-        <div className="flex-1">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/submit" element={<SubmitChartPage />} />
-            <Route path="/login" element={<LoginPage eventMode />} />
-          </Routes>
+      <BackdropProvider>
+        <ScrollToTop />
+        <CourseBackground />
+        <div className="fixed top-0 left-0 right-0 z-50">
+          <NavBar eventMode profileUrl="https://arrowcloud.dance/profile" logo={<EventLogo />} extra={<EventNavExtras />} />
         </div>
-        <EventFooter />
-      </div>
+        <div className="relative flex flex-col min-h-screen">
+          <div className="flex-1">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/submit" element={<SubmitChartPage />} />
+              <Route path="/login" element={<LoginPage eventMode />} />
+              <Route
+                path="/beta"
+                element={
+                  <Suspense fallback={<LoadingSpinner />}>
+                    <BetaHomePage />
+                  </Suspense>
+                }
+              />
+            </Routes>
+          </div>
+          <EventFooter />
+        </div>
+      </BackdropProvider>
     </Router>
   );
 };

@@ -21,7 +21,7 @@ import type { PackResultImageData, PackResultImageEntry, LeaderboardPageData, Le
 export const THC4_PACK_ID = 383;
 
 /** Pack IDs that have pack leaderboards enabled. */
-export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID, 387];
+export const ELIGIBLE_PACK_IDS: number[] = [101, 102, 131, 346, 348, 371, 380, THC4_PACK_ID, 387, 389];
 
 /** The difficulty slots we compute pack leaderboards for (by default - see the per-pack overrides below). */
 export const PACK_LEADERBOARD_DIFFICULTIES = ['medium', 'hard', 'challenge'] as const;
@@ -427,7 +427,24 @@ function selectNearbyRankings(rankings: LeaderboardPageEntry[]): LeaderboardPage
  * there's nothing to persist - see the "Revised architecture" section of the approved plan.
  * No-op (single cheap query, no added latency) for the common case of a non-pack-eligible chart.
  */
-export async function computePackResultImages(prisma: PrismaClient, s3Client: S3Client, play: Play): Promise<string[]> {
+export async function computePackResultImages(
+  prisma: PrismaClient,
+  s3Client: S3Client,
+  play: Play,
+  /**
+   * `maxImages` caps how many images this renders. It is a budget handed down by the caller (see
+   * chart.ts / MAX_RESULT_IMAGES), not a rendering preference: a single play can already match
+   * several packs, each contributing a summary card plus one page per leaderboard, and other
+   * sources (custom events) share the same response. Images are kept in queue order - the first
+   * pack's summary card, then its leaderboard pages, then the next pack - and the rest are never
+   * rendered at all, since satori/resvg is CPU-bound and a dropped image would be pure wasted
+   * latency on the synchronous submission path.
+   */
+  options: { maxImages?: number } = {},
+): Promise<string[]> {
+  const maxImages = options.maxImages ?? Number.POSITIVE_INFINITY;
+  if (maxImages <= 0) return [];
+
   const matches = await getEligiblePacksForChart(prisma, play.chartHash);
   if (matches.length === 0) return [];
 
@@ -476,6 +493,9 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
     );
 
   for (const match of matches) {
+    // Budget spent - skip this pack entirely rather than querying for images that won't be rendered.
+    if (uploadTasks.length >= maxImages) break;
+
     const simfileCharts = await prisma.simfileChart.findMany({
       where: { simfile: { packId: match.packId }, difficulty: match.difficulty },
       select: { chartHash: true, cmodIneligible: true },
@@ -499,11 +519,6 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
       if (!scoreIndex.has(key)) scoreIndex.set(key, []);
       scoreIndex.get(key)!.push(row);
     }
-
-    // Every row across every leaderboard came from the same batched query above, so this is
-    // free - no extra query needed just to know who everyone is.
-    const aliasByUserId = new Map<string, string>();
-    for (const row of allBestScoresAll) aliasByUserId.set(row.userId, row.userAlias);
 
     const entries: PackResultImageEntry[] = [];
     const leaderboardPages: LeaderboardPageData[] = [];
@@ -554,13 +569,36 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
         totalParticipants: ranked.totalParticipants,
       });
 
-      const rankingsWithMeta: LeaderboardPageEntry[] = ranked.rankings.map((r) => ({
-        rank: r.rank,
-        alias: aliasByUserId.get(r.userId) ?? 'Unknown',
-        totalScore: Math.floor(r.totalScore),
-        isSelf: r.userId === play.userId,
-        isRival: rivalIds.has(r.userId),
-      }));
+      // A leaderboard row is a player's best, not their latest attempt - so when this play didn't
+      // improve on the player's own previous best, their row below shows that older score rather
+      // than what they just danced. Flagged per row so the card and the page can't look like they
+      // disagree. A tie counts as "didn't improve": the row is still the earlier score.
+      const playImprovedOwnBest = score > previousScore;
+
+      // The song leaderboard for the chart just played, ranked by each player's best score on it
+      // (the summary card above is the pack-scoped half of the pair; this is the song-scoped half).
+      // It reads straight out of the pack-wide scoreIndex - this chart is one of the pack's charts,
+      // so its rows are already in there - which means no extra query, and the same eligibility
+      // rules getBestScoresForCharts applies to the pack leaderboard itself: banned/shadow-banned
+      // users excluded, and CMOD plays excluded on charts flagged cmodIneligible. That makes this a
+      // pack-rules view of the chart rather than a copy of the global chart leaderboard.
+      const chartRankings: LeaderboardPageEntry[] = (scoreIndex.get(`${play.chartHash}:${leaderboardId}`) ?? [])
+        .slice()
+        // Tie-broken by userId only so repeat renders of the same data can't shuffle rows around.
+        .sort((a, b) => b.score - a.score || a.userId.localeCompare(b.userId))
+        .map((row, idx) => ({
+          rank: idx + 1,
+          alias: row.userAlias,
+          score: row.score,
+          // Floored, like every other points figure here - a player should never be shown more
+          // points than they've earned, and this has to agree with the summary card's CHART PTS
+          // for the same chart.
+          points: Math.floor(scoreToCurvedPoints(row.score)),
+          isSelf: row.userId === play.userId,
+          isPreviousBest: row.userId === play.userId && !playImprovedOwnBest,
+          isRival: rivalIds.has(row.userId),
+        }));
+
       leaderboardPages.push({
         leaderboardKey: systemKey,
         label: SCORING_SYSTEM_LABELS[systemKey],
@@ -569,8 +607,10 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
         chartArtist: match.chartArtist,
         difficulty: match.difficulty,
         meter: match.meter ?? 0,
-        totalParticipants: ranked.totalParticipants,
-        rankings: selectNearbyRankings(rankingsWithMeta),
+        // Players on this chart - deliberately not `ranked.totalParticipants`, which counts
+        // everyone in the whole pack leaderboard.
+        totalParticipants: chartRankings.length,
+        rankings: selectNearbyRankings(chartRankings),
       });
     }
 
@@ -585,10 +625,15 @@ export async function computePackResultImages(prisma: PrismaClient, s3Client: S3
       entries,
     };
 
-    // Summary card first (image 1), then one page per selected leaderboard (images 2..n) -
-    // queued in order but all rendered/uploaded concurrently via the shared uploadTasks array.
-    uploadTasks.push(upload(`result/play/${play.id}/${match.packId}.png`, renderPackResultImage(imageData)));
+    // Pack summary card first (image 1), then one song-leaderboard page per selected leaderboard
+    // (images 2..n) - queued in order but all rendered/uploaded concurrently via the shared
+    // uploadTasks array.
+    // Each push checks the budget first, because calling render* is what starts the work.
+    if (uploadTasks.length < maxImages) {
+      uploadTasks.push(upload(`result/play/${play.id}/${match.packId}.png`, renderPackResultImage(imageData)));
+    }
     for (const pageData of leaderboardPages) {
+      if (uploadTasks.length >= maxImages) break;
       uploadTasks.push(upload(`result/play/${play.id}/${match.packId}-${pageData.leaderboardKey}.png`, renderLeaderboardPage(pageData)));
     }
   }

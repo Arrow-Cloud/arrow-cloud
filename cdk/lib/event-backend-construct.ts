@@ -6,6 +6,7 @@ import * as sns from 'aws-cdk-lib/aws-sns';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as snsSubscriptions from 'aws-cdk-lib/aws-sns-subscriptions';
 import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
+import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import * as events from 'aws-cdk-lib/aws-events';
 import * as targets from 'aws-cdk-lib/aws-events-targets';
 
@@ -33,6 +34,13 @@ export interface EventBackendProps {
   /** Handler entry point for the scheduled processor Lambda (e.g. "scheduled-processor.handler") */
   scheduledProcessorHandler?: string;
 
+  /**
+   * Also deliver `user-updated` events (a player's alias or avatar changed) to the score processor's queue.
+   * Opt-in: the processor must handle that event type, or it throws on every one and the messages end up in
+   * the dead-letter queue. Golf's does (events/golf/backend/src/score-processor.ts); testevent's does not.
+   */
+  subscribeToUserUpdates?: boolean;
+
   /** How often the scheduled Lambda runs (default: 1 hour) */
   scheduleInterval?: cdk.Duration;
 
@@ -51,6 +59,15 @@ export interface EventBackendProps {
    * documented threshold for 2 full vCPUs (1,769 MB = 1 vCPU).
    */
   readApiMemorySize?: number;
+
+  /**
+   * Name of the Secrets Manager secret holding the core API's session-JWT signing key (`JwtSecret`).
+   * Opt-in: when set, the read API Lambda can read it (JWT_SECRET_ARN) and so verify the logged-in
+   * user's token itself - see events/golf/backend/src/auth.ts. Without it the read API stays fully
+   * anonymous. Granting this puts the signing key in a publicly reachable Lambda, so only turn it on
+   * for events whose read API actually needs to know who is calling.
+   */
+  readApiJwtSecretName?: string;
 
   // --- Shared ---
 
@@ -92,6 +109,8 @@ export class EventBackendConstruct extends Construct {
       readApiCodePath,
       readApiHandler,
       readApiMemorySize = 256,
+      readApiJwtSecretName,
+      subscribeToUserUpdates = false,
       scheduleInterval = cdk.Duration.hours(1),
       apiBaseUrl = 'https://api.arrowcloud.dance',
       environment = {},
@@ -149,18 +168,30 @@ export class EventBackendConstruct extends Construct {
         },
       });
 
-      scoreSubmissionTopic.addSubscription(
+      const scoreFilter = { eventType: ['score-submitted'], chartHash: chartHashes };
+      const scoreSubscription = scoreSubmissionTopic.addSubscription(
         new snsSubscriptions.SqsSubscription(this.queue, {
-          filterPolicy: {
-            eventType: sns.SubscriptionFilter.stringFilter({
-              allowlist: ['score-submitted'],
-            }),
-            chartHash: sns.SubscriptionFilter.stringFilter({
-              allowlist: chartHashes,
-            }),
-          },
+          // With user updates the whole policy is set by the override below instead; an override merges
+          // into this one rather than replacing it, which would leave these keys beside the `$or`.
+          filterPolicy: subscribeToUserUpdates
+            ? undefined
+            : {
+                eventType: sns.SubscriptionFilter.stringFilter({ allowlist: scoreFilter.eventType }),
+                chartHash: sns.SubscriptionFilter.stringFilter({ allowlist: chartHashes }),
+              },
         }),
       );
+
+      // User changes (alias, avatar) are about a player, not a chart, so a policy requiring a chartHash can
+      // never match them. They cannot get a subscription of their own to this queue: SNS allows ONE
+      // subscription per topic and endpoint, and a second with a different filter is rejected ("Subscription
+      // already exists with different attributes"). So the one subscription's filter becomes "a score for one
+      // of our charts OR a user-updated event", using SNS's `$or` matching.
+      if (subscribeToUserUpdates) {
+        (scoreSubscription.node.defaultChild as sns.CfnSubscription).addPropertyOverride('FilterPolicy', {
+          $or: [scoreFilter, { eventType: ['user-updated'] }],
+        });
+      }
 
       this.scoreProcessorLambda = new lambda.Function(this, 'ScoreProcessorLambda', {
         functionName: `${prefix}-score-processor`,
@@ -221,6 +252,12 @@ export class EventBackendConstruct extends Construct {
       });
 
       this.table.grantReadData(this.readApiLambda);
+
+      if (readApiJwtSecretName) {
+        const jwtSecret = secretsmanager.Secret.fromSecretNameV2(this, 'ReadApiJwtSecret', readApiJwtSecretName);
+        this.readApiLambda.addEnvironment('JWT_SECRET_ARN', jwtSecret.secretArn);
+        jwtSecret.grantRead(this.readApiLambda);
+      }
 
       const readFnUrl = this.readApiLambda.addFunctionUrl({
         authType: lambda.FunctionUrlAuthType.NONE,

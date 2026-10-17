@@ -74,6 +74,9 @@ if (wildcardCertArn) {
     domainName,
     wildcardCertArn,
     distPath: '../events/golf/frontend/dist',
+    // Serves golf's read API same-origin at golf.arrowcloud.dance/api/* - see EventSiteStackProps.
+    // Blank until GolfBackendStack's first deploy, same two-step config as golfReadApiUrl above.
+    readApiUrl: golfConfig.readApiUrl || undefined,
   });
 
   // "In The Golf" is a plausible domain guess for this event - redirect it to the real one instead

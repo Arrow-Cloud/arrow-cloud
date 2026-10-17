@@ -1,13 +1,24 @@
 @import "tailwindcss";
 @source "../../../../frontend/src";
 
+/* Tailwind's `dark:` follows the DaisyUI theme attribute (set by ThemeToggle), not the OS setting. */
+@custom-variant dark (&:where([data-theme=event-dark], [data-theme=event-dark] *));
+
 /*
- * Event accent color — change these two values to re-theme the entire site.
- * Hue ~145 = green. Adjust lightness/chroma for intensity.
+ * "Fairway" theme: a playful, modern take on golf video games. Sky and grass, chunky rounded shapes, a
+ * "pressed button" lip instead of soft blurry shadows, and a rounded display face for headings.
+ * Everything routes through DaisyUI tokens, so the shared NavBar, login page and forms re-theme with it.
+ *
+ * Colour roles (the existing components lean on these, so keep the meaning stable):
+ *   primary   deep fairway green - solid surfaces, readable text-on-light
+ *   accent    vivid grass green  - calls to action, "good" numbers (aces, birdies)
+ *   secondary sky blue           - supporting surfaces
+ *   warning   sunshine yellow    - the ball and the flag: highlights, rank 1
+ *   error     flag red           - out of bounds, over par
  */
-:root {
-  --event-hue: 155;
-  --event-chroma: 0.18;
+
+@theme {
+  --font-display: "Fredoka", "Nunito", ui-rounded, system-ui, sans-serif;
 }
 
 @plugin "daisyui/theme" {
@@ -15,40 +26,35 @@
   default: true;
   prefersdark: false;
   color-scheme: "light";
-  /* Base surfaces: warm off-white */
-  --color-base-100: oklch(97.5% 0.005 155);
-  --color-base-200: oklch(94% 0.008 155);
-  --color-base-300: oklch(89% 0.012 155);
-  --color-base-content: oklch(25% 0.02 155);
-  /* Primary: deep green */
-  --color-primary: oklch(40% 0.14 155);
-  --color-primary-content: oklch(97% 0.01 155);
-  /* Secondary: muted teal */
-  --color-secondary: oklch(50% 0.10 180);
-  --color-secondary-content: oklch(97% 0.01 180);
-  /* Accent: vibrant green */
-  --color-accent: oklch(55% 0.18 155);
-  --color-accent-content: oklch(97% 0.01 155);
-  /* Neutral */
-  --color-neutral: oklch(20% 0.01 155);
-  --color-neutral-content: oklch(90% 0.005 155);
-  /* Semantic */
-  --color-info: oklch(70% 0.12 230);
-  --color-info-content: oklch(25% 0.06 230);
-  --color-success: oklch(75% 0.15 155);
-  --color-success-content: oklch(20% 0.06 155);
-  --color-warning: oklch(82% 0.12 80);
-  --color-warning-content: oklch(35% 0.06 80);
-  --color-error: oklch(65% 0.18 25);
-  --color-error-content: oklch(97% 0.01 25);
-  /* Shape */
-  --radius-selector: 1rem;
-  --radius-field: 0.75rem;
-  --radius-box: 1rem;
+  /* Surfaces: sunny cream, with mint for the next layer down */
+  --color-base-100: oklch(98.5% 0.014 100);
+  --color-base-200: oklch(95.5% 0.035 150);
+  --color-base-300: oklch(90% 0.06 150);
+  --color-base-content: oklch(27% 0.06 165);
+  --color-primary: oklch(44% 0.13 155);
+  --color-primary-content: oklch(98% 0.015 150);
+  --color-secondary: oklch(74% 0.12 232);
+  --color-secondary-content: oklch(25% 0.07 245);
+  --color-accent: oklch(58% 0.19 148);
+  --color-accent-content: oklch(98% 0.015 148);
+  --color-neutral: oklch(30% 0.06 170);
+  --color-neutral-content: oklch(96% 0.02 150);
+  --color-info: oklch(72% 0.12 232);
+  --color-info-content: oklch(25% 0.07 245);
+  --color-success: oklch(72% 0.18 148);
+  --color-success-content: oklch(22% 0.07 150);
+  --color-warning: oklch(87% 0.17 92);
+  --color-warning-content: oklch(32% 0.08 80);
+  --color-error: oklch(63% 0.21 25);
+  --color-error-content: oklch(98% 0.01 25);
+  /* Shape: big radii, thicker borders */
+  --radius-selector: 1.25rem;
+  --radius-field: 1rem;
+  --radius-box: 1.5rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
-  --border: 1px;
-  --depth: 1;
+  --border: 2px;
+  --depth: 0;
   --noise: 0;
 }
 
@@ -57,43 +63,317 @@
   default: false;
   prefersdark: true;
   color-scheme: "dark";
-  /* Base surfaces: dark with green tint */
-  --color-base-100: oklch(18% 0.015 155);
-  --color-base-200: oklch(22% 0.018 155);
-  --color-base-300: oklch(28% 0.020 155);
-  --color-base-content: oklch(92% 0.01 155);
-  /* Primary: bright green on dark */
-  --color-primary: oklch(72% 0.18 155);
-  --color-primary-content: oklch(15% 0.04 155);
-  /* Secondary: teal */
-  --color-secondary: oklch(65% 0.12 180);
-  --color-secondary-content: oklch(15% 0.03 180);
-  /* Accent: bright green */
-  --color-accent: oklch(75% 0.18 155);
-  --color-accent-content: oklch(15% 0.04 155);
-  /* Neutral */
-  --color-neutral: oklch(12% 0.01 155);
-  --color-neutral-content: oklch(95% 0.005 155);
-  /* Semantic */
-  --color-info: oklch(75% 0.10 210);
-  --color-info-content: oklch(15% 0.03 210);
-  --color-success: oklch(80% 0.15 155);
-  --color-success-content: oklch(15% 0.04 155);
-  --color-warning: oklch(85% 0.13 80);
-  --color-warning-content: oklch(18% 0.03 80);
-  --color-error: oklch(72% 0.16 25);
-  --color-error-content: oklch(15% 0.03 25);
-  /* Shape */
-  --radius-selector: 1rem;
-  --radius-field: 0.75rem;
-  --radius-box: 1rem;
+  /* Surfaces: the course at dusk - deep teal-navy */
+  --color-base-100: oklch(21% 0.04 215);
+  --color-base-200: oklch(25% 0.045 205);
+  --color-base-300: oklch(31% 0.05 200);
+  --color-base-content: oklch(95% 0.02 130);
+  --color-primary: oklch(79% 0.19 145);
+  --color-primary-content: oklch(20% 0.06 150);
+  --color-secondary: oklch(76% 0.12 232);
+  --color-secondary-content: oklch(20% 0.06 245);
+  --color-accent: oklch(82% 0.2 135);
+  --color-accent-content: oklch(21% 0.06 140);
+  --color-neutral: oklch(16% 0.035 215);
+  --color-neutral-content: oklch(95% 0.02 130);
+  --color-info: oklch(76% 0.12 232);
+  --color-info-content: oklch(20% 0.06 245);
+  --color-success: oklch(80% 0.18 148);
+  --color-success-content: oklch(20% 0.06 150);
+  --color-warning: oklch(88% 0.17 92);
+  --color-warning-content: oklch(28% 0.07 80);
+  --color-error: oklch(70% 0.19 25);
+  --color-error-content: oklch(18% 0.04 25);
+  --radius-selector: 1.25rem;
+  --radius-field: 1rem;
+  --radius-box: 1.5rem;
   --size-selector: 0.25rem;
   --size-field: 0.25rem;
-  --border: 1px;
+  --border: 2px;
   --depth: 0;
   --noise: 0;
 }
 
 @plugin "daisyui" {
   themes: event-light --default --prefers-light, event-dark --prefers-dark;
+}
+
+@layer base {
+  html {
+    font-family: "Nunito", system-ui, sans-serif;
+  }
+  /* Two typefaces, no more: Fredoka for anything you'd read as a label or a score, Nunito for running text. */
+  h1,
+  h2,
+  h3,
+  h4,
+  .btn,
+  .badge,
+  .tab,
+  .navbar .menu,
+  .font-display {
+    font-family: var(--font-display);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: 0.01em;
+  }
+}
+
+@layer components {
+  /* Buttons sit on a solid lip and press down when clicked - the one place the theme gets "physical". */
+  .btn:not(.btn-ghost):not(.btn-link):not([disabled]) {
+    font-weight: 800;
+    box-shadow: 0 4px 0 0 color-mix(in oklab, var(--btn-color, var(--color-base-content)) 55%, black);
+    transition: transform 80ms ease, box-shadow 80ms ease, filter 120ms ease;
+  }
+  .btn:not(.btn-ghost):not(.btn-link):not([disabled]):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 0 0 color-mix(in oklab, var(--btn-color, var(--color-base-content)) 55%, black);
+  }
+  .btn:not(.btn-ghost):not(.btn-link):not([disabled]):active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 0 color-mix(in oklab, var(--btn-color, var(--color-base-content)) 55%, black);
+  }
+  .btn-outline:not([disabled]) {
+    box-shadow: 0 4px 0 0 color-mix(in oklab, var(--btn-color, var(--color-base-content)) 35%, transparent);
+  }
+}
+
+/* Cards: a flat colour block with a hard, un-blurred drop - like a scorecard or a sticker. */
+@utility pop-card {
+  background-color: var(--color-base-100);
+  border: 2px solid color-mix(in oklab, var(--color-base-content) 14%, transparent);
+  border-radius: var(--radius-box);
+  box-shadow: 0 6px 0 0 color-mix(in oklab, var(--color-base-content) 12%, transparent);
+}
+
+/* Small uppercase label used above headings ("ARROW CLOUD PRESENTS"). */
+@utility eyebrow {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* An inset tile inside a pop-card: a lighter, flatter surface for list rows and form groups. */
+@utility pop-tile {
+  background-color: var(--color-base-200);
+  border: 2px solid color-mix(in oklab, var(--color-base-content) 14%, transparent);
+  border-radius: calc(var(--radius-box) * 0.75);
+}
+
+/* A dotted "ball flight" underline for section headings. */
+@layer components {
+  .trail {
+    background-image: radial-gradient(circle, var(--color-accent) 2.5px, transparent 3px);
+    background-size: 14px 8px;
+    background-repeat: repeat-x;
+    background-position: center bottom;
+    padding-bottom: 0.9rem;
+  }
+}
+
+/* --- Backdrop palettes. components/background/variants.ts says what each variant draws; these say what colour it is.
+   --sky-top/-mid/-horizon: the sky gradient. --land-1/-2/-3: the three hill layers, far to near. --land-foliage:
+   what trees and cacti are tinted toward. --land-green: the patch under each flag. --land-rim: the lit edge along a
+   crest. --haze: the colour far land dissolves into. The theme (light/dark) is a second selector on each. --- */
+
+/* A - pines. Greens and sky blue; at night the whole course is dimmed toward black so the UI-bright green does not
+   read as midday. */
+[data-backdrop='pines'] {
+  --dim: 0%;
+  --sky-top: color-mix(in oklab, var(--color-secondary) 75%, var(--color-base-100));
+  --sky-mid: color-mix(in oklab, var(--color-secondary) 40%, var(--color-base-100));
+  --sky-horizon: color-mix(in oklab, var(--color-secondary) 24%, var(--color-base-100));
+  --haze: var(--sky-horizon);
+  --land-1: color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, var(--color-success) 65%, var(--color-secondary)) 45%, var(--haze)), black var(--dim));
+  --land-2: color-mix(in oklab, color-mix(in oklab, color-mix(in oklab, var(--color-success) 85%, var(--color-secondary)) 68%, var(--haze)), black var(--dim));
+  --land-3: color-mix(in oklab, color-mix(in oklab, var(--color-success) 88%, var(--haze)), black var(--dim));
+  --land-foliage: var(--color-primary);
+  --land-green: color-mix(in oklab, var(--land-2) 45%, var(--color-base-100));
+  --land-rim: var(--color-base-100);
+}
+:root[data-theme='event-dark'] [data-backdrop='pines'] {
+  --dim: 42%;
+  --sky-top: color-mix(in oklab, var(--color-secondary) 15%, var(--color-base-100));
+  --sky-mid: var(--color-base-100);
+  --sky-horizon: var(--color-base-100);
+  --haze: color-mix(in oklab, var(--color-secondary) 24%, var(--color-base-100));
+}
+
+/* B - sands. A hot blue overhead warming to a peach horizon; far mesas hazy and rosy, dunes sandier and richer as
+   they come nearer; cactus green kept dusty so it sits in the sand. At night: indigo sky, a warm glow on the horizon,
+   and the land gone to deep brown. */
+[data-backdrop='sands'] {
+  --sky-top: oklch(76% 0.11 238);
+  --sky-mid: oklch(87% 0.07 215);
+  --sky-horizon: oklch(93% 0.07 78);
+  --land-1: oklch(80% 0.075 40);
+  --land-2: oklch(83% 0.1 82);
+  --land-3: oklch(76% 0.115 66);
+  --land-foliage: oklch(50% 0.09 152);
+  --land-green: oklch(70% 0.15 140);
+  --land-rim: oklch(96% 0.05 85);
+  --land-bloom: oklch(72% 0.19 12);
+}
+:root[data-theme='event-dark'] [data-backdrop='sands'] {
+  --sky-top: oklch(19% 0.06 285);
+  --sky-mid: oklch(26% 0.075 315);
+  --sky-horizon: oklch(37% 0.09 38);
+  --land-1: oklch(31% 0.055 28);
+  --land-2: oklch(27% 0.05 48);
+  --land-3: oklch(23% 0.045 56);
+  --land-foliage: oklch(40% 0.075 158);
+  --land-green: oklch(44% 0.1 150);
+  --land-rim: oklch(52% 0.07 50);
+  --land-bloom: oklch(62% 0.17 10);
+}
+
+/* C - hills. Mountains: a clear, crisp alpine sky behind a tall blue-grey range with snow on its summits, dark
+   forested foothills, and a bright grassy slope with rock on it. At night the sky goes deep navy and the snow stays
+   pale, as it does by moonlight. */
+[data-backdrop='hills'] {
+  --sky-top: oklch(70% 0.105 247);
+  --sky-mid: oklch(84% 0.06 234);
+  --sky-horizon: oklch(93% 0.03 215);
+  --land-1: oklch(70% 0.045 268);
+  --land-2: oklch(53% 0.07 178);
+  --land-3: oklch(68% 0.125 142);
+  --land-foliage: oklch(34% 0.08 165);
+  --land-green: oklch(80% 0.13 140);
+  --land-rim: oklch(97% 0.025 230);
+  --land-snow: oklch(98% 0.012 240);
+  --land-rock: oklch(56% 0.02 80);
+}
+:root[data-theme='event-dark'] [data-backdrop='hills'] {
+  --sky-top: oklch(17% 0.055 264);
+  --sky-mid: oklch(24% 0.065 256);
+  --sky-horizon: oklch(33% 0.065 236);
+  --land-1: oklch(33% 0.045 268);
+  --land-2: oklch(24% 0.05 192);
+  --land-3: oklch(22% 0.06 160);
+  --land-foliage: oklch(28% 0.06 168);
+  --land-green: oklch(40% 0.09 150);
+  --land-rim: oklch(52% 0.05 240);
+  --land-snow: oklch(80% 0.035 250);
+  --land-rock: oklch(34% 0.015 80);
+}
+
+/* D - meadow. Pastel and fresh: a pale sky warming to cream, bright spring greens, and flowers in four colours.
+   Fireflies come out at night over a dusky lilac sky. */
+[data-backdrop='meadow'] {
+  --sky-top: oklch(82% 0.08 228);
+  --sky-mid: oklch(92% 0.05 208);
+  --sky-horizon: oklch(96% 0.06 102);
+  --land-1: oklch(87% 0.08 135);
+  --land-2: oklch(82% 0.135 128);
+  --land-3: oklch(76% 0.165 130);
+  --land-foliage: oklch(52% 0.12 140);
+  --land-green: oklch(85% 0.14 125);
+  --land-rim: oklch(97% 0.05 105);
+  --land-bark: oklch(95% 0.01 100);
+  --land-ink: oklch(30% 0.02 60);
+  --flower-1: oklch(76% 0.15 4);
+  --flower-2: oklch(89% 0.16 95);
+  --flower-3: oklch(68% 0.16 305);
+  --flower-4: oklch(96% 0.02 95);
+}
+:root[data-theme='event-dark'] [data-backdrop='meadow'] {
+  --sky-top: oklch(20% 0.055 272);
+  --sky-mid: oklch(27% 0.07 292);
+  --sky-horizon: oklch(36% 0.08 310);
+  --land-1: oklch(30% 0.05 150);
+  --land-2: oklch(27% 0.065 150);
+  --land-3: oklch(23% 0.065 145);
+  --land-foliage: oklch(36% 0.08 150);
+  --land-green: oklch(38% 0.09 145);
+  --land-rim: oklch(46% 0.07 150);
+  --land-bark: oklch(62% 0.01 100);
+  --land-ink: oklch(15% 0.02 60);
+  --flower-1: oklch(60% 0.13 4);
+  --flower-2: oklch(72% 0.13 95);
+  --flower-3: oklch(52% 0.13 305);
+  --flower-4: oklch(76% 0.02 95);
+}
+
+/* E - prairie. A tall, deep-blue sky over straw and gold; the horizon pale as sun-bleached grass. At night a long
+   amber dusk glow along the horizon under a purple sky, with the grassland gone to dark umber. */
+[data-backdrop='prairie'] {
+  --sky-top: oklch(72% 0.125 246);
+  --sky-mid: oklch(86% 0.075 228);
+  --sky-horizon: oklch(94% 0.075 86);
+  --land-1: oklch(82% 0.07 86);
+  --land-2: oklch(78% 0.115 88);
+  --land-3: oklch(70% 0.125 78);
+  --land-foliage: oklch(58% 0.115 88);
+  --land-green: oklch(76% 0.12 120);
+  --land-rim: oklch(96% 0.06 90);
+  --land-wood: oklch(48% 0.06 55);
+  --land-wool: oklch(96% 0.02 90);
+  --land-ink: oklch(28% 0.03 55);
+}
+:root[data-theme='event-dark'] [data-backdrop='prairie'] {
+  --sky-top: oklch(17% 0.055 268);
+  --sky-mid: oklch(25% 0.08 328);
+  --sky-horizon: oklch(44% 0.12 55);
+  --land-1: oklch(33% 0.055 70);
+  --land-2: oklch(28% 0.05 75);
+  --land-3: oklch(23% 0.045 70);
+  --land-foliage: oklch(40% 0.07 86);
+  --land-green: oklch(40% 0.08 125);
+  --land-rim: oklch(54% 0.09 65);
+  --land-wood: oklch(32% 0.04 55);
+  --land-wool: oklch(70% 0.02 90);
+  --land-ink: oklch(14% 0.03 55);
+}
+
+/* --- Page backdrop motion (components/background/). Transform and opacity only, and all of it stops under
+   reduced motion. --- */
+@keyframes bg-drift-x {
+  from { transform: translateX(-30vw); }
+  to { transform: translateX(130vw); }
+}
+@keyframes bg-twinkle {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+@keyframes bg-float {
+  0%, 100% { transform: translate(0, 0); opacity: 0.2; }
+  25% { opacity: 1; }
+  50% { transform: translate(14px, -22px); opacity: 0.5; }
+  75% { opacity: 1; }
+}
+@keyframes bg-wave {
+  0%, 100% { transform: skewY(0deg) scaleX(1); }
+  50% { transform: skewY(-7deg) scaleX(0.88); }
+}
+@keyframes bg-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes bg-bob {
+  from { transform: translateY(-26px); }
+  to { transform: translateY(26px); }
+}
+@keyframes bg-flap {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0.3); }
+}
+@layer components {
+  .bg-butterfly { animation: bg-drift-x linear infinite; }
+  .bg-bob { animation: bg-bob ease-in-out infinite alternate; }
+  .bg-flap { animation: bg-flap 0.32s ease-in-out infinite alternate; }
+  .bg-windmill { animation: bg-spin 22s linear infinite; }
+  .bg-cloud { animation: bg-drift-x linear infinite; }
+  .bg-star { animation: bg-twinkle ease-in-out infinite; }
+  .bg-firefly { animation: bg-float ease-in-out infinite; }
+  .bg-flag { transform-origin: left center; animation: bg-wave 2.6s ease-in-out infinite; }
+  .bg-spin { animation: bg-spin 120s linear infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .bg-cloud, .bg-star, .bg-firefly, .bg-flag, .bg-spin, .bg-butterfly, .bg-bob, .bg-flap, .bg-windmill { animation: none; }
+  }
 }

@@ -140,7 +140,7 @@ function HitExamples() {
                   <img
                     src={image.src}
                     alt={image.caption || fallbackAlt}
-                    className="w-full aspect-[3/2] object-cover rounded-xl shadow-lg ring-1 ring-base-content/10"
+                    className="w-full aspect-[3/2] object-cover rounded-xl shadow-lg border-2 border-base-content/10"
                   />
                   {!sharedCaption && image.caption && <p className="text-sm text-base-content/70 text-center">{image.caption}</p>}
                 </div>
@@ -170,13 +170,13 @@ const RULES = [
   'Courses are curated by community volunteers',
 ];
 
-// --- Section wrapper - the translucent/blurred "card" every section's content sits in, so text
-// stays legible over GradientBackground.tsx's moving blobs regardless of exactly where they've
+// --- Section wrapper - the pop-card every section's content sits in, so text
+// stays legible over CourseBackground.tsx's sky and hills regardless of exactly where they've
 // drifted to. ---
 function Section({ id, heading, children }: { id: string; heading: React.ReactNode; children: React.ReactNode }) {
   return (
     <section id={id} className="min-h-screen flex items-center justify-center px-4 py-20">
-      <div className="card bg-base-100/70 backdrop-blur-md shadow-xl ring-1 ring-base-content/10 p-8 sm:p-12 w-full max-w-4xl">
+      <div className="card pop-card p-8 sm:p-12 w-full max-w-4xl">
         <h2 className="text-2xl sm:text-3xl font-extrabold text-center mb-8">{heading}</h2>
         {children}
       </div>
@@ -264,7 +264,7 @@ const HomePage = () => {
       {/* --- Beta / launch timeline --- */}
       <Section id="timeline" heading={<FormattedMessage defaultMessage="What's next" id="1twu8c" description="Timeline section heading" />}>
         <div className="grid sm:grid-cols-2 gap-6">
-          <div className="card bg-base-200/70 p-6 flex flex-col items-center text-center gap-2">
+          <div className="card pop-tile p-6 flex flex-col items-center text-center gap-2">
             <span className="text-sm uppercase tracking-widest text-accent font-semibold">
               <FormattedMessage defaultMessage="Beta" id="4vg1IP" description="Beta milestone label" />
             </span>
@@ -272,7 +272,7 @@ const HomePage = () => {
               <FormattedMessage defaultMessage="Mid-October" id="poB0kA" description="Beta milestone date" />
             </span>
           </div>
-          <div className="card bg-base-200/70 p-6 flex flex-col items-center text-center gap-2">
+          <div className="card pop-tile p-6 flex flex-col items-center text-center gap-2">
             <span className="text-sm uppercase tracking-widest text-accent font-semibold">
               <FormattedMessage defaultMessage="Full Launch" id="cNdbRM" description="Launch milestone label" />
             </span>

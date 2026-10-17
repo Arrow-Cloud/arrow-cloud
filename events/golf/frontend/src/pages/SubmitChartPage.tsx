@@ -108,17 +108,53 @@ const PACKS: Pack[] = [
       },
     ],
   },
+  {
+    id: 'hip-hop',
+    name: 'Hip Hop',
+    badge: 'Blocks 10–12 · Length 1:45–2:45',
+    curators: ['Formless'],
+    ruleSections: [
+      {
+        items: [
+          'Length: 1:45–2:45',
+          'Block rating: 10, 11, or 12',
+          'Hip Hop, including the Trap sub-genre',
+          'No culture vulture artists',
+          'Explicit language and themes are allowed',
+          'The pack is about the music, so tech, no tech, and hard tech are all welcome',
+          'Hip Hop is a severely neglected genre in charting — the goal is to get more people interested in it',
+          "This isn't a summer-vibes pack — we're not looking to make Summer Vibes Vol. 5",
+        ],
+      },
+    ],
+  },
+  {
+    id: 'iidx',
+    name: 'IIDX',
+    badge: 'Blocks 12–14 · Length 1:15–2:39 · One song per mix',
+    curators: ['Andeh', 'Formless'],
+    ruleSections: [
+      {
+        items: [
+          'Length: 1:15–2:39 — covers essentially any IIDX song apart from the full-length versions',
+          'Block rating: 12, 13, or 14',
+          'Song must have originated from Beatmania IIDX',
+          'One song per mix, to force maximum diversity',
+          'Tech to hard tech preferred — this is meant to be a somewhat challenging pack',
+          'Genre diversity is encouraged: IIDX spans techno, industrial, DnB, hip hop, trance and more',
+          'Preference for songs that have yet to be charted in the modern tech scene',
+          'The aim is a good representation of IIDX music and how it has evolved — iconic songs brought to life here are especially welcome',
+        ],
+      },
+    ],
+  },
 ];
 
-// The one translucent glass panel every step's content sits in, matching HomePage.tsx's Section
-// treatment - so this page reads as part of the same site instead of a set of solid opaque cards
-// floating directly on the animated background (GradientBackground.tsx).
+// The one pop-card every step's content sits in, matching HomePage.tsx's Section
+// treatment - so this page reads as part of the same site
+// over the sky and hills of CourseBackground.tsx.
 function PageCard({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="card bg-base-100/70 backdrop-blur-md shadow-xl ring-1 ring-base-content/10 p-6 sm:p-10 w-full max-w-2xl flex flex-col gap-6">
-      {children}
-    </div>
-  );
+  return <div className="card pop-card p-6 sm:p-10 w-full max-w-2xl flex flex-col gap-6">{children}</div>;
 }
 
 const SubmitChartPage = () => {
@@ -249,7 +285,7 @@ const SubmitChartPage = () => {
           </div>
 
           {/* General Info & Charting Rules */}
-          <div className="card bg-base-200/60 p-5 flex flex-col gap-4">
+          <div className="card pop-tile p-5 flex flex-col gap-4">
             <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
               <FormattedMessage defaultMessage="General Information" id="elcNgS" description="General information section heading on submit chart page" />
             </h2>
@@ -313,7 +349,7 @@ const SubmitChartPage = () => {
             {PACKS.map((pack) => (
               <button
                 key={pack.id}
-                className="card bg-base-200/60 p-5 flex-row items-center justify-between gap-4 text-left hover:bg-base-300/70 transition-colors cursor-pointer border border-transparent hover:border-accent/30"
+                className="card pop-tile p-5 flex-row items-center justify-between gap-4 text-left hover:bg-base-300/70 transition-colors cursor-pointer border border-transparent hover:border-accent/30"
                 onClick={() => handlePackSelect(pack)}
               >
                 <div className="flex flex-col gap-1 min-w-0">
@@ -356,7 +392,7 @@ const SubmitChartPage = () => {
         </div>
 
         {/* Pack-specific Rules */}
-        <div className="card bg-base-200/60 p-5 flex flex-col gap-4">
+        <div className="card pop-tile p-5 flex flex-col gap-4">
           <h2 className="font-semibold text-sm text-base-content/70 uppercase tracking-wider">
             <FormattedMessage defaultMessage="Submission Rules" id="JHeC4d" description="Rules section heading on submit chart page" />
           </h2>
@@ -376,7 +412,7 @@ const SubmitChartPage = () => {
 
         {/* Upload form / success */}
         {uploadState === 'done' ? (
-          <div className="card bg-base-200/60 p-6 flex flex-col items-center gap-3 text-center">
+          <div className="card pop-tile p-6 flex flex-col items-center gap-3 text-center">
             <CheckCircle2 className="w-10 h-10 text-success" />
             <p className="font-semibold">
               <FormattedMessage defaultMessage="Chart submitted successfully!" id="vAro4O" description="Upload success message" />
@@ -386,7 +422,7 @@ const SubmitChartPage = () => {
             </button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="card bg-base-200/60 p-6 flex flex-col gap-4">
+          <form onSubmit={handleSubmit} className="card pop-tile p-6 flex flex-col gap-4">
             <label className="form-control w-full">
               <div className="label">
                 <span className="label-text">
