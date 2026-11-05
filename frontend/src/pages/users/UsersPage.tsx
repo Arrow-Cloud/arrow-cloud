@@ -5,6 +5,8 @@ import { useUserList, useDebounce, useCountries } from '../../hooks';
 import { UserListItem } from '../../schemas/apiSchemas';
 import { AppPageLayout, Pagination, ProfileAvatar } from '../../components';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { ListLoadError, Skeleton, SkeletonRows, SkeletonColumn } from '../../components/ui';
+import { USER_LIST_PAGE_SIZE } from '../../hooks/useUserList';
 
 interface UserTableHeaderProps {
   label: string;
@@ -51,6 +53,20 @@ const UserRow: React.FC<UserRowProps> = ({ user, onClick }) => {
   );
 };
 
+const USER_SKELETON_COLUMNS: SkeletonColumn[] = [
+  {
+    className: 'px-4 py-5',
+    content: (
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-12 h-12 rounded-full shrink-0" />
+        <Skeleton className="h-5 w-36" />
+      </div>
+    ),
+  },
+  { className: 'px-4 py-5', content: <Skeleton className="h-4 w-24" /> },
+  { className: 'px-4 py-5', content: <Skeleton className="h-4 w-20" /> },
+];
+
 export const UsersPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
@@ -60,7 +76,7 @@ export const UsersPage: React.FC = () => {
   const { formatMessage } = useIntl();
 
   const { countries } = useCountries();
-  const { users, meta, filters, loading, error, setSearch, setCountryId, setOrderBy, setOrderDirection, setPage, refresh } = useUserList();
+  const { users, meta, filters, loading, error, loadState, setSearch, setCountryId, setOrderBy, setOrderDirection, setPage, refresh } = useUserList();
 
   useEffect(() => {
     // Hack to prevent a second API call on first render
@@ -80,7 +96,7 @@ export const UsersPage: React.FC = () => {
     navigate(`/user/${userId}`);
   };
 
-  if (error) {
+  if (error && !loadState.hasData) {
     return (
       <AppPageLayout>
         <div className="container mx-auto px-4">
@@ -135,7 +151,7 @@ export const UsersPage: React.FC = () => {
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                   />
-                  {loading && (
+                  {loadState.showBusy && (
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <span className="loading loading-spinner loading-sm"></span>
                     </div>
@@ -178,8 +194,10 @@ export const UsersPage: React.FC = () => {
               </div>
             </div>
 
+            <ListLoadError state={loadState} />
+
             {/* Table */}
-            <div className="overflow-x-auto rounded-lg">
+            <div className="overflow-x-auto rounded-lg" aria-busy={loading}>
               <table className="table table-zebra w-full bg-base-100 border border-base-content/10">
                 <thead className="bg-base-200/80">
                   <tr>
@@ -204,7 +222,8 @@ export const UsersPage: React.FC = () => {
                     />
                   </tr>
                 </thead>
-                <tbody className={loading ? 'opacity-50' : ''}>
+                <tbody className={loadState.showBusy ? 'opacity-50' : ''}>
+                  {loadState.isInitialLoading && <SkeletonRows rows={USER_LIST_PAGE_SIZE} columns={USER_SKELETON_COLUMNS} />}
                   {users.length === 0 && !loading ? (
                     <tr>
                       <td colSpan={3} className="text-center py-12 text-base-content/50">
@@ -232,7 +251,7 @@ export const UsersPage: React.FC = () => {
             </div>
 
             {/* Pagination */}
-            {meta && <Pagination meta={meta} onPageChange={setPage} />}
+            {meta && <Pagination meta={meta} onPageChange={setPage} disabled={loading} />}
           </div>
         </div>
       </div>

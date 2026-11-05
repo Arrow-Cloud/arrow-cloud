@@ -6,6 +6,8 @@ import { PackListItem } from '../../schemas/apiSchemas';
 import { AppPageLayout, Pagination } from '../../components';
 import { BannerImage } from '../../components/ui';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { ListLoadError, Skeleton, SkeletonRows, SkeletonColumn } from '../../components/ui';
+import { PACK_LIST_PAGE_SIZE } from '../../hooks/usePackList';
 
 interface PopularityMeterProps {
   popularity: number;
@@ -91,6 +93,21 @@ const PackRow: React.FC<PackRowProps> = ({ pack, maxPopularity, onClick }) => {
   );
 };
 
+const PACK_SKELETON_COLUMNS: SkeletonColumn[] = [
+  {
+    className: 'px-4 py-5',
+    content: (
+      <div className="flex items-center gap-5">
+        <Skeleton className="w-32 h-12 rounded-lg shrink-0" />
+        <Skeleton className="h-5 w-48" />
+      </div>
+    ),
+  },
+  { className: 'px-4 py-5 text-center', content: <Skeleton className="h-5 w-10 mx-auto rounded-full" /> },
+  { className: 'px-4 py-5 text-center', content: <Skeleton className="h-2 w-16 rounded-full" /> },
+  { className: 'px-4 py-5', content: <Skeleton className="h-4 w-20" /> },
+];
+
 export const PacksPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
@@ -98,7 +115,7 @@ export const PacksPage: React.FC = () => {
   const [searchCallCounter, setSearchCallCounter] = useState(0);
   const { formatMessage } = useIntl();
 
-  const { packs, meta, filters, loading, error, setSearch, setOrderBy, setOrderDirection, setPage, refresh } = usePackList();
+  const { packs, meta, filters, loading, error, loadState, setSearch, setOrderBy, setOrderDirection, setPage, refresh } = usePackList();
 
   // Use max popularity from the backend meta, fallback to 1 to avoid division by zero
   const maxPopularity = meta?.maxPopularity || 1;
@@ -121,7 +138,7 @@ export const PacksPage: React.FC = () => {
     navigate(`/pack/${packId}`);
   };
 
-  if (error) {
+  if (error && !loadState.hasData) {
     return (
       <AppPageLayout accent="secondary">
         <div className="container mx-auto px-4 py-8">
@@ -175,7 +192,7 @@ export const PacksPage: React.FC = () => {
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                   />
-                  {loading && (
+                  {loadState.showBusy && (
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <span className="loading loading-spinner loading-sm"></span>
                     </div>
@@ -195,8 +212,10 @@ export const PacksPage: React.FC = () => {
               </div>
             </div>
 
+            <ListLoadError state={loadState} />
+
             {/* Table */}
-            <div className="overflow-x-auto rounded-lg">
+            <div className="overflow-x-auto rounded-lg" aria-busy={loading}>
               <table className="table table-zebra w-full bg-base-100 border border-base-content/10">
                 <thead className="bg-base-200/80">
                   <tr>
@@ -228,7 +247,8 @@ export const PacksPage: React.FC = () => {
                     />
                   </tr>
                 </thead>
-                <tbody className={loading ? 'opacity-50' : ''}>
+                <tbody className={loadState.showBusy ? 'opacity-50' : ''}>
+                  {loadState.isInitialLoading && <SkeletonRows rows={PACK_LIST_PAGE_SIZE} columns={PACK_SKELETON_COLUMNS} />}
                   {packs.length === 0 && !loading ? (
                     <tr>
                       <td colSpan={4} className="text-center py-12 text-base-content/50">
@@ -252,7 +272,7 @@ export const PacksPage: React.FC = () => {
             </div>
 
             {/* Pagination */}
-            {meta && <Pagination meta={meta} onPageChange={setPage} />}
+            {meta && <Pagination meta={meta} onPageChange={setPage} disabled={loading} />}
           </div>
         </div>
       </div>

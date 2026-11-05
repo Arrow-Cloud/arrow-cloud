@@ -6,6 +6,8 @@ import { ChartListItem } from '../../schemas/apiSchemas';
 import { AppPageLayout, Pagination, DifficultyChip } from '../../components';
 import { BannerImage } from '../../components/ui';
 import { FormattedDate, FormattedMessage, useIntl } from 'react-intl';
+import { ListLoadError, Skeleton, SkeletonRows, SkeletonColumn } from '../../components/ui';
+import { CHART_LIST_PAGE_SIZE } from '../../hooks/useChartList';
 
 interface ChartTableHeaderProps {
   label: string;
@@ -186,6 +188,25 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ stepsType, difficulty, onStep
   );
 };
 
+const CHART_SKELETON_COLUMNS: SkeletonColumn[] = [
+  {
+    className: 'px-4 py-5',
+    content: (
+      <div className="flex items-center gap-3">
+        <Skeleton className="w-[128px] aspect-[2.56] rounded-lg shrink-0" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-4 w-28" />
+        </div>
+      </div>
+    ),
+  },
+  { className: 'px-4 py-5 text-center', content: <Skeleton className="h-6 w-16 mx-auto rounded-full" /> },
+  { className: 'px-4 py-5', content: <Skeleton className="h-6 w-24 rounded" /> },
+  { className: 'px-4 py-5', content: <Skeleton className="h-4 w-20" /> },
+  { className: 'px-4 py-5', content: <Skeleton className="h-4 w-20" /> },
+];
+
 export const ChartsPage: React.FC = () => {
   const navigate = useNavigate();
   const [searchInput, setSearchInput] = useState('');
@@ -194,7 +215,8 @@ export const ChartsPage: React.FC = () => {
   const [showFilters, setShowFilters] = useState(false);
   const { formatMessage } = useIntl();
 
-  const { charts, meta, filters, loading, error, setSearch, setStepsType, setDifficulty, setOrderBy, setOrderDirection, setPage, refresh } = useChartList();
+  const { charts, meta, filters, loading, error, loadState, setSearch, setStepsType, setDifficulty, setOrderBy, setOrderDirection, setPage, refresh } =
+    useChartList();
 
   useEffect(() => {
     // this is a hack to prevent a second API call on first render
@@ -220,7 +242,7 @@ export const ChartsPage: React.FC = () => {
     setDifficulty('');
   };
 
-  if (error) {
+  if (error && !loadState.hasData) {
     return (
       <AppPageLayout accent="accent">
         <div className="container mx-auto px-4 py-8">
@@ -275,7 +297,7 @@ export const ChartsPage: React.FC = () => {
                     value={searchInput}
                     onChange={(e) => setSearchInput(e.target.value)}
                   />
-                  {loading && (
+                  {loadState.showBusy && (
                     <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                       <span className="loading loading-spinner loading-sm"></span>
                     </div>
@@ -308,8 +330,10 @@ export const ChartsPage: React.FC = () => {
               />
             </div>
 
+            <ListLoadError state={loadState} />
+
             {/* Table */}
-            <div className="overflow-x-auto rounded-lg">
+            <div className="overflow-x-auto rounded-lg" aria-busy={loading}>
               <table className="table table-zebra w-full bg-base-100 border border-base-content/10">
                 <thead className="bg-base-200/80">
                   <tr>
@@ -358,7 +382,8 @@ export const ChartsPage: React.FC = () => {
                     />
                   </tr>
                 </thead>
-                <tbody className={loading ? 'opacity-50' : ''}>
+                <tbody className={loadState.showBusy ? 'opacity-50' : ''}>
+                  {loadState.isInitialLoading && <SkeletonRows rows={CHART_LIST_PAGE_SIZE} columns={CHART_SKELETON_COLUMNS} />}
                   {charts.length === 0 && !loading ? (
                     <tr>
                       <td colSpan={6} className="text-center py-12 text-base-content/50">
@@ -385,7 +410,7 @@ export const ChartsPage: React.FC = () => {
             </div>
 
             {/* Pagination */}
-            {meta && <Pagination meta={meta} onPageChange={setPage} />}
+            {meta && <Pagination meta={meta} onPageChange={setPage} disabled={loading} />}
           </div>
         </div>
       </div>
