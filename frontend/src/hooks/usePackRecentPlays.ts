@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { getPackRecentPlays, GetPackRecentPlaysParams, GetPackRecentPlaysResponse } from '../services/api';
 import { PackRecentPlay } from '../schemas/apiSchemas';
+import { usePaginatedResource, PaginatedLoadState } from './usePaginatedResource';
 
 interface UsePackRecentPlaysState {
   recentPlays: PackRecentPlay[];
   meta: GetPackRecentPlaysResponse['meta'] | null;
   filters: GetPackRecentPlaysResponse['filters'] | null;
+  /** True while any request is in flight. */
   loading: boolean;
   error: string | null;
+  /** Loading state for skeletons, dimming, and the pager. */
+  loadState: PaginatedLoadState;
 }
 
 interface UsePackRecentPlaysActions {
@@ -20,46 +24,21 @@ interface UsePackRecentPlaysOptions {
   packId: number;
 }
 
-export const usePackRecentPlays = (options: UsePackRecentPlaysOptions): UsePackRecentPlaysState & UsePackRecentPlaysActions => {
-  const [state, setState] = useState<UsePackRecentPlaysState>({
-    recentPlays: [],
-    meta: null,
-    filters: null,
-    loading: true,
-    error: null,
-  });
+export const PACK_RECENT_PLAYS_PAGE_SIZE = 5;
 
+export const usePackRecentPlays = (options: UsePackRecentPlaysOptions): UsePackRecentPlaysState & UsePackRecentPlaysActions => {
   const [params, setParams] = useState<GetPackRecentPlaysParams>({
     page: 1,
-    limit: 5,
+    limit: PACK_RECENT_PLAYS_PAGE_SIZE,
     search: '',
   });
 
-  const fetchRecentPlays = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-
-    try {
-      const response = await getPackRecentPlays(options.packId, params);
-      setState((prev) => ({
-        ...prev,
-        recentPlays: response.data,
-        meta: response.meta,
-        filters: response.filters,
-        loading: false,
-      }));
-    } catch (error) {
-      console.error('Failed to fetch recent plays:', error);
-      setState((prev) => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Failed to fetch recent plays',
-        loading: false,
-      }));
-    }
-  }, [options.packId, params]);
-
-  useEffect(() => {
-    fetchRecentPlays();
-  }, [fetchRecentPlays]);
+  const resource = usePaginatedResource({
+    resetKey: options.packId,
+    params,
+    fetcher: (p: typeof params) => getPackRecentPlays(options.packId, p),
+    errorMessage: 'Failed to fetch recent plays',
+  });
 
   const setSearch = useCallback((search: string) => {
     setParams((prev) => ({ ...prev, search, page: 1 }));
@@ -69,14 +48,15 @@ export const usePackRecentPlays = (options: UsePackRecentPlaysOptions): UsePackR
     setParams((prev) => ({ ...prev, page }));
   }, []);
 
-  const refresh = useCallback(() => {
-    fetchRecentPlays();
-  }, [fetchRecentPlays]);
-
   return {
-    ...state,
+    recentPlays: resource.data?.data ?? [],
+    meta: resource.data?.meta ?? null,
+    filters: resource.data?.filters ?? null,
+    loading: resource.isFetching,
+    error: resource.error,
+    loadState: resource,
     setSearch,
     setPage,
-    refresh,
+    refresh: resource.retry,
   };
 };

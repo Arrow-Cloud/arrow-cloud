@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { listSimfiles, ListSimfilesParams } from '../services/api';
 import { ListSimfilesResponse, SimfileListItem } from '../schemas/apiSchemas';
+import { usePaginatedResource, PaginatedLoadState } from './usePaginatedResource';
 
 interface UseSimfileListState {
   simfiles: SimfileListItem[];
   meta: ListSimfilesResponse['meta'] | null;
   filters: ListSimfilesResponse['filters'] | null;
+  /** True while any request is in flight. */
   loading: boolean;
   error: string | null;
+  /** Loading state for skeletons, dimming, and the pager. */
+  loadState: PaginatedLoadState;
 }
 
 interface UseSimfileListActions {
@@ -22,49 +26,19 @@ interface UseSimfileListOptions {
   packId?: number;
 }
 
-export const useSimfileList = (options: UseSimfileListOptions = {}): UseSimfileListState & UseSimfileListActions => {
-  const [state, setState] = useState<UseSimfileListState>({
-    simfiles: [],
-    meta: null,
-    filters: null,
-    loading: true,
-    error: null,
-  });
+export const SIMFILE_LIST_PAGE_SIZE = 25;
 
+export const useSimfileList = (options: UseSimfileListOptions = {}): UseSimfileListState & UseSimfileListActions => {
   const [params, setParams] = useState<ListSimfilesParams>({
     page: 1,
-    limit: 25,
+    limit: SIMFILE_LIST_PAGE_SIZE,
     search: '',
     packId: options.packId,
     orderBy: 'title',
     orderDirection: 'asc',
   });
 
-  const fetchSimfiles = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-
-    try {
-      const response = await listSimfiles(params);
-      setState((prev) => ({
-        ...prev,
-        simfiles: response.data,
-        meta: response.meta,
-        filters: response.filters,
-        loading: false,
-      }));
-    } catch (error) {
-      console.error('Failed to fetch simfiles:', error);
-      setState((prev) => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Failed to fetch simfiles',
-        loading: false,
-      }));
-    }
-  }, [params]);
-
-  useEffect(() => {
-    fetchSimfiles();
-  }, [fetchSimfiles]);
+  const resource = usePaginatedResource({ resetKey: options.packId ?? null, params, fetcher: listSimfiles, errorMessage: 'Failed to fetch simfiles' });
 
   const setSearch = useCallback((search: string) => {
     setParams((prev) => ({ ...prev, search, page: 1 }));
@@ -82,16 +56,17 @@ export const useSimfileList = (options: UseSimfileListOptions = {}): UseSimfileL
     setParams((prev) => ({ ...prev, page }));
   }, []);
 
-  const refresh = useCallback(() => {
-    fetchSimfiles();
-  }, [fetchSimfiles]);
-
   return {
-    ...state,
+    simfiles: resource.data?.data ?? [],
+    meta: resource.data?.meta ?? null,
+    filters: resource.data?.filters ?? null,
+    loading: resource.isFetching,
+    error: resource.error,
+    loadState: resource,
     setSearch,
     setOrderBy,
     setOrderDirection,
     setPage,
-    refresh,
+    refresh: resource.retry,
   };
 };

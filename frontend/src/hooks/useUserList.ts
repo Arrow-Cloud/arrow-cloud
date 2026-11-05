@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { listUsers, ListUsersParams } from '../services/api';
 import { ListUsersResponse, UserListItem } from '../schemas/apiSchemas';
+import { usePaginatedResource, PaginatedLoadState } from './usePaginatedResource';
 
 interface UseUserListState {
   users: UserListItem[];
   meta: ListUsersResponse['meta'] | null;
   filters: ListUsersResponse['filters'] | null;
+  /** True while any request is in flight. */
   loading: boolean;
   error: string | null;
+  /** Loading state for skeletons, dimming, and the pager. */
+  loadState: PaginatedLoadState;
 }
 
 interface UseUserListActions {
@@ -19,48 +23,18 @@ interface UseUserListActions {
   refresh: () => void;
 }
 
-export const useUserList = (): UseUserListState & UseUserListActions => {
-  const [state, setState] = useState<UseUserListState>({
-    users: [],
-    meta: null,
-    filters: null,
-    loading: true,
-    error: null,
-  });
+export const USER_LIST_PAGE_SIZE = 25;
 
+export const useUserList = (): UseUserListState & UseUserListActions => {
   const [params, setParams] = useState<ListUsersParams>({
     page: 1,
-    limit: 25,
+    limit: USER_LIST_PAGE_SIZE,
     search: '',
     orderBy: 'createdAt',
     orderDirection: 'desc',
   });
 
-  const fetchUsers = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-
-    try {
-      const response = await listUsers(params);
-      setState((prev) => ({
-        ...prev,
-        users: response.data,
-        meta: response.meta,
-        filters: response.filters,
-        loading: false,
-      }));
-    } catch (error) {
-      console.error('Failed to fetch users:', error);
-      setState((prev) => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Failed to fetch users',
-        loading: false,
-      }));
-    }
-  }, [params]);
-
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+  const resource = usePaginatedResource({ params, fetcher: listUsers, errorMessage: 'Failed to fetch users' });
 
   const setSearch = useCallback((search: string) => {
     setParams((prev) => ({ ...prev, search, page: 1 }));
@@ -82,17 +56,18 @@ export const useUserList = (): UseUserListState & UseUserListActions => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
 
-  const refresh = useCallback(() => {
-    fetchUsers();
-  }, [fetchUsers]);
-
   return {
-    ...state,
+    users: resource.data?.data ?? [],
+    meta: resource.data?.meta ?? null,
+    filters: resource.data?.filters ?? null,
+    loading: resource.isFetching,
+    error: resource.error,
+    loadState: resource,
     setSearch,
     setCountryId,
     setOrderBy,
     setOrderDirection,
     setPage,
-    refresh,
+    refresh: resource.retry,
   };
 };

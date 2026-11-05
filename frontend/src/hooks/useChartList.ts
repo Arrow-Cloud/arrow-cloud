@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { listCharts, ListChartsParams } from '../services/api';
 import { ListChartsResponse, ChartListItem } from '../schemas/apiSchemas';
+import { usePaginatedResource, PaginatedLoadState } from './usePaginatedResource';
 
 interface UseChartListState {
   charts: ChartListItem[];
   meta: ListChartsResponse['meta'] | null;
   filters: ListChartsResponse['filters'] | null;
+  /** True while any request is in flight. */
   loading: boolean;
   error: string | null;
+  /** Loading state for skeletons, dimming, and the pager. */
+  loadState: PaginatedLoadState;
 }
 
 interface UseChartListActions {
@@ -21,18 +25,16 @@ interface UseChartListActions {
   refresh: () => void;
 }
 
-export const useChartList = (): UseChartListState & UseChartListActions => {
-  const [state, setState] = useState<UseChartListState>({
-    charts: [],
-    meta: null,
-    filters: null,
-    loading: true,
-    error: null,
-  });
+export const CHART_LIST_PAGE_SIZE = 25;
 
+// Remove empty values so they are not sent to the API.
+const fetchChartList = (params: ListChartsParams) =>
+  listCharts(Object.fromEntries(Object.entries(params).filter(([, value]) => value !== '' && value !== undefined)) as ListChartsParams);
+
+export const useChartList = (): UseChartListState & UseChartListActions => {
   const [params, setParams] = useState<ListChartsParams>({
     page: 1,
-    limit: 25,
+    limit: CHART_LIST_PAGE_SIZE,
     search: '',
     stepsType: '',
     difficulty: '',
@@ -41,37 +43,7 @@ export const useChartList = (): UseChartListState & UseChartListActions => {
     orderDirection: 'asc',
   });
 
-  const fetchCharts = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-
-    try {
-      // Remove empty string values to avoid sending them to API
-      const cleanParams = Object.fromEntries(
-        /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-        Object.entries(params).filter(([_, value]) => value !== '' && value !== undefined),
-      ) as ListChartsParams;
-
-      const response = await listCharts(cleanParams);
-      setState((prev) => ({
-        ...prev,
-        charts: response.data,
-        meta: response.meta,
-        filters: response.filters,
-        loading: false,
-      }));
-    } catch (error) {
-      console.error('Failed to fetch charts:', error);
-      setState((prev) => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Failed to fetch charts',
-        loading: false,
-      }));
-    }
-  }, [params]);
-
-  useEffect(() => {
-    fetchCharts();
-  }, [fetchCharts]);
+  const resource = usePaginatedResource({ params, fetcher: fetchChartList, errorMessage: 'Failed to fetch charts' });
 
   const setSearch = useCallback((search: string) => {
     setParams((prev) => ({ ...prev, search, page: 1 }));
@@ -101,12 +73,13 @@ export const useChartList = (): UseChartListState & UseChartListActions => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
 
-  const refresh = useCallback(() => {
-    fetchCharts();
-  }, [fetchCharts]);
-
   return {
-    ...state,
+    charts: resource.data?.data ?? [],
+    meta: resource.data?.meta ?? null,
+    filters: resource.data?.filters ?? null,
+    loading: resource.isFetching,
+    error: resource.error,
+    loadState: resource,
     setSearch,
     setStepsType,
     setDifficulty,
@@ -114,6 +87,6 @@ export const useChartList = (): UseChartListState & UseChartListActions => {
     setOrderBy,
     setOrderDirection,
     setPage,
-    refresh,
+    refresh: resource.retry,
   };
 };

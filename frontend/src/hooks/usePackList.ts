@@ -1,13 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { listPacks, ListPacksParams } from '../services/api';
 import { ListPacksResponse, PackListItem } from '../schemas/apiSchemas';
+import { usePaginatedResource, PaginatedLoadState } from './usePaginatedResource';
 
 interface UsePackListState {
   packs: PackListItem[];
   meta: ListPacksResponse['meta'] | null;
   filters: ListPacksResponse['filters'] | null;
+  /** True while any request is in flight. */
   loading: boolean;
   error: string | null;
+  /** Loading state for skeletons, dimming, and the pager. */
+  loadState: PaginatedLoadState;
 }
 
 interface UsePackListActions {
@@ -18,48 +22,18 @@ interface UsePackListActions {
   refresh: () => void;
 }
 
-export const usePackList = (): UsePackListState & UsePackListActions => {
-  const [state, setState] = useState<UsePackListState>({
-    packs: [],
-    meta: null,
-    filters: null,
-    loading: true,
-    error: null,
-  });
+export const PACK_LIST_PAGE_SIZE = 25;
 
+export const usePackList = (): UsePackListState & UsePackListActions => {
   const [params, setParams] = useState<ListPacksParams>({
     page: 1,
-    limit: 25,
+    limit: PACK_LIST_PAGE_SIZE,
     search: '',
     orderBy: 'popularity',
     orderDirection: 'desc',
   });
 
-  const fetchPacks = useCallback(async () => {
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-
-    try {
-      const response = await listPacks(params);
-      setState((prev) => ({
-        ...prev,
-        packs: response.data,
-        meta: response.meta,
-        filters: response.filters,
-        loading: false,
-      }));
-    } catch (error) {
-      console.error('Failed to fetch packs:', error);
-      setState((prev) => ({
-        ...prev,
-        error: error instanceof Error ? error.message : 'Failed to fetch packs',
-        loading: false,
-      }));
-    }
-  }, [params]);
-
-  useEffect(() => {
-    fetchPacks();
-  }, [fetchPacks]);
+  const resource = usePaginatedResource({ params, fetcher: listPacks, errorMessage: 'Failed to fetch packs' });
 
   const setSearch = useCallback((search: string) => {
     setParams((prev) => ({ ...prev, search, page: 1 }));
@@ -77,16 +51,17 @@ export const usePackList = (): UsePackListState & UsePackListActions => {
     setParams((prev) => ({ ...prev, page }));
   }, []);
 
-  const refresh = useCallback(() => {
-    fetchPacks();
-  }, [fetchPacks]);
-
   return {
-    ...state,
+    packs: resource.data?.data ?? [],
+    meta: resource.data?.meta ?? null,
+    filters: resource.data?.filters ?? null,
+    loading: resource.isFetching,
+    error: resource.error,
+    loadState: resource,
     setSearch,
     setOrderBy,
     setOrderDirection,
     setPage,
-    refresh,
+    refresh: resource.retry,
   };
 };
