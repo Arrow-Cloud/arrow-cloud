@@ -11,6 +11,8 @@ import { getBlueShiftOverallSummary } from '../../services/api';
 import type { BlueShiftOverallSummary } from '../../schemas/apiSchemas';
 import { getStoredUser, computeHighlight, HighlightedAlias } from '../../utils/rivalHighlight';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Skeleton, SkeletonRows } from '../../components/ui';
+import type { SkeletonColumn } from '../../components/ui';
 
 const HeroTitle: React.FC = () => {
   const { formatMessage } = useIntl();
@@ -657,6 +659,36 @@ const ChartScoresSection: React.FC<ChartScoresSectionProps> = ({
   );
 };
 
+const RANK_CELL: SkeletonColumn = { className: 'py-3 text-center', content: <Skeleton className="h-6 w-8 mx-auto" /> };
+const PLAYER_CELL: SkeletonColumn = {
+  className: 'py-3',
+  content: (
+    <div className="flex items-center gap-3">
+      <Skeleton className="w-8 h-8 rounded-full shrink-0" />
+      <Skeleton className="h-4 w-24" />
+    </div>
+  ),
+};
+const SMALL_CELL: SkeletonColumn = { className: 'py-3 text-center', content: <Skeleton className="h-4 w-10 mx-auto" /> };
+const OVERALL_SKELETON_COLUMNS: SkeletonColumn[] = [RANK_CELL, PLAYER_CELL, SMALL_CELL, SMALL_CELL, SMALL_CELL];
+const PHASE_SKELETON_COLUMNS: SkeletonColumn[] = [RANK_CELL, PLAYER_CELL, SMALL_CELL, SMALL_CELL];
+
+/** First-load placeholder for a rankings card. */
+const RankingsCardSkeleton: React.FC<{ columns: SkeletonColumn[] }> = ({ columns }) => (
+  <div className="card bg-base-100/80 backdrop-blur-sm shadow-xl border border-base-content/10">
+    <div className="card-body p-4 md:p-6">
+      <Skeleton className="h-7 w-48 mb-4" />
+      <div className="overflow-x-auto">
+        <table className="table w-full">
+          <tbody>
+            <SkeletonRows rows={PAGE_SIZE} columns={columns} />
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+);
+
 export const BlueShiftResultsPage: React.FC = () => {
   const { activeLeaderboard } = useLeaderboardView();
   const [summaryData, setSummaryData] = useState<BlueShiftOverallSummary | null>(null);
@@ -712,8 +744,9 @@ export const BlueShiftResultsPage: React.FC = () => {
 
         {/* Loading State */}
         {isLoading && (
-          <div className="flex justify-center items-center py-20">
-            <div className="loading loading-spinner loading-lg text-primary"></div>
+          <div className="space-y-8">
+            <RankingsCardSkeleton columns={OVERALL_SKELETON_COLUMNS} />
+            <RankingsCardSkeleton columns={PHASE_SKELETON_COLUMNS} />
           </div>
         )}
 
