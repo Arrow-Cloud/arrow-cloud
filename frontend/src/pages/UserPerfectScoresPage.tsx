@@ -9,6 +9,9 @@ import { getUserById, getUserPerfectScores } from '../services/api';
 import type { PerfectScoreItem, PerfectScoresFilters } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import type { UserProfile } from '../schemas/apiSchemas';
+import { ListLoadError } from '../components/ui';
+import { BUSY_DELAY_MS } from '../hooks/usePaginatedResource';
+import { useDelayedFlag } from '../hooks/useDelayedFlag';
 
 type ScoreType = 'quads' | 'quints' | 'hexes';
 type SortValue = 'date-desc' | 'date-asc' | 'meter-desc' | 'meter-asc';
@@ -64,7 +67,7 @@ const SkeletonRows: React.FC<{ count: number }> = ({ count }) => {
       <div className="hidden md:block -mx-6 overflow-x-auto">
         <table className="table w-full">
           <tbody>
-            {Array.from({ length: Math.min(count, 5) }).map((_, i) => (
+            {Array.from({ length: Math.min(count, PAGE_SIZE) }).map((_, i) => (
               <tr key={i} className="animate-pulse">
                 <td className="py-4">
                   <div className="flex items-center gap-3">
@@ -92,7 +95,7 @@ const SkeletonRows: React.FC<{ count: number }> = ({ count }) => {
       </div>
       {/* Mobile skeleton */}
       <div className="md:hidden space-y-4">
-        {Array.from({ length: Math.min(count, 3) }).map((_, i) => (
+        {Array.from({ length: Math.min(count, PAGE_SIZE) }).map((_, i) => (
           <div key={i} className="bg-base-200/30 rounded-lg p-4 border border-base-content/10 animate-pulse space-y-3">
             <div className="w-full h-16 rounded-lg bg-base-300" />
             <div className="h-4 bg-base-300 rounded w-2/3" />
@@ -135,6 +138,9 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
 
   // Data state
   const [isLoading, setIsLoading] = useState(false);
+  const showBusy = useDelayedFlag(isLoading, BUSY_DELAY_MS);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
   const [hasFetched, setHasFetched] = useState(false);
   const [items, setItems] = useState<PerfectScoreItem[]>([]);
   const [meterStats, setMeterStats] = useState<{ meter: number; count: number }[]>([]);
@@ -177,10 +183,15 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
             setMeterStats(res.meterStats);
           }
           setHasFetched(true);
+          setLoadError(null);
         }
       })
-      .catch(() => {
-        if (!cancelled) setItems([]);
+      .catch((err) => {
+        // Keep the current rows and show the error inline
+        if (!cancelled) {
+          setLoadError(err instanceof Error ? err.message : 'Failed to load perfect scores');
+          setHasFetched(true);
+        }
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false);
@@ -188,7 +199,7 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
     return () => {
       cancelled = true;
     };
-  }, [userId, type, isActive, page, search, meterFilter, sortValue]);
+  }, [userId, type, isActive, page, search, meterFilter, sortValue, retryCount]);
 
   const handleMeterFilter = (meter: number | null) => {
     setMeterFilter(meter);
@@ -207,7 +218,7 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
   const totalUnfiltered = meterStats.reduce((sum, s) => sum + s.count, 0);
   const isFiltered = search !== '' || meterFilter !== null;
 
-  if (!hasFetched || (isLoading && items.length === 0)) {
+  if (!hasFetched) {
     return <SkeletonRows count={count} />;
   }
 
@@ -290,7 +301,7 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
           />
-          {isLoading && hasFetched ? (
+          {showBusy ? (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
               <span className="loading loading-spinner loading-xs" />
             </div>
@@ -341,6 +352,8 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
         </p>
       )}
 
+      <ListLoadError state={{ error: loadError, hasData: true, retry: () => setRetryCount((n) => n + 1) }} />
+
       {/* No results after filtering */}
       {items.length === 0 && !isLoading && (
         <div className="py-12 text-center text-base-content/50 text-sm">
@@ -351,7 +364,7 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
       {items.length > 0 && (
         <>
           {/* Desktop table */}
-          <div className="hidden md:block -mx-6 overflow-x-auto">
+          <div className={`hidden md:block -mx-6 overflow-x-auto ${showBusy ? 'opacity-50' : ''}`} aria-busy={isLoading}>
             <table className="table w-full">
               <thead>
                 <tr>
@@ -429,7 +442,7 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
           </div>
 
           {/* Mobile cards */}
-          <div className="md:hidden space-y-4">
+          <div className={`md:hidden space-y-4 ${showBusy ? 'opacity-50' : ''}`} aria-busy={isLoading}>
             {items.map((item) => (
               <div key={item.chartHash} className="bg-base-200/30 rounded-lg p-4 border border-base-content/10">
                 <Link to={`/chart/${item.chartHash}`} className="block mb-3 hover:opacity-80 transition-opacity">
@@ -486,7 +499,7 @@ const TabContent: React.FC<{ user: UserProfile; type: ScoreType; userId: string;
           {/* Pagination */}
           {meta && meta.totalPages > 1 && (
             <div className="mt-6 flex justify-center">
-              <Pagination meta={meta} onPageChange={setPage} />
+              <Pagination meta={meta} onPageChange={setPage} disabled={isLoading} />
             </div>
           )}
         </>

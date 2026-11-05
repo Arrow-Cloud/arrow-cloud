@@ -15,6 +15,11 @@ import { BannerImage, TabbedCard } from '../components/ui';
 import type { Tab } from '../components/ui/TabbedCard';
 import { formatRelativeTimeAuto } from '../utils/formatRelativeTime';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { ListLoadError } from '../components/ui';
+import { SessionListSkeleton } from '../components/sessions/SessionCardSkeleton';
+import { usePaginatedResource, BUSY_DELAY_MS } from '../hooks/usePaginatedResource';
+import type { PaginatedLoadState } from '../hooks/usePaginatedResource';
+import { useDelayedFlag } from '../hooks/useDelayedFlag';
 
 interface UserMetadataCardProps {
   user: UserProfile;
@@ -262,10 +267,15 @@ const TrophyCaseSection: React.FC<TrophyCaseSectionProps> = ({ trophies = [], sh
   return <TrophyCase trophies={mappedTrophies} maxTrophies={8} showManageButton={showManageButton} />;
 };
 
+const USER_SESSIONS_PAGE_SIZE = 10;
+
 interface RecentScoresSectionProps {
   recentScores: UserRecentPlay[];
   meta?: UserRecentPlaysMeta;
   loading?: boolean;
+  /** Error from the last page, search, or sort change. */
+  loadError: string | null;
+  onRetry: () => void;
   filters: {
     search: string;
     orderBy: 'date' | 'score';
@@ -281,7 +291,7 @@ interface RecentScoresSectionProps {
   onMaxMeterChange: (max?: number) => void;
   onIncludeUnknownChange: (include: boolean) => void;
   sessions: SessionSummary[];
-  sessionsLoading: boolean;
+  sessionsLoadState: PaginatedLoadState;
   sessionsMeta?: GetRecentSessionsResponse['meta'];
   onSessionsPageChange: (page: number) => void;
 }
@@ -290,6 +300,8 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({
   recentScores,
   meta,
   loading,
+  loadError,
+  onRetry,
   filters,
   onSearchChange,
   onSortChange,
@@ -298,7 +310,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({
   onMaxMeterChange,
   onIncludeUnknownChange,
   sessions,
-  sessionsLoading,
+  sessionsLoadState,
   sessionsMeta,
   onSessionsPageChange,
 }) => {
@@ -331,13 +343,10 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({
 
   // Sessions tab content
   const SessionsContent = (
-    <div className="space-y-3">
-      {sessionsLoading ? (
-        <div className="animate-pulse space-y-3">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="h-16 bg-base-300/50 rounded-lg"></div>
-          ))}
-        </div>
+    <div className={`space-y-3 ${sessionsLoadState.showBusy ? 'opacity-50' : ''}`} aria-busy={sessionsLoadState.isFetching}>
+      <ListLoadError state={sessionsLoadState} />
+      {sessionsLoadState.isInitialLoading ? (
+        <SessionListSkeleton rows={USER_SESSIONS_PAGE_SIZE} />
       ) : sessions.length > 0 ? (
         <>
           {sessions.map((session) => (
@@ -407,7 +416,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({
               </div>
             </Link>
           ))}
-          {sessionsMeta && <Pagination meta={sessionsMeta} onPageChange={onSessionsPageChange} />}
+          {sessionsMeta && <Pagination meta={sessionsMeta} onPageChange={onSessionsPageChange} disabled={sessionsLoadState.isFetching} />}
         </>
       ) : (
         <div className="text-center py-8 text-base-content/60">
@@ -532,8 +541,10 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({
         </div>
       </div>
 
+      <ListLoadError state={{ error: loadError, hasData: true, retry: onRetry }} />
+
       {/* Scores Table - Desktop */}
-      <div className="hidden md:block overflow-x-auto">
+      <div className="hidden md:block overflow-x-auto" aria-busy={loading}>
         {filteredScores.length > 0 ? (
           <table className="table w-full">
             <thead>
@@ -622,7 +633,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({
       </div>
 
       {/* Scores Cards - Mobile */}
-      <div className={`md:hidden space-y-4 ${loading ? 'opacity-50' : ''}`}>
+      <div className={`md:hidden space-y-4 ${loading ? 'opacity-50' : ''}`} aria-busy={loading}>
         {displayScores.length > 0
           ? displayScores.map((score, index) => {
               const leaderboard = score.leaderboards.find((lb) => lb.leaderboard === activeTab);
@@ -728,7 +739,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({
       )}
 
       {/* Pagination */}
-      {meta && <Pagination meta={meta} onPageChange={onPageChange} />}
+      {meta && <Pagination meta={meta} onPageChange={onPageChange} disabled={loading} />}
     </>
   );
 
@@ -756,6 +767,10 @@ export const UserPage: React.FC = () => {
   const [recentPlaysMeta, setRecentPlaysMeta] = useState<UserRecentPlaysMeta | undefined>(undefined);
   const [profileLoading, setProfileLoading] = useState(true);
   const [recentLoading, setRecentLoading] = useState(false);
+  const recentBusy = useDelayedFlag(recentLoading, BUSY_DELAY_MS);
+  const [recentError, setRecentError] = useState<string | null>(null);
+  const [recentRetry, setRecentRetry] = useState(0);
+  const recentRequestId = React.useRef(0);
   const [error, setError] = useState<string | null>(null);
   const [rivalActionLoading, setRivalActionLoading] = useState(false);
   const [rivalActionError, setRivalActionError] = useState<string | null>(null);
@@ -764,9 +779,6 @@ export const UserPage: React.FC = () => {
   const [showBanConfirm, setShowBanConfirm] = useState(false);
 
   // Sessions state
-  const [sessions, setSessions] = useState<SessionSummary[]>([]);
-  const [sessionsLoading, setSessionsLoading] = useState(false);
-  const [sessionsMeta, setSessionsMeta] = useState<GetRecentSessionsResponse['meta'] | undefined>(undefined);
   const [sessionsPage, setSessionsPage] = useState(1);
 
   // Pagination/search/sort state for recent scores
@@ -836,6 +848,7 @@ export const UserPage: React.FC = () => {
   // Subsequent recent plays updates (pagination/search/sort/leaderboard/includeUnknown)
   useEffect(() => {
     const fetchRecentOnly = async () => {
+      const requestId = ++recentRequestId.current;
       try {
         // Skip if initial load hasn't completed yet to avoid double-fetching
         if (!initialLoadComplete.current) return;
@@ -856,38 +869,33 @@ export const UserPage: React.FC = () => {
           orderBy: orderBy,
           orderDirection,
         });
+        // Ignore responses that a newer request has replaced
+        if (requestId !== recentRequestId.current) return;
+        setRecentError(null);
         // Only update the recent plays/meta to avoid jarring page reload
         setUserProfile((prev) => (prev ? { ...prev, recentPlays: response.user.recentPlays } : response.user));
         setRecentPlaysMeta(response.recentPlaysMeta);
       } catch (err) {
         console.error('Failed to fetch recent plays:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load recent plays');
+        // Keep the current rows and show the error inline
+        if (requestId === recentRequestId.current) setRecentError(err instanceof Error ? err.message : 'Failed to load recent plays');
       } finally {
-        setRecentLoading(false);
+        if (requestId === recentRequestId.current) setRecentLoading(false);
       }
     };
 
     fetchRecentOnly();
-  }, [page, limit, debouncedSearch, orderBy, orderDirection, activeLeaderboard, minMeter, maxMeter, includeUnknown, userId, currentUser]);
+  }, [page, limit, debouncedSearch, orderBy, orderDirection, activeLeaderboard, minMeter, maxMeter, includeUnknown, userId, currentUser, recentRetry]);
 
   // Fetch sessions for this user
-  useEffect(() => {
-    const fetchSessions = async () => {
-      const targetUserId = userId || currentUser?.id;
-      if (!targetUserId) return;
-      try {
-        setSessionsLoading(true);
-        const response = await getUserSessions(targetUserId, { page: sessionsPage, limit: 10 });
-        setSessions(response.data);
-        setSessionsMeta(response.meta);
-      } catch (err) {
-        console.error('Failed to fetch sessions:', err);
-      } finally {
-        setSessionsLoading(false);
-      }
-    };
-    fetchSessions();
-  }, [userId, currentUser?.id, sessionsPage]);
+  const sessionsUserId = userId || currentUser?.id;
+  const sessionsResource = usePaginatedResource({
+    resetKey: sessionsUserId ?? null,
+    params: { page: sessionsPage, limit: USER_SESSIONS_PAGE_SIZE },
+    fetcher: (p: { page: number; limit: number }) => getUserSessions(sessionsUserId as string, p),
+    enabled: !!sessionsUserId,
+    errorMessage: 'Failed to load sessions',
+  });
 
   // Derived flags and rival actions must be declared before any early returns to preserve hooks order
   const isSelf = useMemo(() => {
@@ -1111,7 +1119,9 @@ export const UserPage: React.FC = () => {
             <RecentScoresSection
               recentScores={userProfile.recentPlays}
               meta={recentPlaysMeta}
-              loading={recentLoading}
+              loading={recentBusy}
+              loadError={recentError}
+              onRetry={() => setRecentRetry((n) => n + 1)}
               filters={{ search: searchInput, orderBy, orderDirection, minMeter, maxMeter, includeUnknown }}
               onSearchChange={(v) => {
                 setSearchInput(v);
@@ -1139,9 +1149,9 @@ export const UserPage: React.FC = () => {
                 setIncludeUnknown(val);
                 setPage(1);
               }}
-              sessions={sessions}
-              sessionsLoading={sessionsLoading}
-              sessionsMeta={sessionsMeta}
+              sessions={sessionsResource.data?.data ?? []}
+              sessionsLoadState={sessionsResource}
+              sessionsMeta={sessionsResource.data?.meta}
               onSessionsPageChange={(p) => setSessionsPage(p)}
             />
           </div>
