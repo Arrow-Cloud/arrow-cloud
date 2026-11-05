@@ -193,6 +193,12 @@
       "value": "EX Weight"
     }
   ],
+  "0ztsHN": [
+    {
+      "type": 0,
+      "value": "Loading…"
+    }
+  ],
   "11eEsx": [
     {
       "type": 0,
@@ -2447,6 +2453,16 @@
     {
       "type": 0,
       "value": "Failed to load passkey information"
+    }
+  ],
+  "RaD8zy": [
+    {
+      "type": 0,
+      "value": "Could not load this list: "
+    },
+    {
+      "type": 1,
+      "value": "error"
     }
   ],
   "Rfndrb": [

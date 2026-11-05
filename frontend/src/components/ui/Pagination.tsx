@@ -14,9 +14,11 @@ interface PaginationProps {
   meta: PaginationMeta;
   onPageChange: (page: number) => void;
   className?: string;
+  /** Disable every button, e.g. while a page is loading. */
+  disabled?: boolean;
 }
 
-export const Pagination: React.FC<PaginationProps> = ({ meta, onPageChange, className = '' }) => {
+export const Pagination: React.FC<PaginationProps> = ({ meta, onPageChange, className = '', disabled = false }) => {
   const { page: currentPage, totalPages, hasNextPage, hasPreviousPage } = meta;
 
   // Generate page numbers to show
@@ -51,7 +53,7 @@ export const Pagination: React.FC<PaginationProps> = ({ meta, onPageChange, clas
   return (
     <div className={`flex justify-center mt-6 ${className}`}>
       <div className="join">
-        <button className="join-item btn btn-sm" disabled={!hasPreviousPage} onClick={() => onPageChange(currentPage - 1)}>
+        <button className="join-item btn btn-sm" disabled={disabled || !hasPreviousPage} onClick={() => onPageChange(currentPage - 1)}>
           <FormattedMessage defaultMessage="Previous" id="MOf0nY" description="Label for previous page button" />
         </button>
 
@@ -64,6 +66,7 @@ export const Pagination: React.FC<PaginationProps> = ({ meta, onPageChange, clas
             <button
               key={`page-${page}`}
               className={`join-item btn btn-sm ${currentPage === page ? 'btn-active' : ''}`}
+              disabled={disabled}
               onClick={() => onPageChange(page as number)}
             >
               {page}
@@ -71,7 +74,7 @@ export const Pagination: React.FC<PaginationProps> = ({ meta, onPageChange, clas
           ),
         )}
 
-        <button className="join-item btn btn-sm" disabled={!hasNextPage} onClick={() => onPageChange(currentPage + 1)}>
+        <button className="join-item btn btn-sm" disabled={disabled || !hasNextPage} onClick={() => onPageChange(currentPage + 1)}>
           <FormattedMessage defaultMessage="Next" id="GrJ6PI" description="Label for next page button" />
         </button>
       </div>

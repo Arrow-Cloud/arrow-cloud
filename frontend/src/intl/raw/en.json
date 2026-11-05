@@ -123,6 +123,10 @@
     "description": "table column heading for descriptions of the timing windows and corresponding score weights",
     "message": "EX Weight"
   },
+  "0ztsHN": {
+    "description": "Screen reader label announced while a list is loading for the first time",
+    "message": "Loading…"
+  },
   "11eEsx": {
     "description": "table column heading for descriptions of the timing windows and corresponding score weights",
     "message": "Window (±ms)"
@@ -1366,6 +1370,10 @@
   "RWchvs": {
     "description": "Error message when failing to load passkey information",
     "message": "Failed to load passkey information"
+  },
+  "RaD8zy": {
+    "description": "Inline error shown above or in place of a paginated list when loading fails",
+    "message": "Could not load this list: {error}"
   },
   "Rfndrb": {
     "description": "Button to copy text to clipboard",
