@@ -12,7 +12,10 @@ import { getStoredUser, computeHighlight, HighlightedAlias } from '../../utils/r
 import { ChartDetails as ApiChartDetails, ChartLeaderboardResponse } from '../../schemas/apiSchemas';
 import { FormattedMessage, FormattedDate, useIntl } from 'react-intl';
 import { isPhase1Active } from '../../utils/blueshift';
-import { useChartRecentPlays, useDebounce } from '../../hooks';
+import { useChartRecentPlays, useDebounce, usePaginatedResource } from '../../hooks';
+import { ListLoadError, LoadingLabel, Skeleton, SkeletonRows } from '../../components/ui';
+import { SCORE_SKELETON_CELLS, ScoreCardListSkeleton } from '../../components/plays/ScoreListSkeleton';
+import { CHART_RECENT_PLAYS_PAGE_SIZE } from '../../hooks/useChartRecentPlays';
 
 const ChartMetadataCard: React.FC<{ chart: ApiChartDetails }> = ({ chart }) => {
   const { formatDate, formatMessage } = useIntl();
@@ -197,7 +200,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ chartHash, in
   });
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  const { recentPlays, meta, loading, error, setSearch, setPage, setUserIds } = useChartRecentPlays({
+  const { recentPlays, meta, loading, error, loadState, setSearch, setPage, setUserIds } = useChartRecentPlays({
     chartHash,
     initialRecentPlays,
   });
@@ -295,7 +298,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ chartHash, in
               onChange={(e) => setSearchInput(e.target.value)}
               disabled={!showAllScores}
             />
-            {loading && (
+            {loadState.showBusy && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <span className="loading loading-spinner loading-sm"></span>
               </div>
@@ -342,8 +345,8 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ chartHash, in
         </div>
 
         {/* Scores Table - Desktop */}
-        <div className="hidden md:block overflow-x-auto">
-          {filteredScores.length > 0 ? (
+        <div className={`hidden md:block overflow-x-auto ${loadState.showBusy ? 'opacity-50' : ''}`} aria-busy={loading}>
+          {loadState.isInitialLoading || filteredScores.length > 0 ? (
             <table className="table w-full">
               <thead>
                 <tr className="border-base-content/10">
@@ -362,6 +365,12 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ chartHash, in
                 </tr>
               </thead>
               <tbody>
+                {loadState.isInitialLoading && (
+                  <SkeletonRows
+                    rows={CHART_RECENT_PLAYS_PAGE_SIZE}
+                    columns={[SCORE_SKELETON_CELLS.player, SCORE_SKELETON_CELLS.grade, SCORE_SKELETON_CELLS.score, SCORE_SKELETON_CELLS.date]}
+                  />
+                )}
                 {filteredScores.map((score, index) => {
                   const leaderboard = score.leaderboards.find((lb) => lb.leaderboard === activeTab);
                   if (!leaderboard) return null;
@@ -411,7 +420,8 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ chartHash, in
         </div>
 
         {/* Scores Cards - Mobile */}
-        <div className="md:hidden space-y-4">
+        <div className={`md:hidden space-y-4 ${loadState.showBusy ? 'opacity-50' : ''}`} aria-busy={loading}>
+          {loadState.isInitialLoading && <ScoreCardListSkeleton rows={CHART_RECENT_PLAYS_PAGE_SIZE} />}
           {filteredScores.length > 0
             ? filteredScores.map((score, index) => {
                 const leaderboard = score.leaderboards.find((lb) => lb.leaderboard === activeTab);
@@ -493,9 +503,9 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ chartHash, in
         )}
 
         {/* Pagination */}
-        {!loading && !error && recentPlays.length > 0 && meta && (
+        {!error && recentPlays.length > 0 && meta && (
           <div className="mt-6">
-            <Pagination meta={meta} onPageChange={setPage} />
+            <Pagination meta={meta} onPageChange={setPage} disabled={loading} />
           </div>
         )}
       </div>
@@ -503,76 +513,156 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ chartHash, in
   );
 };
 
+const CHART_LEADERBOARD_PAGE_SIZE = 25;
+
+/**
+ * Placeholder for one mobile leaderboard card. Matches the real card's three rows:
+ * rank and score (44px), player and grade (48px), and date (16px).
+ */
+const LeaderboardCardSkeleton: React.FC = () => (
+  <div aria-hidden="true" className="rounded-lg p-4 border border-base-content/10 bg-base-200/30">
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="h-4 flex items-center">
+            <Skeleton className="h-3 w-10" />
+          </div>
+          <div className="h-7 flex items-center">
+            <Skeleton className="h-5 w-10" />
+          </div>
+        </div>
+        <div className="flex flex-col items-end">
+          <div className="h-4 flex items-center">
+            <Skeleton className="h-3 w-10" />
+          </div>
+          <div className="h-7 flex items-center">
+            <Skeleton className="h-5 w-20" />
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="h-4 flex items-center">
+            <Skeleton className="h-3 w-12" />
+          </div>
+          <div className="h-5 flex items-center">
+            <Skeleton className="h-3.5 w-24" />
+          </div>
+        </div>
+        <div className="flex flex-col items-end">
+          <div className="h-4 flex items-center">
+            <Skeleton className="h-3 w-10" />
+          </div>
+          <Skeleton className="w-8 h-8 rounded" />
+        </div>
+      </div>
+      <div className="h-4 flex items-center justify-between">
+        <Skeleton className="h-3 w-10" />
+        <Skeleton className="h-3 w-32" />
+      </div>
+    </div>
+  </div>
+);
+
+/** First-load placeholder for the leaderboard card. Matches the loaded card's header, tabs, and table. */
+const LeaderboardLoadingCard: React.FC = () => (
+  <div className="card bg-base-100/60 backdrop-blur-sm shadow-lg" aria-busy="true">
+    <div className="card-body">
+      <h3 className="card-title text-lg mb-4 flex items-center gap-2">
+        <Trophy size={20} className="text-primary" />
+        <FormattedMessage defaultMessage="Leaderboards" id="9tw8mS" description="Heading for the leaderboards section" />
+      </h3>
+      <div className="mb-6">
+        <LeaderboardToggle options={['HardEX', 'EX', 'ITG']} />
+      </div>
+      <div className="hidden md:block overflow-x-auto">
+        <table className="table w-full">
+          <thead>
+            <tr className="border-base-content/10">
+              <th className="bg-base-200/50 font-semibold text-base-content text-center">
+                <FormattedMessage defaultMessage="Rank" id="Bt+/uG" description="Table header for the rank column" />
+              </th>
+              <th className="bg-base-200/50 font-semibold text-base-content">
+                <FormattedMessage defaultMessage="Player" id="QTkpuD" description="Table header for the player column" />
+              </th>
+              <th className="bg-base-200/50 font-semibold text-base-content text-center">
+                <FormattedMessage defaultMessage="Grade" id="VDiUbH" description="Table header for the grade column" />
+              </th>
+              <th className="bg-base-200/50 font-semibold text-base-content text-center">
+                <FormattedMessage defaultMessage="Score" id="DUbBkQ" description="Table header for the score column" />
+              </th>
+              <th className="bg-base-200/50 font-semibold text-base-content text-center">
+                <FormattedMessage defaultMessage="Date" id="rbGD0/" description="Table header for the date column" />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <SkeletonRows
+              rows={CHART_LEADERBOARD_PAGE_SIZE}
+              columns={[
+                SCORE_SKELETON_CELLS.rank,
+                SCORE_SKELETON_CELLS.player,
+                SCORE_SKELETON_CELLS.grade,
+                SCORE_SKELETON_CELLS.score,
+                SCORE_SKELETON_CELLS.date,
+              ]}
+            />
+          </tbody>
+        </table>
+      </div>
+      <div className="md:hidden space-y-4">
+        <LoadingLabel />
+        {Array.from({ length: CHART_LEADERBOARD_PAGE_SIZE }, (_, i) => (
+          <LeaderboardCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 const LeaderboardSection: React.FC<{
   chartHash: string;
   initialData?: ChartLeaderboardResponse | null;
 }> = ({ chartHash, initialData = null }) => {
-  const [leaderboards, setLeaderboards] = useState<ChartLeaderboardResponse | null>(initialData);
-  const [loading, setLoading] = useState(!initialData);
-  const [error, setError] = useState<string | null>(null);
   const { activeLeaderboard: globalLb } = useLeaderboardView();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialPage = Math.max(parseInt(searchParams.get('page') || '1', 10) || 1, 1);
   const [page, setPage] = useState<number>(initialPage);
   const { formatNumber } = useIntl();
 
-  // Keep URL in sync when page changes
+  const loadState = usePaginatedResource({
+    resetKey: chartHash,
+    params: { page },
+    fetcher: ({ page: p }: { page: number }) => getChartLeaderboards(chartHash, p),
+    // Initial data is page 1; only use it when the page opened on page 1.
+    initialData: initialPage === 1 ? initialData : null,
+    errorMessage: 'Failed to load leaderboards',
+  });
+  const { data: leaderboards, isInitialLoading: loading, error } = loadState;
+  // The page whose rows are on screen. A failed page change leaves it unchanged.
+  const shownPage = leaderboards?.leaderboards.find((lb) => lb.type === globalLb)?.page ?? page;
+
+  // Keep URL in sync when the shown page changes
   useEffect(() => {
     const current = searchParams.get('page');
-    const next = String(page);
+    const next = String(shownPage);
     if (current !== next) {
       const sp = new URLSearchParams(searchParams);
-      if (page > 1) sp.set('page', next);
+      if (shownPage > 1) sp.set('page', next);
       else sp.delete('page');
       setSearchParams(sp, { replace: true });
     }
-  }, [page]);
+  }, [shownPage]);
 
   const storedUser = getStoredUser();
   const rivalIds: string[] = storedUser?.rivalUserIds || [];
   // activeTab state removed; using global context selection instead
 
-  useEffect(() => {
-    // If we have initial data and we're on page 1, don't fetch
-    if (initialData && page === 1) {
-      setLeaderboards(initialData);
-      setLoading(false);
-      return;
-    }
-
-    const fetchLeaderboards = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await getChartLeaderboards(chartHash, page);
-        setLeaderboards(data);
-      } catch (err) {
-        console.error('Error fetching leaderboards:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load leaderboards');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLeaderboards();
-  }, [chartHash, page, initialData]);
-
   if (loading) {
-    return (
-      <div className="card bg-base-100/60 backdrop-blur-sm shadow-lg">
-        <div className="card-body">
-          <h3 className="card-title text-lg mb-4">
-            <FormattedMessage defaultMessage="Leaderboards" id="9tw8mS" description="Heading for the leaderboards section" />
-          </h3>
-          <div className="flex justify-center items-center py-12">
-            <Loader2 size={32} className="animate-spin text-primary" />
-          </div>
-        </div>
-      </div>
-    );
+    return <LeaderboardLoadingCard />;
   }
 
-  if (error) {
+  if (error && !leaderboards) {
     return (
       <div className="card bg-base-100/60 backdrop-blur-sm shadow-lg">
         <div className="card-body">
@@ -607,8 +697,10 @@ const LeaderboardSection: React.FC<{
           <LeaderboardToggle options={['HardEX', 'EX', 'ITG']} />
         </div>
 
+        <ListLoadError state={loadState} />
+
         {/* Leaderboard Table - Desktop */}
-        <div className="hidden md:block overflow-x-auto">
+        <div className={`hidden md:block overflow-x-auto ${loadState.showBusy ? 'opacity-50' : ''}`} aria-busy={loadState.isFetching}>
           {activeLeaderboard && activeLeaderboard.scores.length > 0 ? (
             <table className="table w-full">
               <thead>
@@ -686,7 +778,7 @@ const LeaderboardSection: React.FC<{
         </div>
 
         {/* Leaderboard Cards - Mobile */}
-        <div className="md:hidden space-y-4">
+        <div className={`md:hidden space-y-4 ${loadState.showBusy ? 'opacity-50' : ''}`} aria-busy={loadState.isFetching}>
           {activeLeaderboard && activeLeaderboard.scores.length > 0
             ? activeLeaderboard.scores.map((score, index) => {
                 const highlight = computeHighlight(storedUser?.id, rivalIds, score.userId);
@@ -799,6 +891,7 @@ const LeaderboardSection: React.FC<{
               hasPreviousPage: activePage > 1,
             }}
             onPageChange={(p) => setPage(Math.max(1, p))}
+            disabled={loadState.isFetching}
           />
         ) : null}
       </div>
@@ -959,16 +1052,7 @@ const LeaderboardSectionWithBlueShift: React.FC<{ chartHash: string }> = ({ char
   if (loading) {
     return (
       <div className="space-y-8">
-        <div className="card bg-base-100/60 backdrop-blur-sm shadow-lg">
-          <div className="card-body">
-            <h3 className="card-title text-lg mb-4">
-              <FormattedMessage defaultMessage="Leaderboards" id="bb7dGv" description="Title for the leaderboards section" />
-            </h3>
-            <div className="flex justify-center items-center py-12">
-              <Loader2 size={32} className="animate-spin text-primary" />
-            </div>
-          </div>
-        </div>
+        <LeaderboardLoadingCard />
       </div>
     );
   }
