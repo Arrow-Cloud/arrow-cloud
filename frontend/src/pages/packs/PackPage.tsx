@@ -11,6 +11,10 @@ import { getPack } from '../../services/api';
 import { PackDetails as ApiPackDetails, SimfileListItem } from '../../schemas/apiSchemas';
 import { useSimfileList, useDebounce, usePackRecentPlays } from '../../hooks';
 import { FormattedDate, FormattedMessage, FormattedNumber, useIntl } from 'react-intl';
+import { ListLoadError, Skeleton, SkeletonRows, SkeletonColumn } from '../../components/ui';
+import { SCORE_SKELETON_CELLS, ScoreCardListSkeleton } from '../../components/plays/ScoreListSkeleton';
+import { PACK_RECENT_PLAYS_PAGE_SIZE } from '../../hooks/usePackRecentPlays';
+import { SIMFILE_LIST_PAGE_SIZE } from '../../hooks/useSimfileList';
 
 interface Chart {
   hash: string;
@@ -106,7 +110,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ packId }) => 
   const debouncedSearch = useDebounce(searchInput, 300);
   const { formatMessage } = useIntl();
 
-  const { recentPlays, meta, loading, error, setSearch, setPage } = usePackRecentPlays({ packId });
+  const { recentPlays, meta, loading, error, loadState, setSearch, setPage } = usePackRecentPlays({ packId });
 
   useEffect(() => {
     setSearch(debouncedSearch);
@@ -141,7 +145,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ packId }) => 
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
             />
-            {loading && (
+            {loadState.showBusy && (
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <span className="loading loading-spinner loading-sm"></span>
               </div>
@@ -150,8 +154,8 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ packId }) => 
         </div>
 
         {/* Scores Table - Desktop */}
-        <div className="hidden md:block overflow-x-auto">
-          {filteredScores.length > 0 ? (
+        <div className={`hidden md:block overflow-x-auto ${loadState.showBusy ? 'opacity-50' : ''}`} aria-busy={loading}>
+          {loadState.isInitialLoading || filteredScores.length > 0 ? (
             <table className="table w-full">
               <thead>
                 <tr className="border-base-content/10">
@@ -173,6 +177,18 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ packId }) => 
                 </tr>
               </thead>
               <tbody>
+                {loadState.isInitialLoading && (
+                  <SkeletonRows
+                    rows={PACK_RECENT_PLAYS_PAGE_SIZE}
+                    columns={[
+                      SCORE_SKELETON_CELLS.chart,
+                      SCORE_SKELETON_CELLS.player,
+                      SCORE_SKELETON_CELLS.grade,
+                      SCORE_SKELETON_CELLS.score,
+                      SCORE_SKELETON_CELLS.date,
+                    ]}
+                  />
+                )}
                 {filteredScores.map((score, index) => {
                   const leaderboard = score.leaderboards.find((lb) => lb.leaderboard === activeTab);
                   if (!leaderboard) return null;
@@ -250,7 +266,8 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ packId }) => 
         </div>
 
         {/* Scores Cards - Mobile */}
-        <div className="md:hidden space-y-4">
+        <div className={`md:hidden space-y-4 ${loadState.showBusy ? 'opacity-50' : ''}`} aria-busy={loading}>
+          {loadState.isInitialLoading && <ScoreCardListSkeleton rows={PACK_RECENT_PLAYS_PAGE_SIZE} withChart badgeRowClassName="h-[21px]" />}
           {filteredScores.length > 0
             ? filteredScores.map((score, index) => {
                 const leaderboard = score.leaderboards.find((lb) => lb.leaderboard === activeTab);
@@ -377,7 +394,7 @@ const RecentScoresSection: React.FC<RecentScoresSectionProps> = ({ packId }) => 
         )}
 
         {/* Pagination */}
-        {meta && <Pagination meta={meta} onPageChange={setPage} />}
+        {meta && <Pagination meta={meta} onPageChange={setPage} disabled={loading} />}
       </div>
     </div>
   );
@@ -407,6 +424,29 @@ const SimfileTableHeader: React.FC<SimfileTableHeaderProps> = ({ label, sortKey,
     </th>
   );
 };
+
+const SIMFILE_SKELETON_COLUMNS: SkeletonColumn[] = [
+  {
+    className: 'px-4 py-5',
+    content: (
+      <div className="flex items-center gap-4">
+        <Skeleton className="w-[128px] aspect-[2.56] rounded-lg shrink-0" />
+        <Skeleton className="h-5 w-40" />
+      </div>
+    ),
+  },
+  { className: 'px-4 py-5', content: <Skeleton className="h-4 w-28" /> },
+  {
+    className: 'px-4 py-5 text-center',
+    content: (
+      <div className="flex justify-center gap-1">
+        <Skeleton className="h-6 w-10 rounded-full" />
+        <Skeleton className="h-6 w-10 rounded-full" />
+        <Skeleton className="h-6 w-10 rounded-full" />
+      </div>
+    ),
+  },
+];
 
 interface SimfileRowProps {
   simfile: SimfileListItem;
@@ -470,7 +510,7 @@ const SimfilesTable: React.FC<SimfilesTableProps> = React.memo(({ packId }) => {
   const [searchCallCounter, setSearchCallCounter] = useState(0);
   const { formatMessage } = useIntl();
 
-  const { simfiles, meta, filters, loading, error, setSearch, setOrderBy, setOrderDirection, setPage } = useSimfileList({ packId });
+  const { simfiles, meta, filters, loading, error, loadState, setSearch, setOrderBy, setOrderDirection, setPage } = useSimfileList({ packId });
 
   useEffect(() => {
     // Skip the initial render when search is empty to avoid a redundant API call
@@ -486,7 +526,7 @@ const SimfilesTable: React.FC<SimfilesTableProps> = React.memo(({ packId }) => {
     setOrderDirection(direction);
   };
 
-  if (error) {
+  if (error && !loadState.hasData) {
     return (
       <div className="card bg-base-100/60 backdrop-blur-sm shadow-lg">
         <div className="card-body">
@@ -528,7 +568,7 @@ const SimfilesTable: React.FC<SimfilesTableProps> = React.memo(({ packId }) => {
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
               />
-              {loading && (
+              {loadState.showBusy && (
                 <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                   <span className="loading loading-spinner loading-sm"></span>
                 </div>
@@ -548,8 +588,10 @@ const SimfilesTable: React.FC<SimfilesTableProps> = React.memo(({ packId }) => {
           </div>
         </div>
 
+        <ListLoadError state={loadState} />
+
         {/* Table */}
-        <div className="overflow-x-auto rounded-lg">
+        <div className="overflow-x-auto rounded-lg" aria-busy={loading}>
           <table className="table table-zebra w-full bg-base-100 border border-base-content/10">
             <thead className="bg-base-200/80">
               <tr>
@@ -574,7 +616,8 @@ const SimfilesTable: React.FC<SimfilesTableProps> = React.memo(({ packId }) => {
                 </th>
               </tr>
             </thead>
-            <tbody className={loading ? 'opacity-50' : ''}>
+            <tbody className={loadState.showBusy ? 'opacity-50' : ''}>
+              {loadState.isInitialLoading && <SkeletonRows rows={SIMFILE_LIST_PAGE_SIZE} columns={SIMFILE_SKELETON_COLUMNS} />}
               {simfiles.length === 0 && !loading ? (
                 <tr>
                   <td colSpan={3} className="text-center py-12 text-base-content/50">
@@ -597,7 +640,7 @@ const SimfilesTable: React.FC<SimfilesTableProps> = React.memo(({ packId }) => {
         </div>
 
         {/* Pagination */}
-        {meta && <Pagination meta={meta} onPageChange={setPage} />}
+        {meta && <Pagination meta={meta} onPageChange={setPage} disabled={loading} />}
       </div>
     </div>
   );
