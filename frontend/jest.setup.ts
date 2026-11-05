@@ -1,1 +1,1 @@
-// (intentionally left blank)
+import '@testing-library/jest-dom';

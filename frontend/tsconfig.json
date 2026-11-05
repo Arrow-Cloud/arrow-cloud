@@ -21,7 +21,7 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Modify client types with vite-provided APIs */
-    "types": ["vite/client"]
+    "types": ["vite/client", "jest", "@testing-library/jest-dom"]
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
