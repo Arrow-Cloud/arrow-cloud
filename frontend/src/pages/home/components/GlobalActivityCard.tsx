@@ -11,12 +11,41 @@ import { formatRelativeTimeAuto } from '../../../utils/formatRelativeTime';
 import { type LeaderboardId } from '../../../types/leaderboards';
 import { type GlobalRecentScore, type SessionSummary } from '../../../services/api';
 import type { Tab } from '../../../components/ui/TabbedCard';
+import { ListLoadError, Skeleton, SkeletonRows } from '../../../components/ui';
+import type { SkeletonColumn } from '../../../components/ui';
+import { SCORE_SKELETON_CELLS, ScoreCardListSkeleton } from '../../../components/plays/ScoreListSkeleton';
+import { SessionListSkeleton } from '../../../components/sessions/SessionCardSkeleton';
+import type { PaginatedLoadState } from '../../../hooks/usePaginatedResource';
 
 const PAGE_SIZE = 10;
 
+/**
+ * Placeholder cells sized like the compact Home rows: `py-3` cells, a chart cell with
+ * text-sm title + text-xs artist + small chip (56px), and a one-line date/time.
+ */
+const HOME_SCORE_SKELETON_COLUMNS: SkeletonColumn[] = [
+  {
+    className: 'py-3',
+    content: (
+      <div className="flex items-center gap-3">
+        <Skeleton className="w-20 sm:w-32 aspect-[2.56] rounded shrink-0" />
+        <div className="flex-1 h-14 flex flex-col justify-between py-0.5">
+          <Skeleton className="h-4 w-32 max-w-full" />
+          <Skeleton className="h-3 w-24 max-w-full" />
+          <Skeleton className="h-4 w-12 rounded-full" />
+        </div>
+      </div>
+    ),
+  },
+  { ...SCORE_SKELETON_CELLS.playerWithAvatar, className: 'py-3' },
+  { className: 'py-3 text-center', content: <Skeleton className="w-8 h-8 rounded mx-auto" /> },
+  { className: 'py-3 text-center', content: <Skeleton className="h-5 w-16 mx-auto" /> },
+  { className: 'py-3 text-right', content: <Skeleton className="h-4 w-24 ml-auto" /> },
+];
+
 interface GlobalActivityCardProps {
   scores: GlobalRecentScore[];
-  isLoading: boolean;
+  loadState: PaginatedLoadState;
   paginationMeta: PaginationMeta | null;
   onPageChange: (page: number) => void;
   activeLeaderboard: LeaderboardId;
@@ -24,14 +53,14 @@ interface GlobalActivityCardProps {
   rivalsOnly: boolean;
   onRivalsOnlyChange: (value: boolean) => void;
   sessions: SessionSummary[];
-  sessionsLoading: boolean;
+  sessionsLoadState: PaginatedLoadState;
   sessionsPaginationMeta: PaginationMeta | null;
   onSessionsPageChange: (page: number) => void;
 }
 
 export const GlobalActivityCard: React.FC<GlobalActivityCardProps> = ({
   scores,
-  isLoading,
+  loadState,
   paginationMeta,
   onPageChange,
   activeLeaderboard,
@@ -39,7 +68,7 @@ export const GlobalActivityCard: React.FC<GlobalActivityCardProps> = ({
   rivalsOnly,
   onRivalsOnlyChange,
   sessions,
-  sessionsLoading,
+  sessionsLoadState,
   sessionsPaginationMeta,
   onSessionsPageChange,
 }) => {
@@ -49,16 +78,11 @@ export const GlobalActivityCard: React.FC<GlobalActivityCardProps> = ({
   // Scores tab content
   const ScoresContent = (
     <>
-      {isLoading ? (
-        <div className="animate-pulse space-y-3">
-          {[...Array(PAGE_SIZE)].map((_, i) => (
-            <div key={i} className="h-12 bg-base-300/50 rounded"></div>
-          ))}
-        </div>
-      ) : scores.length > 0 ? (
+      <ListLoadError state={loadState} />
+      {loadState.isInitialLoading || scores.length > 0 ? (
         <>
           {/* Desktop Table */}
-          <div className="hidden md:block overflow-x-auto -mx-4 sm:mx-0">
+          <div className={`hidden md:block overflow-x-auto -mx-4 sm:mx-0 ${loadState.showBusy ? 'opacity-50' : ''}`} aria-busy={loadState.isFetching}>
             <table className="table w-full min-w-[640px]">
               <thead>
                 <tr className="border-base-content/10">
@@ -80,6 +104,7 @@ export const GlobalActivityCard: React.FC<GlobalActivityCardProps> = ({
                 </tr>
               </thead>
               <tbody>
+                {loadState.isInitialLoading && <SkeletonRows rows={PAGE_SIZE} columns={HOME_SCORE_SKELETON_COLUMNS} />}
                 {scores.map((score, index) => {
                   const id: LeaderboardId = (activeTab === 'Money' ? 'ITG' : activeTab) as LeaderboardId;
                   const matchingData = findLeaderboardData(score.leaderboards as any, id);
@@ -142,7 +167,8 @@ export const GlobalActivityCard: React.FC<GlobalActivityCardProps> = ({
           </div>
 
           {/* Mobile Cards */}
-          <div className="md:hidden space-y-4">
+          <div className={`md:hidden space-y-4 ${loadState.showBusy ? 'opacity-50' : ''}`} aria-busy={loadState.isFetching}>
+            {loadState.isInitialLoading && <ScoreCardListSkeleton rows={PAGE_SIZE} withChart withPlayer />}
             {scores.map((score, index) => {
               const id: LeaderboardId = (activeTab === 'Money' ? 'ITG' : activeTab) as LeaderboardId;
               const matchingData = findLeaderboardData(score.leaderboards as any, id);
@@ -154,7 +180,7 @@ export const GlobalActivityCard: React.FC<GlobalActivityCardProps> = ({
 
           {paginationMeta && paginationMeta.totalPages > 1 && (
             <div className="mt-6">
-              <Pagination meta={paginationMeta} onPageChange={onPageChange} />
+              <Pagination meta={paginationMeta} onPageChange={onPageChange} disabled={loadState.isFetching} />
             </div>
           )}
         </>
@@ -168,13 +194,10 @@ export const GlobalActivityCard: React.FC<GlobalActivityCardProps> = ({
 
   // Sessions tab content
   const SessionsContent = (
-    <div className="space-y-3">
-      {sessionsLoading ? (
-        <div className="animate-pulse space-y-3">
-          {[...Array(5)].map((_, i) => (
-            <div key={i} className="h-16 bg-base-300/50 rounded-lg"></div>
-          ))}
-        </div>
+    <div className={`space-y-3 ${sessionsLoadState.showBusy ? 'opacity-50' : ''}`} aria-busy={sessionsLoadState.isFetching}>
+      <ListLoadError state={sessionsLoadState} />
+      {sessionsLoadState.isInitialLoading ? (
+        <SessionListSkeleton rows={PAGE_SIZE} withUser />
       ) : sessions.length > 0 ? (
         sessions.map((session) => (
           <Link
@@ -241,7 +264,7 @@ export const GlobalActivityCard: React.FC<GlobalActivityCardProps> = ({
       )}
       {sessionsPaginationMeta && sessionsPaginationMeta.totalPages > 1 && (
         <div className="mt-6">
-          <Pagination meta={sessionsPaginationMeta} onPageChange={onSessionsPageChange} />
+          <Pagination meta={sessionsPaginationMeta} onPageChange={onSessionsPageChange} disabled={sessionsLoadState.isFetching} />
         </div>
       )}
     </div>

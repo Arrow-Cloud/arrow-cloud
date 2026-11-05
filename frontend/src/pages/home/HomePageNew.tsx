@@ -9,12 +9,11 @@ import {
   getUserSessions,
   listPacks,
   getUserById,
-  type GlobalRecentScore,
-  type GetGlobalRecentScoresResponse,
   type SessionSummary,
-  type GetRecentSessionsResponse,
+  type ListPacksParams,
 } from '../../services/api';
-import { type PackListItem, type UserRecentPlay } from '../../schemas/apiSchemas';
+import { type UserRecentPlay } from '../../schemas/apiSchemas';
+import { usePaginatedResource } from '../../hooks/usePaginatedResource';
 
 import {
   WelcomeBackCard,
@@ -34,14 +33,8 @@ const RIVALS_ONLY_LS_KEY = 'homeRivalsOnly';
 export const HomePageNew: React.FC = () => {
   const { user } = useAuth();
   const { activeLeaderboard } = useLeaderboardView();
-  const [recentScores, setRecentScores] = useState<GlobalRecentScore[]>([]);
-  const [meta, setMeta] = useState<GetGlobalRecentScoresResponse['meta'] | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState(1);
 
-  const [recentPacks, setRecentPacks] = useState<PackListItem[]>([]);
-  const [packsMeta, setPacksMeta] = useState<PaginationMeta | null>(null);
-  const [packsLoading, setPacksLoading] = useState(true);
   const [packsPage, setPacksPage] = useState(1);
 
   const [userScores, setUserScores] = useState<UserRecentPlay[]>([]);
@@ -55,9 +48,6 @@ export const HomePageNew: React.FC = () => {
   });
 
   // Sessions state
-  const [globalSessions, setGlobalSessions] = useState<SessionSummary[]>([]);
-  const [globalSessionsLoading, setGlobalSessionsLoading] = useState(true);
-  const [globalSessionsMeta, setGlobalSessionsMeta] = useState<GetRecentSessionsResponse['meta'] | null>(null);
   const [sessionsPage, setSessionsPage] = useState(1);
   const [userSessions, setUserSessions] = useState<SessionSummary[]>([]);
   const [userSessionsLoading, setUserSessionsLoading] = useState(false);
@@ -70,52 +60,32 @@ export const HomePageNew: React.FC = () => {
   }, [rivalsOnly]);
 
   // Fetch global recent scores
-  useEffect(() => {
-    const fetchScores = async () => {
-      try {
-        setIsLoading(true);
-        const response = await getGlobalRecentScores({ page, limit: PAGE_SIZE, rivalsOnly: rivalsOnly && !!user });
-        setRecentScores(response.data);
-        setMeta(response.meta);
-      } catch (error) {
-        console.error('Failed to fetch recent scores:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchScores();
-  }, [page, rivalsOnly, user]);
+  const scoresResource = usePaginatedResource({
+    params: { page, limit: PAGE_SIZE, rivalsOnly: rivalsOnly && !!user },
+    fetcher: getGlobalRecentScores,
+    errorMessage: 'Failed to fetch recent scores',
+  });
+  const recentScores = scoresResource.data?.data ?? [];
+  const meta = scoresResource.data?.meta ?? null;
 
   // Fetch recent packs
-  useEffect(() => {
-    const fetchPacks = async () => {
-      try {
-        setPacksLoading(true);
-        const response = await listPacks({
-          page: packsPage,
-          limit: PACKS_PAGE_SIZE,
-          orderBy: 'createdAt',
-          orderDirection: 'desc',
-        });
-        setRecentPacks(response.data);
-        setPacksMeta({
-          page: response.meta.page,
-          limit: response.meta.limit,
-          total: response.meta.total,
-          totalPages: Math.min(response.meta.totalPages, MAX_PAGES),
-          hasNextPage: response.meta.page < Math.min(response.meta.totalPages, MAX_PAGES),
-          hasPreviousPage: response.meta.hasPreviousPage,
-        });
-      } catch (error) {
-        console.error('Failed to fetch recent packs:', error);
-      } finally {
-        setPacksLoading(false);
+  const packsResource = usePaginatedResource({
+    params: { page: packsPage, limit: PACKS_PAGE_SIZE, orderBy: 'createdAt', orderDirection: 'desc' } as ListPacksParams,
+    fetcher: listPacks,
+    errorMessage: 'Failed to fetch recent packs',
+  });
+  const recentPacks = packsResource.data?.data ?? [];
+  const packsResponseMeta = packsResource.data?.meta;
+  const packsMeta: PaginationMeta | null = packsResponseMeta
+    ? {
+        page: packsResponseMeta.page,
+        limit: packsResponseMeta.limit,
+        total: packsResponseMeta.total,
+        totalPages: Math.min(packsResponseMeta.totalPages, MAX_PAGES),
+        hasNextPage: packsResponseMeta.page < Math.min(packsResponseMeta.totalPages, MAX_PAGES),
+        hasPreviousPage: packsResponseMeta.hasPreviousPage,
       }
-    };
-
-    fetchPacks();
-  }, [packsPage]);
+    : null;
 
   // Fetch user's own recent scores when logged in
   useEffect(() => {
@@ -140,22 +110,13 @@ export const HomePageNew: React.FC = () => {
   }, [user?.id]);
 
   // Fetch global recent sessions
-  useEffect(() => {
-    const fetchGlobalSessions = async () => {
-      try {
-        setGlobalSessionsLoading(true);
-        const response = await getRecentSessions({ page: sessionsPage, limit: PAGE_SIZE, rivalsOnly: rivalsOnly && !!user });
-        setGlobalSessions(response.data);
-        setGlobalSessionsMeta(response.meta);
-      } catch (error) {
-        console.error('Failed to fetch global sessions:', error);
-      } finally {
-        setGlobalSessionsLoading(false);
-      }
-    };
-
-    fetchGlobalSessions();
-  }, [sessionsPage, rivalsOnly, user]);
+  const sessionsResource = usePaginatedResource({
+    params: { page: sessionsPage, limit: PAGE_SIZE, rivalsOnly: rivalsOnly && !!user },
+    fetcher: getRecentSessions,
+    errorMessage: 'Failed to fetch global sessions',
+  });
+  const globalSessions = sessionsResource.data?.data ?? [];
+  const globalSessionsMeta = sessionsResource.data?.meta ?? null;
 
   // Fetch user's own recent sessions when logged in
   useEffect(() => {
@@ -226,7 +187,7 @@ export const HomePageNew: React.FC = () => {
             {/* Recent Global Activity Card - Scores or Sessions */}
             <GlobalActivityCard
               scores={recentScores}
-              isLoading={isLoading}
+              loadState={scoresResource}
               paginationMeta={paginationMeta}
               onPageChange={setPage}
               activeLeaderboard={activeLeaderboard}
@@ -234,13 +195,13 @@ export const HomePageNew: React.FC = () => {
               rivalsOnly={rivalsOnly}
               onRivalsOnlyChange={setRivalsOnly}
               sessions={globalSessions}
-              sessionsLoading={globalSessionsLoading}
+              sessionsLoadState={sessionsResource}
               sessionsPaginationMeta={sessionsPaginationMeta}
               onSessionsPageChange={setSessionsPage}
             />
 
             {/* Recent Packs Card */}
-            <RecentPacksCard packs={recentPacks} isLoading={packsLoading} paginationMeta={packsMeta} onPageChange={setPacksPage} />
+            <RecentPacksCard packs={recentPacks} loadState={packsResource} paginationMeta={packsMeta} onPageChange={setPacksPage} />
 
             {/* Setup and Support Cards - Side by Side - Only show for logged out users */}
             {!user && <SetupAndSupportCards />}

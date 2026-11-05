@@ -6,6 +6,8 @@ import { BannerImage } from '../../../components/ui';
 import { Pagination } from '../../../components';
 import type { PaginationMeta } from '../../../components/ui/Pagination';
 import { type PackListItem } from '../../../schemas/apiSchemas';
+import { ListLoadError } from '../../../components/ui';
+import type { PaginatedLoadState } from '../../../hooks/usePaginatedResource';
 
 const PACKS_PAGE_SIZE = 5;
 
@@ -65,12 +67,12 @@ const RecentPackCard: React.FC<RecentPackCardProps> = ({ pack }) => {
 
 interface RecentPacksCardProps {
   packs: PackListItem[];
-  isLoading: boolean;
+  loadState: PaginatedLoadState;
   paginationMeta: PaginationMeta | null;
   onPageChange: (page: number) => void;
 }
 
-export const RecentPacksCard: React.FC<RecentPacksCardProps> = ({ packs, isLoading, paginationMeta, onPageChange }) => {
+export const RecentPacksCard: React.FC<RecentPacksCardProps> = ({ packs, loadState, paginationMeta, onPageChange }) => {
   return (
     <div className="card bg-gradient-to-br from-base-100 via-base-100/90 to-warning/10 backdrop-blur-sm shadow-xl hover:shadow-2xl hover:shadow-warning/20 mb-8 border border-warning/20 hover:border-warning/40 transition-all duration-500 group">
       <div className="card-body">
@@ -89,7 +91,8 @@ export const RecentPacksCard: React.FC<RecentPacksCardProps> = ({ packs, isLoadi
           </Link>
         </div>
 
-        {isLoading ? (
+        <ListLoadError state={loadState} />
+        {loadState.isInitialLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             {[...Array(PACKS_PAGE_SIZE)].map((_, i) => (
               <RecentPackSkeleton key={i} />
@@ -97,14 +100,17 @@ export const RecentPacksCard: React.FC<RecentPacksCardProps> = ({ packs, isLoadi
           </div>
         ) : packs.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+            <div
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 ${loadState.showBusy ? 'opacity-50' : ''}`}
+              aria-busy={loadState.isFetching}
+            >
               {packs.map((pack) => (
                 <RecentPackCard key={pack.id} pack={pack} />
               ))}
             </div>
             {paginationMeta && paginationMeta.totalPages > 1 && (
               <div className="mt-6">
-                <Pagination meta={paginationMeta} onPageChange={onPageChange} />
+                <Pagination meta={paginationMeta} onPageChange={onPageChange} disabled={loadState.isFetching} />
               </div>
             )}
             <p className="mt-4 text-xs text-base-content/60 italic">
