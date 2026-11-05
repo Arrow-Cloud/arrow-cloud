@@ -10,6 +10,8 @@ import { LeaderboardToggle } from '../components/leaderboards/LeaderboardToggle'
 import { useLeaderboardView } from '../contexts/LeaderboardViewContext';
 import { backendNameFor, baseLeaderboardId, type LeaderboardId } from '../types/leaderboards';
 import { getSession } from '../services/api';
+import { ListLoadError } from '../components/ui';
+import { usePaginatedResource } from '../hooks/usePaginatedResource';
 import type { SessionDetails, SessionPlay } from '../schemas/apiSchemas';
 
 // Chart.js
@@ -536,11 +538,10 @@ const PlayCard: React.FC<PlayCardProps> = ({ play }) => {
   );
 };
 
+const SESSION_PLAYS_PAGE_SIZE = 5;
+
 export const SessionPage: React.FC = () => {
   const { sessionId } = useParams<{ sessionId: string }>();
-  const [session, setSession] = useState<SessionDetails | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [showShareModal, setShowShareModal] = useState(false);
   const [showOnlyPBs, setShowOnlyPBs] = useState(() => {
@@ -571,37 +572,25 @@ export const SessionPage: React.FC = () => {
     return 'EX';
   };
 
-  useEffect(() => {
-    if (Number.isNaN(parsedSessionId)) {
-      setError('Invalid session ID');
-      setLoading(false);
-      return;
-    }
-
-    const fetchSession = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const data = await getSession(parsedSessionId, {
-          page,
-          limit: 5,
-          pbOnly: showOnlyPBs,
-          // Always send the active leaderboard, not just when filtering PBs - the backend uses
-          // it to scope which leaderboard's data it fetches per play, since this page only ever
-          // displays one leaderboard at a time.
-          leaderboard: getBackendLeaderboard(activeLeaderboard),
-        });
-        setSession(data);
-      } catch (err) {
-        console.error('Error fetching session:', err);
-        setError('Failed to load session details');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchSession();
-  }, [parsedSessionId, page, showOnlyPBs, activeLeaderboard]);
+  const sessionResource = usePaginatedResource({
+    // A different session is a first load, so the previous session's data never shows.
+    resetKey: sessionId ?? null,
+    params: {
+      page,
+      limit: SESSION_PLAYS_PAGE_SIZE,
+      pbOnly: showOnlyPBs,
+      // Always send the active leaderboard, not just when filtering PBs - the backend uses
+      // it to scope which leaderboard's data it fetches per play, since this page only ever
+      // displays one leaderboard at a time.
+      leaderboard: getBackendLeaderboard(activeLeaderboard),
+    },
+    fetcher: (p: Parameters<typeof getSession>[1]) => getSession(parsedSessionId, p),
+    enabled: !Number.isNaN(parsedSessionId),
+    errorMessage: 'Failed to load session details',
+  });
+  const session: SessionDetails | null = sessionResource.data;
+  const loading = sessionResource.isFetching;
+  const error = Number.isNaN(parsedSessionId) ? 'Invalid session ID' : session ? null : sessionResource.error;
 
   // Reset to page 1 when PB filter or leaderboard changes
   useEffect(() => {
@@ -688,13 +677,11 @@ export const SessionPage: React.FC = () => {
               </div>
             </div>
 
+            <ListLoadError state={sessionResource} />
+
             {/* Play Cards */}
-            <div className="space-y-4">
-              {loading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary" />
-                </div>
-              ) : session.plays.length === 0 && showOnlyPBs ? (
+            <div className={`space-y-4 ${sessionResource.showBusy ? 'opacity-50' : ''}`} aria-busy={loading}>
+              {session.plays.length === 0 && showOnlyPBs ? (
                 <div className="text-center py-8 text-base-content/60">
                   <Trophy size={32} className="mx-auto mb-2 text-warning/50" />
                   <FormattedMessage
@@ -721,6 +708,7 @@ export const SessionPage: React.FC = () => {
                 } as PaginationMeta
               }
               onPageChange={handlePageChange}
+              disabled={loading}
             />
           </div>
         </div>
