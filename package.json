@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=22 <23"
+    "node": ">=22.15 <23"
   },
   "workspaces": [
     "cdk",
@@ -32,7 +32,9 @@
     "download-play": "tsx scripts/download-play.ts",
     "cleanup-user-scores": "tsx scripts/cleanup-user-scores.ts",
     "golf-session-review": "tsx scripts/golf-session-review.ts",
-    "assign-golf-pars": "tsx scripts/assign-golf-pars.ts"
+    "assign-golf-pars": "tsx scripts/assign-golf-pars.ts",
+    "score-archive": "tsx scripts/score-archive.ts",
+    "score-archive-seed": "tsx scripts/score-archive-seed.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",

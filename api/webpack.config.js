@@ -12,6 +12,7 @@ module.exports = {
     'pack-popularity': './src/pack-popularity.ts',
     'user-stats': './src/user-stats.ts',
     'pack-leaderboard': './src/pack-leaderboard.ts',
+    'score-archive': './src/score-archive.ts',
     'websocket-connect': './src/websocket-connect.ts',
     'websocket-disconnect': './src/websocket-disconnect.ts',
     'websocket-sendmessage': './src/websocket-sendmessage.ts',
