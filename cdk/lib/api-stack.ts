@@ -164,6 +164,40 @@ export class ApiStack extends cdk.Stack {
     // Grant Lambda access to the mock S3 bucket
     s3BucketMockScores.grantReadWrite(apiLambda);
 
+    // Score archive: bucket, lambda, schedule
+    const s3BucketScoreArchive = new s3.Bucket(this, 'ArrowCloudScoreArchiveBucket', {
+      bucketName: 'arrow-cloud-score-archive',
+      removalPolicy: cdk.RemovalPolicy.RETAIN,
+      blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
+      encryption: s3.BucketEncryption.S3_MANAGED,
+      lifecycleRules: [{ abortIncompleteMultipartUploadAfter: cdk.Duration.days(1) }],
+    });
+
+    const scoreArchiveLambda = new lambda.Function(this, 'ScoreArchiveLambda', {
+      functionName: 'arrow-cloud-score-archive',
+      runtime: lambda.Runtime.NODEJS_22_X,
+      architecture: lambda.Architecture.ARM_64,
+      code: lambda.Code.fromAsset('../api/dist'),
+      handler: 'score-archive.handler',
+      memorySize: 2048,
+      ephemeralStorageSize: cdk.Size.gibibytes(10),
+      timeout: cdk.Duration.minutes(15),
+      environment: {
+        SCORES_BUCKET: s3BucketScores.bucketName,
+        ARCHIVE_BUCKET: s3BucketScoreArchive.bucketName,
+      },
+    });
+    s3BucketScores.grantRead(scoreArchiveLambda, 'scores/*');
+    s3BucketScoreArchive.grantRead(scoreArchiveLambda, 'archive/*');
+    s3BucketScoreArchive.grantPut(scoreArchiveLambda, 'archive/*');
+
+    const scoreArchiveSchedule = new events.Rule(this, 'ScoreArchiveSchedule', {
+      ruleName: 'arrow-cloud-score-archive-monthly',
+      description: 'Archives the previous month of scores on the first day of each month',
+      schedule: events.Schedule.cron({ minute: '0', hour: '1', day: '1' }),
+    });
+    scoreArchiveSchedule.addTarget(new targets.LambdaFunction(scoreArchiveLambda, { event: events.RuleTargetInput.fromObject({ write: true }) }));
+
     // CORS allowed origins for S3 buckets and CloudFront
     // Set via cdk.context.json: "corsAllowedOrigins": ["https://example.com", "http://localhost:5173"]
     const corsAllowedOrigins = (this.node.tryGetContext('corsAllowedOrigins') as string[] | undefined) || ['http://localhost:5173'];
@@ -252,6 +286,14 @@ export class ApiStack extends cdk.Stack {
             domainNames: ['assets.arrowcloud.dance'],
           }
         : {}),
+    });
+
+    // Score archive published on CloudFront
+    assetsDistribution.addBehavior('/archive/*', cloudfrontOrigins.S3BucketOrigin.withOriginAccessControl(s3BucketScoreArchive), {
+      cachePolicy: cloudfront.CachePolicy.CACHING_DISABLED,
+      allowedMethods: cloudfront.AllowedMethods.ALLOW_GET_HEAD,
+      viewerProtocolPolicy: cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+      responseHeadersPolicy: assetsCorsHeadersPolicy,
     });
 
     // Grant Lambda access to the assets S3 bucket
